@@ -1,0 +1,155 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Completed Classes</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+
+        <div class="row" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+          <div class="col-sm-9">
+            <button style="float:right" class="btn btn-success" (click)="exportToExcelReportedEmploymentData()" mat-raised-button>Reported/Verified Employment</button>
+          </div>
+          <div class="col-sm-3">
+            <button style="float:right" class="btn btn-primary" (click)="exportToExcelVerifiedEmploymentData()" mat-raised-button>Verified Employment Summary</button>
+            <!--<br />-->
+            <!--<button mat-raised-button color="success" style="float:right" *ngIf="inceptionReportList.data?.length > 0" (click)="exportToExcel()">Export Excel</button>-->
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetClasses(), getDependantFilters()]" id="SchemeId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSchemeList" /></mat-optgrp>
+                <mat-option value="0">-- All --</mat-option>
+                <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSchemeList.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetClasses(),getClassesByTsp(tsp.value)]" id="TspId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSPList" autofocus /></mat-optgrp>
+                <mat-option value="0">-- All --</mat-option>
+                <mat-option *ngFor="let s of TSPDetail | like:['TSPName',SearchTSPList.value] | where :['SchemeID',filters.SchemeID]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl()" (selectionChange)="GetClasses()" id="ClassId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchClassList" /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchClassList.value] | where :['SchemeID',filters.SchemeID]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+
+
+        <div class="text-center" *ngIf="!ClassList">
+          <p>No Record Found</p>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive" *ngIf="ClassList">
+              <table class="table table-bordered d-md-table">
+                <thead>
+                  <tr>
+                    <th class="sm" *ngIf="currentUser.UserLevel == enumUserLevel.TSP"></th>
+                    <th class="sm" *ngIf="currentUser.UserLevel == enumUserLevel.TSP">
+                      Actions
+                    </th>
+                    <th>Class Code</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>TSP Name</th>
+                    <th>Scheme Name</th>
+                    <th>Employment Commitment (Trainees)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let r of ClassList">
+                    <tr>
+                      <td class="sm" *ngIf="currentUser.UserLevel == enumUserLevel.TSP">
+
+                        <a color="primary" matTooltip="Expande/Collapse"
+                           mat-icon-button (click)="GetTraineeOfClass(r.ClassID,r)">
+                          <mat-icon>{{r.HasTrainees ?'remove_circle':'control_point' }}</mat-icon>
+                        </a>
+                      </td>
+                      <td class="sm" style="text-align:inherit;" *ngIf="currentUser.UserLevel == enumUserLevel.TSP">
+                        <a color="primary" matTooltip="Export Trainees Data" (click)="GetTrainee(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
+                          <mat-icon>get_app</mat-icon>
+                        </a>|<a color="primary" matTooltip="Import Trainees Data" mat-icon-button class="file-lable">
+                          <mat-icon>publish</mat-icon>
+                          <input placeholder="Upload Excel File to Add Placement data" disabled="disabled" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" type="file" class="file-input" (change)="onFileChange($event,r)" />
+                        </a>|
+                        <a color="primary" *ngIf="!r.EmploymentSubmited" matTooltip="Submit Trainees Emplyment Data" (click)="SubmitClassData(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
+                          <mat-icon>save</mat-icon>
+                        </a>
+                        <span class="p-4 text-dark" *ngIf="r.EmploymentSubmited">Submitted</span>
+                      </td>
+                      <td> <a class="myAnchor" (click)="openClassJourneyDialogue(r.ClassID)" style="color: #005b9e;"> <strong>{{r.ClassCode}}</strong> </a></td>
+                      <td>{{r.StartDate| date:'dd-MMM-yyyy'}}</td>
+                      <td>{{r.EndDate| date:'dd-MMM-yyyy'}}</td>
+                      <td>{{r.TSPName}}</td>
+                      <td>{{r.SchemeName}}</td>
+                      <td>{{r.EmploymentCommittedTrainees}}</td>
+                    </tr>
+                    <!--Nested Grid for POLines Table-->
+                    <tr *ngIf="r.HasTrainees" [@enterAnimation]>
+                      <td colspan="16">
+                        <div>
+                          <table class="table table-bordered d-md-table" style="color:lightslategrey">
+                            <thead>
+                              <tr>
+                                <th>Trainee Code</th>
+                                <th>Trainee Name</th>
+                                <th>Father Name</th>
+                                <th>Contact #</th>
+                                <th>District</th>
+                                <th>Trainee CNIC</th>
+                                <th>Status</th>
+                                <th class="sm">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let c of r.Trainees">
+                                <td>{{c.TraineeCode}}</td>
+                                <td>{{c.TraineeName}}</td>
+                                <td>{{c.FatherName}}</td>
+                                <td>{{c.ContactNumber}}</td>
+                                <td>{{c.DistrictName}}</td>
+                                <td>{{c.TraineeCNIC}}</td>
+                                <!--<td>{{c.ResultStatusName}}</td>-->
+                                <td>{{c.TraineeEmploymentStatus}}</td>
+                                <td class="sm">
+
+                                  <a mat-icon-button matTooltip="Go To Employment Form" color="primary" [routerLink]="['/placement/tsp-employment',r.ClassID,c.TraineeID]">
+                                    <mat-icon aria-label="Edit this row">chrome_reader_mode</mat-icon>
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                    <!--Nested Grid ends here-->
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

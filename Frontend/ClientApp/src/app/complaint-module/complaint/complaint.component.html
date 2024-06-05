@@ -1,0 +1,359 @@
+
+<mat-tab-group #tabGroup>
+  <mat-tab label="Complaint"  >
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+            <mat-icon class="material-icons"> add_circle</mat-icon>
+            <span class="subheading-1">{{title + EnText}}</span>
+          </mat-toolbar>
+          <form novalidate [formGroup]="Complaintform" (submit)="Submit()">
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field fxFlex>
+                   <mat-select disabled="{{disabledFields}}"  placeholder="Type" formControlName="ComplaintTypeID" (selectionChange)="GetComplaintTSubTypeByComplaintType($event.value)"  matInput required>
+                    <mat-option value="">--Select--</mat-option>
+                    <mat-option *ngFor="let s of ComplaintTypeddl"  [value]="s.ComplaintTypeID">{{s.ComplaintTypeName}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="ComplaintTypeID.invalid && ComplaintTypeID.errors.required">Type is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <mat-form-field fxFlex>
+                   <mat-select disabled="{{disabledFields}}" placeholder="Sub Type"   formControlName="ComplaintSubTypeID"  id="ComplaintSubTypeID" matInput required>
+                    <mat-option value="">--Select--</mat-option>
+                    <mat-option *ngFor="let s of ComplaintSubTypedll"  [value]="s.ComplaintSubTypeID">{{s.ComplaintSubTypeName}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="ComplaintSubTypeID.invalid && ComplaintSubTypeID.errors.required">Sub Type is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div  *ngIf="TraineeCNICHidden" class="col-md-3">
+                  <mat-form-field fxFlex>
+                    <mat-label>Trainee CNIC</mat-label>
+                    <input   placeholder="Search by Trainee CNIC" placeholder="_____-_______-_" [imask]="{mask:'00000-0000000-0'}" [unmask]="false"  type="text" formControlName="TraineeCNIC" matInput maxlength="50" >
+                    <button type="button" (click)="GetTraineeInfoByCNIC()" mat-icon-button matSuffix >
+                    <mat-icon  style="font-size: x-large;">search</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+                <div  *ngIf="TSPCodeHidden" class="col-md-3">
+                  <mat-form-field fxFlex>
+                    <mat-label>TSP Code</mat-label>
+                    <input readonly placeholder="Search by TSP Code"  type="text" formControlName="TSPCode" matInput >
+                    <button disabled mat-icon-button matSuffix >
+                    <mat-icon  style="font-size: x-large;">search</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div  *ngIf="isShownTraineeProfile" class="row">
+              <div class="col-sm-12">
+                  <fieldset class="border" style="background-color: aliceblue;" >
+                    <legend>Trainee's Profile</legend>
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="TraineeName" readonly placeholder="Name" matInput  />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="FatherName" readonly placeholder="Father,s Name" matInput  />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text"  formControlName="TraineeCNIC" readonly placeholder="CNIC" matInput />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text"  formControlName="TraineeCode" readonly placeholder="Trainee Code" matInput />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text"  formControlName="ClassCode" readonly placeholder="ClassCode" matInput />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text"  formControlName="ContactNumber1" readonly placeholder="ContactNumber" matInput />
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-1">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="TraineeHouseNumber" readonly placeholder="House #" matInput maxlength="10" TitleCase  />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="TraineeStreetMohalla" readonly placeholder="Street # / Mohalla" matInput maxlength="20" TitleCase  />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-2">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="TraineeMauzaTown" readonly placeholder="Mauza / Town" matInput maxlength="50" TitleCase  />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-7">
+                        <mat-form-field fxFlex>
+                          <textarea type="text" formControlName="TrainingAddressLocation" readonly placeholder="Trainee Address"  matInput  TitleCase  ></textarea>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </fieldset>
+              </div>
+            </div>
+            <div  *ngIf="isShownTSPProfile" class="row">
+              <div class="col-sm-12">
+                  <fieldset class="border" style="background-color: aliceblue;" >
+                    <legend>TSP Profile</legend>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="TSPName" readonly placeholder="TSP Name" matInput  />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-1">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="TSPCode" readonly placeholder="TSP Code" matInput  />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm21">
+                        <mat-form-field fxFlex>
+                          <input type="text"  formControlName="HeadLandline" readonly placeholder="Contact" matInput />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-5">
+                        <mat-form-field fxFlex>
+                          <textarea type="text"  formControlName="Address" readonly placeholder="Address" matInput ></textarea>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field fxFlex >
+                  <textarea readonly="{{readonly}}"  type="text" formControlName="ComplaintDescription" rows="5"  placeholder="Please write Description..." matInput required></textarea>
+                  <mat-label> Description</mat-label>
+                   <mat-error *ngIf="ComplaintDescription.invalid && ComplaintDescription.errors.required">Complaint Description is <strong>required</strong></mat-error> 
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <mat-label style="font-weight: bold;">Attachment</mat-label>
+                <br>
+                <input  #myInput  mat-raised-button color="primary" #fileInput type="file"   (change)="handleFileSelect($event)" required Alpha>
+              </div>
+            </div>
+            <br>
+            <div class="row col-12">
+              <div *ngIf="isShown">
+                <button  mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                attr.aria-label="Click to {{savebtn+EnText}}" type="submit"
+                [disabled]="working  || (ComplainantID.value<1 && !formrights.CanAdd)">
+                <mat-icon>done</mat-icon>{{savebtn+EnText}}
+              </button>&nbsp;&nbsp;
+              <button mat-raised-button color="primary" (click)="submitted('true')"  matTooltip="Click to {{submittedtitle}}"
+                attr.aria-label="Click to {{savebtn+EnText}}" type="submit"
+                [disabled]="working  || (ComplainantID.value<1 && !formrights.CanAdd)">
+                <mat-icon>done</mat-icon>Save & Submit
+              </button>&nbsp;&nbsp;
+              </div>
+                <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                  attr.aria-label="Click to Reset form data" type="reset" (click)="reset()">
+                  <mat-icon>close</mat-icon> Reset
+                </button>
+            </div>
+          </form>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="List Of Complaint" >
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Manage and View All</span>
+            <div class="spacer"></div>
+            <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+          </mat-toolbar>
+          <div fxLayout="column" class="mat-elevation-z8">
+            <mat-table [dataSource]="Complaint" matSort>
+  
+              <ng-container matColumnDef="Actions">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Actions</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <div *ngIf="Row.Submitted == 0">
+                    <button mat-icon-button color="primary" matTooltip="Edit"   [disabled]="working  || (ComplainantID.value<1 && !formrights.CanEdit)">
+                      <mat-icon  aria-label="Edit this row" (click)="toggleEdit(Row)">edit</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="Row.Submitted == 1">
+                    <button mat-icon-button color="primary" matTooltip="View">
+                      <mat-icon style="color:red" aria-label="Edit this row" (click)="toggleEditDisable(Row)">remove_red_eye</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="Row.Submitted == 0">
+                    <button mat-icon-button color="primary" matTooltip="Delete"   [disabled]="working  || (ComplainantID.value<1 && !formrights.CanDelete)">
+                      <mat-icon style="color:red" aria-label="Edit this row"  (click)="toggleActive(Row,'false')">delete_forever</mat-icon>
+                    </button>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Attachedfile">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Attached file</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <div *ngIf="Row.FilePath!=null">
+                    <a matTooltip="Check Complaint Attachment"  mat-button color="primary" (click)="GetCurrentComplaintAttachements(Row)" > <mat-icon>attachment</mat-icon></a>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complainant No</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintNo}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintSubTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Sub Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintSubTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintDescription">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Description</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintDescription}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintStatus">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Status</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <div *ngIf="Row.ComplaintStatusType == 'Open'||Row.ComplaintStatusType == 'Closed'">
+                      {{Row.ComplaintStatusType}}
+                    </div>
+                     </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeCNIC">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeCode}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPCode}} </mat-cell>
+              </ng-container>
+              
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+<!--   <mat-tab label="List Of TSP Self Complaint" *ngIf="TSPTAB">
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Manage and View All</span>
+            <div class="spacer"></div>
+            <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+          </mat-toolbar>
+          <div fxLayout="column" class="mat-elevation-z8">
+            <mat-table [dataSource]="ComplaintTSP" matSort>
+  
+              <ng-container matColumnDef="ComplaintNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complainant No</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintNo}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintSubTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Sub Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintSubTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintDescription">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Description</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintDescription}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintStatus">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Status</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> 
+                    <div *ngIf="Row.Submitted == 1">
+                      {{Row.ComplaintStatusType}}
+                    </div>
+                     </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Attachedfile">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Attached file</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <a matTooltip="Check Complaint Attachment"  mat-button color="primary" (click)="GetCurrentComplaintAttachements(Row)" > <mat-icon>download</mat-icon></a>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Actions">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Actions</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <div *ngIf="Row.Submitted == 0">
+                    <button mat-icon-button color="primary" matTooltip="Edit" >
+                      <mat-icon  aria-label="Edit this row" (click)="toggleEdit(Row)">edit</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="Row.Submitted == 1">
+                    <button mat-icon-button color="primary" matTooltip="View" >
+                      <mat-icon style="color:red" aria-label="Edit this row" (click)="toggleEditDisable(Row)">remove_red_eye</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="Row.Submitted == 0">
+                    <button mat-icon-button color="primary" matTooltip="Delete" >
+                      <mat-icon style="color:red" aria-label="Edit this row" (click)="toggleActive(Row,'false')">delete_forever</mat-icon>
+                    </button>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab> -->
+</mat-tab-group>

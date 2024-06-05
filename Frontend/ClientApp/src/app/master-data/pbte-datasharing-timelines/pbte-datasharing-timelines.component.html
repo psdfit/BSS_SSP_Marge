@@ -1,0 +1,105 @@
+<div id="PBTEDataSharingTimelines-page" class="comp-main-div" >
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate #nform="ngForm" [formGroup]="pbtedatasharingtimelinesform" (submit)="Submit(nform)">
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="number" id="classtimeline" placeholder="Class Timeline" NumberOnly formControlName="ClassTimeline" matInput required>
+                <mat-error *ngIf="ClassTimeline.invalid && ClassTimeline.errors.required">Class Timeline is <strong>required</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="number" id="tsptimeline" placeholder="TSP Timeline" NumberOnly formControlName="TSPTimeline" matInput required>
+                <mat-error *ngIf="TSPTimeline.invalid && TSPTimeline.errors.required">TSP Timeline is <strong>required</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="number" id="traineetimeline" placeholder="Trainee Timeline" NumberOnly formControlName="TraineeTimeline" matInput required>
+                <mat-error *ngIf="TraineeTimeline.invalid && TraineeTimeline.errors.required">Trainee Timeline is <strong>required</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="number" id="dropouttraineetimeline" placeholder="DropOut-Trainee Timeline" NumberOnly formControlName="DropOutTraineeTimeline" matInput required>
+                <mat-error *ngIf="DropOutTraineeTimeline.invalid && DropOutTraineeTimeline.errors.required">DropOut Trainee Timeline is <strong>required</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row col-12">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working  || (ID.value<1 && !formrights.CanAdd)">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset(nform)" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column">
+          <mat-table [dataSource]="pbtedatasharingtimelines" matSort>
+
+            <ng-container matColumnDef="ClassTimeline">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Class Timeline</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassTimeline}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TSPTimeline">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Timeline</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TSPTimeline}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeTimeline">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Timeline</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeTimeline}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="DropOutTraineeTimeline">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> DropOut-Trainee Timeline</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DropOutTraineeTimeline}} </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

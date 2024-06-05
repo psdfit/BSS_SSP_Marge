@@ -1,0 +1,81 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Placement Trainee</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+        <div class="row" style="line-height: 5rem;">
+          <!--<div class="col-4">
+
+            <mat-radio-group aria-label="Select an option" [(ngModel)]="filters.PlacementTypeID">
+              <mat-radio-button *ngFor="let s of placementTypes" [value]="s.PlacementTypeID"
+                                (change)="placementTypeChange($event)"
+                                style="margin-left:5px;">{{s.PlacementType}}</mat-radio-button>
+            </mat-radio-group>
+
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Verification Method" [disabled]="false" matInput [(ngModel)]="filters.VerificationMethodID">
+                <mat-option *ngFor="let s of verificationMethodsDrp" [value]="s.VerificationMethodID">{{s.VerificationMethodType}}</mat-option>
+              </mat-select>
+
+            </mat-form-field>
+          </div>-->
+
+          <div class="col-sm-4">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (selectionChange)="GetSelfEmploymentList()" id="ClassId" matInput>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let item of ClassList" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered" style="color:lightslategrey; width:100%;">
+            <thead>
+              <tr>
+                <th>Trainee Name</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Supervisor Name</th>
+                <th>Employment Start Date</th>
+                <th>Office Contact No</th>
+                <th>Action</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of TraineeList">
+                <td>{{c.TraineeName}}</td>
+                <td>{{c.Department}}</td>
+                <td>{{c.Designation}}</td>
+                <td>{{c.SupervisorName}}</td>
+                <td>{{c.EmploymentStartDate}}</td>
+                <td>{{c.OfficeContactNo}}</td>
+                <td>
+                  <!--<mat-slide-toggle [(ngModel)]="c.IsVerified" (change)="toggleVerify(c)"></mat-slide-toggle>-->
+                  <button matTooltip="Verify Trainee Record" mat-icon-button color="primary" (click)="openDialog(c.PlacementID,c.TraineeName)">
+
+                    <!--*ngIf="Row.UserLevel != LoggedInUserLevel || Row.UserLevel == 1"-->
+                    <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
+                  </button>
+                </td>
+
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

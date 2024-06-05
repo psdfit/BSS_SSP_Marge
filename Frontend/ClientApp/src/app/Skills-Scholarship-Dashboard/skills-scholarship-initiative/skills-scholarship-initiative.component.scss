@@ -1,0 +1,346 @@
+/*:host {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.list {
+  max-width: 550px;
+  margin: auto;
+}
+
+li {
+  margin-bottom: 5px;
+}*/
+
+/*.mat-header-cell {
+  flex-direction: column;
+  // justify-content: center;
+}
+
+.mat-cell {
+  // text-align: center;
+  //justify-content: center;
+}
+*/
+
+
+
+.mat-column-Scheme {
+  flex: 0 0 323px;
+}
+
+.mat-column-SchemeCode {
+  flex: 0 0 323px;
+}
+
+.mat-column-Shift {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+
+.mat-column-TSP {
+  flex: 0 0 200px;
+}
+
+.mat-column-Section {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+
+.mat-column-FundingSourceName {
+  flex: 0 0 150px;
+}
+
+.mat-column-ClassStartTime {
+  flex: 0 0 150px;
+  justify-content: center;
+}
+
+.mat-column-ClassEndTime {
+  justify-content: center;
+  flex: 0 0 150px;
+}
+
+.mat-column-EnrolledTrainees {
+  justify-content: center;
+  flex: 0 0 150px;
+}
+
+.mat-column-Batch {
+  justify-content: center;
+  flex: 0 0 100px;
+}
+
+.mat-column-Class {
+  flex: 0 0 100px;
+}
+
+.mat-column-ClassStatusName {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-SchemeCode {
+  flex: 0 0 200px;
+}
+
+.mat-column-TrainingAddressLocation {
+  flex: 0 0 200px;
+}
+
+.mat-column-Trade {
+  flex: 0 0 200px;
+}
+
+.mat-column-TradeCode {
+  flex: 0 0 300px;
+}
+
+.mat-column-Tehsil {
+  flex: 0 0 200px;
+}
+
+.mat-column-District {
+  flex: 0 0 200px;
+}
+
+.mat-column-KamID {
+  flex: 0 0 200px;
+}
+
+.mat-column-Certification_Authority {
+  flex: 0 0 200px;
+}
+
+.mat-column-Gender {
+  justify-content: center;
+  flex: 0 0 250px;
+}
+
+.mat-column-Duration {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-StartDate {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-EndDate {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-RTP {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-Sector {
+  flex: 0 0 200px;
+  justify-content: center;
+}
+
+.mat-column-OverallEmploymentCommitment {
+  justify-content: center;
+  flex: 0 0 260px;
+}
+
+.mat-column-MinimumEducation {
+  flex: 0 0 200px;
+  justify-content: center;
+}
+
+.mat-column-Organization {
+  flex: 0 0 200px;
+}
+
+.mat-column-Cluster {
+  flex: 0 0 200px;
+}
+
+.mat-column-UserName {
+  flex: 0 0 200px;
+}
+
+.mat-column-FullName {
+  flex: 0 0 200px;
+}
+
+.mat-column-Action {
+  flex: 0 0 100px;
+}
+
+.mat-column-UserLevel {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+
+.mat-column-Role {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+
+.mat-column-ClassStatusID {
+  justify-content: center;
+  flex: 0 0 100px;
+}
+
+.mat-column-TraineesPerClass {
+  justify-content: center;
+  flex: 0 0 250px;
+}
+
+.mat-column-TotalTrainingHours {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-TotalTraineeProfilesReceived {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-CompletionReportStatus {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-TradeGroup {
+  flex: 0 0 200px;
+}
+
+.mat-column-WhoIsDeliveringTraining {
+  flex: 0 0 250px;
+}
+
+.mat-column-CompletionReportDue {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-InceptionReportDueOn {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-InceptionReportDeliveredToTPM {
+  justify-content: center;
+  flex: 0 0 250px;
+}
+
+.mat-column-InceptionReportReceived {
+  justify-content: center;
+  flex: 0 0 250px;
+}
+
+.mat-column-DateOfDeliveryToTPM {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-TraineeProfilesReceived {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-ClassID_U {
+  flex: 0 0 200px;
+}
+
+.mat-column-StudentProfileOverDueOn {
+  justify-content: center;
+  flex: 0 0 250px;
+}
+
+.mat-column-TraineeProfileReceivedDate {
+  justify-content: center;
+  flex: 0 0 250px;
+}
+
+.mat-column-EmploymentInvoiceStatus {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-SchemeID_U {
+  flex: 0 0 200px;
+}
+
+.mat-column-TSPID_U {
+  flex: 0 0 200px;
+}
+
+.mat-column-SchemeType {
+  flex: 0 0 200px;
+}
+
+.mat-column-Remarks {
+  flex: 0 0 200px;
+}
+
+.mat-column-InstructorName {
+  flex: 0 0 200px;
+}
+
+.mat-column-InstructorCNIC {
+  justify-content: center;
+  flex: 0 0 250px;
+}
+
+.mat-column-MinHoursPerMonth {
+  justify-content: center;
+  flex: 0 0 200px;
+}
+
+.mat-column-TradeCode {
+  flex: 0 0 100px;
+}
+
+.mat-cell, .mat-footer-cell {
+  //border: 0;
+  padding: 4px 10px;
+}
+
+.mat-cell {
+  border: 1px solid black;
+}
+
+.mat-header-cell {
+  border: 1px solid black;
+}
+
+mat-row, mat-footer-row {
+  min-height: 19px !important;
+}
+
+mat-header-row {
+  min-height: 23px !important;
+}
+
+.table-responsive {
+  white-space: nowrap !important;
+}
+
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+mat-row, mat-header-row, mat-footer-row {
+  display: table-row !important;
+}
+
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+}
+
+/*body mat-table mat-header-row mat-header-cell {
+  border: 0;
+}*/

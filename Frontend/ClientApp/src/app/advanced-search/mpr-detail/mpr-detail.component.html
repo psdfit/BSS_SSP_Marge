@@ -1,0 +1,91 @@
+<br />
+<mat-toolbar color="accent" class=" slim slim">
+  <mat-icon class="material-icons">view_comfy</mat-icon>
+  <span class="spacer">MPR Detail</span>
+  <div class="spacer"></div>
+</mat-toolbar>
+
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">MPR Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <thead>
+            <tr>
+              <th class="number-align-center">Sr#</th>
+              <th>Actions</th>
+              <th>Month</th>
+              <th>Report Date</th>
+              <th>TSP Name</th>
+              <th>Trade Name</th>
+              <th>Class Code</th>
+              <th>Batch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let r of MPR; let i=index">
+              <tr>
+                <td class="number-align-center">{{i+1}}</td>
+                <td>
+                  <a mat-button color="primary" (click)="getMPRDetails(r)">
+                    Details<mat-icon>{{r.MPRDetail ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                  </a>
+                </td>
+                <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                <td class="number-align-center">{{r.ReportDate | date:environment.DateFormat}}</td>
+                <td>{{r.TSPName}}</td>
+                <td>{{r.TradeName}}</td>
+                <td>{{r.ClassCode}}</td>
+                <td class="number-align-center">{{r.Batch}}</td>
+              </tr>
+              <tr *ngIf="r.MPRDetail">
+                <td colspan="9">
+                  <div>
+                    <table class="table table-bordered" style="color:lightslategrey">
+                      <thead>
+                        <tr>
+                          <th class="number-align-center">Sr#</th>
+                          <th>Trainee Code</th>
+                          <th>Trainee Name</th>
+                          <th>Class Code</th>
+                          <th>TSP Name</th>
+                          <th>Trainee CNIC</th>
+                          <th>Is Extra</th>
+                          <th>Is Marginal</th>
+                          <th>CNIC Verified</th>
+                          <th>Stipend Recommended</th>
+                          <th>Trainee Status</th>
+                          <th>Comments</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let c of r.MPRDetail; let i=index">
+                          <td class="number-align-center">{{i+1}}</td>
+                          <td>{{c.TraineeCode}}</td>
+                          <td>{{c.TraineeName}}</td>
+                          <td>{{c.ClassCode}}</td>
+                          <td>{{c.TSPName}}</td>
+                          <td class="number-align-center">{{c.TraineeCNIC}}</td>
+                          <td class="number-align-center">{{c.ExtraStatus}}</td>
+                          <td class="number-align-center">{{c.IsMarginal}}</td>
+                          <td class="number-align-center">{{c.CNICVerificationStatus}}</td>
+                          <td class="decimal-align-right">{{c.StipendAmount | number: environment.Decimal}}</td>
+                          <td class="number-align-center">{{c.TraineeStatusName}}</td>
+                          <td>{{c.Reason}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              <!--Nested Grid ends here-->
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+

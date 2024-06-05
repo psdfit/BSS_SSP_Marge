@@ -1,0 +1,750 @@
+<br />
+<mat-toolbar color="accent" class=" slim slim">
+  <mat-icon class="material-icons">view_comfy</mat-icon>
+  <span class="spacer">TSP Detail</span>
+  <div class="spacer"></div>
+</mat-toolbar>
+
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Basic Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>TSP Code</th>
+            <td>{{TSPDetail?.TSPCode}}</td>
+            <th>Service Provider Name</th>
+            <td>{{TSPDetail?.TSPName}}</td>
+          </tr>
+          <tr>
+            <th>NTN Number</th>
+            <td>{{TSPDetail?.NTN}}</td>
+            <th>Organization Phone</th>
+            <td>{{TSPDetail?.OrgLandline}}</td>
+          </tr>
+          <tr>
+            <th>Color of TSP</th>
+            <td>{{TSPDetail?.TSPColorName}}</td>
+            <th>Created Date</th>
+            <td>{{TSPDetail?.CreatedDate | date:'mediumDate'}}</td>
+          </tr>
+          <tr>
+            <th>District</th>
+            <td>{{TSPDetail?.DistrictName}}</td>
+            <th>Website</th>
+            <td>{{TSPDetail?.Website}}</td>
+          </tr>
+          <tr>
+            <th>TSP Location</th>
+            <td colspan="3">{{TSPDetail?.Address}}</td>
+          </tr>
+        </table>
+
+        <hr />
+        <div style="text-align:left;">
+          <div style="text-align:left;" class="col-sm-12 no-padding">
+            <table>
+              <tr>
+                <th>Head Name</th>
+                <td>{{TSPDetail?.HeadName}}</td>
+                <th>Designation</th>
+                <td>{{TSPDetail?.HeadDesignation}}</td>
+              </tr>
+              <tr>
+                <th>Email Address</th>
+                <td>{{TSPDetail?.HeadEmail}}</td>
+                <th>Phone No</th>
+                <td>{{TSPDetail?.HeadLandline}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+        <div style="text-align:left;">
+          <div style="text-align:left;" class="col-sm-12 no-padding">
+            <table>
+              <tr>
+                <th>Contact Person</th>
+                <td>{{TSPDetail?.CPName}}</td>
+                <th>Designation</th>
+                <td>{{TSPDetail?.CPDesignation}}</td>
+              </tr>
+              <tr>
+                <th>Email Address</th>
+                <td>{{TSPDetail?.CPEmail}}</td>
+                <th>Phone No</th>
+                <td>{{TSPDetail?.CPLandline}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+        <div style="text-align:left;">
+          <div style="text-align:left;" class="col-sm-12 no-padding">
+            <table>
+              <tr>
+                <th>Bank Name</th>
+                <td>{{TSPDetail?.BankName}}</td>
+                <th>Account Title</th>
+                <td>{{TSPDetail?.AccountTitle}}</td>
+              </tr>
+              <tr>
+                <th>Account Number</th>
+                <td>{{TSPDetail?.BankAccountNumber}}</td>
+                <th>Branch Name</th>
+                <td colspan="3">{{TSPDetail?.BankBranch}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Schemes of TSP</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>ID</th>
+            <th>Scheme Code</th>
+            <th>Scheme Name</th>
+            <th>Program Type</th>
+            <th>Funding Source</th>
+            <th>Date & Time</th>
+          </tr>
+          <tr *ngFor="let x of TSPSchemes">
+            <td>{{x?.SchemeID}}</td>
+            <td>{{x?.SchemeCode}}</td>
+            <td>{{x?.SchemeName}}</td>
+            <td>{{x?.PTypeName}}</td>
+            <td>{{x?.FundingSourceName}}</td>
+            <td>{{x?.CreatedDate | date:'mediumDate'}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Classes of TSP</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <mat-table [dataSource]="dataSourceClass" #sortClass="matSort" matSort>
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="ClassCode">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.ClassCode}} </mat-cell>
+          </ng-container>
+
+          <!-- Progress Column -->
+          <ng-container matColumnDef="Shift">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Shift </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.Shift}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="EnrolledTrainees">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Enrolled Trainees </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.EnrolledTrainees}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="ClassStartTime">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Time </mat-header-cell>
+            <!--<mat-cell *matCellDef="let row"> {{row.ClassStartTime}} </mat-cell>-->
+            <mat-cell *matCellDef="let row"> {{row?.ClassStartTime | date:'shortTime'}} - {{row?.ClassEndTime | date:'shortTime'}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="SourceOfCurriculum">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Source of Curriculum </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.SourceOfCurriculum}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="SchemeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.SchemeName}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="ClassStatusName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.ClassStatusName}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumnsClass"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumnsClass;">
+          </mat-row>
+        </mat-table>
+
+        <mat-paginator #paginatorClass [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Classes of TSP</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Class Code</th>
+            <th>Shift</th>
+            <th>Enrolled Trainees</th>
+            <th>Class Time</th>
+            <th>Source of Curriculum</th>
+            <th>Scheme</th>
+            <th>Status</th>
+          </tr>
+          <tr *ngFor="let x of TSPClasses">
+            <td>{{x?.ClassCode}}</td>
+            <td>{{x?.Shift}}</td>
+            <td>{{x?.EnrolledTrainees}}</td>
+            <td>{{x?.ClassStartTime | date:'shortTime'}} - {{x?.ClassEndTime | date:'shortTime'}}</td>
+            <td>{{x?.SourceOfCurriculum}}</td>
+            <td>{{x?.SchemeName}}</td>
+            <td>{{x?.ClassStatusName}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Instructors of TSP</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <mat-table [dataSource]="dataSourceInstructor" #sortInstructor="matSort" matSort>
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="InstrID">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.InstrID}} </mat-cell>
+          </ng-container>
+
+          <!-- Progress Column -->
+          <ng-container matColumnDef="InstructorName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name of Instructor </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.InstructorName}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="CNICofInstructor">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> CNIC </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.CNICofInstructor}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="GenderName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Gender </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.GenderName}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumnsInstructor"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumnsInstructor;">
+          </mat-row>
+        </mat-table>
+
+        <mat-paginator #paginatorInstructor [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Instructors of TSP</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>ID</th>
+            <th>Name of Instructor</th>
+            <th>CNIC</th>
+            <th>Gender</th>
+          </tr>
+          <tr *ngFor="let x of TSPInstructors">
+            <td>{{x?.InstrID}}</td>
+            <td>{{x?.InstructorName}}</td>
+            <td>{{x?.CNICofInstructor}}</td>
+            <td>{{x?.GenderName}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">PRN Detail</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <mat-table [dataSource]="dataSourcePRN" multiTemplateDataRows #sortPRN="matSort" matSort>
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="Sr">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index;">
+              <!--{{i+1}}-->
+              <a color="primary" matTooltip="PRN Detail"
+                 mat-icon-button (click)="getPRNDetail(row)">
+                <mat-icon>{{row.HasPRN ?'remove_circle':'control_point' }}</mat-icon>
+              </a>
+
+            </mat-cell>
+          </ng-container>
+
+          <!-- Progress Column -->
+          <ng-container matColumnDef="ApprovalProcessName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Process Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.ApprovalProcessName}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="TSPName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.TSPName}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="Month">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Month </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="number-align-center"> {{row.Month | date:environment.MonthFormat}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="InvoiceNumber">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Invoice Number </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="number-align-center"> {{row.InvoiceNumber}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="Approved">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Approved </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="number-align-center"> {{row.Approved}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="CreatedDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> CreatedDate </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="number-align-center"> {{row.CreatedDate | date:environment.DateTimeFormat}} </mat-cell>
+          </ng-container>
+
+          <!-- Expanded Content Column - The detail row is made up of this one column -->
+          <ng-container matColumnDef="expandedDetail">
+            <mat-cell *matCellDef="let row" [attr.colspan]="displayedColumnsPRN.length">
+              <div class="example-element-detail" style="width:100%" [@detailExpand]="(row.HasPRN) ? 'expanded' : 'collapsed'">
+                <div class="table-responsive">
+                  <!--Nested Grid for PRN Table-->
+                  <table>
+                    <tr *ngIf="row.HasPRN">
+                      <td colspan="7">
+                        <div class="table-responsive">
+                          <table class="table table-bordered" style="color:lightslategrey">
+                            <thead>
+                              <tr>
+                                <th>Sr#</th>
+                                <th class="sm">Documents</th>
+                                <th>Class Code</th>
+                                <th>Invoice No</th>
+                                <th>Trade</th>
+                                <th>Duration</th>
+                                <th>Class Start Date</th>
+                                <th>Class End Date</th>
+                                <th>Class Status</th>
+                                <th>Contractual Trainees</th>
+                                <th>Claimed Trainees</th>
+                                <th>Enrolled Trainees</th>
+                                <th>Dropouts Verified</th>
+                                <th>Dropouts Unverified</th>
+                                <th>Expelled Verified</th>
+                                <th>Expelled UnVerified</th>
+                                <th>CNIC Verified</th>
+                                <th>CNIC Verified Excesses</th>
+                                <th>CNIC Unverified</th>
+                                <th>CNIC UnVerified Excesses</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Pass Verified</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Pass Unverified</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Failed Verified</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Failed Unverified</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Absent Verified</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Absent Unverified</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 1</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 2</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 3</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 1 Date</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 2 Date</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 3 Date</th>
+                                <th>Deduction Since Inception Dropout</th>
+                                <th>Max Attendance</th>
+                                <th>Payment Withheld Physical Count</th>
+                                <th>Deduction Marginal</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Deduction Extra Registered For Exam</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Deduction Failed Trainees</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">Deduction Uniform Bag Receiving</th>
+                                <th>Payment Withheld Since Inception UnV CNIC</th>
+                                <th>Penalty TPM Reports</th>
+                                <th>Penalty Imposed By MnE</th>
+                                <th>Reimbursement UnV Trainees</th>
+                                <th>Reimbursement Attandance</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">Employment Commitment Percentage</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">Completed Trainees</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">Graduated Commitment Trainees</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">Employment Reported</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">Verified Trainees</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">Verified To Completed Commitment</th>
+                                <th *ngIf="row.ProcessKey == enumApprovalProcess.PRN_C">Certification Cost Deduction (All Types)</th>
+                                <th>Payment To Be Released Trainees</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let c of row.PRN; let i=index">
+                                <td>{{i+1}}</td>
+                                <td class="sm">
+                                  <a color="primary"
+                                     mat-icon-button matTooltip="View Previouse Documents" (click)="getClassMonthview(c.ClassID,c.Month,row.ProcessKey)">
+                                    <mat-icon>visibility</mat-icon>
+                                  </a>
+                                </td>
+                                <td>{{c.ClassCode}}</td>
+                                <td class="number-align-center">{{c.InvoiceNumber}}</td>
+                                <td>{{c.TradeName}}</td>
+                                <td class="number-align-center">{{c.Duration}}</td>
+                                <td class="number-align-center">{{c.ClassStartDate | date:environment.DateFormat}}</td>
+                                <td class="number-align-center">{{c.ClassEndDate | date:environment.DateFormat}}</td>
+                                <td class="number-align-center">{{c.ClassStatus}}</td>
+                                <td class="number-align-center">{{c.ContractualTrainees}}</td>
+                                <td class="number-align-center">{{c.ClaimedTrainees}}</td>
+                                <td class="number-align-center">{{c.EnrolledTrainees}}</td>
+                                <td class="number-align-center">{{c.DropoutsVerified}}</td>
+                                <td class="number-align-center">{{c.DropoutsUnverified}}</td>
+                                <td class="number-align-center">{{c.ExpelledVerified}}</td>
+                                <td class="number-align-center">{{c.ExpelledUnverified}}</td>
+                                <td class="number-align-center">{{c.CNICVerified}}</td>
+                                <td class="number-align-center">{{c.CNICVExcesses}}</td>
+                                <td class="number-align-center">{{c.CNICUnverified}}</td>
+                                <td class="number-align-center">{{c.CNICUnVExcesses}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.PassVerified}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.PassUnverified}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.FailedVerified}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.FailedUnverified}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.AbsentVerified}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.AbsentUnverified}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit1}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit2}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit3}}</td>
+                                <td class="number-align-center" *ngIf="c.NonFunctionalVisit1 == 'Yes' && row.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit1Date | date:environment.DateFormat}}</td>
+                                <td class="number-align-center" *ngIf="c.NonFunctionalVisit1 != 'Yes' && row.ProcessKey == enumApprovalProcess.PRN_R">{{'N/A'}}</td>
+                                <td class="number-align-center" *ngIf="c.NonFunctionalVisit2 == 'Yes' && row.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit2Date | date:environment.DateFormat}}</td>
+                                <td class="number-align-center" *ngIf="c.NonFunctionalVisit2 != 'Yes' && row.ProcessKey == enumApprovalProcess.PRN_R">{{'N/A'}}</td>
+                                <td class="number-align-center" *ngIf="c.NonFunctionalVisit3 == 'Yes' && row.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit3Date | date:environment.DateFormat}}</td>
+                                <td class="number-align-center" *ngIf="c.NonFunctionalVisit3 != 'Yes' && row.ProcessKey == enumApprovalProcess.PRN_R">{{'N/A'}}</td>
+                                <td class="number-align-center">{{c.DeductionSinIncepDropout}}</td>
+                                <td class="number-align-center">{{c.MaxAttendance}}</td>
+                                <td class="number-align-center">{{c.PaymentWithheldPhysicalCount}}</td>
+                                <td class="number-align-center">{{c.DeductionMarginal}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.DeductionExtraRegisteredForExam}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.DeductionFailedTrainees}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F || row.ProcessKey == enumApprovalProcess.PRN_C">{{c.DeductionUniformBagReceiving}}</td>
+                                <td class="number-align-center">{{c.PaymentWithheldSinIncepUnVCNIC}}</td>
+                                <td class="number-align-center">{{c.PenaltyTPMReports}}</td>
+                                <td class="number-align-center">{{c.PenaltyImposedByME}}</td>
+                                <td class="number-align-center">{{c.ReimbursementUnVTrainees}}</td>
+                                <td class="number-align-center">{{c.ReimbursementAttandance}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">{{c.EmploymentCommitmentPercentage}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">{{c.CompletedTrainees}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">{{c.GraduatedCommitmentTrainees}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">{{c.EmploymentReported}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">{{c.VerifiedTrainees}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_F">{{c.VerifiedToCompletedCommitment}}</td>
+                                <td class="number-align-center" *ngIf="row.ProcessKey == enumApprovalProcess.PRN_C">{{c.ExtraTraineeDeductCompletion + c.UnVDeductCompletion+c.DropOutDeductCompletion}}</td>
+                                <td class="number-align-center">
+                                  {{c.PaymentToBeReleasedTrainees }}
+                                  <a mat-button color="primary" *ngIf="c.InvoiceNumber > 1" (click)="getPTBRTrainees(c)"
+                                     [ngbPopover]="popContent" popoverTitle="Previous History">
+                                    Previous
+                                  </a>
+                                  <ng-template #popContent>
+                                    <table>
+                                      <thead>
+                                        <tr>
+                                          <th>Month</th>
+                                          <th>Released Trainees</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let t of c.previousPTBRTrainees">
+                                          <td class="number-align-center">{{t.Month | date:environment.MonthFormat}}</td>
+                                          <td class="number-align-center">{{t.PaymentToBeReleasedTrainees}}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </ng-template>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                  <!--Nested Grid ends here-->
+                </div>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+
+          <mat-header-row *matHeaderRowDef="displayedColumnsPRN"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumnsPRN;" class="example-element-row"
+                   [class.example-expanded-row]="expandedElement === row"
+                   (click)="expandedElement = expandedElement === row ? null : row"></mat-row>
+          <mat-row *matRowDef="let rows; columns: ['expandedDetail']" class="example-detail-row" style="min-height:0px;"></mat-row>
+
+        </mat-table>
+
+        <mat-paginator #paginatorPRN [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Invoices Detail</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <div class="table-responsive" *ngIf="TSPINV">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Actions</th>
+                <th>AP Approval Status</th>
+                <th>TSP</th>
+                <th colspan="2">TSP Color</th>
+                <th>Invoice Month</th>
+                <th>Doc Num</th>
+                <th>Doc Type</th>
+                <th>Doc Date</th>
+                <th>Doc DueDate</th>
+                <th>Doc Total</th>
+                <th>Printed</th>
+                <th>Card Code</th>
+                <th>Card Name</th>
+                <th>Comments</th>
+                <th>Journal Memo</th>
+                <th>CtlAccount</th>
+                <th>U-SCHEME</th>
+                <th>U-Sch-Code</th>
+                <th>AP SAP Code</th>
+                <th>PO SAP Code</th>
+                <th>PO Approval Status</th>
+                <th>CreatedDate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of TSPINV">
+                <tr>
+                  <td>
+                    <!--<a color="primary" mat-button (click)="checkTSPColor(r)">
+                      Decision
+                    </a>-->
+                    <a color="primary"
+                       mat-button (click)="GetInvoiceLines(r)">
+                      Invoices<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                    </a>
+                    <!--<a color="primary"
+                       mat-icon-button matTooltip="Export to Excel" (click)="ExportToExcel(r.InvoiceHeaderID)">
+                      <mat-icon>get_app</mat-icon>
+                    </a>-->
+                  </td>
+                  <td class="number-align-center">
+                    <span *ngIf="r.SAPCODE !=0" class="text-success"><b>Approved</b></span>
+                    <span *ngIf="r.SAPCODE ==0" class="text-danger"><b>Pending</b></span>
+                  </td>
+                  <td>{{r.TSPName}}</td>
+                  <td class="circle" [ngStyle]="{'background-color': r.TSPColorCode}" style="margin-left:10%"></td>
+                  <td>{{r.TSPColorName}}</td>
+                  <td class="number-align-center">{{r.U_Month | date:environment.MonthFormat}}</td>
+                  <td class="number-align-center">{{r.DocNum}}</td>
+                  <td class="number-align-center">{{r.DocType}}</td>
+                  <td class="number-align-center">{{r.DocDate | date:environment.DateFormat}}</td>
+                  <td class="number-align-center">{{r.DocDueDate | date:environment.DateFormat}}</td>
+                  <td class="decimal-align-right">{{r.DocTotal | number: environment.Decimal}}</td>
+                  <td class="number-align-center">{{r.Printed}}</td>
+                  <td>{{r.CardCode}}</td>
+                  <td>{{r.CardName}}</td>
+                  <td>{{r.Comments}}</td>
+                  <td>{{r.JournalMemo}}</td>
+                  <td>{{r.CtlAccount}}</td>
+                  <td>{{r.U_SCHEME}}</td>
+                  <td>{{r.U_SCH_Code}}</td>
+                  <td>{{r.SAPCODE}}</td>
+                  <td>{{r.POSAPCODE}}</td>
+                  <td class="number-align-center">
+                    <span *ngIf="r.POSAPCODE !=0" class="text-success"><b>Approved</b></span>
+                    <span *ngIf="r.POSAPCODE ==0" class="text-danger"><b>Pending</b></span>
+                  </td>
+                  <td class="number-align-center">{{r.CreatedDate | date:environment.DateTimeFormat}}</td>
+                </tr>
+                <tr *ngIf="r.InvoiceLines">
+                  <td colspan="17">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <!--<th>
+
+                            </th>-->
+                            <th>Invoice Type</th>
+                            <th>Class Code</th>
+                            <th>Description</th>
+                            <th>G/L Account</th>
+                            <th>GL Name</th>
+                            <th>Scheme</th>
+                            <th>Trade</th>
+                            <th>Department</th>
+                            <th>Tax Code</th>
+                            <th>WTax Liable</th>
+                            <th>Class Start Date</th>
+                            <th>Class End Date</th>
+                            <th>Class Actual Start Date</th>
+                            <th>Class Actual End Date</th>
+                            <th>Batch</th>
+                            <th>Batch Duration</th>
+                            <th>Invoice Number</th>
+                            <th>Trainees Per Class</th>
+                            <th>Class Days</th>
+                            <th>Claim Trainees</th>
+                            <th>Total Monthly Payment</th>
+                            <th>Stipend Per Trainee</th>
+                            <th>Uniform & Bag</th>
+                            <th>Total Cost Per Trainee</th>
+                            <th>No of Trainee Unverified CNIC</th>
+                            <th>CNIC CAT</th>
+                            <th>Unverified CNIC</th>
+                            <th>No of Trainee Dropout</th>
+                            <th>Drop Ded Cat</th>
+                            <th>Dropout</th>
+                            <th>No of Trainee Attend Shortfall</th>
+                            <th>Attendance Shortfall</th>
+                            <th>No of Trainee Misc Deduction</th>
+                            <th>Misc Ded Cat</th>
+                            <th>Misc. Deduction / Others</th>
+                            <th>Percentage Applied</th>
+                            <th>Penalty</th>
+                            <th>Result Deduction</th>
+                            <th>Net Invoice Payable</th>
+                            <th>Gross Payable</th>
+                            <th>Net Training Cost</th>
+                            <th>Total(LC)</th>
+                            <th>LineTotal</th>
+                            <!--<th>Training Services Sale Tax</th>
+                    <th>FundingSource</th>
+                    <th>Boarding or Lodging</th>
+                    <th>Testing Fee</th>
+                    <th>Functional Date</th>
+                    <th>Deduction Trainee UnV Cnic</th>-->
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let l of r.InvoiceLines">
+                            <!--<td>
+                              <a color="primary"
+                                 mat-icon-button matTooltip="View Previouse Documents" (click)="GetClassMonthview(l.ClassID,r.U_Month,r.ProcessKey);">
+                                <mat-icon>visibility</mat-icon>
+                              </a>
+                            </td>-->
+                            <td>{{l.InvoiceType}}</td>
+                            <td>{{l.ClassCode}}</td>
+                            <td>{{l.Description}}</td>
+                            <td>{{l.GLCode}}</td>
+                            <td>{{l.GLName}}</td>
+                            <td>{{l.SchemeName}}</td>
+                            <td>{{l.TradeName}}</td>
+                            <td>{{l.PCategoryName}}</td>
+                            <td>{{l.TaxCode}}</td>
+                            <td class="number-align-center">{{l.WTaxLiable}}</td>
+                            <td class="number-align-center">{{l.StartDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.EndDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.ActualStartDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.ActualEndDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.Batch}}</td>
+                            <td class="number-align-center">{{l.BatchDuration}}</td>
+                            <td class="number-align-center">{{l.InvoiceNumber}}</td>
+                            <td class="number-align-center">{{l.TraineePerClass}}</td>
+                            <td class="number-align-center">{{l.ClassDays}}</td>
+                            <td class="number-align-center">{{l.ClaimTrainees}}</td>
+                            <td class="decimal-align-right">{{l.TotalMonthlyPayment | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.Stipend | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.UniformBag | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.TotalCostPerTrainee | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.UnverifiedCNICDeductions}}</td>
+                            <td>{{l.CnicDeductionType}}</td>
+                            <td class="decimal-align-right">{{l.CnicDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.DeductionTraineeDroput}}</td>
+                            <td>{{l.DropOutDeductionType}}</td>
+                            <td class="decimal-align-right">{{l.DropOutDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.DeductionTraineeAttendance}}</td>
+                            <td class="decimal-align-right">{{l.AttendanceDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.MiscDeductionNo}}</td>
+                            <td>{{l.MiscDeductionType}}</td>
+                            <td class="decimal-align-right">{{l.MiscDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.PenaltyPercentage}}</td>
+                            <td class="decimal-align-right">{{l.PenaltyAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.ResultDeduction}}</td>
+                            <td class="decimal-align-right">{{l.NetPayableAmount | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.GrossPayable | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.NetTrainingCost | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.TotalLC | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.LineTotal | number: environment.Decimal}}</td>
+                            <!--<td>{{l.TrainingServicesSaleTax}}</td>
+                    <td>{{l.FundingSource}}</td>
+                    <td>{{l.BoardingOrLodging}}</td>
+                    <td>{{l.TestingFee}}</td>
+                    <td>{{l.FunctionalDate}}</td>
+                    <td>{{l.DeductionTraineeUnVCnic}}</td>-->
+
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+
+
+                </tr>
+
+                <!--Nested Grid ends here-->
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

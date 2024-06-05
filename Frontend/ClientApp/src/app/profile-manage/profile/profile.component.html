@@ -1,0 +1,499 @@
+<mat-card>
+   <mat-toolbar color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> add_circle </mat-icon>
+      <span class="spacer">{{SpacerTitle}}</span>
+   </mat-toolbar>
+   <mat-card-content>
+   <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
+      <!-- form start -->
+      <mat-tab [label]="TapTTitle">
+         <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+            <legend>Profile Completion </legend>
+
+            <!-- <div class="steps">
+               <div *ngFor="let item of TSPProfileScore; let index = index" [class.completed]="item.Score > 0" class="step">{{item.FormName + index}}</div>
+               
+           </div> -->
+            <!-- <div class="steps">
+               <div *ngFor="let item of TSPProfileScore.slice(4); let index = index" [class.completed]="item.Score > 0" class="step">{{item.FormName + (index + 4)}}</div>
+           </div> -->
+           
+
+            
+           
+
+            <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
+            <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
+            <p *ngIf="PendingForm.length>0" class="pt-1"><span style="color: red;" >Please complete the required form:</span> [{{PendingForm.join(", ")}}]</p>
+        
+           
+         </fieldset>
+         <!-- <style>
+         .progress-container {
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .step {
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+            position: relative;
+            padding: 0 10px;
+    border: 1px solid #051f61;
+    border-radius: 5px;
+    margin: 2px;
+        }
+
+        .step.completed::before {
+            content: '\2713';
+            color: #fdb813;
+            font-weight: bold;
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            border: 2px solid #fdb813;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            width: 20px;
+            height: 2px;
+            background-color: #d3d3d3;
+            transform: translateY(-50%);
+        }
+
+        .step span {
+            display: block;
+            margin-top: 5px;
+            font-weight: bold;
+            color: #ffba00;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            background-color: #051f61;
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .points-display {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        </style> -->
+      
+    
+         <form (ngSubmit)="SaveProfile()" [formGroup]="ProfileForm" >
+         <fieldset class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+            <legend>Business Profile Information</legend>
+            <div class="row">
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Business Name</mat-label>
+                     <input formControlName="InstituteName" readonly type="text" matInput placeholder="Business Name" required/>
+                     <mat-error *ngFor="let error of ProfileForm.get('InstituteName').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Registration Date</mat-label>
+                     <input formControlName="RegistrationDate" [max]="maxDate"   [matDatepicker]="RegistrationDate" readonly matInput  required>
+                     <mat-datepicker-toggle  matSuffix [for]="RegistrationDate"></mat-datepicker-toggle>
+                     <mat-datepicker #RegistrationDate disabled="false"></mat-datepicker>
+                     <mat-error *ngFor="let error of ProfileForm.get('RegistrationDate').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Business NTN#</mat-label>
+                     <input formControlName="InstituteNTN" readonly   [imask]="{mask:'0000000-0'}" [unmask]="false"  matInput placeholder="Business NTN" required >
+                     <mat-error *ngFor="let error of ProfileForm.get('InstituteNTN').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div [class]="readonly==true?'col-sm-2':'col-sm-3' " >
+                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;padding:0px 6px;">NTN Evidence</mat-label>
+                  <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="NTNAttachment" maxSize="1024" [nopreview]="true" matInput ></file-upload>
+                  <mat-error style="font-size: 11px;" *ngFor="let error of ProfileForm.get('NTNAttachment').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+               </div>
+               <div class="col-sm-1" *ngIf="readonly==true">
+                  <a *ngIf="NTNEvidence !='' "  style="cursor: pointer;background: #eceae7  !important;font-size: 1.3rem !important;position: relative !important;top: 20px !important;right: 10px !important;border-radius: 6px !important "
+                  (click)="ShowPreview(NTNEvidence)"
+                  color="primary"
+                  matTooltip="Preview uploaded document"
+                  class="file-lable">
+                  <mat-icon style="position: relative;top: 4px;cursor: pointer;">get_app</mat-icon>
+                   </a>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field>
+                     <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Business Types" formControlName="BusinessType"  matInput required >
+                        <mat-option *ngFor="let s of BusinessType | like:['PTypeName',SearchCtr.value]" [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+                     </mat-select>
+                     <mat-error  *ngFor="let error of ProfileForm.get('BusinessType').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field>
+                     <mat-select  (openedChange)="EmptyCtrl($event)" multiple  placeholder="Select SalesTax Type" (ngModelChange)="UpdateTaxType($event)" formControlName="TaxType"  matInput required >
+                     <mat-option *ngFor="let s of STaxType | like:['SalesTaxType',SearchCtr.value]" [value]="s.SalesTaxID">{{s.SalesTaxType}}</mat-option>
+                     </mat-select>
+                     <mat-error  *ngFor="let error of ProfileForm.get('TaxType').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3" *ngIf="ProfileForm.get('TaxType').value[0] !=2 || ProfileForm.get('TaxType').value.length==2">
+                  <mat-form-field fxFlex>
+                     <mat-label>GST#</mat-label>
+                     <input formControlName="GSTNumber" matInput placeholder="GST#" required>
+                     <mat-error *ngFor="let error of ProfileForm.get('GSTNumber').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div [class]="readonly==true?'col-sm-2':'col-sm-3' "  *ngIf="ProfileForm.get('TaxType').value[0] !=2 || ProfileForm.get('TaxType').value.length==2">
+                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;padding:0px 6px;">GST Evidence</mat-label>
+                  <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="GSTAttachment" maxSize="1024" [nopreview]="true" matInput ></file-upload>
+                  <mat-error style="font-size: 11px;" *ngFor="let error of ProfileForm.get('GSTAttachment').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+               </div>
+               <div class="col-sm-1"   *ngIf=" readonly==true && ( ProfileForm.get('TaxType').value[0] !=2 || ProfileForm.get('TaxType').value.length==2)" >
+                  <a *ngIf="GSTEvidence !=''"  style="cursor: pointer;background: #eceae7  !important;font-size: 1.3rem !important;position: relative !important;top: 20px !important;right: 10px !important;border-radius: 6px !important "
+                  (click)="ShowPreview(GSTEvidence)"
+                  color="primary"
+                  matTooltip="Preview uploaded document"
+                  class="file-lable">
+                  <mat-icon style="position: relative;top: 4px;cursor: pointer;">get_app</mat-icon>
+                   </a>
+               </div>
+               <div class="col-sm-3"  *ngIf="ProfileForm.get('TaxType').value[0] !=1 || ProfileForm.get('TaxType').value.length==2">
+                  <mat-form-field fxFlex>
+                     <mat-label>PRA#</mat-label>
+                     <input formControlName="PRANumber" matInput placeholder="PRA#" required>
+                     <mat-error *ngFor="let error of ProfileForm.get('PRANumber').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div [class]="readonly==true?'col-sm-2':'col-sm-3' " *ngIf="ProfileForm.get('TaxType').value[0] !=1 || ProfileForm.get('TaxType').value.length==2">
+                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;padding:0px 6px;">PRA Evidence</mat-label>
+                  <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="PRAAttachment" maxSize="1024" [nopreview]="true" matInput ></file-upload>
+                  <mat-error style="font-size: 11px;" *ngFor="let error of ProfileForm.get('PRAAttachment').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+               </div>
+               <div class="col-sm-1" *ngIf="readonly==true && (ProfileForm.get('TaxType').value[0] !=1 || ProfileForm.get('TaxType').value.length==2)">
+                  <a *ngIf="PRAEvidence !=''"  style="cursor: pointer;background: #eceae7  !important;font-size: 1.3rem !important;position: relative !important;top: 20px !important;right: 10px !important;border-radius: 6px !important "
+                  (click)="ShowPreview(PRAEvidence)"
+                  color="primary"
+                  matTooltip="Preview uploaded document"
+                  class="file-lable">
+                  <mat-icon style="position: relative;top: 4px;cursor: pointer;">get_app</mat-icon>
+                   </a>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field>
+                     <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Select Legal Status" formControlName="LegalStatus"  matInput required >
+                        <mat-option *ngFor="let s of legalStatus | like:['LegalStatusName',SearchCtr.value]" [value]="s.LegalStatusID">{{s.LegalStatusName}}</mat-option>
+                     </mat-select>
+                     <mat-error style="font-size: 11px;" *ngFor="let error of ProfileForm.get('LegalStatus').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div [class]="readonly==true?'col-sm-2':'col-sm-3' " >
+                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;padding:0px 6px;">Legal Status Evidence</mat-label>
+                  <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="LegalStatusAttachment" maxSize="1024" [nopreview]="true" matInput ></file-upload>
+                  <mat-error style="font-size: 11px;" *ngFor="let error of ProfileForm.get('LegalStatusAttachment').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+               </div>
+               <div class="col-sm-1" *ngIf="readonly==true">
+                  <a *ngIf="LegalStatusEvidence !=''"  style="cursor: pointer;background: #eceae7  !important;font-size: 1.3rem !important;position: relative !important;top: 20px !important;right: 10px !important;border-radius: 6px !important "
+                  (click)="ShowPreview(LegalStatusEvidence)"
+                  color="primary"
+                  matTooltip="Preview uploaded document"
+                  class="file-lable">
+                  <mat-icon style="position: relative;top: 4px;cursor: pointer;">get_app</mat-icon>
+                   </a>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Website</mat-label>
+                     <input formControlName="Website" type="text" matInput placeholder="Website" />
+                     <mat-error *ngFor="let error of ProfileForm.get('Website').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+            </div>
+            <fieldset class="border">
+               <legend>Head Office Address Detail</legend>
+               <div class="row">
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Select Tehsil" formControlName="Tehsil" (ngModelChange)="GetTehsil($event)"  matInput required >
+                           <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="TSearchCtr"  /></mat-optgrp>
+                           <mat-option *ngFor="let s of TehsilData | like:['TehsilName',TSearchCtr.value]" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+                        </mat-select>
+                        <mat-error style="font-size: 11px;" *ngFor="let error of ProfileForm.get('Tehsil').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Select District" formControlName="District"   matInput required >
+                        <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="DSearchCtr"  /></mat-optgrp>
+                        <mat-option *ngFor="let s of DistrictData | like:['DistrictName',DSearchCtr.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                        </mat-select>
+                        <mat-error  *ngFor="let error of ProfileForm.get('District').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Select Cluster" formControlName="Cluster"   matInput required >
+                        <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="CSearchCtr"  /></mat-optgrp>
+                        <mat-option *ngFor="let s of ClusterData | like:['ClusterName',CSearchCtr.value]" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                        </mat-select>
+                        <mat-error  *ngFor="let error of ProfileForm.get('Cluster').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"    placeholder="Select Province" formControlName="Province"     matInput required >
+                        <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search"  (keydown)="$event.stopPropagation()" [formControl]="PSearchCtr"  /></mat-optgrp>
+                        <mat-option *ngFor="let s of ProvinceData | like:['ProvinceName',PSearchCtr.value]" [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                        </mat-select>
+                        <mat-error  *ngFor="let error of ProfileForm.get('Province').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+               </div>
+               <!-- <div class="row">
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"    placeholder="Select Province" formControlName="Province"  (ngModelChange)="GetCluster($event)"   matInput required >
+                        <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search"  (keydown)="$event.stopPropagation()" [formControl]="PSearchCtr"  /></mat-optgrp>
+                        <mat-option *ngFor="let s of ProvinceData | like:['ProvinceName',PSearchCtr.value]" [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                        </mat-select>
+                        <mat-error  *ngFor="let error of ProfileForm.get('Province').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Select Cluster" formControlName="Cluster"  (ngModelChange)="GetDistrict($event)" matInput required >
+                        <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="CSearchCtr"  /></mat-optgrp>
+                        <mat-option *ngFor="let s of ClusterData | like:['ClusterName',CSearchCtr.value]" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                        </mat-select>
+                        <mat-error  *ngFor="let error of ProfileForm.get('Cluster').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Select District" formControlName="District" (ngModelChange)="GetTehsil($event)"  matInput required >
+                        <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="DSearchCtr"  /></mat-optgrp>
+                        <mat-option *ngFor="let s of DistrictData | like:['DistrictName',DSearchCtr.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                        </mat-select>
+                        <mat-error  *ngFor="let error of ProfileForm.get('District').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-select  (openedChange)="EmptyCtrl($event)"   placeholder="Select Tehsil" formControlName="Tehsil"  matInput required >
+                           <mat-optgrp  class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="TSearchCtr"  /></mat-optgrp>
+                           <mat-option *ngFor="let s of TehsilData | like:['TehsilName',TSearchCtr.value]" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+                        </mat-select>
+                        <mat-error style="font-size: 11px;" *ngFor="let error of ProfileForm.get('Tehsil').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+               </div> -->
+               <div class="row">
+                  <div class="col-sm-3" matTooltip="To copy latitude and longitude from Google Maps: 
+                  1. Open Google Maps by mentioned URL https://www.google.com/maps. 
+                  2. Right-click on the desired location. 
+                  3. Select 'What's here?'. 
+                  4. The coordinates will appear at the bottom of the screen. 
+                  5. Click on the coordinates to copy them." matTooltipPosition="above">
+                     <mat-form-field fxFlex>
+                        <mat-label>Geo-Tagging: Latitude & Longitude</mat-label>
+                        <input formControlName="LatitudeAndLongitude"  matInput placeholder="Latitude & Longitude" required/>
+                        <!-- <input [readOnly]="readOnly" formControlName="LatitudeAndLongitude"(click)="OpenMapDialogue()" type="text" matInput placeholder="Latitude & Longitude" required/> -->
+                        <mat-error *ngFor="let error of ProfileForm.get('LatitudeAndLongitude').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-9">
+                     <mat-form-field fxFlex>
+                        <mat-label>Head Office Address</mat-label>
+                        <input formControlName="HeadOfficeAddress" type="text" matInput placeholder="HeadOffice Address" required/>
+                        <mat-error *ngFor="let error of ProfileForm.get('HeadOfficeAddress').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                     </mat-form-field>
+                  </div>
+               </div>
+            </fieldset>
+            <div class="row" style="float:right">
+               <div class="col-sm-12">
+                  <button color="primary" (click)="SaveProfile()" mat-raised-button ><i class="fas fa-check"></i> Save </button> |
+                  <a color="accent" (click)="NextTap()" mat-raised-button ><i class="fa fa-arrow-right"></i> Next</a>
+                  <!-- <button  color="warn" matTooltip="Click to Reset form data" (click)="resetFromData()"  mat-raised-button>
+                  <i class="fas fa-times"></i> Reset
+                  </button> -->
+               </div>
+            </div>
+         </fieldset>
+         </form>
+      </mat-tab>
+      <mat-tab label="Contact Person" >
+         <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+            <legend>Profile Completion </legend>
+            <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
+            <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
+            <p *ngIf="PendingForm.length>0" class="pt-1"><span style="color: red;" >Please complete the required form:</span> [{{PendingForm.join(", ")}}]</p>
+         </fieldset>
+         <form (ngSubmit)="SaveContactPersonInfo()" [formGroup]="ContactInfoForm" >
+         <fieldset class="border">
+            <legend>Head Of Organization Information</legend>
+            <div class="row">
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Name</mat-label>
+                     <input formControlName="HeadofOrgName" type="text" matInput placeholder="Name" required/>
+                     <mat-error *ngFor="let error of ContactInfoForm.get('HeadofOrgName').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>CNIC#</mat-label>
+                     <input formControlName="CNICofHeadofOrg" type="text" [imask]="{mask:'00000-0000000-0'}" [unmask]="false"  matInput placeholder="CNIC Of ORG Head"  required/>
+                     <mat-error *ngFor="let error of ContactInfoForm.get('CNICofHeadofOrg').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div [class]="COPreadonly==true?'col-sm-2':'col-sm-3' " >
+                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;padding:0px 6px;">CNIC front photo</mat-label>
+                  <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="HeadofOrgCNICFrontPhoto" maxSize="1024" [nopreview]="true" matInput ></file-upload>
+                  <mat-error style="font-size: 11px;" *ngFor="let error of ContactInfoForm.get('HeadofOrgCNICFrontPhoto').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+               </div>
+               <div class="col-sm-1" *ngIf="COPreadonly==true">
+                  <a *ngIf="OrgHeadCNICFrontImgUrl !=''"  style="cursor: pointer;background: #eceae7  !important;font-size: 1.3rem !important;position: relative !important;top: 20px !important;right: 10px !important;border-radius: 6px !important "
+                  (click)="ShowPreview(OrgHeadCNICFrontImgUrl)"
+                  color="primary"
+                  matTooltip="Preview uploaded document"
+                  class="file-lable">
+                  <mat-icon style="position: relative;top: 4px;cursor: pointer;">get_app</mat-icon>
+                   </a>
+               </div>
+               <div [class]="COPreadonly==true?'col-sm-2':'col-sm-3' " >
+                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;padding:0px 6px;">CNIC back photo</mat-label>
+                  <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="HeadofOrgCNICBackPhoto" maxSize="1024" [nopreview]="true" matInput ></file-upload>
+                  <mat-error style="font-size: 11px;" *ngFor="let error of ContactInfoForm.get('HeadofOrgCNICBackPhoto').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+               </div>
+               <div class="col-sm-1" *ngIf="COPreadonly==true">
+                  <a *ngIf="OrgHeadCNICBackImgUrl !=''"  style="cursor: pointer;background: #eceae7  !important;font-size: 1.3rem !important;position: relative !important;top: 20px !important;right: 10px !important;border-radius: 6px !important "
+                  (click)="ShowPreview(OrgHeadCNICBackImgUrl)"
+                  color="primary"
+                  matTooltip="Preview uploaded document"
+                  class="file-lable">
+                  <mat-icon style="position: relative;top: 4px;cursor: pointer;">get_app</mat-icon>
+                   </a>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Title</mat-label>
+                     <input formControlName="HeadofOrgDesi" matInput placeholder="Title" required >
+                     <mat-error *ngFor="let error of ContactInfoForm.get('HeadofOrgDesi').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Email</mat-label>
+                     <input formControlName="HeadofOrgEmail" [readonly]="COPreadonly" matInput placeholder="Email" required >
+                     <mat-error *ngFor="let error of ContactInfoForm.get('HeadofOrgEmail').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Mobile#</mat-label>
+                     <input formControlName="HeadofOrgMobile" type="text" [imask]="{mask:'0000-0000000'}" [unmask]="false"  matInput placeholder="Head ORG Mobile#"  required/>
+                     <mat-error *ngFor="let error of ContactInfoForm.get('HeadofOrgMobile').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Landline#</mat-label>
+                     <input formControlName="ORGLandline" type="text" maxlength="15"  matInput placeholder="Landline#"  required/>
+                     <mat-error *ngFor="let error of ContactInfoForm.get('ORGLandline').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+            </div>
+         </fieldset>
+         <fieldset class="border">
+            <legend>Point Of Contact Person (POC)</legend>
+            <div class="row">
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Name</mat-label>
+                     <input formControlName="POCName" matInput placeholder="Name" required >
+                     <mat-error *ngFor="let error of ContactInfoForm.get('POCName').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }} </mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Title</mat-label>
+                     <input formControlName="POCDesignation" matInput placeholder="Title" required >
+                     <mat-error *ngFor="let error of ContactInfoForm.get('POCDesignation').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Mobile#</mat-label>
+                     <input formControlName="POCMobile" type="text" [imask]="{mask:'0000-0000000'}" [unmask]="false"  matInput placeholder="Contact Person Mobile#"  required/>
+                     <mat-error *ngFor="let error of ContactInfoForm.get('POCMobile').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                     <mat-label>Email</mat-label>
+                     <input formControlName="POCEmail" type="text"   matInput placeholder="Email"  required/>
+                     <mat-error *ngFor="let error of ContactInfoForm.get('POCEmail').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                  </mat-form-field>
+               </div>
+            </div>
+         </fieldset>
+         <div class="row" style="padding-bottom:20px ; float:right">
+            <div class="col-sm-12">
+               <a (click)="PreviousTap()" mat-raised-button ><i class="fa fa-arrow-left"></i> Previous</a> |
+                <button color="primary" mat-raised-button ><i class="fas fa-check"></i> Save</button> |
+               <a color="accent" (click)="NextTapForBaseData()" mat-raised-button ><i class="fa fa-arrow-right"></i> Next</a>
+               <!-- <button  color="warn" matTooltip="Click to Reset form data" (click)="resetFromData()"  mat-raised-button>
+               <i class="fas fa-times"></i>
+               Reset
+               </button> -->
+            </div>
+         </div>
+         </form>
+      </mat-tab>
+      <!-- form end -->
+   </mat-tab-group>
+   <!-- </div> -->

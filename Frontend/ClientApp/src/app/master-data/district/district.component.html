@@ -1,0 +1,109 @@
+<div id="District-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate #myForm="ngForm" [formGroup]="districtform" autocomplete="off" (submit)="Submit(myForm)">
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="DistrictName" placeholder="District Name" (ngModelChange)="ChkDistrictName()" matInput maxlength="250" required />
+                <mat-label>District Name</mat-label>
+                <mat-error *ngIf="DistrictName.invalid && DistrictName.errors.required">District Name is <strong>required</strong></mat-error>
+                <mat-error *ngIf="DistrictName.invalid && DistrictName.errors.duplicate">District Name is already taken</mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6" dir="rtl">
+                    <mat-form-field fxFlex>
+                      <input type="text" formControlName="DistrictNameUrdu" UrduText placeholder="ضلع کا نام" matInput maxlength="100" required />
+                      <mat-label>ضلع کا نام</mat-label>
+                      <mat-error *ngIf="DistrictNameUrdu.invalid && DistrictNameUrdu.errors.required">ضلع کا نام ضروری ہے</mat-error>
+                    </mat-form-field>
+            </div> <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select placeholder="Cluster" formControlName="ClusterID" id="clusterid" matInput required>
+                  <mat-option *ngFor="let s of Cluster" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="ClusterID.invalid && ClusterID.errors.required">Cluster is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select placeholder="Region" formControlName="RegionID" id="regionid" matInput required>
+                  <mat-option *ngFor="let s of Region" [value]="s.RegionID">{{s.RegionName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="RegionID.invalid && RegionID.errors.required">Region is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row col-12">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working  || !formrights.CanAdd">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset(myForm)" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column">
+          <mat-table [dataSource]="district" matSort>
+
+            <ng-container matColumnDef="DistrictName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> District Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="DistrictNameUrdu">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> District Name in Urdu</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DistrictNameUrdu}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClusterID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Cluster </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClusterName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="RegionID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Region </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.RegionName}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

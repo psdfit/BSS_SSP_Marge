@@ -1,0 +1,321 @@
+<mat-card>
+   <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> add_circle </mat-icon>
+      <span class="spacer">{{SpacerTitle}}</span>
+   </mat-toolbar>
+   <mat-card-content>
+      <!-- <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
+      <label label="Program List 1"> -->
+      <div class="row" *ngIf="TapIndex==0">
+         <div class="col-sm-12">
+            <form (ngSubmit)="Save()" [formGroup]="TspAssignmentInfoForm">
+               <fieldset class="border">
+                  <legend>TSP Assignment </legend>
+                  <div class="row">
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Select Program</mat-label>
+                           <mat-select (openedChange)="EmptyCtrl()" placeholder="Select Program"
+                              formControlName="ProgramID" matInput required>
+                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                    (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" />
+                              </mat-optgrp>
+                              <mat-option *ngFor="let s of programDesign | like:['ProgramName',BSearchCtr.value]"
+                                 [value]="s.ProgramID">{{s.ProgramName}}</mat-option>
+                           </mat-select>
+                           <mat-error *ngFor="let error of TspAssignmentInfoForm.get('ProgramID').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}</mat-error>
+                        </mat-form-field>
+                     </div>
+                     
+                     <ng-container *ngIf="programDistrict.length>0">
+                        <div class="col-sm-3">
+                           <mat-form-field>
+                              <mat-label>Select District</mat-label>
+                              <mat-select (openedChange)="EmptyCtrl()" placeholder="Select District"
+                                 formControlName="DistrictID" matInput required>
+                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                       (keydown)="$event.stopPropagation()" [formControl]="LSearchCtr" />
+                                 </mat-optgrp>
+                                 <mat-option *ngFor="let s of programDistrict | like:['DistrictName',LSearchCtr.value]"
+                                    [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                              </mat-select>
+                              <mat-error
+                                 *ngFor="let error of TspAssignmentInfoForm.get('DistrictID').errors | keyvalue">{{
+                                 getErrorMessage(error.key, error.value) }}</mat-error>
+                           </mat-form-field>
+                        </div>
+                     </ng-container>
+                     <ng-container *ngIf="programCluster.length>0">
+                        <div class="col-sm-3">
+                           <mat-form-field>
+                              <mat-label>Select Cluster</mat-label>
+                              <mat-select (openedChange)="EmptyCtrl()" placeholder="Select Cluster"
+                                 formControlName="ClusterID" matInput required>
+                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                       (keydown)="$event.stopPropagation()" [formControl]="LSearchCtr" />
+                                 </mat-optgrp>
+                                 <mat-option *ngFor="let s of programCluster | like:['ClusterName',LSearchCtr.value]"
+                                    [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                              </mat-select>
+                              <mat-error
+                                 *ngFor="let error of TspAssignmentInfoForm.get('ClusterID').errors | keyvalue">{{
+                                 getErrorMessage(error.key, error.value) }}</mat-error>
+                           </mat-form-field>
+                        </div>
+                     </ng-container>
+                     <ng-container *ngIf="programProvince.length>0">
+                        <div class="col-sm-3">
+                           <mat-form-field>
+                              <mat-label>Select Province</mat-label>
+                              <mat-select (openedChange)="EmptyCtrl()" placeholder="Select Province"
+                                 formControlName="ProvinceID" matInput required>
+                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                       (keydown)="$event.stopPropagation()" [formControl]="LSearchCtr" />
+                                 </mat-optgrp>
+                                 <mat-option *ngFor="let s of programProvince | like:['ProvinceName',LSearchCtr.value]"
+                                    [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                              </mat-select>
+                              <mat-error
+                                 *ngFor="let error of TspAssignmentInfoForm.get('ProvinceID').errors | keyvalue">{{
+                                 getErrorMessage(error.key, error.value) }}</mat-error>
+                           </mat-form-field>
+                        </div>
+                     </ng-container>
+                     <div class="col-sm-6">
+                        <mat-form-field>
+                           <mat-label>Select Trade</mat-label>
+                           <mat-select (openedChange)="EmptyCtrl()" placeholder="Select Trade"
+                              formControlName="TradeLotID" matInput required>
+                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                    (keydown)="$event.stopPropagation()" [formControl]="TLSearchCtr" />
+                              </mat-optgrp>
+                              <mat-option *ngFor="let t of Trade | like:['Trade',TLSearchCtr.value]"
+                                 [value]="t.TradeLotID">{{t.Trade}}</mat-option>
+                           </mat-select>
+                           <mat-error *ngFor="let error of TspAssignmentInfoForm.get('TradeLotID').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}</mat-error>
+                        </mat-form-field>
+                     </div>
+                     <div class="col-sm-12">
+                        <!-- <mat-form-field>
+                       <mat-label>Select TSP</mat-label>
+                       <mat-select (openedChange)="EmptyCtrl()" placeholder="Select TSP" multiple formControlName="TSP"  matInput required>
+                       <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()"
+                          [formControl]="BSearchCtr" />
+                       </mat-optgrp>
+                       <mat-option *ngFor="let s of TSP | like:['TSPName',BSearchCtr.value]"[value]="s.TSPID">{{s.TSPName}}</mat-option>
+                       </mat-select>
+                       <mat-error *ngFor="let error of TspAssignmentInfoForm.get('TSP').errors | keyvalue">{{
+                        getErrorMessage(error.key, error.value) }}</mat-error>
+                    </mat-form-field> -->
+                        <mat-form-field>
+                           <mat-label>Select TSP</mat-label>
+                           <mat-select multiple (openedChange)="EmptyCtrl()" required #TSPDropDown matInput
+                              formControlName="TspAssociationEvaluationID" (selectionChange)="[optionClick($event,'TSPDropDown')]">
+                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                    [formControl]="tSearchCtr" /></mat-optgrp>
+                              <div class="select-all" *ngIf="!tSearchCtr.value">
+                                 <mat-checkbox [checked]="SelectedAll_TSPDropDown"
+                                    (change)="SelectAll($event,1,'TspAssociationEvaluationID','TspAssignmentInfoForm')">All</mat-checkbox>
+                              </div>
+
+                              <mat-option *ngFor="let s of TSP | like:['TSPName',tSearchCtr.value]" [value]="s.TspAssociationEvaluationID">{{s.TSPName}}</mat-option>
+
+                              <mat-option *ngFor="let s of TSP" disabled hidden [value]="s.TspAssociationEvaluationID">{{s.TSPName}}</mat-option>
+                           </mat-select>
+                           <mat-error *ngFor="let error of TspAssignmentInfoForm.get('TspAssociationEvaluationID').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}</mat-error>
+                        </mat-form-field>
+                     </div>
+                     <div class="col-sm-12 mb-2 " style="text-align: right !important;">
+                        <button color="primary" mat-raised-button><i class="fas fa-check"></i> Save</button> |
+                        <a color="warn" matTooltip="Click to Reset form data" (click)="ResetFrom()" mat-raised-button>
+                           <i class="fas fa-times"></i>Reset
+                        </a>
+                     </div>
+                  </div>
+               </fieldset>
+            </form>
+         </div>
+         <div class="col-sm-12">
+            <form (ngSubmit)="Save()" [formGroup]="TradeDetailInfoForm">
+               <fieldset class="border">
+                  <legend>Trade Detail</legend>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Selected TSP Capacity</mat-label>
+                        <input formControlName="TspCapacity" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Duration</mat-label>
+                        <input formControlName="Duration" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Weekly Training Hours</mat-label>
+                        <input formControlName="WeeklyTrainingHours" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Certification Authority</mat-label>
+                        <input formControlName="CertificationAuthority" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Source Of Curriculum</mat-label>
+                        <input formControlName="SourceOfCurriculum" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Trainee Qualification</mat-label>
+                        <input formControlName="TraineeQualification" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Trainer Qualification</mat-label>
+                        <input formControlName="TrainerQualification" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Program Focus</mat-label>
+                        <input formControlName="ProgramFocus" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Contracted Target</mat-label>
+                        <input formControlName="ContractedTarget" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>Completion Target</mat-label>
+                        <input formControlName="CompletionTarget" readonly matInput />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                     <mat-form-field>
+                        <mat-label>CTM</mat-label>
+                        <input formControlName="CTM" readonly matInput />
+                     </mat-form-field>
+                  </div>
+               </fieldset>
+            </form>
+         </div>
+      </div>
+      <!-- </label>
+     </mat-tab-group> -->
+      <mat-toolbar color="accent" class=" slim slim">
+         <mat-icon class="material-icons"> view_comfy </mat-icon>
+         <span class="spacer">TSP Assignment</span>
+         <input *ngIf="TapIndex==0" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
+         <button *ngIf="TapIndex==0" mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+            (click)="DataExcelExport(TablesData.filteredData,'TSP Assignment Report')">
+            <i class="fas fa-file-export"></i> Export Excel</button>
+      </mat-toolbar>
+      <div class="table-responsive">
+         <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
+            <mat-tab label="TSP Assignment Report">
+               <div class="table-responsive">
+                  <mat-table [dataSource]="TablesData" #Sort="matSort" matSort class="table table-bordered">
+                     <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column)
+                           }}</mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                           <ng-container
+                              *ngIf="column !='IsInitiated' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart'">
+                              &nbsp; {{ row[column] }}
+                           </ng-container>
+                           <!-- <ng-container *ngIf="column =='Action'">
+                       <button mat-icon-button color="accent" matTooltip="View Detail"
+                          (click)="ShowDetail(row, row['ProgramName'])">
+                          <mat-icon role="img"
+                             class="mat-icon notranslate material-icons mat-icon-no-color"
+                             aria-hidden="true">control_point</mat-icon>
+                       </button>
+                    </ng-container> -->
+                           <ng-container *ngIf="column =='IsInitiated'">
+                              &nbsp;
+                              <span *ngIf="row[column]===false" class="label label-warning">No</span>
+                              <span *ngIf="row[column]===true" class="label label-success">Yes</span>
+                           </ng-container>
+                           <ng-container *ngIf="column =='ClassStartDate' || column =='TentativeProcessStart'">
+                              &nbsp; {{ row[column] | date:environment.DateFormat }}
+                           </ng-container>
+                        </mat-cell>
+                     </ng-container>
+                     <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+                     <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+                  </mat-table>
+                  <mat-paginator #Paginator="matPaginator" [pageSize]="10"
+                     [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+               </div>
+               <!-- record list end -->
+            </mat-tab>
+            <mat-tab [label]="TspName" *ngIf="isChecked">
+               <!-- start trade wise budget list -->
+               <mat-toolbar color="accent" class=" slim slim">
+                  <mat-icon class="material-icons"> view_comfy </mat-icon>
+                  <span class="spacer">Trade Wise Budget</span>
+                  <input placeholder="Search" (keyup)="applyFilter(tradeTablesData,$event)" class="search" />
+                  <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+                     (click)="DataExcelExport(tradeTablesData.filteredData,'Lot-Wise-Target')">
+                     <i class="fas fa-file-export"></i> Export Excel
+                  </button>
+               </mat-toolbar>
+               <div class="table-responsive">
+                  <mat-table [dataSource]="tradeTablesData" #tSort="matSort" matSort class="table table-bordered">
+                     <ng-container *ngFor="let column of tradeTableColumns" [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column)
+                           }}</mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                           <ng-container> &nbsp; {{ row[column] }}</ng-container>
+                        </mat-cell>
+                     </ng-container>
+                     <mat-header-row *matHeaderRowDef="tradeTableColumns"></mat-header-row>
+                     <mat-row *matRowDef="let row; columns: tradeTableColumns;"></mat-row>
+                  </mat-table>
+                  <mat-paginator #tPaginator="matPaginator" [pageSize]="10"
+                     [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+               </div>
+               <!-- end trade wise budget list -->
+               <!-- start lot wise budget list -->
+               <mat-toolbar color="accent" class=" slim slim">
+                  <mat-icon class="material-icons"> view_comfy </mat-icon>
+                  <span class="spacer">Trade Lot Wise Budget</span>
+                  <input placeholder="Search" (keyup)="applyFilter(lotTablesData,$event)" class="search" />
+                  <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+                     (click)="DataExcelExport(lotTablesData.filteredData,'Lot-Wise-Target')">
+                     <i class="fas fa-file-export"></i> Export Excel
+                  </button>
+               </mat-toolbar>
+               <div class="table-responsive">
+                  <mat-table [dataSource]="lotTablesData" #lSort="matSort" matSort class="table table-bordered">
+                     <ng-container *ngFor="let column of lotTableColumns" [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column)
+                           }}</mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                           <ng-container> &nbsp; {{ row[column] }}</ng-container>
+                        </mat-cell>
+                     </ng-container>
+                     <mat-header-row *matHeaderRowDef="lotTableColumns"></mat-header-row>
+                     <mat-row *matRowDef="let row; columns: lotTableColumns;"></mat-row>
+                  </mat-table>
+                  <mat-paginator #lPaginator="matPaginator" [pageSize]="10"
+                     [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+               </div>
+               <!-- end lot wise budget list -->
+            </mat-tab>
+         </mat-tab-group>
+      </div>
+   </mat-card-content>
+</mat-card>

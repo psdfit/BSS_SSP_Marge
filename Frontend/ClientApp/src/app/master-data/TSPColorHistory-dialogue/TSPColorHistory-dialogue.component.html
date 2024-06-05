@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>TSP Color History</h1>
+<div mat-dialog-content style="overflow:unset;">
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <div class="table-responsive">
+          <table  class="table table-bordered" style="color:lightslategrey; width:100%;">
+            <thead>
+              <tr>
+                <th>Datetime</th>
+                <th>Change By</th>
+                <th>TSP Color</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #d5d5d5;" *ngFor="let r of TSPColorHistory">
+                <td>{{r.CreatedDate  | date:'M/d/yy, h:mm a'}}</td>
+                <td>{{r.FullName}}</td>
+                <td class="circle" [ngStyle]="{'background-color': r.TSPColorCode}"></td>&nbsp;&nbsp;{{r.TSPColorName}}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>Close</button>
+  </div>
+</div>
+
+
+

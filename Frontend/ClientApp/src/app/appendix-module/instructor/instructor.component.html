@@ -1,0 +1,550 @@
+
+<mat-card *ngIf="!scheme[0]?.FinalSubmitted">
+  <mat-card-content>
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapseSchemeOnInstructor" aria-expanded="true" aria-controls="collapseOne" class="collapsed">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <h3>Scheme</h3>
+          </a>
+        </div>
+        <div id="collapseSchemeOnInstructor" class="collapse" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+          <div class="card-block">
+            <div fxLayout="column" class="mat-elevation-z8">
+              <mat-table [dataSource]="scheme" matSort>
+                <ng-container matColumnDef="Scheme Name">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Scheme Code">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.SchemeCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Description">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Description}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Organization">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Organization</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.OName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PaymentSchedule">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Payment Mechanism</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.PaymentSchedule}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="schemeColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: schemeColumns;"></mat-row>
+              </mat-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapseTSPOnInstructor" aria-expanded="true" aria-controls="collapseOne" class="collapsed">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <h3>TSP(s)</h3>
+          </a>
+        </div>
+        <div id="collapseTSPOnInstructor" class="collapse" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+          <div class="card-block">
+            <div fxLayout="column" class="mat-elevation-z8">
+              <mat-table [dataSource]="tsps" matSort>
+                <ng-container matColumnDef="TSP Name">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                </ng-container>
+                <!--<ng-container matColumnDef="TSP Code">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPCode ==0?"-":Row.TSPCode}} </mat-cell>
+                </ng-container>-->
+                <ng-container matColumnDef="NTN">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>NTN</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.NTN}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PNTN">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>PNTN</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.PNTN}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="GST">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>GST</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.GST}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FTN">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>FTN</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.FTN}} </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="tspColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: tspColumns;"></mat-row>
+              </mat-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapseClass" aria-expanded="true" aria-controls="collapseOne" class="collapsed">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <h3>Class(s)</h3>
+          </a>
+        </div>
+        <div id="collapseClass" class="collapse" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+          <div class="card-block">
+            <div fxLayout="column" class="mat-elevation-z8">
+              <mat-table [dataSource]="classes" matSort>
+                <!--<ng-container matColumnDef="Class Code">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Class Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ClassCode==0?"-":Row.ClassCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSP Code">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPCode ==0?"-":Row.TSPCode}} </mat-cell>
+                </ng-container>-->
+                <ng-container matColumnDef="Trade">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Trade</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Duration">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Duration</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Total Cost">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Total Cost</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TotalCostPerClass}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Start Date">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.StartDate | date:env.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="End Date">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.EndDate | date:env.DateFormat}} </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="classColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: classColumns;"></mat-row>
+              </mat-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+<div class="container">
+  <form [formGroup]="notForm" *ngIf="!scheme[0]?.FinalSubmitted">
+    <div class="row">
+
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field class="example-chip-list">
+          <mat-chip-list #chipList aria-label="Instructor selection">
+            <mat-chip *ngIf="isObject && manualInstructor" [selectable]="selectable"
+                      [removable]="removable"
+                      (removed)="remove()">
+              {{manualInstructor.InstructorName}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <mat-chip *ngIf="!isObject && manualInstructor" [selectable]="selectable"
+                      [removable]="removable"
+                      (removed)="remove()">
+              {{manualInstructor}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Instructor (Select or Enter Manually) *"
+                   #InstrInput
+                   formControlName="InstructorName"
+                   [matAutocomplete]="auto"
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   (matChipInputTokenEnd)="add($event)" Alpha>
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let instr of oldInstr" [value]="instr">
+              {{instr.InstructorName}}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="notForm.controls.InstructorName.invalid && notForm.controls.InstructorName.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <input matInput placeholder="Instructor CNIC" formControlName="CNICofInstructor" [readonly]="cnicReadOnly" (blur)="checkInstructorExists($event)" required [imask]="maskCNIC" [unmask]="false">
+          <mat-error *ngIf="notForm.controls.CNICofInstructor.invalid && notForm.controls.CNICofInstructor.errors.required">required</mat-error>
+          <mat-error *ngIf="notForm.controls.CNICofInstructor.invalid && notForm.controls.CNICofInstructor.errors.minlength">length must be 13</mat-error>
+          <mat-error *ngIf="cnicExists">CNIC Already Exists</mat-error>
+        </mat-form-field>
+        <!--<div *ngIf="cnicExists" class="text-danger">
+          CNIC Already Exists
+        </div>-->
+      </div>
+
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <mat-select formControlName="GenderID" placeholder="Gender" required>
+            <mat-option *ngFor="let g of genders" [value]="g.GenderID">
+              {{g.GenderName}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="notForm.controls.GenderID.invalid && notForm.controls.GenderID.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <input matInput placeholder="Highest Qualification" formControlName="QualificationHighest" required maxlength="30" Alpha>
+          <mat-error *ngIf="notForm.controls.QualificationHighest.invalid && notForm.controls.QualificationHighest.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <input matInput placeholder="Total Experience (Years)" formControlName="TotalExperience" type="number" required maxlength="2">
+          <mat-error *ngIf="notForm.controls.TotalExperience.invalid && notForm.controls.TotalExperience.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <input matInput placeholder="Training Location Address" formControlName="LocationAddress" required maxlength="50">
+          <mat-error *ngIf="notForm.controls.LocationAddress.invalid && notForm.controls.LocationAddress.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <mat-select formControlName="TradeID" placeholder="Trade" required>
+            <mat-option *ngFor="let t of trades" [value]="t.TradeID">
+              {{t.TradeName}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="notForm.controls.TradeID.invalid && notForm.controls.TradeID.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <mat-select formControlName="TSPID" placeholder="TSP Name" required>
+            <mat-option *ngFor="let i of tsps" [value]="i.TSPID">
+              {{i.TSPName}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="notForm.controls.TSPID.invalid && notForm.controls.TSPID.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6 col-md-12 col-lg-12">
+        <h6>Image </h6>
+        <file-upload formControlName="PicturePath" [pattren]="'image.*'" accept="image/*" maxSize="1024‬‬"></file-upload>
+      </div>
+      <!--<div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <mat-select formControlName="ClassCode" placeholder="Class" required>
+            <mat-option *ngFor="let c of classes | where:['TSPID',notForm.controls.TSPID.value]" [value]="c.ClassCode">
+              {{c.ClassCode}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="notForm.controls.ClassCode.invalid && notForm.controls.ClassCode.errors.required">required</mat-error>
+        </mat-form-field>
+      </div>-->
+      <div class="col-sm-12 ">
+        <div class="float-right">
+          <button mat-raised-button color="primary" type="button" (click)="entry()" [disabled]="notForm.invalid" mat-button>
+            Add
+          </button>&nbsp;&nbsp;
+
+          <button mat-raised-button color="warn" mattooltip="click to reset form data" type="reset" (click)="reset()" [disabled]="!notForm.dirty">
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <br />
+  <!--<form [formGroup]="instructorForm">
+    <div class="table-responsive" formArrayName="Instructors">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sr#</th>
+            <th>Instructor Name</th>
+            <th>Instructor CNIC</th>
+            <th>Profile Picture</th>
+            <th>Gender</th>
+            <th>Highest Qualification</th>
+            <th>Total Experience</th>
+            <th>Training Location</th>
+            <th>Trade</th>
+            <th>TSP Name</th>
+            <th>-->
+  <!--Class Code-->
+  <!--</th>
+      <th *ngIf="!scheme[0]?.FinalSubmitted">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let r of Instructors.controls; let i = index;" [formGroupName]="i" [ngClass]="{'FieldMissing' : r.invalid}">
+        <td>{{i+1}}</td>
+        <td>
+          <mat-form-field>
+            <input matInput placeholder="Instructor Name" formControlName="InstructorName" required>
+            <mat-error *ngIf="r.controls.InstructorName.invalid && r.controls.InstructorName.errors.required">required</mat-error>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <input matInput placeholder="Instructor CNIC" formControlName="CNICofInstructor" required [imask]="maskCNIC" [unmask]="false">
+            <mat-error *ngIf="r.controls.CNICofInstructor.invalid && r.controls.CNICofInstructor.errors.required">required</mat-error>
+            <mat-error *ngIf="r.controls.CNICofInstructor.invalid && r.controls.CNICofInstructor.errors.minlength">length must be 13</mat-error>
+          </mat-form-field>
+        </td>
+        <td>
+          <div>
+            <file-upload formControlName="PicturePath" [pattren]="'image.*'" accept="image/*" maxSize="1024‬‬"></file-upload>
+          </div>
+        </td>
+        <td>
+          <mat-form-field>
+            <mat-select formControlName="GenderID" placeholder="Gender" [disabled]="scheme[0]?.FinalSubmitted">
+              <mat-option *ngFor="let g of genders" [value]="g.GenderID">
+                {{g.GenderName}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="r.controls.GenderID.invalid && r.controls.GenderID.errors.required">required</mat-error>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <input matInput placeholder="Highest Qualification" formControlName="QualificationHighest" required>
+            <mat-error *ngIf="r.controls.QualificationHighest.invalid && r.controls.QualificationHighest.errors.required">required</mat-error>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <input matInput placeholder="Total Experience" formControlName="TotalExperience" required>
+            <mat-error *ngIf="r.controls.TotalExperience.invalid && r.controls.TotalExperience.errors.required">required</mat-error>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <input matInput placeholder="Training Location Address" formControlName="LocationAddress" required>
+            <mat-error *ngIf="r.controls.LocationAddress.invalid && r.controls.LocationAddress.errors.required">required</mat-error>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <mat-select formControlName="TradeID" placeholder="Trade" required [disabled]="scheme[0]?.FinalSubmitted">
+              <mat-option *ngFor="let t of trades" [value]="t.TradeID">
+                {{t.TradeName}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="r.controls.TradeID.invalid && r.controls.TradeID.errors.required">required</mat-error>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <mat-select formControlName="TSPID" placeholder="TSP Name" required [disabled]="scheme[0]?.FinalSubmitted">
+              <mat-option *ngFor="let i of tsps" [value]="i.TSPID">
+                {{i.TSPName}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="r.controls.TSPID.invalid && r.controls.TSPID.errors.required">required</mat-error>
+          </mat-form-field>
+        </td>-->
+  <!--<td>
+    <mat-form-field>
+      <mat-select formControlName="ClassCode" placeholder="Class Code" required [disabled]="scheme[0]?.FinalSubmitted">
+        <mat-option *ngFor="let c of classes | where:['TSPID',r.controls.TSPID.value]" [value]="c.ClassCode">
+          {{c.ClassCode}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="r.controls.ClassCode.invalid && r.controls.ClassCode.errors.required">required</mat-error>
+    </mat-form-field>
+  </td>-->
+  <!--<td *ngIf="!scheme[0]?.FinalSubmitted">
+                <button type="button" (click)="removeInstructor(i, r)">Remove</button>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="float-right" *ngIf="!scheme[0]?.FinalSubmitted">
+      <button mat-raised-button color="primary" type="submit" *ngIf="formrights.CanAdd" (click)="submitInstructor()" [disabled]="instructorForm.value.Instructors.length == 0 || instructorForm.invalid" mat-button matStepperNext>
+        Save Instructor(s)
+      </button>
+    </div>
+  </form>-->
+  <form [formGroup]="instructorForm">
+    <div class="table-responsive" formArrayName="Instructors">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Actions</th>
+            <th>Sr#</th>
+            <th>Instructor Name</th>
+            <th>Instructor CNIC</th>
+            <th>Profile Picture</th>
+            <th>Gender</th>
+            <th>Highest Qualification</th>
+            <th>Total Experience</th>
+            <th>Training Location</th>
+            <th>Trade</th>
+            <th>TSP Name</th>
+            <!--<th>--><!--Class Code--><!--</th>-->
+            <!--<th *ngIf="!scheme[0]?.FinalSubmitted">Action</th>-->
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let row of populatedTableList; let i = index;">
+            <tr #form="ngForm" [formGroup]="inlineForm" [style.background]="row.NotValid? '#F4F7EA' : ''">
+              <td>
+                <a color="primary" *ngIf="!scheme[0]?.FinalSubmitted" mat-button (click)="removeInstructor(i, row)">Remove</a>
+                <ng-container *ngIf="!row.IsEditable">
+                  <a color="primary" mat-button (click)="edit(i,row);">Edit</a>
+                </ng-container>
+                <ng-container *ngIf="row.IsEditable">
+
+                  <a color="primary" mat-button (click)="saveInlineForm(i,row)" [disabled]="!row.IsEditable"> Save</a>
+                </ng-container>
+
+              </td>
+              <td>{{i+1}}</td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <input matInput placeholder="Instructor Name" formControlName="InstructorName" [ngModel]="row.InstructorName" required>
+                    <!--<mat-error *ngIf="r.controls.InstructorName.invalid && r.controls.InstructorName.errors.required">required</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.InstructorName}}</ng-container>
+                <br />
+                <span *ngIf="!row.InstructorName" [style.color]="!row.InstructorName? 'red': ''">required</span>
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <input matInput placeholder="Instructor CNIC" formControlName="CNICofInstructor" [ngModel]="row.CNICofInstructor" required [imask]="maskCNIC" [unmask]="false">
+                    <!--<mat-error *ngIf="r.controls.CNICofInstructor.invalid && r.controls.CNICofInstructor.errors.required">required</mat-error>
+      <mat-error *ngIf="r.controls.CNICofInstructor.invalid && r.controls.CNICofInstructor.errors.minlength">length must be 13</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.CNICofInstructor}}</ng-container>
+                <br />
+                <span *ngIf="!row.CNICofInstructor" [style.color]="!row.CNICofInstructor? 'red': ''">required</span>
+
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <div>
+                    <file-upload formControlName="PicturePath" [ngModel]="row.PicturePath"  [pattren]="'image.*'" accept="image/*" maxSize="1024‬‬"></file-upload>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">
+                  <img src={{row.PicturePath}}>
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <mat-select formControlName="GenderID" [ngModel]="row.GenderID" placeholder="Gender" (selectionChange)="row.GenderName=$event.source.triggerValue" [disabled]="scheme[0]?.FinalSubmitted">
+                      <mat-option *ngFor="let g of genders" [value]="g.GenderID">
+                        {{g.GenderName}}
+                      </mat-option>
+                    </mat-select>
+                    <!--<mat-error *ngIf="r.controls.GenderID.invalid && r.controls.GenderID.errors.required">required</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.GenderName}}</ng-container>
+                <br />
+                <span *ngIf="!row.GenderID" [style.color]="!row.GenderID? 'red': ''">required</span>
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <input matInput placeholder="Highest Qualification" [ngModel]="row.QualificationHighest" formControlName="QualificationHighest" required>
+                    <!--<mat-error *ngIf="r.controls.QualificationHighest.invalid && r.controls.QualificationHighest.errors.required">required</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.QualificationHighest}}</ng-container>
+                <br />
+                <span *ngIf="!row.QualificationHighest" [style.color]="!row.QualificationHighest? 'red': ''">required</span>
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <input matInput placeholder="Total Experience" [ngModel]="row.TotalExperience" formControlName="TotalExperience" required>
+                    <!--<mat-error *ngIf="r.controls.TotalExperience.invalid && r.controls.TotalExperience.errors.required">required</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.TotalExperience}}</ng-container>
+                <br />
+                <span *ngIf="!row.TotalExperience" [style.color]="!row.TotalExperience? 'red': ''">required</span>
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <input matInput placeholder="Training Location Address" formControlName="LocationAddress" [ngModel]="row.LocationAddress" required>
+                    <!--<mat-error *ngIf="r.controls.LocationAddress.invalid && r.controls.LocationAddress.errors.required">required</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.LocationAddress}}</ng-container>
+                <br />
+                <span *ngIf="!row.LocationAddress" [style.color]="!row.LocationAddress? 'red': ''">required</span>
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <mat-select formControlName="TradeID" [ngModel]="row.TradeID" placeholder="Trade" (selectionChange)="row.TradeName=$event.source.triggerValue" required [disabled]="scheme[0]?.FinalSubmitted">
+                      <mat-option *ngFor="let t of trades" [value]="t.TradeID">
+                        {{t.TradeName}}
+                      </mat-option>
+                    </mat-select>
+                    <!--<mat-error *ngIf="r.controls.TradeID.invalid && r.controls.TradeID.errors.required">required</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.TradeName}}</ng-container>
+                <br />
+                <span *ngIf="!row.TradeID" [style.color]="!row.TradeID? 'red': ''">required</span>
+              </td>
+              <td>
+                <ng-container *ngIf="row.IsEditable">
+                  <mat-form-field>
+                    <mat-select formControlName="TSPID" [ngModel]="row.TSPID" placeholder="TSP Name" required (selectionChange)="row.TSPName=$event.source.triggerValue" [disabled]="scheme[0]?.FinalSubmitted">
+                      <mat-option *ngFor="let i of tsps" [value]="i.TSPID">
+                        {{i.TSPName}}
+                      </mat-option>
+                    </mat-select>
+                    <!--<mat-error *ngIf="r.controls.TSPID.invalid && r.controls.TSPID.errors.required">required</mat-error>-->
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="!row.IsEditable">{{row.TSPName}}</ng-container>
+                <br/>
+                <span *ngIf="!row.TSPID && !row.TSPName" [style.color]="!row.TSPID && !row.TSPName? 'red': ''">required</span>
+
+              </td>
+              <!--<td>
+    <mat-form-field>
+      <mat-select formControlName="ClassCode" placeholder="Class Code" required [disabled]="scheme[0]?.FinalSubmitted">
+        <mat-option *ngFor="let c of classes | where:['TSPID',r.controls.TSPID.value]" [value]="c.ClassCode">
+          {{c.ClassCode}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="r.controls.ClassCode.invalid && r.controls.ClassCode.errors.required">required</mat-error>
+    </mat-form-field>
+  </td>-->
+              <!--<td *ngIf="!scheme[0]?.FinalSubmitted">
+                <button type="button" (click)="removeInstructor(i, row)">Remove</button>
+              </td>-->
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <div class="float-right" *ngIf="!scheme[0]?.FinalSubmitted">
+      <button mat-raised-button color="primary" type="submit" *ngIf="formrights.CanAdd" (click)="submitInstructor()" mat-button matStepperNext>
+        Save Instructor(s)
+      </button>
+    </div>
+  </form>
+
+</div>

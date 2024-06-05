@@ -1,0 +1,970 @@
+<div id="OrgConfig-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> apps</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <div class="row">
+          <div class="col-sm-4"></div>
+          <div class="col-sm-4"></div>
+          <div class="col-sm-4">
+          <button mat-raised-button color="success" style="float:right" (click)="getExcelExportData()">Export Excel</button>
+        </div>
+          </div>
+
+          <form novalidate #mform="ngForm" (submit)="Submit(mform)">
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                  <mat-form-field>
+                    <mat-select [(ngModel)]="OrganizationID" placeholder="Organization" name="Organization" (ngModelChange)="GetConfig()" required>
+                      <mat-option *ngFor="let o of Organizations" [value]="o.OID">
+                        {{o.OName}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                  <mat-form-field>
+                    <!--<input matInput placeholder="Business Rule Type" formControlName="BusinessRuleType" required>-->
+                    <mat-select placeholder="Business Rule Type" name="BusinessRuleType" [(ngModel)]="BusinessRuleType" (ngModelChange)="GetDataScheme();GetConfig()" required [disabled]="!OrganizationID">
+                      <mat-option value="FTI">FTI</mat-option>
+                      <mat-option value="Community">Community</mat-option>
+                      <mat-option value="Industry">Industry</mat-option>
+                      <mat-option value="Cost Sharing">Cost Sharing</mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                  <mat-form-field>
+                    <mat-select [(ngModel)]="SID" placeholder="Scheme" (ngModelChange)="GetDataTSP()" name="SName" required>
+                      <mat-option value="0">--All--</mat-option>
+                      <mat-option *ngFor="let s of SchemeName" [value]="s.SchemeID">
+                        {{s.SchemeName}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                  <mat-form-field>
+                    <mat-select [(ngModel)]="TID" (ngModelChange)="GetConfig()" placeholder="TSP" name="TName">
+                      <mat-option value="0">--All--</mat-option>
+                      <mat-option *ngFor="let t of TSPName" [value]="t.TSPID">
+                        {{t.TSPName}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6 col-md-4 col-lg-4" hidden="hidden">
+                  <mat-form-field>
+                    <mat-select [(ngModel)]="CID" (ngModelChange)="GetConfig()" placeholder="Class" name="CName">
+                      <mat-option value="0">--Select--</mat-option>
+                      <mat-option *ngFor="let c of ClassArray" [value]="c.ClassID">
+                        {{c.ClassCode}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                  <br />
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="menu" *ngIf="OrgConfigs.length>0">
+
+                  <div class="accordion">
+                    <!-- Áreas -->
+                    <div class="accordion-group">
+                      <!-- Área -->
+                      <div class="accordion-heading area">
+
+                        <div class="table-responsive">
+                          <table class="table table-condensed  table-sm" *ngIf="BusinessRuleType">
+                            <tbody>
+
+                              <tr *ngFor="let OrgCon of OrgConfigs | where:['BusinessRuleType',BusinessRuleType]; let s=index">
+                                <td>
+                                  <a matTooltip="Click to Expande/Collapse All Schemes" class="accordion-toggle" data-toggle="collapse" href="#sectionone">
+                                    All Schemes
+
+                                  </a>
+                                </td>
+                                <td>
+
+                                  <mat-checkbox [ngModelOptions]="{standalone: true}" name="DualRegistrationOrga" (change)="SelProp(OrgCon.DualRegistration,OrgConfigs,'DualRegistration');" [(ngModel)]="OrgCon.DualRegistration">Dual Registration</mat-checkbox>
+                                </td>
+                                <td>
+                                  <label>Trainee Registration</label>
+                                  <div class="multiformfields">
+                                    <div class="form-group">
+                                      <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysbeforeOrga" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.BracketDaysBefore,OrgConfigs,'BracketDaysBefore');" [(ngModel)]="OrgCon.BracketDaysBefore">
+                                      <span class="placeholder">Days Before</span>
+                                    </div>
+                                    <div class="form-group">
+                                      <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysafterOrga" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.BracketDaysAfter,OrgConfigs,'BracketDaysAfter');" [(ngModel)]="OrgCon.BracketDaysAfter" matInput>
+                                      <span class="placeholder">Days After</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Eligible Gender</label>
+                                    <select class="form-control" id="TSPeligiblegenderidOrga" placeholder="Eligible Gender" [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.EligibleGenderID,OrgConfigs,'EligibleGenderID');" [(ngModel)]="OrgCon.EligibleGenderID">
+                                      <option *ngFor="let i of Genders" [ngValue]="i.GenderID"> {{i.GenderName}}</option>
+                                    </select>
+                                  </div>
+                                </td>
+                                <td>
+                                  <mat-hint>Age</mat-hint>
+                                  <div class="multiformfields">
+                                    <div class="form-group">
+                                      <input type="text" class="form-control" inputmode="numeric" id="minageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.MinAge,OrgConfigs,'MinAge');" [(ngModel)]="OrgCon.MinAge">
+                                      <span class="placeholder">Minimum</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                      <input type="text" class="form-control" inputmode="numeric" id="maxageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.MaxAge,OrgConfigs,'MaxAge');" [(ngModel)]="OrgCon.MaxAge">
+                                      <span class="placeholder">Maximum</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Min. Education</label>
+                                    <select id="mineducationOrga" name="mineducationOrga" (change)="SelProp(OrgCon.MinEducation,OrgConfigs,'MinEducation');" [(ngModel)]="OrgCon.MinEducation" class="form-control">
+                                      <option *ngFor="let i of Educations" [ngValue]="i.EducationTypeID">
+                                        {{i.Education}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                </td>
+                                <td>
+                                  <mat-hint>Inception Report Bracket</mat-hint>
+                                  <div class="multiformfields">
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="reportbracketbeforeOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.ReportBracketBefore,OrgConfigs,'ReportBracketBefore');" [(ngModel)]="OrgCon.ReportBracketBefore" class="form-control">
+                                      <span class="placeholder">Days Before</span>
+                                    </div>
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="reportbracketafterOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.ReportBracketAfter,OrgConfigs,'ReportBracketAfter');" [(ngModel)]="OrgCon.ReportBracketAfter" class="form-control">
+                                      <span class="placeholder">Days After</span>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                <td>
+
+                                  <div class="form-group">
+                                    <label>Stipend Payment method</label>
+                                    <select id="stipendpaymethodOrga" placeholder="Stipend Payment method " [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.StipendPayMethod,OrgConfigs,'StipendPayMethod');" [(ngModel)]="OrgCon.StipendPayMethod" class="form-control">
+                                      <option value="digital">digital</option>
+                                      <option value="conventional">conventional</option>
+                                    </select>
+                                  </div>
+                                </td>
+                                <td>
+                                  <mat-hint>Class Start Day rule </mat-hint>
+                                  <div class="multiformfields">
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="classstartfrom1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.ClassStartFrom1,OrgConfigs,'ClassStartFrom1');" [(ngModel)]="OrgCon.ClassStartFrom1" class="form-control">
+                                      <span class="placeholder">From Day</span>
+                                    </div>
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="classstartto1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.ClassStartTo1,OrgConfigs,'ClassStartTo1');" [(ngModel)]="OrgCon.ClassStartTo1" class="form-control">
+                                      <span class="placeholder">To Day</span>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                <td>
+                                  <mat-hint>BISP index Between </mat-hint>
+                                  <div class="multiformfields">
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="bispindexfromOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.BISPIndexFrom,OrgConfigs,'BISPIndexFrom');" [(ngModel)]="OrgCon.BISPIndexFrom" class="form-control">
+                                      <span class="placeholder">From</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="bispindextoOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.BISPIndexTo,OrgConfigs,'BISPIndexTo');" [(ngModel)]="OrgCon.BISPIndexTo" class="form-control">
+                                      <span class="placeholder">To</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+
+                                  <mat-hint>Min. Attendance % & deduction </mat-hint>
+                                  <div class="multiformfields">
+                                    <div class="form-group">
+                                      <input type="number" max="100" inputmode="numeric" id="minattendpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.MinAttendPercent,OrgConfigs,'MinAttendPercent');" [(ngModel)]="OrgCon.MinAttendPercent" class="form-control">
+                                      <span class="placeholder">% Percentage</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="stipenddeductamountOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.StipendDeductAmount,OrgConfigs,'StipendDeductAmount');" [(ngModel)]="OrgCon.StipendDeductAmount" class="form-control">
+                                      <span class="placeholder">Amount</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Ph Count Min.</label>
+                                    <input type="text" inputmode="numeric" id="phycountdeductpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.PhyCountDeductPercent,OrgConfigs,'PhyCountDeductPercent');" [(ngModel)]="OrgCon.PhyCountDeductPercent" max="100" class="form-control">
+                                    <span class="placeholder">% Physical Count Min.</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Drop Out </label>
+                                    <input type="text" inputmode="numeric" id="deductdropoutpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.DeductDropOutPercent,OrgConfigs,'DeductDropOutPercent');" [(ngModel)]="OrgCon.DeductDropOutPercent" class="form-control">
+                                    <spac matSuffix>% Drop Out Deduction</spac>
+                                  </div>
+                                </td>
+                                <td>
+                                  <mat-hint>Stipend Note Generation</mat-hint>
+                                  <div class="multiformfields">
+
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="stipnotegengtmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.StipNoteGenGTMonth,OrgConfigs,'StipNoteGenGTMonth');" [(ngModel)]="OrgCon.StipNoteGenGTMonth" class="form-control">
+                                      <span class="placeholder">greater than 1 month</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                      <input type="text" inputmode="numeric" id="stipnotegenltmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.StipNoteGenLTMonth,OrgConfigs,'StipNoteGenLTMonth');" [(ngModel)]="OrgCon.StipNoteGenLTMonth" class="form-control">
+                                      <span class="placeholder">1 month or less</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>MPR generation Day</label>
+                                    <input type="text" inputmode="numeric" id="mprdenerationdayOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.MPRDenerationDay,OrgConfigs,'MPRDenerationDay');" [(ngModel)]="OrgCon.MPRDenerationDay" class="form-control">
+                                    <span class="placeholder">MPR generation Day</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Deduct. Since Inception %</label>
+                                    <input type="text" inputmode="numeric" id="DeductionSinceInceptionPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.DeductionSinceInceptionPercent,OrgConfigs,'DeductionSinceInceptionPercent');" [(ngModel)]="OrgCon.DeductionSinceInceptionPercent" class="form-control">
+                                    <span class="placeholder">Deduction Since Inception %</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Deduction Failed Trainees %</label>
+                                    <input type="text" inputmode="numeric" id="DeductionFailedTraineesPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.DeductionFailedTraineesPercent,OrgConfigs,'DeductionFailedTraineesPercent');" [(ngModel)]="OrgCon.DeductionFailedTraineesPercent" class="form-control">
+                                    <span class="placeholder">Deduction Failed Trainees %</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Employment Deadline</label>
+                                    <input type="text" inputmode="numeric" id="EmploymentDeadlineOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.EmploymentDeadline,OrgConfigs,'EmploymentDeadline');" [(ngModel)]="OrgCon.EmploymentDeadline" class="form-control">
+                                    <span class="placeholder">Employment Deadline</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>TCR OPENING DAYS</label>
+                                    <input type="text" inputmode="numeric" id="TSROpeningDaysOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.TSROpeningDays,OrgConfigs,'TSROpeningDays');" [(ngModel)]="OrgCon.TSROpeningDays" class="form-control">
+                                    <span class="placeholder">TCR OPENING DAYS</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <label>Extra Trainees % age</label>
+                                    <input type="text" inputmode="numeric" id="TraineesPerClassThersholdOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.TraineesPerClassThershold,OrgConfigs,'TraineesPerClassThershold');" [(ngModel)]="OrgCon.TraineesPerClassThershold" class="form-control">
+                                    <span class="placeholder">Extra Trainees % age</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <mat-checkbox [ngModelOptions]="{standalone: true}" name="ISDVVOrga" (change)="SelProp(OrgCon.ISDVV,OrgConfigs,'ISDVV');" [(ngModel)]="OrgCon.ISDVV">DVV Class</mat-checkbox>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                      </div><!-- /Área -->
+                      
+                      <div class="accordion-body collapse show" id="sectionone">
+                        <div class="accordion-inner">
+                          <div class="accordion" id="equipamento1">
+                            <!-- Equipamentos -->
+                            <ng-container *ngFor="let Sch of OrgConfigs | groupBy: 'SchemeID'; let s=index">
+                              <div class="accordion-group equipamento">
+                                <div class="accordion-heading equipamento" *ngFor="let Scheme of Sch.value | where: GetSchemeRow">
+
+                                  <div class="table-responsive">
+                                    <table class="table table-condensed  table-sm">
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <a class="accordion-toggle" matTooltip="Click to Expand/Collapse  {{Scheme['SchemeName']}} TSP's" data-toggle="collapse" href="#{{'Scheme'+s}}">    {{Scheme['SchemeName']}}   </a>
+                                          </td>
+                                          <td>
+
+                                            <mat-checkbox [ngModelOptions]="{standalone: true}" name="DualRegistrationOrga" (change)="SelProp(Scheme.DualRegistration,Sch.value,'DualRegistration');" [(ngModel)]="Scheme.DualRegistration">Dual Registration</mat-checkbox>
+                                          </td>
+                                          <td>
+                                            <label>Trainee Registration</label>
+                                            <div class="multiformfields">
+                                              <div class="form-group">
+                                                <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysbeforeOrga" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.BracketDaysBefore,Sch.value,'BracketDaysBefore');" [(ngModel)]="Scheme.BracketDaysBefore">
+                                                <span class="placeholder">Days Before</span>
+                                              </div>
+                                              <div class="form-group">
+                                                <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysafterOrga" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.BracketDaysAfter,Sch.value,'BracketDaysAfter');" [(ngModel)]="Scheme.BracketDaysAfter" matInput>
+                                                <span class="placeholder">Days After</span>
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Eligible Gender</label>
+                                              <select class="form-control" id="TSPeligiblegenderidOrga" placeholder="Eligible Gender" [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.EligibleGenderID,Sch.value,'EligibleGenderID');" [(ngModel)]="Scheme.EligibleGenderID">
+                                                <option *ngFor="let i of Genders" [ngValue]="i.GenderID"> {{i.GenderName}}</option>
+                                              </select>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <mat-hint>Age</mat-hint>
+                                            <div class="multiformfields">
+                                              <div class="form-group">
+                                                <input type="text" class="form-control" inputmode="numeric" id="minageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.MinAge,Sch.value,'MinAge');" [(ngModel)]="Scheme.MinAge">
+                                                <span class="placeholder">Minimum</span>
+                                              </div>
+
+                                              <div class="form-group">
+                                                <input type="text" class="form-control" inputmode="numeric" id="maxageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.MaxAge,Sch.value,'MaxAge');" [(ngModel)]="Scheme.MaxAge">
+                                                <span class="placeholder">Maximum</span>
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Min. Education</label>
+                                              <select id="mineducationOrga" name="mineducationOrga" (change)="SelProp(Scheme.MinEducation,Sch.value,'MinEducation');" [(ngModel)]="Scheme.MinEducation" class="form-control">
+                                                <option *ngFor="let i of Educations" [ngValue]="i.EducationTypeID">
+                                                  {{i.Education}}
+                                                </option>
+                                              </select>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <mat-hint>Inception Report Bracket</mat-hint>
+                                            <div class="multiformfields">
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="reportbracketbeforeOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.ReportBracketBefore,Sch.value,'ReportBracketBefore');" [(ngModel)]="Scheme.ReportBracketBefore" class="form-control">
+                                                <span class="placeholder">Days Before</span>
+                                              </div>
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="reportbracketafterOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.ReportBracketAfter,Sch.value,'ReportBracketAfter');" [(ngModel)]="Scheme.ReportBracketAfter" class="form-control">
+                                                <span class="placeholder">Days After</span>
+                                              </div>
+                                            </div>
+                                          </td>
+
+                                          <td>
+
+                                            <div class="form-group">
+                                              <label>Stipend Payment method</label>
+                                              <select id="stipendpaymethodOrga" placeholder="Stipend Payment method " [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.StipendPayMethod,Sch.value,'StipendPayMethod');" [(ngModel)]="Scheme.StipendPayMethod" class="form-control">
+                                                <option value="digital">digital</option>
+                                                <option value="conventional">conventional</option>
+                                              </select>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <mat-hint>Class Start Day rule </mat-hint>
+                                            <div class="multiformfields">
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="classstartfrom1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.ClassStartFrom1,Sch.value,'ClassStartFrom1');" [(ngModel)]="Scheme.ClassStartFrom1" class="form-control">
+                                                <span class="placeholder">From Day</span>
+                                              </div>
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="classstartto1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.ClassStartTo1,Sch.value,'ClassStartTo1');" [(ngModel)]="Scheme.ClassStartTo1" class="form-control">
+                                                <span class="placeholder">To Day</span>
+                                              </div>
+                                            </div>
+                                          </td>
+
+                                          <td>
+                                            <mat-hint>BISP index Between </mat-hint>
+                                            <div class="multiformfields">
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="bispindexfromOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.BISPIndexFrom,Sch.value,'BISPIndexFrom');" [(ngModel)]="Scheme.BISPIndexFrom" class="form-control">
+                                                <span class="placeholder">From</span>
+                                              </div>
+
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="bispindextoOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.BISPIndexTo,Sch.value,'BISPIndexTo');" [(ngModel)]="Scheme.BISPIndexTo" class="form-control">
+                                                <span class="placeholder">To</span>
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>
+
+                                            <mat-hint>Min. Attendance % & deduction </mat-hint>
+                                            <div class="multiformfields">
+                                              <div class="form-group">
+                                                <input type="number" max="100" inputmode="numeric" id="minattendpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.MinAttendPercent,Sch.value,'MinAttendPercent');" [(ngModel)]="Scheme.MinAttendPercent" class="form-control">
+                                                <span class="placeholder">% Percentage</span>
+                                              </div>
+
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="stipenddeductamountOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.StipendDeductAmount,Sch.value,'StipendDeductAmount');" [(ngModel)]="Scheme.StipendDeductAmount" class="form-control">
+                                                <span class="placeholder">Amount</span>
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Ph Count Min.</label>
+                                              <input type="text" inputmode="numeric" id="phycountdeductpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.PhyCountDeductPercent,Sch.value,'PhyCountDeductPercent');" [(ngModel)]="Scheme.PhyCountDeductPercent" max="100" class="form-control">
+                                              <span class="placeholder">% Physical Count Min.</span>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Drop Out </label>
+                                              <input type="text" inputmode="numeric" id="deductdropoutpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.DeductDropOutPercent,Sch.value,'DeductDropOutPercent');" [(ngModel)]="Scheme.DeductDropOutPercent" class="form-control">
+                                              <spac matSuffix>% Drop Out Deduction</spac>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <mat-hint>Stipend Note Generation</mat-hint>
+                                            <div class="multiformfields">
+
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="stipnotegengtmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.StipNoteGenGTMonth,Sch.value,'StipNoteGenGTMonth');" [(ngModel)]="Scheme.StipNoteGenGTMonth" class="form-control">
+                                                <span class="placeholder">greater than 1 month</span>
+                                              </div>
+
+                                              <div class="form-group">
+                                                <input type="text" inputmode="numeric" id="stipnotegenltmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.StipNoteGenLTMonth,Sch.value,'StipNoteGenLTMonth');" [(ngModel)]="Scheme.StipNoteGenLTMonth" class="form-control">
+                                                <span class="placeholder">1 month or less</span>
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>MPR generation Day</label>
+                                              <input type="text" inputmode="numeric" id="mprdenerationdayOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.MPRDenerationDay,Sch.value,'MPRDenerationDay');" [(ngModel)]="Scheme.MPRDenerationDay" class="form-control">
+                                              <span class="placeholder">MPR generation Day</span>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Deduct. Since Inception %</label>
+                                              <input type="text" inputmode="numeric" id="DeductionSinceInceptionPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.DeductionSinceInceptionPercent,Sch.value,'DeductionSinceInceptionPercent');" [(ngModel)]="Scheme.DeductionSinceInceptionPercent" class="form-control">
+                                              <span class="placeholder">Deduction Since Inception %</span>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Deduction Failed Trainees %</label>
+                                              <input type="text" inputmode="numeric" id="DeductionFailedTraineesPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.DeductionFailedTraineesPercent,Sch.value,'DeductionFailedTraineesPercent');" [(ngModel)]="Scheme.DeductionFailedTraineesPercent" class="form-control">
+                                              <span class="placeholder">Deduction Failed Trainees %</span>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Employment Deadline</label>
+                                              <input type="text" inputmode="numeric" id="EmploymentDeadlineOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.EmploymentDeadline,Sch.value,'EmploymentDeadline');" [(ngModel)]="Scheme.EmploymentDeadline" class="form-control">
+                                              <span class="placeholder">Employment Deadline</span>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>TCR OPENING DAYS</label>
+                                              <input type="text" inputmode="numeric" id="TSROpeningDaysOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.TSROpeningDays,Sch.value,'TSROpeningDays');" [(ngModel)]="Scheme.TSROpeningDays" class="form-control">
+                                              <span class="placeholder">TCR OPENING DAYS</span>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div class="form-group">
+                                              <label>Extra Trainees % age</label>
+                                              <input type="text" inputmode="numeric" id="TraineesPerClassThersholdOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.TraineesPerClassThershold,Sch.value,'TraineesPerClassThershold');" [(ngModel)]="Scheme.TraineesPerClassThershold" class="form-control">
+                                              <span class="placeholder">Extra Trainees % age</span>
+                                            </div>
+                                          </td>
+
+                                          <td>
+
+                                            <mat-checkbox [ngModelOptions]="{standalone: true}" name="ISDVVOrga" (change)="SelProp(Scheme.ISDVV,Sch.value,'ISDVV');" [(ngModel)]="Scheme.ISDVV">DVV Class</mat-checkbox>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+
+                                </div><!-- Pontos -->
+
+                                <div class="accordion-body collapse" id="{{'Scheme'+s}}">
+                                  <div class="accordion-inner" *ngFor="let AllTSP of Sch.value  | where: GetNotSchemeRow | groupBy: 'TSPMasterID' ;let i=index;">
+
+                                    <div class="accordion" id="{{'servico'+i}}">
+                                      <div class="accordion-group ponto">
+                                        <div class="accordion-heading ponto">
+
+                                          <div class="table-responsive">
+                                            <table class="table table-condensed  table-sm">
+                                              <tbody>
+                                                <tr *ngFor="let TSP of AllTSP.value | where: GetTSPRow">
+                                                  <td>
+                                                    <a class="accordion-toggle" matTooltip="Click to Expand/Collapse  {{TSP['TSPName']}} Class(s)" data-toggle="collapse" href="#{{'TSP'+i}}">
+                                                      {{TSP['TSPName']}}
+                                                    </a>
+                                                  </td>
+
+                                                  <td>
+
+                                                    <mat-checkbox [ngModelOptions]="{standalone: true}" name="DualRegistrationOrga" (change)="SelProp(TSP.DualRegistration,AllTSP.value,'DualRegistration');" [(ngModel)]="TSP.DualRegistration">Dual Registration</mat-checkbox>
+                                                  </td>
+                                                  <td>
+                                                    <label>Trainee Registration</label>
+                                                    <div class="multiformfields">
+                                                      <div class="form-group">
+                                                        <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysbeforeOrga" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.BracketDaysBefore,AllTSP.value,'BracketDaysBefore');" [(ngModel)]="TSP.BracketDaysBefore">
+                                                        <span class="placeholder">Days Before</span>
+                                                      </div>
+                                                      <div class="form-group">
+                                                        <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysafterOrga" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.BracketDaysAfter,AllTSP.value,'BracketDaysAfter');" [(ngModel)]="TSP.BracketDaysAfter" matInput>
+                                                        <span class="placeholder">Days After</span>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Eligible Gender</label>
+                                                      <select class="form-control" id="TSPeligiblegenderidOrga" placeholder="Eligible Gender" [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.EligibleGenderID,AllTSP.value,'EligibleGenderID');" [(ngModel)]="TSP.EligibleGenderID">
+                                                        <option *ngFor="let i of Genders" [ngValue]="i.GenderID"> {{i.GenderName}}</option>
+                                                      </select>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <mat-hint>Age</mat-hint>
+                                                    <div class="multiformfields">
+                                                      <div class="form-group">
+                                                        <input type="text" class="form-control" inputmode="numeric" id="minageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.MinAge,AllTSP.value,'MinAge');" [(ngModel)]="TSP.MinAge">
+                                                        <span class="placeholder">Minimum</span>
+                                                      </div>
+
+                                                      <div class="form-group">
+                                                        <input type="text" class="form-control" inputmode="numeric" id="maxageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.MaxAge,AllTSP.value,'MaxAge');" [(ngModel)]="TSP.MaxAge">
+                                                        <span class="placeholder">Maximum</span>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Min. Education</label>
+                                                      <select id="mineducationOrga" name="mineducationOrga" (change)="SelProp(TSP.MinEducation,AllTSP.value,'MinEducation');" [(ngModel)]="TSP.MinEducation" class="form-control">
+                                                        <option *ngFor="let i of Educations" [ngValue]="i.EducationTypeID">
+                                                          {{i.Education}}
+                                                        </option>
+                                                      </select>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <mat-hint>Inception Report Bracket</mat-hint>
+                                                    <div class="multiformfields">
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="reportbracketbeforeOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.ReportBracketBefore,AllTSP.value,'ReportBracketBefore');" [(ngModel)]="TSP.ReportBracketBefore" class="form-control">
+                                                        <span class="placeholder">Days Before</span>
+                                                      </div>
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="reportbracketafterOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.ReportBracketAfter,AllTSP.value,'ReportBracketAfter');" [(ngModel)]="TSP.ReportBracketAfter" class="form-control">
+                                                        <span class="placeholder">Days After</span>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+
+                                                  <td>
+
+                                                    <div class="form-group">
+                                                      <label>Stipend Payment method</label>
+                                                      <select id="stipendpaymethodOrga" placeholder="Stipend Payment method " [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.StipendPayMethod,AllTSP.value,'StipendPayMethod');" [(ngModel)]="TSP.StipendPayMethod" class="form-control">
+                                                        <option value="digital">digital</option>
+                                                        <option value="conventional">conventional</option>
+                                                      </select>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <mat-hint>Class Start Day rule </mat-hint>
+                                                    <div class="multiformfields">
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="classstartfrom1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.ClassStartFrom1,AllTSP.value,'ClassStartFrom1');" [(ngModel)]="TSP.ClassStartFrom1" class="form-control">
+                                                        <span class="placeholder">From Day</span>
+                                                      </div>
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="classstartto1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.ClassStartTo1,AllTSP.value,'ClassStartTo1');" [(ngModel)]="TSP.ClassStartTo1" class="form-control">
+                                                        <span class="placeholder">To Day</span>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+
+                                                  <td>
+                                                    <mat-hint>BISP index Between </mat-hint>
+                                                    <div class="multiformfields">
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="bispindexfromOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.BISPIndexFrom,AllTSP.value,'BISPIndexFrom');" [(ngModel)]="TSP.BISPIndexFrom" class="form-control">
+                                                        <span class="placeholder">From</span>
+                                                      </div>
+
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="bispindextoOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.BISPIndexTo,AllTSP.value,'BISPIndexTo');" [(ngModel)]="TSP.BISPIndexTo" class="form-control">
+                                                        <span class="placeholder">To</span>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+
+                                                    <mat-hint>Min. Attendance % & deduction </mat-hint>
+                                                    <div class="multiformfields">
+                                                      <div class="form-group">
+                                                        <input type="number" max="100" inputmode="numeric" id="minattendpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.MinAttendPercent,AllTSP.value,'MinAttendPercent');" [(ngModel)]="TSP.MinAttendPercent" class="form-control">
+                                                        <span class="placeholder">% Percentage</span>
+                                                      </div>
+
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="stipenddeductamountOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.StipendDeductAmount,AllTSP.value,'StipendDeductAmount');" [(ngModel)]="TSP.StipendDeductAmount" class="form-control">
+                                                        <span class="placeholder">Amount</span>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Ph Count Min.</label>
+                                                      <input type="text" inputmode="numeric" id="phycountdeductpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.PhyCountDeductPercent,AllTSP.value,'PhyCountDeductPercent');" [(ngModel)]="TSP.PhyCountDeductPercent" max="100" class="form-control">
+                                                      <span class="placeholder">% Physical Count Min.</span>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Drop Out </label>
+                                                      <input type="text" inputmode="numeric" id="deductdropoutpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.DeductDropOutPercent,AllTSP.value,'DeductDropOutPercent');" [(ngModel)]="TSP.DeductDropOutPercent" class="form-control">
+                                                      <spac matSuffix>% Drop Out Deduction</spac>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <mat-hint>Stipend Note Generation</mat-hint>
+                                                    <div class="multiformfields">
+
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="stipnotegengtmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.StipNoteGenGTMonth,AllTSP.value,'StipNoteGenGTMonth');" [(ngModel)]="TSP.StipNoteGenGTMonth" class="form-control">
+                                                        <span class="placeholder">greater than 1 month</span>
+                                                      </div>
+
+                                                      <div class="form-group">
+                                                        <input type="text" inputmode="numeric" id="stipnotegenltmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.StipNoteGenLTMonth,AllTSP.value,'StipNoteGenLTMonth');" [(ngModel)]="TSP.StipNoteGenLTMonth" class="form-control">
+                                                        <span class="placeholder">1 month or less</span>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>MPR generation Day</label>
+                                                      <input type="text" inputmode="numeric" id="mprdenerationdayOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.MPRDenerationDay,AllTSP.value,'MPRDenerationDay');" [(ngModel)]="TSP.MPRDenerationDay" class="form-control">
+                                                      <span class="placeholder">MPR generation Day</span>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Deduct. Since Inception %</label>
+                                                      <input type="text" inputmode="numeric" id="DeductionSinceInceptionPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.DeductionSinceInceptionPercent,AllTSP.value,'DeductionSinceInceptionPercent');" [(ngModel)]="TSP.DeductionSinceInceptionPercent" class="form-control">
+                                                      <span class="placeholder">Deduction Since Inception %</span>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Deduction Failed Trainees %</label>
+                                                      <input type="text" inputmode="numeric" id="DeductionFailedTraineesPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.DeductionFailedTraineesPercent,AllTSP.value,'DeductionFailedTraineesPercent');" [(ngModel)]="TSP.DeductionFailedTraineesPercent" class="form-control">
+                                                      <span class="placeholder">Deduction Failed Trainees %</span>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Employment Deadline</label>
+                                                      <input type="text" inputmode="numeric" id="EmploymentDeadlineOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.EmploymentDeadline,AllTSP.value,'EmploymentDeadline');" [(ngModel)]="TSP.EmploymentDeadline" class="form-control">
+                                                      <span class="placeholder">Employment Deadline</span>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>TCR OPENING DAYS</label>
+                                                      <input type="text" inputmode="numeric" id="TSROpeningDaysOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.TSROpeningDays,AllTSP.value,'TSROpeningDays');" [(ngModel)]="TSP.TSROpeningDays" class="form-control">
+                                                      <span class="placeholder">TCR OPENING DAYS</span>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>Extra Trainees % age</label>
+                                                      <input type="text" inputmode="numeric" id="TraineesPerClassThersholdOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.TraineesPerClassThershold,AllTSP.value,'TraineesPerClassThershold');" [(ngModel)]="TSP.TraineesPerClassThershold" class="form-control">
+                                                      <span class="placeholder">Extra Trainees % age</span>
+                                                    </div>
+                                                  </td>
+                                                  <td>
+
+                                                    <mat-checkbox [ngModelOptions]="{standalone: true}" name="ISDVVOrga" (change)="SelProp(TSP.ISDVV,AllTSP.value,'ISDVV');" [(ngModel)]="TSP.ISDVV">DVV Class</mat-checkbox>
+                                                  </td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+
+                                        </div><!-- Serviços -->
+
+                                        <div class="accordion-body collapse" id="{{'TSP'+i}}">
+                                          <div class="accordion-inner">
+                                            <div class="table-responsive">
+                                              <table class="table table-condensed  table-sm">
+                                                <tbody>
+                                                  <tr *ngFor="let class of AllTSP.value | where: GetNotTSPRow; let c=index">
+                                                    <td>
+                                                      Class Code : {{class.ClassCode}}
+                                                    </td>
+
+                                                    <td>
+
+                                                      <mat-checkbox [ngModelOptions]="{standalone: true}" name="DualRegistrationOrga" [(ngModel)]="class.DualRegistration">Dual Registration</mat-checkbox>
+                                                    </td>
+                                                    <td>
+                                                      <label>Trainee Registration</label>
+                                                      <div class="multiformfields">
+                                                        <div class="form-group">
+                                                          <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysbeforeOrga" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.BracketDaysBefore">
+                                                          <span class="placeholder">Days Before</span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                          <input class="form-control numeric" type="text" inputmode="numeric" id="bracketdaysafterOrga" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.BracketDaysAfter" matInput>
+                                                          <span class="placeholder">Days After</span>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Eligible Gender</label>
+                                                        <select class="form-control" id="TSPeligiblegenderidOrga" placeholder="Eligible Gender" [ngModelOptions]="{standalone: true}" [(ngModel)]="class.EligibleGenderID">
+                                                          <option *ngFor="let i of Genders" [ngValue]="i.GenderID"> {{i.GenderName}}</option>
+                                                        </select>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="multiformfields">
+                                                        <div class="form-group">
+                                                          <input type="text" class="form-control" inputmode="numeric" id="minageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.MinAge">
+                                                          <span class="placeholder">Minimum</span>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                          <input type="text" class="form-control" inputmode="numeric" id="maxageOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.MaxAge">
+                                                          <span class="placeholder">Maximum</span>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Min. Education</label>
+                                                        <select id="mineducationOrga" name="mineducationOrga" [(ngModel)]="class.MinEducation" class="form-control">
+                                                          <option *ngFor="let i of Educations" [ngValue]="i.EducationTypeID">
+                                                            {{i.Education}}
+                                                          </option>
+                                                        </select>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <mat-hint>Inception Report Bracket</mat-hint>
+                                                      <div class="multiformfields">
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="reportbracketbeforeOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.ReportBracketBefore" class="form-control">
+                                                          <span class="placeholder">Days Before</span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="reportbracketafterOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.ReportBracketAfter" class="form-control">
+                                                          <span class="placeholder">Days After</span>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+
+                                                      <div class="form-group">
+                                                        <label>Stipend Payment method</label>
+                                                        <select id="stipendpaymethodOrga" placeholder="Stipend Payment method " [ngModelOptions]="{standalone: true}" [(ngModel)]="class.StipendPayMethod" class="form-control">
+                                                          <option value="digital">digital</option>
+                                                          <option value="conventional">conventional</option>
+                                                        </select>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <mat-hint>Class Start Day rule </mat-hint>
+                                                      <div class="multiformfields">
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="classstartfrom1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.ClassStartFrom1" class="form-control">
+                                                          <span class="placeholder">From Day</span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="classstartto1Orga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.ClassStartTo1" class="form-control">
+                                                          <span class="placeholder">To Day</span>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+
+                                                    <td>
+                                                      <mat-hint>BISP index Between </mat-hint>
+                                                      <div class="multiformfields">
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="bispindexfromOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.BISPIndexFrom" class="form-control">
+                                                          <span class="placeholder">From</span>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="bispindextoOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.BISPIndexTo" class="form-control">
+                                                          <span class="placeholder">To</span>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+
+                                                      <mat-hint>Min. Attendance % & deduction </mat-hint>
+                                                      <div class="multiformfields">
+                                                        <div class="form-group">
+                                                          <input type="number" max="100" inputmode="numeric" id="minattendpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.MinAttendPercent" class="form-control">
+                                                          <span class="placeholder">% Percentage</span>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="stipenddeductamountOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.StipendDeductAmount" class="form-control">
+                                                          <span class="placeholder">Amount</span>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Ph Count Min.</label>
+                                                        <input type="text" inputmode="numeric" id="phycountdeductpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.PhyCountDeductPercent" max="100" class="form-control">
+                                                        <span class="placeholder">% Physical Count Min.</span>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Drop Out </label>
+                                                        <input type="text" inputmode="numeric" id="deductdropoutpercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.DeductDropOutPercent" class="form-control">
+                                                        <spac matSuffix>% Drop Out Deduction</spac>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <mat-hint>Stipend Note Generation</mat-hint>
+                                                      <div class="multiformfields">
+
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="stipnotegengtmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.StipNoteGenGTMonth" class="form-control">
+                                                          <span class="placeholder">greater than 1 month</span>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                          <input type="text" inputmode="numeric" id="stipnotegenltmonthOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.StipNoteGenLTMonth" class="form-control">
+                                                          <span class="placeholder">1 month or less</span>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>MPR generation Day</label>
+                                                        <input type="text" inputmode="numeric" id="mprdenerationdayOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.MPRDenerationDay" class="form-control">
+                                                        <span class="placeholder">MPR generation Day</span>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Deduct. Since Inception %</label>
+                                                        <input type="text" inputmode="numeric" id="DeductionSinceInceptionPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.DeductionSinceInceptionPercent" class="form-control">
+                                                        <span class="placeholder">Deduction Since Inception %</span>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Deduction Failed Trainees %</label>
+                                                        <input type="text" inputmode="numeric" id="DeductionFailedTraineesPercentOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.DeductionFailedTraineesPercent" class="form-control">
+                                                        <span class="placeholder">Deduction Failed Trainees %</span>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Employment Deadline</label>
+                                                        <input type="text" inputmode="numeric" id="EmploymentDeadlineOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.EmploymentDeadline" class="form-control">
+                                                        <span class="placeholder">Employment Deadline</span>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>TCR OPENING DAYS</label>
+                                                        <input type="text" inputmode="numeric" id="TSROpeningDaysOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.TSROpeningDays" class="form-control">
+                                                        <span class="placeholder">TCR OPENING DAYS</span>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>Extra Trainees % age</label>
+                                                        <input type="text" inputmode="numeric" id="TraineesPerClassThersholdOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.TraineesPerClassThershold" class="form-control">
+                                                        <span class="placeholder">Extra Trainees % age</span>
+                                                      </div>
+                                                    </td>
+                                                    <td>
+
+                                                      <mat-checkbox [ngModelOptions]="{standalone: true}" name="ISDVVOrga" [(ngModel)]="class.ISDVV">DVV Class</mat-checkbox>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div><!-- /Serviços -->
+                                      </div>
+                                    </div>
+
+
+
+                                  </div>
+                                </div><!-- /Pontos -->
+                              </div><!-- /Equipamentos -->
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div><!-- /accordion -->
+
+                </div>
+
+
+              </div>
+            </div>
+
+            <br />
+            <div class="col-12">
+              <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                      attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working || (!mform.valid || !rights.CanAdd)">
+                <mat-icon>done</mat-icon>{{savebtn+EnText}}
+              </button>&nbsp;&nbsp;
+              <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                      attr.aria-label="Click to Reset form data" type="reset" (click)="reset(mform)" [disabled]="working">
+                <mat-icon>close</mat-icon> Reset
+              </button>
+            </div>
+          </form>
+        </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+</div>

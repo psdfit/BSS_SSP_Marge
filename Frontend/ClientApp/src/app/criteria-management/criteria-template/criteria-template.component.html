@@ -1,0 +1,199 @@
+<mat-card>
+  <mat-toolbar color="accent" class=" slim slim">
+    <mat-icon *ngIf="TapIndex==0" class="material-icons"> add_circle </mat-icon>
+    <mat-icon *ngIf="TapIndex==1" class="material-icons"> view_comfy </mat-icon>
+    <span class="spacer">{{SpacerTitle}}</span>
+    <input *ngIf="TapIndex==1" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
+    <button mat-raised-button *ngIf="TapIndex==1" style="float:right;margin: 0px 7px;background: #c3d9ff"
+      (click)="DataExcelExport(TablesData.filteredData,'Criteria Template')">
+      <i class="fas fa-file-export"></i> Export Excel</button>
+  </mat-toolbar>
+  <mat-card-content>
+    <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight (selectedTabChange)="[getSelectedTabData()]">
+      <mat-tab label="Create Criteria Template">
+        <fieldset class="border">
+          <legend>Criteria Template </legend>
+          <form [formGroup]="CriteriaTemplateForm">
+            <div class="row">
+              <div class="col-4">
+                <mat-form-field>
+                  <mat-label>Template Title</mat-label>
+                  <input formControlName="CriteriaTemplateTitle" required matInput placeholder="Template Title" />
+                  <!-- <mat-error  *ngFor="let error of CriteriaTemplateForm.get('CriteriaTemplateTitle').errors | keyvalue">{{getErrorMessage(error.key,  error.value) }}</mat-error> -->
+                </mat-form-field>
+              </div>
+              <div class="col-4">
+                <mat-form-field>
+                  <mat-label>Description</mat-label>
+                  <input formControlName="Description" matInput placeholder="Description"  />
+                </mat-form-field>
+              </div>
+              <div class="col-2">
+                <mat-form-field>
+                  <mat-select placeholder="Marking Type" formControlName="MarkingRequired" matInput required>
+                    <mat-option value="Yes">Yes</mat-option>
+                    <mat-option value="No">No</mat-option>
+                  </mat-select>
+                  <!-- <mat-error *ngFor="let error of CriteriaTemplateForm.get('MarkingRequired').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error> -->
+                </mat-form-field>
+              </div>
+              <div class="col-2">
+                <mat-form-field>
+                  <mat-label>Maximum Marks</mat-label>
+                  <input formControlName="MaximumMarks" NumberOnly [required]="!Isread" [readonly]="Isread" matInput
+                    placeholder="Maximum Marks" required />
+                  <!-- <mat-error *ngFor="let error of CriteriaTemplateForm.get('MaximumMarks').errors | keyvalue">{{getErrorMessage(error.key, error.value) }}</mat-error> -->
+                </mat-form-field>
+              </div>
+            </div>
+            <div formArrayName="mainCategory">
+              <div class="row"
+                *ngFor="let mainCategory of CriteriaTemplateForm.get('mainCategory')['controls']; let i = index"
+                [formGroupName]="i">
+                <fieldset class="border">
+                  <legend>Main Category</legend>
+                  <div class="row">
+                    <div class="col-3">
+                      <mat-form-field>
+                        <mat-label>Category Title</mat-label>
+                        <input formControlName="CategoryTitle" matInput required />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                      <mat-form-field>
+                        <mat-label>Description </mat-label>
+                        <input formControlName="Description" matInput required />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                      <mat-form-field>
+                        <mat-label>Total Marks </mat-label>
+                        <input formControlName="TotalMarks" NumberOnly matInput [required]="!Isread"
+                          [readonly]="Isread" />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                      <a class="border-btn btn-danger" *ngIf="CriteriaTemplateForm.get('mainCategory').value.length>1"
+                        (click)="removeMainCategory(i)"><i class="fas fa-times"></i> Main</a> &nbsp;
+                      <a class="border-btn btn-primary" (click)="addSubCategory(mainCategory)"><i
+                          class="fas fa-plus"></i> Sub </a>
+                    </div>
+                    <fieldset class="border">
+                      <legend>Sub Category</legend>
+                      <div formArrayName="subCategory">
+                        <div class="row"
+                          *ngFor="let subCategory of mainCategory.get('subCategory')['controls']; let j = index"
+                          [formGroupName]="j">
+                          <div class="col-3">
+                            <mat-form-field>
+                              <mat-label>Sub Category Title</mat-label>
+                              <input formControlName="SubCategoryTitle" matInput required />
+                            </mat-form-field>
+                          </div>
+                          <div class="col-3">
+                            <mat-form-field>
+                              <mat-label>Description </mat-label>
+                              <input formControlName="Description" matInput required />
+                            </mat-form-field>
+                          </div>
+                          <div class="col-3">
+                            <mat-form-field>
+                              <mat-label>Criteria </mat-label>
+                              <input formControlName="Criteria" matInput required />
+                            </mat-form-field>
+                          </div>
+                          <div class="col-3">
+                            <mat-form-field>
+                              <mat-label>Marked Criteria </mat-label>
+                              <mat-select placeholder="Marked Criteria" formControlName="MarkedCriteria" matInput
+                                required>
+                                <mat-option value="Yes">Yes</mat-option>
+                                <mat-option value="No">No</mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-3">
+                            <mat-form-field>
+                              <mat-label>Mandatory </mat-label>
+                              <mat-select placeholder="Marked Criteria" formControlName="Mandatory" matInput required>
+                                <mat-option value="Yes">Yes</mat-option>
+                                <mat-option value="No">No</mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-3">
+                            <mat-form-field>
+                              <mat-label>Max Marks </mat-label>
+                              <input formControlName="MaxMarks" matInput [required]="!Isread" [readonly]="Isread" />
+                            </mat-form-field>
+                          </div>
+                          <div class="col-3">
+                            <mat-label class="custom-label"
+                              style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Attachment</mat-label>
+                            <file-upload formControlName="Attachment" maxSize="1024" [nopreview]="true"
+                              matInput></file-upload>
+                          </div>
+                          <div class="" *ngIf="fileArray[i] !=undefined">
+                            <div class="col-sm-1"
+                              *ngIf=" readonly==true && fileArray[i][j]!='' && fileArray[i][j]!=undefined">
+                              <a style="cursor: pointer;background: #eceae7  !important;font-size: 1.3rem !important;position: relative !important;top: 20px !important;right: 10px !important;border-radius: 6px !important "
+                                (click)="ShowPreview(fileArray[i][j])" color="primary"
+                                matTooltip="Preview uploaded document" class="file-lable">
+                                <mat-icon style="position: relative;top: 4px;cursor: pointer;">get_app</mat-icon>
+                              </a>
+                            </div>
+                          </div>
+                          <div class="col-2">
+                            <a class="border-btn btn-danger" *ngIf="mainCategory.get('subCategory').value.length>1"
+                              (click)="removeSubCategory(mainCategory,j)"><i class="fas fa-times"></i> </a>
+                          </div>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row" style="float:right">
+              <div class="col-12">
+                <a mat-raised-button color="accent" (click)="addMainCategory()"><i class="fa fa-plus"></i> Main
+                  Category</a>
+              </div>
+            </div>
+            <button mat-raised-button color="primary" *ngIf="AttachedProgramCount==0" (click)="CreateTemplate()">{{savebtn}} Template</button>
+            | <button mat-raised-button color="warn" (click)="ResetTemplate()">Reset</button>
+          </form>
+        </fieldset>
+      </mat-tab>
+      <mat-tab label=" Criteria Template List">
+        <div class="table-responsive">
+          <div fxLayout="column" class="table-responsive">
+            <mat-table [dataSource]="TablesData" #Sort="matSort" matSort>
+              <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <ng-container *ngIf=" column !='Action'">
+                    &nbsp;{{row[column]}}
+                  </ng-container>
+                  <ng-container *ngIf="column == 'Action'">
+                    <button *ngIf="column === 'Action';" mat-icon-button color="accent" matTooltip="View Detail"
+                      (click)="Edit(row.CriteriaTemplateID,'0')">
+                      <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color"
+                        aria-hidden="true">control_point</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" matTooltip="Edit Record"
+                      (click)="Edit(row.CriteriaTemplateID,'1')">
+                      <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color"
+                        aria-hidden="true">edit</mat-icon>
+                    </button>
+                  </ng-container>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>

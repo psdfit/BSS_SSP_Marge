@@ -1,0 +1,192 @@
+<br />
+<mat-toolbar color="accent" class=" slim slim">
+  <mat-icon class="material-icons">view_comfy</mat-icon>
+  <span class="spacer">Scheme Detail</span>
+  <div class="spacer"></div>
+</mat-toolbar>
+
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Basic Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Scheme Code</th>
+            <td>{{SchemeDetail?.SchemeCode}}</td>
+            <th>Name of Scheme</th>
+            <td>{{SchemeDetail?.SchemeName}}</td>
+          </tr>
+          <tr>
+            <th>Program Type</th>
+            <td>{{SchemeDetail?.PTypeName}}</td>
+            <th>Description</th>
+            <td>{{SchemeDetail?.Description}}</td>
+          </tr>
+          <tr>
+            <th>Funding Source</th>
+            <td>{{SchemeDetail?.FundingSourceName}}</td>
+            <th>Funding Category</th>
+            <td>{{SchemeDetail?.FundingCategoryName}}</td>
+          </tr>
+          <tr>
+            <th>Type of Businees Rule</th>
+            <td>{{SchemeDetail?.BusinessRuleType}}</td>
+            <th>Gender(s)</th>
+            <td>{{SchemeDetail?.GenderName}}</td>
+          </tr>
+          <tr>
+            <th>Stipend</th>
+            <td>{{SchemeDetail?.Stipend}}</td>
+            <th>Stipend Mode</th>
+            <td>{{SchemeDetail?.StipendMode}}</td>
+          </tr>
+          <tr>
+            <th>Date of Creation</th>
+            <td>{{SchemeDetail?.CreatedDate | date:'mediumDate'}}</td>
+            <th>Approved</th>
+            <td>{{SchemeDetail?.Approved}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">TSP's of Scheme</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>TSP Code</th>
+            <th>Service Provider Name</th>
+            <th>NTN</th>
+            <th>Contact Person</th>
+            <th>Contact No</th>
+            <th>Email</th>
+            <th>District</th>
+          </tr>
+          <tr *ngFor="let x of SchemeTSPs">
+            <td>{{x?.TSPCode}}</td>
+            <td>{{x?.TSPName}}</td>
+            <td>{{x?.NTN}}</td>
+            <td>{{x?.CPName}}</td>
+            <td>{{x?.CPLandline}}</td>
+            <td>{{x?.CPEmail}}</td>
+            <td>{{x?.DistrictName}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Classes of Scheme</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <mat-table [dataSource]="dataSourceClass" #sortClass="matSort" matSort>
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="ClassCode">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.ClassCode}} </mat-cell>
+          </ng-container>
+
+          <!-- Progress Column -->
+          <ng-container matColumnDef="TrainingAddressLocation">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Location </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.TrainingAddressLocation}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="TradeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trade </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.TradeName}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="SectorName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Sector </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.SectorName}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="ClusterName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Cluster </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.ClusterName}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="Batch">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Batch </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.Batch}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="StartDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row?.StartDate | date: 'mediumDate'}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="EndDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> End Date </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row?.StartDate | date: 'mediumDate'}} </mat-cell>
+          </ng-container>
+
+          <!-- Color Column -->
+          <ng-container matColumnDef="ClassStatusName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.ClassStatusName}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumnsClass"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumnsClass;">
+          </mat-row>
+        </mat-table>
+
+        <mat-paginator #paginatorClass [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Scheme Classes</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Class Code</th>
+            <th>Location</th>
+            <th>Trade</th>
+            <th>Sector</th>
+            <th>Cluster</th>
+            <th>Batch</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+          </tr>
+          <tr *ngFor="let x of SchemeClasses">
+            <td>{{x?.ClassCode}}</td>
+            <td>{{x?.TrainingAddressLocation}}</td>
+            <td>{{x?.TradeName}}</td>
+            <td>{{x?.SectorName}}</td>
+            <td>{{x?.ClusterName}}</td>
+            <td>{{x?.Batch}}</td>
+            <td>{{x?.StartDate | date: 'mediumDate'}}</td>
+            <td>{{x?.EndDate | date: 'mediumDate'}}</td>
+            <td>{{x?.ClassStatusName}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>-->

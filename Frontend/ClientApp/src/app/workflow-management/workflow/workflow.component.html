@@ -1,0 +1,175 @@
+<mat-card>
+  <mat-toolbar color="accent" class=" slim slim">
+    <mat-icon class="material-icons"> add_circle </mat-icon>
+    <span class="spacer">{{SpacerTitle}}</span>
+  </mat-toolbar>
+  <mat-card-content>
+
+    <form (ngSubmit)="Save()" [formGroup]="WorkflowForm">
+      <fieldset class="border">
+        <legend>Workflow</legend>
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input formControlName="WorkflowTitle" matInput placeholder="Workflow Title" required />
+              <mat-error *ngFor="let error of WorkflowForm.get('WorkflowTitle').errors | keyvalue">{{
+                getErrorMessage(error.key, error.value) }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-select placeholder="Sourcing Type" formControlName="SourcingTypeID" matInput required>
+                <mat-option *ngFor="let item of sourcingType" [value]="item.PlaningTypeID">{{item.PlaningType}}</mat-option>
+                </mat-select>
+              <mat-error *ngFor="let error of WorkflowForm.get('SourcingTypeID').errors | keyvalue">{{
+                getErrorMessage(error.key, error.value) }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Total Days</mat-label>
+              <input formControlName="TotalDays" matInput NumberOnly placeholder="TotalDays" required />
+              <mat-error *ngFor="let error of WorkflowForm.get('TotalDays').errors | keyvalue">{{
+                getErrorMessage(error.key, error.value) }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Task Days</mat-label>
+              <input formControlName="TotalTaskDays" matInput NumberOnly placeholder="TotalTaskDays" readonly required />
+              <mat-error *ngFor="let error of WorkflowForm.get('TotalTaskDays').errors | keyvalue">{{
+                getErrorMessage(error.key, error.value) }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-12">
+            <mat-form-field>
+              <mat-label>Description</mat-label>
+              <input formControlName="Description" matInput placeholder="Description" required />
+              <mat-error *ngFor="let error of WorkflowForm.get('Description').errors | keyvalue">{{
+                getErrorMessage(error.key, error.value) }}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <fieldset class="border">
+          <legend>Task</legend>
+          <div class="table-responsive">
+            <table class="table  table-bordered " formArrayName="taskDetails">
+              <thead>
+                <tr>
+                  <th><b>Action</b></th>
+                  <th><b>Task Name</b></th>
+                  <th><b>Task Days</b></th>
+                  <th><b>Task Approval</b></th>
+                  <th><b>Task Status</b></th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr [formGroupName]="i" *ngFor="let item of taskDetails.controls;let i=index">
+                  <td style="vertical-align: middle;">
+
+                    <!-- <a class="border-btn btn-danger" *ngIf="WorkflowEditRecord.length"  (click)="RemoveDetail(i,WorkflowEditRecord[i])" ><i class="fas fa-times"></i></a> -->
+                    <a class="border-btn btn-danger" *ngIf="taskDetails.length>1"
+                      (click)="RemoveDetail(i,taskDetails)"><i class="fas fa-times"></i></a>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <mat-label>Task Name</mat-label>
+                      <input formControlName="TaskName" matInput required />
+                    </mat-form-field>
+                  </td>
+
+                  <td>
+                    <mat-form-field>
+                      <mat-label>Task Days</mat-label>
+                      <input formControlName="TaskDays" NumberOnly matInput required />
+                    </mat-form-field>
+                  </td>
+
+                  <td>
+                    <mat-form-field>
+                      <mat-label>Task Approval</mat-label>
+                      <input formControlName="TaskApproval" matInput required />
+                    </mat-form-field>
+                  </td>
+
+                  <td>
+                    <mat-form-field>
+                      <mat-label>Select Status</mat-label>
+                      <mat-select formControlName="TaskStatus" matInput required>
+                        <mat-option value="In-progress">In-progress</mat-option>
+                        <mat-option value="Pending" >Pending</mat-option>
+                        <mat-option value="Completed">Completed</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="8">
+                    <a (click)="AddWorkflowDetails()" color="primary" mat-raised-button>+ Add</a>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </fieldset>
+        <div class="row" style="float:right">
+          <div class="col-sm-12">
+            <button color="primary" mat-raised-button [disabled]="WorkflowForm.invalid"><i class="fas fa-check"></i> {{savebtn}} Record </button> |
+            <button color="warn" type="reset" matTooltip="Click to Reset form data" (click)="ResetFrom()"
+              mat-raised-button>
+              <i class="fas fa-times"></i>
+              Reset
+            </button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+    <!-- record list start -->
+    <mat-toolbar color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> view_comfy </mat-icon>
+      <span class="spacer">Manage and View All</span>
+      <input placeholder="Search" (keyup)="applyFilter(WorkflowTablesData,$event)" class="search" />
+      <!-- <button mat-raised-button  style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport(WorkflowTablesData.filteredData,'Workflow Profile')">
+            <i class="fas fa-file-export"></i> Export Excel</button> -->
+    </mat-toolbar>
+    <div class="table-responsive">
+      <mat-table [dataSource]="WorkflowTablesData" #WorkflowSort="matSort" matSort>
+        <ng-container *ngFor="let column of WorkflowTableColumns" [matColumnDef]="column">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <ng-container *ngIf="column !='WorkflowTitle' ">
+              &nbsp;{{ row[column] }}
+            </ng-container>
+
+            <ng-container *ngIf="column =='WorkflowTitle'"> &nbsp;
+              <span (click)="Edit(row.WorkflowID)"
+                style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                <strong>{{ row[column] }}</strong>
+              </span>
+            </ng-container>
+
+
+            <ng-container *ngIf="column =='CreatedDate'">
+              &nbsp; {{ row[column] | date:environment.DateFormat }}
+            </ng-container>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="WorkflowTableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: WorkflowTableColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator [pageSize]="10" #WorkflowPaginator="matPaginator"
+        [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+    </div>
+
+  </mat-card-content>
+</mat-card>

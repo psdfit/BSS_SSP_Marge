@@ -1,0 +1,432 @@
+<mat-tab-group #tabGroup class="spacemin">
+  <mat-tab label="Appendix">
+    <mat-card>
+      <mat-card-content>
+        <mat-toolbar color="accent" class="slim">
+          <mat-icon class="material-icons"> add_circle </mat-icon>
+          <span class="spacer">Appendix</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+        <fieldset class="border" [disabled]="insertedScheme[0]?.FinalSubmitted">
+          <legend>
+            Appendix's Form
+            <ng-container *ngIf="appInstructor.allowFinalSubmit && !insertedScheme[0]?.FinalSubmitted">
+              &nbsp;&nbsp;
+              <button mat-stroked-button color="primary" matTooltip="Submit Appendix, Save as Final"
+                      (click)="finalSubmit()">
+                Submit
+              </button>
+            </ng-container>
+            <ng-container *ngIf="isLoadedAppendixForm">
+              &nbsp;&nbsp;
+              <button mat-stroked-button color="warn" matTooltip="Relaod/Reset Appendix's Form"
+                      (click)="reLoadAppendix()">
+                Reload
+              </button>
+            </ng-container>
+          </legend>
+          <div class="row" *ngIf="!isLoadedAppendixForm && !insertedScheme[0]?.FinalSubmitted">
+            <div class="col-sm-3">
+              <form novalidate [formGroup]="schemeFileForm">
+                <input placeholder="Upload Excel File to Create Appendix" type="file" (change)="onFileChange($event)"
+                       formControlName="SchemeExcel" required>
+              </form>
+            </div>
+            <div class="col-sm-3"> </div>
+            <div class="col-sm-6">
+              <a mat-raised-button download href="../../../assets/Appendix/AppendixTemplate.xlsx"
+                 class="float-right">Download Template</a>
+            </div>
+          </div>
+          <mat-horizontal-stepper #stepper>
+            <mat-step>
+              <ng-template matStepLabel><span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> Scheme</ng-template>
+              <form novalidate #nform="ngForm" [formGroup]="schemeForm"
+                    (submit)="schemeForm.valid && submit(nform, stepper)">
+                <input type="hidden" formControlName="SchemeID">
+                <div class="row">
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Scheme Name" formControlName="SchemeName" required AlphaNumeric>
+                      <mat-error *ngIf="schemeForm.controls.SchemeName.getError('exists')">
+                        This Scheme's Name already
+                        Exists
+                      </mat-error>
+                      <mat-error *ngIf="schemeForm.controls.SchemeName.invalid && schemeForm.controls.SchemeName.errors.pattern">
+                        <strong>allow alpha numeric only</strong>
+                      </mat-error>
+                      <mat-error *ngIf="schemeForm.controls.SchemeName.invalid && schemeForm.controls.SchemeName.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                      <mat-error *ngIf="schemeForm.controls.SchemeName.invalid && schemeForm.controls.SchemeName.errors.maxlength">
+                        <strong>Length must be less than or equal to 30.</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Scheme Code" formControlName="SchemeCode" required AlphaNumeric>
+                      <mat-error *ngIf="schemeForm.controls.SchemeCode.getError('exists')">
+                        This Scheme's Code already
+                        Exists
+                      </mat-error>
+                      <mat-error *ngIf="schemeForm.controls.SchemeCode.invalid && schemeForm.controls.SchemeCode.errors.pattern">
+                        <strong>allow alpha numeric only</strong>
+                      </mat-error>
+                      <mat-error *ngIf="schemeForm.controls.SchemeCode.invalid && schemeForm.controls.SchemeCode.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                      <mat-error *ngIf="schemeForm.controls.SchemeCode.invalid && schemeForm.controls.SchemeCode.errors.maxlength">
+                        <strong>Length must be less than or equal to 4.</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-6 col-lg-6">
+                    <mat-form-field>
+                      <input matInput placeholder="Description" formControlName="Description">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="PaymentSchedule" placeholder="Payment Mechanism" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let p of paymentSchedule" [value]="p.PaymentStructure">
+                          {{p.Description}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.PaymentSchedule.invalid && schemeForm.controls.PaymentSchedule.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="ProgramTypeID" placeholder="Program" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let p of programs" [value]="p.PTypeID">
+                          {{p.PTypeName}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.ProgramTypeID.invalid && schemeForm.controls.ProgramTypeID.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="PCategoryID" placeholder="Program Department" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let p of programCategories" [value]="p.PCategoryID">
+                          {{p.PCategoryName}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.PCategoryID.invalid && schemeForm.controls.PCategoryID.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="FundingSourceID" placeholder="Funding Source" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let f of fundingSources" [value]="f.FundingSourceID">
+                          {{f.FundingSourceName}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.FundingSourceID.invalid && schemeForm.controls.FundingSourceID.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="FundingCategoryID" placeholder="Funding Category" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let f of fundingCategories" [value]="f.FundingCategoryID">
+                          {{f.FundingCategoryName}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.FundingCategoryID.invalid && schemeForm.controls.FundingCategoryID.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="OrganizationID" placeholder="Organization" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let o of organizations" [value]="o.OID">
+                          {{o.OName}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.OrganizationID.invalid && schemeForm.controls.OrganizationID.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select placeholder="Business Rule Type" formControlName="BusinessRuleType" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let o of businessRuleType" [value]="o.Name">{{o.Name}}</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.BusinessRuleType.invalid && schemeForm.controls.BusinessRuleType.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly>
+                      <mat-error *ngIf="schemeForm.controls.Stipend.invalid && schemeForm.controls.Stipend.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="StipendMode" placeholder="Stipend Mode"
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted" required>
+                        <mat-option value="Digital">Digital</mat-option>
+                        <mat-option value="Manual">Manual</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Uniform and Bag" formControlName="UniformAndBag" required type="text"
+                             DecimelOnly>
+                      <mat-error *ngIf="schemeForm.controls.UniformAndBag.invalid && schemeForm.controls.UniformAndBag.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="MinimumEducation" placeholder="Minimum Education"
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let f of educationTypes" [value]="f.EducationTypeID">
+                          {{f.Education}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.MinimumEducation.invalid && schemeForm.controls.MinimumEducation.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="MaximumEducation" placeholder="Maximum Education" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let f of educationTypes" [value]="f.EducationTypeID">
+                          {{f.Education}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.MaximumEducation.invalid && schemeForm.controls.MaximumEducation.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="MinAge" placeholder="Minimum Age" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let f of age" [value]="f">
+                          {{f}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.MinAge.invalid && schemeForm.controls.MinAge.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="MaxAge" placeholder="Maximum Age" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let f of age" [value]="f">
+                          {{f}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.MaxAge.invalid && schemeForm.controls.MaxAge.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <mat-select formControlName="GenderID" placeholder="Gender" required
+                                  [disabled]="insertedScheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let g of genders" [value]="g.GenderID">
+                          {{g.GenderName}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="schemeForm.controls.GenderID.invalid && schemeForm.controls.GenderID.errors.required">
+                        <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="picker" formControlName="ContractAwardDate"
+                             placeholder="Contract Award Date" readonly>
+                      <mat-datepicker-toggle matSuffix [for]="picker" disabled="true"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="float-right" *ngIf="!insertedScheme[0]?.FinalSubmitted">
+                  <button mat-raised-button color="primary" type="submit"
+                          matTooltip="Save only Scheme's data, should save other components individually."
+                          [disabled]="schemeForm.invalid" mat-button>
+                    Save
+                  </button>&nbsp;&nbsp;
+                  <button *ngIf="insertedScheme.length==0" mat-raised-button color="warn"
+                          matTooltip="Click to Reset form data" type="reset" (click)="reset(nform)"
+                          [disabled]="!schemeForm.dirty">
+                    Reset
+                  </button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel><span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> TSP(s)</ng-template>
+              <app-tsp [scheme]="insertedScheme" [incompTSP]="tspsInserted" (tsp)="bindTSPs($event)"
+                       (next)="moveForward($event, stepper)" [childClassComponent]="appClass"
+                       [childInstructorComponent]="appInstructor"></app-tsp>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel>
+                <span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> Class(s)
+              </ng-template>
+              <app-class #appClass [scheme]="insertedScheme" [tsps]="tspsInserted" [classes]="classesInserted"
+                         (classData)="bindClasses($event)" (next)="moveForward($event, stepper)"></app-class>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel>
+                <span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> Instructor(s)
+              </ng-template>
+              <app-instructor #appInstructor [scheme]="insertedScheme" [tsps]="tspsInserted" [classes]="classesInserted"
+                              [incompInstr]="instructorsInserted"></app-instructor>
+            </mat-step>
+          </mat-horizontal-stepper>
+        </fieldset>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="All Appendix(s)">
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Manage and View Appendix(s)</span>
+            <div class="spacer"></div>
+            <input type="text" placeholder="Search" [(ngModel)]="searchFilter" (keyup)="applyFilter()" class="search" />
+          </mat-toolbar>
+          <div fxLayout="column">
+            <mat-table [dataSource]="schemesDataSource" matSort>
+              <ng-container matColumnDef="Scheme Name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Scheme Code">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.SchemeCode}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Description">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Description}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Organization">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Organization</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.OName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="PaymentSchedule">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Payment Mechanism</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.PaymentSchedule}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit"
+                          (click)="editAppendix(Row.SchemeID)">
+                    <mat-icon *ngIf="!Row.FinalSubmitted" matTooltip="Edit">edit</mat-icon>
+                    <mat-icon *ngIf="Row.FinalSubmitted" matTooltip="View">edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" *ngIf="!Row.FinalSubmitted" [disabled]="!formrights.CanDelete"
+                          (click)="deleteDraftAppendix(Row.SchemeID)">
+                    <mat-icon matTooltip="Delete forever">delete_forever</mat-icon>
+                  </button>
+                  <span *ngIf="!Row.FinalSubmitted" class="text-danger mt-2"
+                        style="font-size: x-small;font-style: italic">[Draft]</span>
+                  <a *ngIf="Row.FinalSubmitted" color="primary" mat-button matTooltip="Export in excel(.xlsx)."
+                     (click)="exportAppendix(Row.SchemeID)">
+                    Export
+                  </a>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="Skills Shcolarship Program Appendix(s)">
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Manage and View Appendix(s)</span>
+            <div class="spacer"></div>
+            <input type="text" placeholder="Search" [(ngModel)]="searchFilterSSP" (keyup)="applyFilterSSP()" class="search" />
+          </mat-toolbar>
+          <div fxLayout="column">
+            <mat-table [dataSource]="schemesDataSourceSSP" matSort>
+              <ng-container matColumnDef="Scheme Name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ProgramName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Scheme Code">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.SchemeCode}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Description">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Description}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="PaymentSchedule">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Payment Mechanism</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.PaymentSchedule}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ProcessStartDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Process Start Date</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ProcessStartDate | date: 'dd/MM/yyyy'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ProcessEndDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Process End Date</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ProcessEndDate | date: 'dd/MM/yyyy'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-icon-button color="primary" *ngIf="!Row.FinalSubmitted" [disabled]="Row.IsLocked == 'Open'"
+                          (click)="GenerateAppendix(Row.ProgramID)">
+                    Generate Appendix
+                  </button>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns1"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns1;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>

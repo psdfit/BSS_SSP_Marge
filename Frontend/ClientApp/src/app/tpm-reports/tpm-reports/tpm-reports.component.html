@@ -1,0 +1,57 @@
+
+<div class="container">
+  <mat-card>
+    <form novalidate #nform="ngForm" [formGroup]="TPMForm" (submit)="Submit(nform)">
+      <div class="row">
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+          <mat-form-field>
+            <mat-select formControlName="ReportType" placeholder="Report Type" required (selectionChange)="HideShowFields($event)">
+              <mat-option *ngFor="let p of ReportTypes" [value]="p">
+                {{p}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+          <mat-form-field fxFlex>
+            <mat-label>Month</mat-label>
+            <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="Month" readonly>
+            <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
+            <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
+                            (monthSelected)="chosenMonthHandler($event, customDatePicker)">
+            </mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+          <mat-form-field>
+            <mat-select formControlName="SchemeUID" placeholder="Scheme Name" (selectionChange)="filterTSPs($event)" required>
+              <mat-option *ngFor="let s of Schemes" [value]="s.UID">
+                {{s.SchemeName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+          <mat-form-field>
+            <mat-select formControlName="TSPUID" placeholder="TSP" required>
+              <mat-option *ngFor="let t of FilteredTSPs" [value]="t.UID">
+                {{t.TSPName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="fa-pull-right">
+        <button mat-raised-button color="primary" type="submit"
+                mat-button>Generate
+        </button>&nbsp;&nbsp;
+      </div>
+    </form>
+  </mat-card>
+</div>

@@ -1,0 +1,152 @@
+
+
+
+
+
+
+
+<div class="row" >
+  <div class="col-sm-6 visibility-sm-hidden " >
+     <form (keydown.enter)="onEnterKey($event)"  novalidate="" style="height: auto !important;" #SendOTP="ngForm" (submit)="SendOTP.form.valid && Submit(SendOTP)" id="login">
+
+           <div class="card-icon"><img src="../../assets/images/logo.png" alt="" /> </div>
+           <div class="row text-center">
+             <div class="col-12">
+                 <h1 class="mt-1">Verify OTP</h1>
+                 <p>Please enter the 6-digit code sent to your registered email.</p>
+                 <p>براہ کرم آپ کے رجسٹرڈ ای میل پر بھیجا گیا 6 ہندسوں کا کوڈ درج کریں۔</p>
+                 <p class="text-primaryA"><i><u>{{EMail}}</u></i></p>
+             </div>
+           </div>
+     
+           <fieldset id="inputs">
+            <mat-form-field>
+              <input placeholder="Enter OTP" id="OTP" required name="OTPCode" matInput autofocus  #OTPCode="ngModel" NumberOnly [(ngModel)]="user.OTPCode">
+              <mat-error *ngIf="OTPCode.errors?.required">
+                OTP is <strong>required</strong>
+              </mat-error>
+
+              
+            </mat-form-field>
+
+          
+      
+      
+          </fieldset>
+      
+          <fieldset id="actions">
+            <div class="row">
+              <div class="col-12">
+                <div class="col-12" *ngIf="EMail"> An E-Mail will be sent to ur E-Mail Address</div>
+              </div>
+            </div>
+          </fieldset>
+       
+          <div class="col-12  p-1" >
+            <a [style.position]="'relative'" color="primary" mat-stroked-button
+            routerLinkActive="selected"
+            [routerLink]="'/login'" style="line-height: unset;"> <i class="fas fa-arrow-left"></i> Retrun to Login</a>
+         </div>
+         
+      
+
+
+        <button mat-raised-button   style="position: absolute !important;" color="primary" type="submit" >
+        <i class="fas fa-sign-in-alt"></i>Verify OTP
+        </button>
+     
+     </form>
+  </div>
+  <div class="col-sm-6 bg text-center text-white py-5">
+     <div class="row" >
+        <br>
+        <br>
+        <div class="col-12">
+           <h1 >Welcome to <strong> PSDF </strong> <span class="text-warningA">Online Registration Portal</span></h1>
+        </div>
+        <div class="col-12">
+           <h1 ><b> پی ایس ڈی ایف  </b> <span class="text-warningA"> آن لائن رجسٹریشن پورٹل </span> <span> میں خوش آمدید</span></h1>
+        </div>
+     </div>
+     <br/>
+     <div class="row">
+        <div class="col-12">
+           <h3 >Please watch this video before registration</h3>
+        </div>
+        <div class="col-12">
+           <h3 >برائے مہربانی رجسٹریشن سے پہلے یہ مختصر ویڈیو دیکھیں</h3>
+        </div>
+        <div class="col-12">
+           <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+              <path fill="red" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
+              <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
+           </svg>
+        </div>
+
+      <!-- <div class="col-12 text-center">
+       <video width="320" height="240" controls>
+         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+         <source src="https://www.w3schools.com/html/mov_bbb.ogg" type="video/ogg">
+       Your browser does not support the video tag.
+       </video>
+      </div> -->
+
+        <div class="col-sm-12 hidden-sm">
+
+        
+          <form (keydown.enter)="onEnterKey($event)"  novalidate="" style="height: auto !important;" #SendOTP="ngForm" (submit)="SendOTP.form.valid && Submit(SendOTP)" id="login">
+
+            <div class="card-icon"><img src="../../assets/images/logo.png" alt="" /> </div>
+            <div class="row text-center">
+              <div class="col-12">
+                  <h1 class="mt-1">Verify OTP</h1>
+                  <p>Please enter the 6-digit code sent to your registered email.</p>
+                  <p>براہ کرم آپ کے رجسٹرڈ ای میل پر بھیجا گیا 6 ہندسوں کا کوڈ درج کریں۔</p>
+                  <p class="text-primaryA"><i><u>{{user.Email}}</u></i></p>
+              </div>
+            </div>
+      
+            <fieldset id="inputs">
+             <mat-form-field>
+               <input placeholder="Enter OTP" id="OTP" required name="SendOTP" matInput autofocus  #SendOTP="ngModel" NumberOnly [(ngModel)]="user.SendOTP">
+               <mat-error *ngIf="SendOTP.errors?.required">
+                 OTP is <strong>required</strong>
+               </mat-error>
+             </mat-form-field>
+       
+       
+           </fieldset>
+       
+           <fieldset id="actions">
+             <div class="row">
+               <div class="col-12">
+                 <div class="col-12" *ngIf="EMail"> An E-Mail will be sent to ur E-Mail Address ({{EMail}})</div>
+               </div>
+             </div>
+           </fieldset>
+        
+           <div class="col-12  p-1" >
+             <a [style.position]="'relative'" color="primary" mat-stroked-button
+             routerLinkActive="selected"
+             [routerLink]="'/login'" style="line-height: unset;"> <i class="fas fa-arrow-left"></i> Retrun to Login</a>
+          </div>
+          
+       
+ 
+ 
+         <button mat-raised-button   style="position: absolute !important;" color="primary" type="submit" >
+         <i class="fas fa-sign-in-alt"></i>Verify OTP
+         </button>
+      
+      </form>
+        </div>
+
+        <div class="col-12" style="position: absolute;bottom: 2px;">
+           <h6>For details and Techical Assistance please call us on PSDF</h6>
+           <h6>UAN 042-111-11-PSDF (7733) From  8:30AM to 4:30PM (Monday-Friday)</h6>
+        </div>
+     </div>
+  </div>
+</div>
+
+

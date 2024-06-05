@@ -1,0 +1,145 @@
+
+ <div class="row">
+  <div class="col-sm-4">
+      <mat-form-field fxFlex>
+        <mat-select  placeholder="Filter Status Type" (selectionChange)="FilterByComplaintStatusType($event.value)"  matInput required>
+         <mat-option value="">--Select--</mat-option>
+         <mat-option *ngFor="let s of ComplaintStatusTypedll"  [value]="s.ComplaintStatusTypeID">{{s.ComplaintStatusType}}</mat-option>
+       </mat-select>
+     </mat-form-field>
+  </div>
+</div>
+
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <div class="spacer"></div>
+              <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+            </mat-toolbar>
+          <div fxLayout="column" class="mat-elevation-z8">
+            <mat-table [dataSource]="Complaint" matSort>
+              <ng-container matColumnDef="History">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Action</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit"  matTooltip="View & Change History" >
+                      <mat-icon  aria-label="View History" (click)="openHistoryDialogue(Row)">card_membership</mat-icon>
+                    </button>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complainant No</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintNo}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Attachedfile">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Attached file</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <div *ngIf="Row.FilePath!=null">
+                  <a matTooltip="Check Complaint Attachment"  mat-button color="primary" (click)="GetCurrentComplaintAttachements(Row)" > <mat-icon>attachment</mat-icon></a>                    
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintSubTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Sub Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintSubTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintStatus">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Status</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                      {{Row.ComplaintStatusType}}
+                     </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintDescription">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Description</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintDescription}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeCNIC">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeCode}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPCode}} </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+
+
+  
+<!-- <mat-tab-group #tabGroup>
+  <mat-tab label="List Of Assigned Complaint">
+  
+  </mat-tab>
+  <mat-tab label="List Of TSP Self Complaint"  *ngIf="TSPTAB">
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <div class="spacer"></div>
+              <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+            </mat-toolbar>
+          <div fxLayout="column" class="mat-elevation-z8">
+            <mat-table [dataSource]="ComplaintTSP" matSort>
+  
+              <ng-container matColumnDef="ComplaintNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complainant No</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintNo}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintSubTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Sub Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintSubTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintDescription">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Description</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintDescription}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="History">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Action</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-icon-button color="primary" matTooltip="View & Change History" >
+                      <mat-icon  aria-label="View History" (click)="openHistoryDialogue(Row)">card_membership</mat-icon>
+                    </button>
+                </mat-cell>
+              </ng-container>
+            
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group> -->

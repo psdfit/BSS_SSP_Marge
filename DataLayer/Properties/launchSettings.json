@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DataLayer": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

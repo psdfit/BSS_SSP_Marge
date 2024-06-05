@@ -1,0 +1,60 @@
+<div id="TSPColor-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column" class="mat-elevation-z8">
+          <mat-table [dataSource]="TSPColor" matSort>
+            <ng-container matColumnDef="ChangeColor">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Change Color</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <a matTooltip="TSP Change Color"  mat-button color="primary" *ngIf="formrights.CanEdit" (click)="openTSPColorChangeDialogue(Row)"> <mat-icon  aria-label="Change Color" >colorize</mat-icon></a>
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="History">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> History</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <a matTooltip="View History"  mat-button color="primary" *ngIf="formrights.CanView" (click)="openHistoryDialogue(Row)"><mat-icon  aria-label="View History" >card_membership</mat-icon></a>
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TSPName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="NTN">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> NTN</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.NTN}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="TSPCode">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Code</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TSPCode}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Address">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Address</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Address}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="TSPColorName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Color Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> 
+                <span class="circle"  [ngStyle]="{'background-color': Row.TSPColorCode,'color':Row.TSPColorCode}" style="margin-left: 10%;" ></span>&nbsp;&nbsp;{{Row.TSPColorName}} 
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

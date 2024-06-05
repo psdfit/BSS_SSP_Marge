@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>Update Trainee Status</h1>
+<div mat-dialog-content class="pt-2 pb-2">
+  <form novalidate [formGroup]="tsrForm">
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Trainee Name</mat-label>
+          <input formControlName="TraineeName" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Program</mat-label>
+          <input formControlName="ProgramName" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>District</mat-label>
+          <input formControlName="DistrictName" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Actions</mat-label>
+          <mat-select placeholder="Trainee Status Change Reason" formControlName="TraineeReason" (selectionChange)="onTraineeReasonChange($event)" matInput required>
+            <mat-option disabled>Select Status</mat-option>
+            <mat-option value="Accept">Accept</mat-option>
+            <mat-option value="Release">Release</mat-option>
+            <mat-option value="Reject">Reject</mat-option>
+          </mat-select>
+          <mat-error *ngIf="tsrForm.get('TraineeReason').invalid && tsrForm.get('TraineeReason').errors.required"><strong>Required</strong></mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-8">
+        <mat-form-field>
+          <mat-label>Other Reason</mat-label>
+          <input type="text" placeholder="Other Reason" formControlName="Rejectionreason" matInput required>
+          <mat-error *ngIf="tsrForm.get('Rejectionreason').invalid && tsrForm.get('Rejectionreason').errors.required"><strong>Required</strong></mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions class="pt-2 pb-2">
+  <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+  <button mat-raised-button (click)="save()" color="primary">Save</button>
+</div>

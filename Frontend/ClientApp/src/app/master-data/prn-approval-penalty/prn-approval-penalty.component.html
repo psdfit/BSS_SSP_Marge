@@ -1,0 +1,34 @@
+<div fxLayout="column">
+    <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+        <span class="subheading-1">Penalty Imposed & Deduction Uniform Bag</span>
+    </mat-toolbar> 
+    <form #myForm="ngForm" novalidate [formGroup]="PenaltyImposedByMEform">
+        <div mat-dialog-content>
+            <div fxLayout="column">
+                <div fxFlex="40%">
+                    <span>Class Code : <a style="color: #005b9e;" class="myAnchor" (click)="openClassJourneyDialogue(ClassID)"> <strong>{{ClassCode}}</strong> </a></span>
+                    <span style="margin-left: 30px;"> Month : <a style="color: #005b9e;" class="myAnchor"> <strong>{{PRNMonth | date:environment.MonthFormat}}</strong> </a></span>
+                    <mat-form-field fxFlex>
+                        <input type="number" formControlName="PenaltyImposedByME" placeholder="Penalty Imposed By ME" min="0" matInput maxlength="20" required />
+                        <mat-label>Penalty Imposed By ME</mat-label>
+                        <mat-error *ngIf="PenaltyImposedByME.invalid && PenaltyImposedByME.errors.required">Penalty is <strong>required</strong></mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <input type="number" formControlName="DeductionUniformBagReceiving" placeholder="Deduction Uniform Bag Receiving" min="0" matInput maxlength="20" required />
+                        <mat-label>Deduction Uniform Bag Receiving</mat-label>
+                        <mat-error *ngIf="DeductionUniformBagReceiving.invalid && DeductionUniformBagReceiving.errors.required">Deduction Uniform Bag Receiving is <strong>required</strong></mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <input type="text" formControlName="PenaltyAndUniBagRecvInputRemarks" placeholder="Remarks" matInput maxlength="500" required />
+                        <mat-label>Remarks</mat-label>
+                        <mat-error *ngIf="PenaltyAndUniBagRecvInputRemarks.invalid && PenaltyAndUniBagRecvInputRemarks.errors.required"> Penalty Comments is <strong>required</strong></mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-raised-button color="primary" type="submit" [mat-dialog-close]="myForm" [disabled]="!myForm.valid" cdkFocusInitial>Save</button>
+            <button mat-raised-button color="warn" (click)="dialogRef.close()">Close</button>
+        </div>
+    </form>
+</div>

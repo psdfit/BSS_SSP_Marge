@@ -1,0 +1,160 @@
+/*.app-toolbar {
+  position: sticky;
+  position: -webkit-sticky; /* For macOS/iOS Safari 
+  top: 0; /* Sets the sticky toolbar to be on top 
+  z-index: 1000; /* Ensure that your app's content doesn't overlap the toolbar 
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+}*/
+:host {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  
+}
+.app-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.main-div {
+  /*flex: 1;
+  margin-left: 20px;
+  position: relative;*/
+  position: relative;
+  margin-left: 20px;
+  width: 100%;
+  height: calc(100% - 47px);
+  /*perspective: 1200px;*/
+  transform-style: preserve-3d;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+.app-is-mobile, .app-toolbar {
+  position: fixed;
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
+  z-index: 2;
+}
+
+h1.app-app-name {
+  margin-left: 8px;
+}
+
+h1.app-app-name a {
+  text-decoration: none;
+  color: unset;
+}
+
+.app-sidenav-container {
+  /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
+     causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
+  flex: 1;
+}
+
+.app-is-mobile .app-sidenav-container {
+  /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
+     `<body>` to be our scrolling element for mobile layouts. */
+  flex: 1 0 auto;
+}
+
+mat-sidenav {
+  // width: auto;
+  span {
+    padding-left: 20px !important;
+    font-weight: 200;
+  }
+
+  &.mat-sidenav-closed {
+    transform: translate3d(0, 0, 0) !important;
+    visibility: visible !important;
+    min-width: 64px !important;
+    width: 64px !important;
+
+    .mat-sidenav-content {
+      margin-left: 64px !important;
+    }
+  }
+}
+
+/*:host /deep/ router-outlet ~ * {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}*/
+
+.style {
+  position: absolute;
+  top: -9px;
+  left: -12px;
+  font-size: 42%;
+  border-radius: 61%;
+  width: 2.25em;
+  height: 2.25em;
+  background-color: #FF4C13;
+  border: 4px solid #FF4C13;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+
+
+.notice {
+  position: relative;
+  margin: 1em;
+  background: #F9F9F9;
+  padding: 1em 1em 1em 2em;
+  border-left: 4px solid #DDD;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
+}
+
+.notice:before {
+  position: absolute;
+  top: 50%;
+  margin-top: -17px;
+  left: -17px;
+  background-color: #DDD;
+  color: #FFF;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  text-align: center;
+  line-height: 30px;
+  font-weight: bold;
+  font-family: Georgia;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.info {
+  border-color: #0074D9;
+}
+
+.info:before {
+  content: "i";
+  background-color: #0074D9;
+}
+
+.success {
+  border-color: #2ECC40;
+}
+
+.success:before {
+  content: "√";
+  background-color: #2ECC40;
+}
+.kamtr {
+  max-height: 0 !important;
+  padding: 0 10px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  transition: max-height 0.3s, padding 0.3s !important;
+}
+/*table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}*/

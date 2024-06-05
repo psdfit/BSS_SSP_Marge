@@ -1,0 +1,102 @@
+
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+            <mat-icon class="material-icons"> add_circle</mat-icon>
+            <span class="subheading-1">{{title + EnText}}</span>
+          </mat-toolbar>
+          <form novalidate [formGroup]="Complaintuser" (submit)="Submit()">
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field fxFlex>
+                   <mat-select   placeholder="Complaint Type" formControlName="ComplaintTypeID" (selectionChange)="GetComplaintTSubTypeByComplaintType($event.value)"  matInput required>
+                    <mat-option value="">--Select--</mat-option>
+                    <mat-option *ngFor="let s of ComplaintTypeddl"  [value]="s.ComplaintTypeID">{{s.ComplaintTypeName}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="ComplaintTypeID.invalid && ComplaintTypeID.errors.required">Complaint Type is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <mat-form-field fxFlex>
+                   <mat-select  placeholder="Complaint Sub Type"   formControlName="ComplaintSubTypeID"  id="ComplaintSubTypeID" matInput required>
+                    <mat-option value="">--Select--</mat-option>
+                    <mat-option *ngFor="let s of ComplaintSubTypedll"  [value]="s.ComplaintSubTypeID">{{s.ComplaintSubTypeName}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="ComplaintSubTypeID.invalid && ComplaintSubTypeID.errors.required">Complaint Sub Type is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field fxFlex >
+                  <mat-select multiple  (openedChange)="EmptyCtrl()" placeholder="Users"  [(ngModel)]="Steps"  id="userid"  formControlName="UserID" matInput required>
+                    <mat-optgrp disabled class="ddlsrchheader">
+                      <input type="text"
+                             (keydown)="$event.stopPropagation()"
+                             [formControl]="SearchCls" />
+                    </mat-optgrp>
+                    <mat-option *ngFor="let s of Users  | like :['FullName', SearchCls.value] " [value]="s.UserID">{{s.FullName}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="UserID.invalid && UserID.errors.required">User is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+
+            </div>
+            <br>
+            <div class="row col-12">
+              <div>
+                <button  mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                attr.aria-label="Click to {{savebtn+EnText}}" type="submit"
+                [disabled]="working  || (ComplaintUserID.value<1 && !formrights.CanAdd)">
+                <mat-icon>done</mat-icon>{{savebtn+EnText}}
+              </button>&nbsp;&nbsp;
+              </div>
+                <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                  attr.aria-label="Click to Reset form data" type="reset" (click)="reset()">
+                  <mat-icon>close</mat-icon> Reset
+                </button>
+            </div>
+          </form>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Manage and View All</span>
+            <div class="spacer"></div>
+            <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+          </mat-toolbar>
+          <div fxLayout="column" class="mat-elevation-z8">
+            <mat-table [dataSource]="ComplaintUser" matSort>
+              <ng-container matColumnDef="ComplaintTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ComplaintSubTypeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Sub Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ComplaintSubTypeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Users">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Complaint Users</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.FullName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Actions">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Actions</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-icon-button color="primary"  [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                    <mat-icon aria-label="Edit this row">edit</mat-icon>
+                  </button>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSize]="5" [pageSizeOptions]="[5,10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>

@@ -1,0 +1,149 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+        <mat-icon class="material-icons"> add_circle</mat-icon>
+        <span class="subheading-1">Infrastructure</span>
+      </mat-toolbar>
+    </div>
+    <form novalidate [formGroup]="InfrastructureFileForm">
+      <div class="row">
+        <div class="col-sm-6 col-md-4 col-lg-4">
+          <input
+            placeholder="Upload Excel File to Create Infrastructure"
+            type="file"
+            (change)="onFileChange($event)"
+            formControlName="InfrastructureExcel"
+            required
+          />
+        </div>
+      </div>
+    </form>
+    <form
+      class="form-wrap"
+      [formGroup]="InfrastructureForm"
+      (ngSubmit)="SaveChanges()"
+    >
+      <div>
+        <div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Stream</th>
+                <th>Scheme</th>
+                <th>Training Service Provider</th>
+                <th>Trade</th>
+                <th>Building</th>
+                <th>Furniture</th>
+                <th>Backup Source of Electricity</th>
+                <th>Tools and Equipments</th>
+                <th>Total</th>
+                <th>Score on a scale of 5</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="InfrastructureArray">
+              <tr
+                *ngFor="let item of getControls(); let i = index"
+                [formGroupName]="i"
+              >
+                <td>
+                  <input formControlName="Stream" class="form-control" />
+                </td>
+                <td>
+                  <input formControlName="Scheme" class="form-control" />
+                </td>
+                <td>
+                  <input
+                    formControlName="TrainingServiceProvider"
+                    class="form-control"
+                  />
+                </td>
+                <td>
+                  <input formControlName="Trade" class="form-control" />
+                </td>
+                <td>
+                  <input
+                    appOnlyNumber
+                    formControlName="Building"
+                    class="form-control"
+                  />
+                </td>
+                <td>
+                  <input
+                    appOnlyNumber
+                    formControlName="Furniture"
+                    class="form-control"
+                  />
+                </td>
+                <td>
+                  <input
+                    appOnlyNumber
+                    formControlName="BackupSourceOfElectricity"
+                    class="form-control"
+                  />
+                </td>
+                <td>
+                  <input
+                    appOnlyNumber
+                    formControlName="ToolsAndequipment"
+                    class="form-control"
+                  />
+                </td>
+                <td>
+                  <input
+                    appOnlyNumber
+                    formControlName="TotalAm"
+                    class="form-control"
+                  />
+                </td>
+                <td>
+                  <input
+                    appOnlyNumber
+                    formControlName="ScoreOnScaleOf5"
+                    class="form-control"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-10 col-sm-10">
+        <button type="submit" class="btn btn-outline-success">Save</button>
+      </div>
+    </form>
+    <br /><br />
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Stream</th>
+            <th>Scheme</th>
+            <th>Training Service Provider</th>
+            <th>Trade</th>
+            <th>Building</th>
+            <th>Furniture</th>
+            <th>Backup Source Of Electricity</th>
+            <th>Tools And Equipment</th>
+            <th>Total</th>
+            <th>Score On Scale Of 5</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of Infrastructures">
+            <td>{{ r.Stream }}</td>
+            <td>{{ r.Scheme }}</td>
+            <td>{{ r.TrainingServiceProvider }}</td>
+            <td>{{ r.Trade }}</td>
+            <td>{{ r.Building }}</td>
+            <td>{{ r.Furniture }}</td>
+            <td>{{ r.BackupSourceOfElectricity }}</td>
+            <td>{{ r.ToolsAndequipment }}</td>
+            <td>{{ r.TotalAm }}</td>
+            <td>{{ r.ScoreOnScaleOf5 }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

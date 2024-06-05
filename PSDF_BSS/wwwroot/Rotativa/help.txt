@@ -1,0 +1,5 @@
+﻿We need to install on server.
+
+microsoft visual c++ redistributable 2017 x86
+
+Other wise there is an error while generating report

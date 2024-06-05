@@ -1,0 +1,180 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class=" slim slim">
+        <span class="spacer">Update Trainee's CNIC Image </span>
+        <div class="spacer"></div>
+        <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+      </mat-toolbar>
+      <div fxLayout="column">
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (selectionChange)="[ getTSPDetailByScheme(),getFilteredData()]" matInput>
+                <mat-option value="0" selected>-- All --</mat-option>
+                <mat-option *ngFor="let s of schemeArray" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (selectionChange)="[getClassesByTsp(),getFilteredData()]" matInput>
+                <mat-option value="0" selected>-- All --</mat-option>
+                <mat-option *ngFor="let s of tspDetailArray | where:['SchemeID',scheme.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (selectionChange)="getFilteredData()" matInput>
+                <mat-option value="0" selected>-- All --</mat-option>
+                <mat-option *ngFor="let item of classesArray" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <br />
+            <button mat-raised-button color="success" style="float:right" *ngIf="tblDatasource.data?.length > 0" (click)="exportToExcel()">Export Excel</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3" *ngIf="selection.selected.length > 0">
+            <button mat-raised-button color="info" style="float:left" [disabled]="differSelectionCount==0" (click)="saveAllSelected()">Save selected '{{differSelectionCount}}' new image(s)</button>
+          </div>
+          <div class="col-sm-9" *ngIf="tblDatasource.data?.length > 0">
+            <!--<a mat-button href="assets/sample-files/TSRUploading.xlsx" matTooltip="Download sample file for bulk upload of Trainee's Image.">
+              <mat-icon aria-hidden="false">cloud_download</mat-icon>
+              Sample.xlxs
+            </a>-->
+            <input matTooltip="Upload image files in bulk." accept="image/*" type="file" multiple (change)="onFileChange($event)">
+          </div>
+        </div>
+        <div>
+          <form class="table-responsive" [formGroup]="tblFormGroup">
+            <ng-container formArrayName="formArray">
+              <mat-table [dataSource]="tblDatasource" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'RowError':checkRowError(row)}"></mat-row>
+                <ng-container matColumnDef="Sr">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Sr#</mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" >
+                    {{row.Sr}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Check">
+                  <mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="[$event ? masterToggle() : null , getSetDifferSelection()]"
+                                  [checked]="selection.hasValue() && isAllSelected()"
+                                  [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                  [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                    <span *ngIf="selection.selected.length > 0">({{selection.selected.length}})</span>
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                                  (change)="[$event ? selection.toggle(Row) : null , getSetDifferSelection()]"
+                                  [checked]="selection.isSelected(Row)"
+                                  [aria-label]="checkboxLabel(Row)">
+                    </mat-checkbox>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SchemeName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name</mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.SchemeName}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SchemeCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Code </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.SchemeCode}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.TSPName}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.ClassCode}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's Code </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.TraineeCode}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's Name </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.TraineeName}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FatherName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.FatherName}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeCNIC">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.TraineeCNIC}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CNICIssueDate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> CNIC Issue Date </mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.CNICIssueDate}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="GenderName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Gender</mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.GenderName}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="DateOfBirth">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Date Of Birth</mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.DateOfBirth}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeImg">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Image</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> <img [src]="Row.TraineeImg" style="width:40px;height:40px" /> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="StatusName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Status</mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    {{row.StatusName}}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CNICImg">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> CNIC Image</mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    <!--<mat-error *ngIf="resultDocument.invalid && resultDocument.errors.required"><strong>required</strong></mat-error>-->
+                    <file-upload formControlName="CNICImg" [pattren]="'image.*'" accept="image/*" maxSize="1024‬‬"></file-upload>
+                    <!--<ng-container *ngIf="isInternalUser && row.CNICImg !=''"><img src="{{row.CNICImg}}" width="50" height="50" /></ng-container>-->
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+                  <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                    <a mat-button color="primary" title="Trainee Status History" (click)="openHistoryDialogue(row)">History</a>
+                    <!--<a mat-button color="primary" title="Update Trainee's Status" *ngIf="isInternalUser && kamAssignmentTSPs.includes(row.TSPID)" (click)="openDialog(row)">Update Status</a>-->
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </ng-container>
+          </form>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

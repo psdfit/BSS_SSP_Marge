@@ -1,0 +1,66 @@
+<div>
+  <fieldset class="border">
+    <legend>{{ title }}</legend>
+    <div class="table-responsive">
+      <mat-table [dataSource]="classesArray" matSort class="custom-width">
+        <ng-container matColumnDef="Class Code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Class Code</mat-header-cell>
+          <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="TSP Name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Name</mat-header-cell>
+          <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Trainee Name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Name</mat-header-cell>
+          <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Trainee CNIC">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee CNIC</mat-header-cell>
+          <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Trainee Code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Code</mat-header-cell>
+          <mat-cell *matCellDef="let Row"> {{Row.TraineeCode}} </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="Status">
+          <mat-header-cell *matHeaderCellDef mat-sort-headera>Status</mat-header-cell>
+          <mat-cell *matCellDef="let Row">
+            <span *ngIf="currentUser.RoleTitle !== 'TSP'">
+              <button
+                *ngIf="(Row.EnrollmentEndDate |  date:'yyyy/MM/dd HH:mm:ss') < (CurrentDate |  date:'yyyy/MM/dd HH:mm:ss'); else noContent"
+                mat-raised-button color="primary" matTooltip="Update trainee's status" (click)="openDialog(Row)">
+                Update Status
+              </button>
+
+              <ng-template #noContent>
+                En-Roll(Draft)
+              </ng-template>
+
+            </span>
+
+            <span *ngIf="currentUser.RoleTitle == 'TSP'">
+              En-Roll(Draft)
+              <a  mat-icon-button matTooltip="Trainee's Registration" color="primary"  *ngIf="(Row.EnrollmentEndDate |  date:'yyyy/MM/dd HH:mm:ss') >= (CurrentDate |  date:'yyyy/MM/dd HH:mm:ss')" (click)="routeToRegistration(Row)">
+                <mat-icon aria-label="Trainee's Registration">supervised_user_circle</mat-icon>
+              </a>
+            </span>
+
+          </mat-cell>
+        </ng-container>
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumnsClass"></mat-header-row>
+        <mat-row *matRowDef="let Row; columns: displayedColumnsClass;" tabindex="0"></mat-row>
+      </mat-table>
+      <mat-paginator #PageClass [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </fieldset>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-raised-button color="warn" (click)="onNoClick()" cdkFocusInitial>Close</button>
+</div>

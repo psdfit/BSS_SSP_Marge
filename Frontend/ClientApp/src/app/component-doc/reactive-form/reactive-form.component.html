@@ -1,0 +1,24 @@
+
+
+
+
+<div class="row" style="height: 100%;">
+   
+    <div class="col-12">
+      <div class="card" style="height:95%;">
+        <div class="card-body map-body" style="padding: 0px;">
+            <mat-toolbar class="mat-elevation-z2 slim" color="accent" matDialogTitle>
+                <mat-icon class="material-icons" style="position: relative; top: 5px; right: 5px;">location_on</mat-icon>
+                <span class="subheading-1">Click to choose your current location latitude and longitude</span>
+              </mat-toolbar>
+          <div style="height: 90%;" id="map"></div>
+        </div>
+      
+      </div>
+      <div align="end">
+        
+        <button  (click)="Confirm()" style="margin:2px 0px ;text-align: right;" color="accent" mat-raised-button>Close</button>
+       </div>
+    </div>
+
+  </div>

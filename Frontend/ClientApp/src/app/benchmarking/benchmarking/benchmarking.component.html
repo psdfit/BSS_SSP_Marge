@@ -1,0 +1,319 @@
+<!--<h1>Trade Benchmarking </h1>-->
+<div id="District-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{"Trade Benchmarking"}} </span>
+        </mat-toolbar>
+        <form novalidate #myForm="ngForm" [formGroup]="benchmarkingform" autocomplete="off" (submit)="Submit(myForm)">
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="TradeName" placeholder="Trade Required" matInput maxlength="250" required />
+                <mat-label>Trade Required</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="ProposedAmount" placeholder="Amount" matInput NumberOnly maxlength="100" required />
+                <mat-label>Proposed Amount</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <mat-select formControlName="ProgramTypeID" placeholder="Program Type" id="businessruleid" matInput required>
+                  <mat-option *ngFor="let s of ProgramType" [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+                  <!--<mat-option value="Industry">{{'Industry'}}</mat-option>
+        <mat-option value="FTI">{{'FTI'}}</mat-option>
+        <mat-option value="Community">{{"Community"}}</mat-option>-->
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select multiple placeholder="Organization" formControlName="TSPID" id="tspid" matInput>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                  <!--<mat-option value="0">--Select--</mat-option>-->
+                  <mat-option *ngFor="let s of TSPs | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <mat-select formControlName="CostSharing" placeholder="Already working in cost sharing" id="costsharingid" matInput  required>
+                  <mat-option value="Yes">{{'Yes'}}</mat-option>
+                  <mat-option value="No">{{'No'}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input matInput [matDatepicker]="classfrom" placeholder="Choose a date" formControlName="ClassFrom">
+      <mat-datepicker-toggle matSuffix [for]="classfrom"></mat-datepicker-toggle>
+      <mat-datepicker #classfrom></mat-datepicker>
+      <mat-label>From</mat-label>
+    </mat-form-field>
+  </div>
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input matInput [matDatepicker]="classto" placeholder="Choose a date" formControlName="ClassTo">
+      <mat-datepicker-toggle matSuffix [for]="classto"></mat-datepicker-toggle>
+      <mat-datepicker #classto></mat-datepicker>
+      <mat-label>To</mat-label>
+    </mat-form-field>
+  </div>-->
+            <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+
+      <mat-select placeholder="District" formControlName="DistrictID" id="districtid" matInput>
+        <mat-option value="0">--Select--</mat-option>
+        <mat-option *ngFor="let s of District" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+
+      <mat-select placeholder="Cluster" formControlName="ClusterID" id="clusterid" matInput>
+        <mat-option value="0">--Select--</mat-option>
+        <mat-option *ngFor="let s of Cluster" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+
+      <mat-select placeholder="Region" formControlName="RegionID" id="regionid" matInput>
+        <mat-option value="0">--Select--</mat-option>
+        <mat-option *ngFor="let s of Region" [value]="s.RegionID">{{s.RegionName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>-->
+            <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+
+      <mat-select placeholder="Financial Year" (selectionChange)='FilterMonths($event)' formControlName="FinancialYear" id="FinancialYearId" matInput>
+        <mat-option *ngFor="let s of YearWiseInflationRate | groupBy : 'FinancialYear'" [value]="s.key">{{s.key}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+
+      <mat-select placeholder="Month" (selectionChange)='GetInflation($event)' formControlName="Month" id="month" matInput>
+        <mat-option *ngFor="let s of FilteredMonths" [value]="s.Month">{{s.Month}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="Inflation" placeholder="Infaltion Rate" matInput maxlength="250" readonly />
+      <mat-label>Infaltion Rate</mat-label>
+    </mat-form-field>
+  </div>
+  <div class="col-sm-6">
+
+    <mat-checkbox formControlName="InRecentSchemes">Recent Schemes</mat-checkbox>
+
+  </div>-->
+            <br />
+            <br />
+
+            <div class="row col-12">
+              <button mat-raised-button color="primary" matTooltip="Click to Search"
+                      attr.aria-label="Click to {{EnText}}" type="submit" [disabled]="working  || !formrights.CanAdd">
+                <mat-icon>done</mat-icon>{{EnText}}
+              </button>&nbsp;&nbsp;
+              <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                      attr.aria-label="Click to Reset form data" type="reset" (click)="reset(myForm)" [disabled]="working">
+                <mat-icon>close</mat-icon> Reset
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Relevant Trades</span>
+          <div class="spacer"></div>
+
+        </mat-toolbar>
+        <div class="table-responsive">
+          <mat-table [dataSource]="benchmarking" matSort multiTemplateDataRows>
+
+            <!--<ng-container matColumnDef="SchemeDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.SchemeDate | date}} </mat-cell>
+            </ng-container>-->
+            <ng-container matColumnDef="TradeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Benchmarked Trade</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Organization">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Organization</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="RecentSchemes"> 
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Available in Recent Schemes</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.RecentSchemes}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ProposedAmount">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Proposed Amount</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ProposedAmount}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TotalClasses">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Total Classes</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TotalClasses}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CostSharing">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Cost Sharing</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CostSharing}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CalculatedAmount">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Calculated Amount </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CalculatedAmount}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CalculatedAmount70">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Calculated Amount 70% </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CalculatedAmount70}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ProposedAmount50">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Proposed Amount 50% </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ProposedAmount50}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="OfferedAmount">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Offered Amount </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.OfferedAmount}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="expandedDetail">
+              <mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
+                <div class="example-element-detail"
+                     [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
+                  <div class="table-responsive">
+                    <table class="table table-bordered" style="color:lightslategrey">
+                      <thead>
+                        <tr>
+                          <th>Scheme Code</th>
+                          <th>Scheme Type</th>
+                          <th>Scheme Year</th>
+                          <th>Organization</th>
+                          <th>Class Code</th>
+                          <th>Sector</th>
+                          <th>Cluster</th>
+                          <th>Trade</th>
+                          <th>Trade Code</th>
+                          <th>Batch</th>
+                          <th>Duration</th>
+                          <th>Trainees Per Class</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Certification Authority</th>
+                          <th>Training Cost Per Trainee Per Month Ex Tax</th>
+                          <th>Bid Price</th>
+                          <th>BM Cost</th>
+                          <th>Offered Amount</th>
+                          <th>Stipend</th>
+                          <th>Training Cost Per Trainee Per Month</th>
+                          <th>Uniform Bag Cost</th>
+                          <th>Total Training Cost Per Trainee</th>
+                          <!--<th>Total Stipend Cost Per Trainee</th>-->
+                          <th>Total Cost Per Trainee Exclusive Of Taxes</th>
+                          <th>Total Cost Per Trainee Inclusive Of Taxes</th>
+                          <th>Total Cost Per Trainee</th>
+                          <th>Total Cost Per Class</th>
+                          <th>NetPayable</th>
+                          <th>Stipend Per Trainee Per Month</th>
+                          <th>Uniform Bag Cost Per Trainee</th>
+                          <th>Training Cost</th>
+                          <th>Total</th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let c of benchmarkingClasses">
+                          <td>{{c.SchemeCode}}</td>
+                          <td>{{c.SchemeType}}</td>
+                          <td>{{c.SchemeYear}}</td>
+                          <td>{{c.OName}}</td>
+                          <td>{{c.ClassCode}}</td>
+                          <td>{{c.SectorName}}</td>
+                          <td>{{c.ClusterName}}</td>
+                          <td>{{c.TradeName}}</td>
+                          <td>{{c.TradeCode}}</td>
+                          <td>{{c.Batch}}</td>
+                          <td>{{c.Duration}}</td>
+                          <td>{{c.MaximumTraineesPerClass}}</td>
+                          <td>{{c.StartDate}}</td>
+                          <td>{{c.EndDate}}</td>
+                          <td>{{c.CertAuthName}}</td>
+                          <td>{{c.TrainingCostPerTraineePerMonthInTax}}</td>
+                          <td>{{c.BidPrice}}</td>
+                          <td>{{c.BMPrice}}</td>
+                          <td>{{c.OfferedPrice}}</td>
+                          <td>{{c.Stipend}}</td>
+                          <td>{{c.TrainingCostPerTraineePerMonth}}</td>
+                          <td>{{c.UniformBagCost}}</td>
+                          <td>{{c.TotalTrainingCostPerTrainee}}</td>
+                          <!--<td>{{c.TotalStipendCostPerTrainee}}</td>-->
+                          <td>{{c.TotalCostPerTraineeExclusiveOfTaxes}}</td>
+                          <td>{{c.TotalCostPerTraineeInclusiveOfTaxes}}</td>
+                          <td>{{c.TotalCostPerTrainee}}</td>
+                          <td>{{c.TotalCostPerClass}}</td>
+                          <td>{{c.NetPayable}}</td>
+                          <td>{{c.StipendPerTraineePerMonth}}</td>
+                          <td>{{c.UniformBagCostPerTrainee}}</td>
+                          <td>{{c.TrainingCost}}</td>
+                          <td>{{c.Total}}</td>
+
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+               
+              </mat-cell>
+            </ng-container>
+               
+             
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" matTooltip="Save" [disabled]="!formrights.CanEdit" (click)="openDialog(Row)">
+                  <mat-icon aria-label="Edit this row">save</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" matTooltip="view classes metadata" [disabled]="!formrights.CanEdit" (click)=" GetRelevantClasses(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <!--<div *ngIf="benchmarkingClasses" class="table-responsive">-->
+             
+            <!--</div>-->
+
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="expandedElement=  null "></mat-row>
+            <mat-row *matRowDef="let rows; columns: ['expandedDetail']" [ngClass]="{'example-detail-row': expandedElement!=rows}"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+       
+
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

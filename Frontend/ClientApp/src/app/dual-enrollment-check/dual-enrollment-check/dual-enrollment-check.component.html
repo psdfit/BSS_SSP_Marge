@@ -1,0 +1,78 @@
+<div id="gender-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{EnText}} </span>
+        </mat-toolbar>
+        <form novalidate [formGroup]="dualenrollmentcheckform" (submit)="dualenrollmentcheckform.valid && ChkTraineeCNIC()">
+          <div class="row">
+            <div class="col-sm-6 col-md-4 col-lg-3">
+              <span>
+                <mat-form-field fxFlex>
+                  <input type="text" formControlName="TraineeCNIC" placeholder="_____-_______-_" [imask]="{mask:'00000-0000000-0'}" matInput maxlength="50">
+                  <mat-label>Check CNIC Dual Enrollment</mat-label>
+                  <!--<mat-error *ngIf="TraineeCNIC.invalid && TraineeCNIC.errors.required">Gender Name is required</mat-error>-->
+                  <!--<mat-error *ngIf="TraineeCNIC.getError('duplicate')">Trainee against this CNIC already exists</mat-error>
+                  <mat-error *ngIf="TraineeCNIC.getError('unique')" style="color:green">This CNIC is not registered yet</mat-error>-->
+                </mat-form-field>
+                <p *ngIf="errors" style="color:re">Trainee against this CNIC already exists</p>
+                <p *ngIf="success" style="color:green">This CNIC is not registered yet</p>
+              </span>
+
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+
+            </div>
+          </div>
+
+          <div class="row col-12">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit">
+              <mat-icon>done</mat-icon>Check Dual Enrollment
+
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset()">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Upload CNIC List to Check Dual Enrollment</span>
+          <!--<div class="spacer"></div>-->
+          <input id="name1" name="name1" placeholder="Upload Excel File to check dual enrollment" type="file" (change)="onTraineeFileChange($event)" required>
+        </mat-toolbar>
+        <div fxLayout="column" class="mat-elevation-z8">
+          <mat-table [dataSource]="CNICsStatusList" matSort>
+
+            <ng-container matColumnDef="TraineeCNIC">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee CNIC</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CNICStatus">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC Status</mat-header-cell>
+              <mat-cell *matCellDef="let Row" [ngStyle]="{'color': Row.CNICStatus == 'Already Registered' ? 'red':'green'}"> {{Row.CNICStatus}} </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+
+</div>

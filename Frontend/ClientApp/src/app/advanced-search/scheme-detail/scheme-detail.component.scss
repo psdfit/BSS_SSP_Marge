@@ -1,0 +1,75 @@
+.no-padding{
+    padding:0px!important;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #000;
+}
+
+tr:nth-child(even) {
+  background-color: #FDFCF4
+}
+
+th {
+  background-color: #c3d9ff;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+
+.frame {
+  height: 100%; /* equals max image height */
+  width: 100%;
+  white-space: nowrap;
+  text-align: center;
+  margin: 1em 0;
+}
+
+.helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+img {
+  background: #3A6F9A;
+  vertical-align: middle;
+  max-height: 300px;
+  max-width: 90%;
+}
+
+.card-header {
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: none;
+}
+
+.class-active {
+  color: #005b9e;
+}
+.class-completed {
+  color: green;
+}
+.class-planned {
+  color: #212529;
+}
+.class-ready {
+  color: #ffc107;
+}
+.class-cancelled {
+  color: #dc3545;
+}
+.class-abandond {
+  color: #17a2b8;
+}
+.class-suspended {
+  color: #dc3545;
+}

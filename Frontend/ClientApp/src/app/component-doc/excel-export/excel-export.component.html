@@ -1,0 +1,65 @@
+<div class="comp-main-div" id="AcademicDiscipline-page">
+    <mat-card>
+        <mat-card-content>
+            <div>
+                <mat-toolbar class="mat-elevation-z2 slim" color="accent">
+                    <mat-icon class="material-icons">add_circle</mat-icon><br>
+                    <span class="subheading-1">Export Js Object In Excel</span>
+                </mat-toolbar>
+
+                <div class="row mb-2">
+                  <div class="col-sm-12">
+                    <button mat-button  color="warn" (click)="ExportExcel()">
+                        <mat-icon>file_download</mat-icon> Export Excel WithOut Formating
+                    </button>
+                    &nbsp;&nbsp;
+                    <button mat-button  color="primary" (click)="ExportExcelWithFormating()">
+                        <mat-icon>file_download</mat-icon> Export Excel Wit Formating
+                    </button>
+                    &nbsp;&nbsp;
+                    <button mat-button  color="accent" (click)="exportToExcelinSheet()">
+                        <mat-icon>file_download</mat-icon>Data Export In Excel Sheet
+                    </button>
+                  </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <mat-divider></mat-divider>
+
+    <!-- <mat-card>
+       <mat-card-content>
+         <div>
+           <mat-toolbar color="accent" class=" slim slim">
+             <mat-icon class="material-icons">view_comfy</mat-icon><br>
+             <span class="spacer">Manage and View All</span>
+             <div class="spacer"></div>
+             <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+           </mat-toolbar>
+           <div fxLayout="column">
+             <mat-table [dataSource]="academicdiscipline" matSort>
+               <ng-container matColumnDef="AcademicDisciplineName">
+                 <mat-header-cell *matHeaderCellDef mat-sort-header> Academic Discipline Name</mat-header-cell>
+                 <mat-cell *matCellDef="let Row"> {{Row.AcademicDisciplineName}} </mat-cell>
+               </ng-container>
+               <ng-container matColumnDef="InActive">
+                 <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+                 <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+               </ng-container>
+               <ng-container matColumnDef="Action">
+                 <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                 <mat-cell *matCellDef="let Row">
+                   <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                     <mat-icon aria-label="Edit this row">edit</mat-icon><br>
+                   </button>
+                 </mat-cell>
+               </ng-container>
+               <mat-header-row mb-2*matHeaderRowDef="displayedColumns"></mat-header-row>
+               <mat-row mb-2*matRowDef="let row; columns: displayedColumns;"></mat-row>
+             </mat-table>
+             <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+           </div>
+         </div>
+       </mat-card-content>
+    </mat-card>-->
+</div>

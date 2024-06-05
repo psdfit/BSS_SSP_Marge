@@ -1,0 +1,32 @@
+<style>
+  .ui-confirmdialog-message {
+    white-space: pre-line;
+  }
+</style>
+
+<mat-toolbar class="mat-elevation-z2 slim" color="accent" matDialogTitle>
+  <mat-icon class="material-icons" style="position: relative; top: 5px; right: 5px;">error_outline</mat-icon>
+  <span class="subheading-1">{{title}}</span>
+</mat-toolbar>
+
+<br />
+<div mat-dialog-content>
+  <span class="ui-confirmdialog-message">
+    <pre style="background-color:white!important;">{{ message }}</pre>
+  </span>
+</div>
+<br />
+<div align="end" mat-dialog-actions>
+  <button (click)="dialogRef.close(true)"
+          color="primary"
+          mat-raised-button
+          NoDoubleClick>Yes
+  </button>
+  &nbsp;&nbsp;
+  <button (click)="dialogRef.close(false)"
+          
+          color="warn"
+          mat-raised-button>
+    No
+  </button>
+</div>

@@ -1,0 +1,350 @@
+<h2 mat-dialog-title>Documents</h2>
+<div mat-dialog-content>
+  <mat-tab-group mat-align-tabs="center" dynamicHeight animationDuration="200ms" mat-stretch-tabs>
+    <mat-tab label="Monthly Progress Report" *ngIf="mpr.length>0">
+      <mat-card>
+        <mat-card-content>
+          <div fxLayoutAlign="space-around space-around" fxLayout="column">
+            <!--<mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Monthly Progress Report</span>
+              <div class="spacer"></div>
+            </mat-toolbar>-->
+
+            <div class="table-responsive" style="width:100%;">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+
+                    <th>Month</th>
+                    <th>Report Date</th>
+                    <!--<th>Number Of Months</th>-->
+                    <th>TSP Name</th>
+                    <th>Trade Name</th>
+                    <th>Class Code</th>
+                    <th>Batch</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let r of mpr">
+                    <tr>
+
+                      <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                      <td class="number-align-center">{{r.ReportDate | date:environment.DateFormat}}</td>
+                      <!--<td>{{r.NumberOfMonths}}</td>-->
+                      <td>{{r.TSPName}}</td>
+                      <td>{{r.TradeName}}</td>
+                      <td>{{r.ClassCode}}</td>
+                      <td class="number-align-center">{{r.Batch}}</td>
+                    </tr>
+                    <tr *ngIf="r.mprDetails">
+                      <td colspan="9">
+                        <div>
+                          <table class="table table-bordered" style="color:lightslategrey">
+                            <thead>
+                              <tr>
+
+                                <th>Trainee Code</th>
+                                <th>Trainee Name</th>
+                                <th>Class Code</th>
+                                <th>TSP Name</th>
+                                <th>Trainee CNIC</th>
+                                <th>Is Extra</th>
+                                <th>Is Marginal</th>
+                                <th>CNIC Verified</th>
+                                <th>Stipend Recommended</th>
+                                <th>Trainee Status</th>
+                                <th>Comments</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let c of r.mprDetails">
+
+                                <td>{{c.TraineeCode}}</td>
+                                <td>{{c.TraineeName}}</td>
+                                <td>{{c.ClassCode}}</td>
+                                <td>{{c.TSPName}}</td>
+                                <td class="number-align-center">{{c.TraineeCNIC}}</td>
+                                <td class="number-align-center">{{c.ExtraStatus}}</td>
+                                <td class="number-align-center">{{c.IsMarginal}}</td>
+                                <td class="number-align-center">{{c.CNICVerificationStatus}}</td>
+                                <td class="decimal-align-right">{{c.StipendAmount | number: environment.Decimal}}</td>
+                                <td class="number-align-center">{{c.TraineeStatusName}}</td>
+                                <td>{{c.Reason}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                    <!--Nested Grid ends here-->
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+    <mat-tab label="Stipend Recommendation Note" *ngIf="srn.length>0">
+      <mat-card>
+        <mat-card-content>
+          <div fxLayoutAlign="space-around space-around" fxLayout="column">
+            <!--<mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Stipend Recommendation Note</span>
+              <div class="spacer"></div>
+            </mat-toolbar>-->
+
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+
+                    <th>Month</th>
+                    <th>Report Date</th>
+                    <th>Number Of Months</th>
+                    <th>TSP Name</th>
+                    <th>Trade Name</th>
+                    <th>Class Code</th>
+                    <th>Batch</th>
+                    <th>Training District</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let r of srn ">
+                    <tr>
+
+                      <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                      <td class="number-align-center">{{r.ReportDate | date:environment.MonthFormat}}</td>
+                      <td class="number-align-center">{{r.NumberOfMonths}}</td>
+                      <td>{{r.TSPName}}</td>
+                      <td>{{r.TradeName}}</td>
+                      <td>{{r.ClassCode}}</td>
+                      <td class="number-align-center">{{r.Batch}}</td>
+                      <td>{{r.TrainingDistrict}}</td>
+                    </tr>
+                    <tr *ngIf="r.srnDetails">
+                      <td colspan="9">
+                        <div>
+                          <table class="table table-bordered" style="color:lightslategrey">
+                            <thead>
+                              <tr>
+
+                                <th>Trainee Code</th>
+                                <th>Trainee Name</th>
+                                <th>Father Name</th>
+                                <th>Trainee CNIC</th>
+                                <th>Contact Number</th>
+                                <th>Report Id</th>
+                                <th>Amount</th>
+                                <th>Token Number</th>
+                                <th>Transaction Number</th>
+                                <th>Comments</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
+                              <ng-container *ngFor="let c of r.srnDetails">
+                                <tr *ngIf="c.Comments != 'Stipend Withheld till Trainee Verification'">
+
+                                  <td>{{c.TraineeCode}}</td>
+                                  <td>{{c.TraineeName}}</td>
+                                  <td>{{c.FatherName}}</td>
+                                  <td class="number-align-center">{{c.TraineeCNIC}}</td>
+                                  <td class="number-align-center">{{c.ContactNumber1}}</td>
+                                  <td class="number-align-center">{{c.ReportId}}</td>
+                                  <td class="decimal-align-right">{{c.Amount | number: environment.Decimal}}</td>
+                                  <td class="number-align-center">{{c.TokenNumber}}</td>
+                                  <td class="number-align-center">{{c.TransactionNumber}}</td>
+                                  <td>{{c.Comments}}</td>
+                                  <td class="number-align-center">{{c.IsPaid?"Redeemed":"Pending"}}</td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                    <!--Nested Grid ends here-->
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+    <mat-tab label="Payment Recommendation Note" *ngIf="PRNMaster.length>0">
+      <mat-card>
+        <mat-card-content>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+
+                  <th>Process Name</th>
+                  <th>TSP Name</th>
+                  <th>Month</th>
+                  <th>Invoice Number</th>
+                  <th>CreatedDate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let r of PRNMaster">
+                  <tr>
+
+                    <td>{{r.ApprovalProcessName}}</td>
+                    <td>{{r.TSPName}}</td>
+                    <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                    <td class="number-align-center">{{r.InvoiceNumber}}</td>
+                    <td class="number-align-center">{{r.CreatedDate | date:environment.DateTimeFormat}}</td>
+                  </tr>
+                  <!--Nested Grid for PRN Table-->
+                  <tr *ngIf="r.PRN">
+                    <td colspan="5">
+                      <div>
+                        <table class="table table-bordered" style="color:lightslategrey">
+                          <thead>
+                            <tr>
+                              <th>Class Code</th>
+                              <th>Invoice No</th>
+                              <th>Trade</th>
+                              <th>Class Status</th>
+                              <th>Claimed Trainees</th>
+                              <th>Duration</th>
+                              <th>Contractual Trainees</th>
+                              <th>Enrolled Trainees</th>
+                              <th>Dropouts Verified</th>
+                              <th>Dropouts Unverified</th>
+                              <th>CNIC Verified</th>
+                              <th>CNIC Unverified</th>
+                              <th>CNIC Verified Excesses</th>
+                              <th>CNIC UnVerified Excesses</th>
+                              <th>Deduction Since Inception Dropout</th>
+                              <th>Max Attendance</th>
+                              <th>Payment Withheld Physical Count</th>
+                              <th>Deduction Marginal</th>
+                              <th>Payment Withheld Since Inception UnV CNIC</th>
+                              <th>Penalty TPM Reports</th>
+                              <th>Reimbursement UnV Trainees</th>
+                              <th>Reimbursement Attandance</th>
+                              <th>Payment To Be Released Trainees</th>
+                              <th>Expelled Verified</th>
+                              <th>Expelled UnVerified</th>
+                              <th>Pass Verified</th>
+                              <th>Pass Unverified</th>
+                              <th>Failed Verified</th>
+                              <th>Failed Unverified</th>
+                              <th>Absent Verified</th>
+                              <th>Absent Unverified</th>
+                              <th>DropOut</th>
+                              <th>Deduction Extra Registered For Exam</th>
+                              <th>Deduction Failed Trainees</th>
+                              <th>Penalty Imposed By MnE</th>
+                              <th>Deduction Uniform Bag Receiving</th>
+                              <th>NonFunctional Visit 1</th>
+                              <th>NonFunctional Visit 2</th>
+                              <th>NonFunctional Visit 3</th>
+                              <th>NonFunctional Visit 1 Date</th>
+                              <th>NonFunctional Visit 2 Date</th>
+                              <th>NonFunctional Visit 3 Date</th>
+                              <th>Employment Commitment Percentage</th>
+                              <th>Completed Trainees</th>
+                              <th>Graduated Commitment Trainees</th>
+                              <th>Employment Reported</th>
+                              <th>Verified Trainees</th>
+                              <th>Verified To Completed Commitment</th>
+                              <th>Trainees Found In VISIT 1</th>
+                              <th>Trainees Found In VISIT 2</th>
+                              <th>Payment 100p</th>
+                              <th>Payment 50p</th>
+                              <th>Class Start Date</th>
+                              <th>Class End Date</th>
+
+                              <!--<th>CreatedDate</th>-->
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let c of r.PRN">
+                              <td>{{c.ClassCode}}</td>
+                              <td class="number-align-center">{{c.InvoiceNumber}}</td>
+                              <td>{{c.TradeName}}</td>
+                              <td>{{c.ClassStatus}}</td>
+                              <td class="number-align-center">{{c.ClaimedTrainees}}</td>
+                              <td class="number-align-center">{{c.Duration}}</td>
+                              <td class="number-align-center">{{c.ContractualTrainees}}</td>
+                              <td class="number-align-center">{{c.EnrolledTrainees}}</td>
+                              <td class="number-align-center">{{c.DropoutsVerified}}</td>
+                              <td class="number-align-center">{{c.DropoutsUnverified}}</td>
+                              <td class="number-align-center">{{c.CNICVerified}}</td>
+                              <td class="number-align-center">{{c.CNICUnverified}}</td>
+                              <td class="number-align-center">{{c.CNICVExcesses}}</td>
+                              <td class="number-align-center">{{c.CNICUnVExcesses}}</td>
+                              <td class="number-align-center">{{c.DeductionSinIncepDropout}}</td>
+                              <td class="number-align-center">{{c.MaxAttendance}}</td>
+                              <td class="number-align-center">{{c.PaymentWithheldPhysicalCount}}</td>
+                              <td class="number-align-center">{{c.DeductionMarginal}}</td>
+                              <td class="number-align-center">{{c.PaymentWithheldSinIncepUnVCNIC}}</td>
+                              <td class="number-align-center">{{c.PenaltyTPMReports}}</td>
+                              <td class="number-align-center">{{c.ReimbursementUnVTrainees}}</td>
+                              <td class="number-align-center">{{c.ReimbursementAttandance}}</td>
+                              <td class="number-align-center">{{c.PaymentToBeReleasedTrainees}}</td>
+
+                              <td class="number-align-center">{{c.ExpelledVerified}}</td>
+                              <td class="number-align-center">{{c.ExpelledUnverified}}</td>
+                              <td class="number-align-center">{{c.PassVerified}}</td>
+                              <td class="number-align-center">{{c.PassUnverified}}</td>
+                              <td class="number-align-center">{{c.FailedVerified}}</td>
+                              <td class="number-align-center">{{c.FailedUnverified}}</td>
+                              <td class="number-align-center">{{c.AbsentVerified}}</td>
+                              <td class="number-align-center">{{c.AbsentUnverified}}</td>
+                              <td class="number-align-center">{{c.DropOut}}</td>
+                              <td class="number-align-center">{{c.DeductionExtraRegisteredForExam}}</td>
+                              <td class="number-align-center">{{c.DeductionFailedTrainees}}</td>
+                              <td class="number-align-center">{{c.PenaltyImposedByME}}</td>
+                              <td class="number-align-center">{{c.DeductionUniformBagReceiving}}</td>
+                              <td class="number-align-center">{{c.NonFunctionalVisit1}}</td>
+                              <td class="number-align-center">{{c.NonFunctionalVisit2}}</td>
+                              <td class="number-align-center">{{c.NonFunctionalVisit3}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit1Date != null">{{c.NonFunctionalVisit1Date | date:'dd/MM/yyyy'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit1Date == null">{{'N/A'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit2Date != null">{{c.NonFunctionalVisit2Date | date:'dd/MM/yyyy'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit2Date == null">{{'N/A'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit3Date != null">{{c.NonFunctionalVisit3Date | date:'dd/MM/yyyy'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit3Date == null">{{'N/A'}}</td>
+                              <td class="number-align-center">{{c.EmploymentCommitmentPercentage}}</td>
+                              <td class="number-align-center">{{c.CompletedTrainees}}</td>
+                              <td class="number-align-center">{{c.GraduatedCommitmentTrainees}}</td>
+                              <td class="number-align-center">{{c.EmploymentReported}}</td>
+                              <td class="number-align-center">{{c.VerifiedTrainees}}</td>
+                              <td class="number-align-center">{{c.VerifiedToCompletedCommitment}}</td>
+                              <td class="number-align-center">{{c.TraineesFoundInVISIT1}}</td>
+                              <td class="number-align-center">{{c.TraineesFoundInVISIT2}}</td>
+                              <td class="number-align-center">{{c.Payment100p}}</td>
+                              <td class="number-align-center">{{c.Payment50p}}</td>
+                              <td class="number-align-center">{{c.ClassStartDate | date:environment.DateFormat}}</td>
+                              <td class="number-align-center">{{c.ClassEndDate | date:environment.DateFormat}}</td>
+
+                              <!--<td>{{c.CreatedDate | date:'dd/MM/yyyy hh:mm a'}}</td>-->
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                  <!--Nested Grid ends here-->
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" mat-dialog-close>Close</button>
+
+</mat-dialog-actions>

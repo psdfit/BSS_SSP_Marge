@@ -1,0 +1,119 @@
+
+      <mat-card>
+        <mat-card-content>
+          <div id="PBTE-page" class="comp-main-div">
+            <div>
+              <mat-toolbar color="accent" class=" slim slim">
+                <mat-icon class="material-icons">view_comfy</mat-icon>
+                <span class="spacer">NTP List</span>
+                <div class="spacer"></div>
+                <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+              </mat-toolbar>
+              <div class="row">
+                <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                    <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetData(),getTSPDetailByScheme(scheme.value)]" id="SchemeId" matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                      <mat-option value="0">--Select--</mat-option>
+                      <mat-option *ngFor="let s of SchemeFilter | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                    <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetData(),getClassesByTsp(tsp.value)]" id="TspId" matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                      <mat-option value="0">--Select--</mat-option>
+                      <mat-option *ngFor="let s of TSPDetailFilter | like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                    <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl()" (selectionChange)="GetData()" id="ClassId" matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" /></mat-optgrp>
+                      <mat-option value="0">--Select--</mat-option>
+                      <mat-option *ngFor="let item of classesArrayFilter | like:['ClassCode',SearchCls.value] | where :['TSPID',filters.TSPID]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                    <mat-select placeholder="Status" [(ngModel)]="filters.StatusID" (openedChange)="EmptyCtrl()" (selectionChange)="GetData()" id="StatusId" matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchStatus" /></mat-optgrp>
+                      <mat-option value="0">--Select--</mat-option>
+                      <mat-option value="1">Approved</mat-option>
+                      <mat-option value="2">Rejected</mat-option>
+                      <mat-option value="3">Pendding</mat-option>                      
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <mat-table matTableExporter [dataSource]="tspntps" #SortClass="matSort" matSort #exporterntp="matTableExporter">
+
+
+                  <ng-container matColumnDef="Training_Scheme">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Training Scheme</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TSPName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Name of Training Service Provider</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Date_Of_Issuance">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Date of Issuance</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.ModifiedDate | date}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ClassCode">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> <a class="myAnchor" target="_blank" [routerLink]="['/dashboard/class-journey/']" [queryParams]="{classID: Row.ClassID}"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Trade">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Number_Of_Trainees">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Number of Trainees</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.TraineesPerClass}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Duration">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Duration (In Months)</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Curriculum">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Curriculum Followed</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.Name}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Address_Of_Training_Location">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Address Of Training Location</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.AddressOfTrainingLocation}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Comments">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Comments</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.Comments}} </mat-cell>
+                  </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedColumnsClasses"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumnsClasses;"></mat-row>
+                </mat-table>
+                <br />
+
+
+
+                <mat-paginator #PageClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+              </div>
+              <!--<button class="btn btn-success" mat-raised-button (click)="exporterntp.exportTable('xlsx', {fileName:'NTP', sheet: 'NTP', Props: {Author: 'PSDF-BSS'}})">Download NTP Report</button>-->
+              <button class="btn btn-success" *ngIf="!disableExport" mat-raised-button (click)="exportToExcel('NTP Report')">Download NTP Report</button>
+
+            </div>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+
+
+
+
+
+

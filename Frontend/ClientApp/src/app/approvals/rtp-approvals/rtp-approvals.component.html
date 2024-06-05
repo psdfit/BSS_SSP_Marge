@@ -1,0 +1,189 @@
+
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div id="RTP-Approvals-page" class="comp-main-div">
+        <div>
+          <mat-toolbar color="accent" class=" slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">RTP List for approval</span>
+            <div class="spacer"></div>
+            <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+          </mat-toolbar>
+
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetRTPs(),getTSPDetailByScheme(scheme.value)]" id="SchemeId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of SchemeFilter | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetRTPs(),getClassesByTsp(tsp.value)]" id="TspId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of TSPDetailFilter | like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl()" (selectionChange)="GetRTPs()" id="ClassId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let item of classesArrayFilter | like:['ClassCode',SearchCls.value] | where :['TSPID',filters.TSPID]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+           
+          </div>
+
+
+
+
+          <div class="table-responsive">
+            <mat-table matTableExporter [dataSource]="rtplist" matSort>
+
+
+              <!--<ng-container matColumnDef="Action">
+    <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+    <mat-cell *matCellDef="let Row">
+
+      <a mat-button color="primary" (click)="openApprovalDialogue(Row)">Decision </a>
+
+    </mat-cell>
+  </ng-container>-->
+
+              <ng-container matColumnDef="SchemeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header colspan="3">Scheme Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="CreatedDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Date of Request</mat-header-cell>
+                <mat-cell *matCellDef="let Row" class="number-align-center"> {{Row.CreatedDate | date:'dd-MM-yyyy'}} </mat-cell>
+              </ng-container>
+              <!--<ng-container matColumnDef="RTPID">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>RTP</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.RTPID}} </mat-cell>
+  </ng-container>-->
+              <!--<ng-container matColumnDef="ClassID">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+  </ng-container>-->
+              <ng-container matColumnDef="ClassCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> <a style="color: #005b9e;" class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TradeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineesPerClass">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> No.Of Trainees</mat-header-cell>
+                <mat-cell *matCellDef="let Row" class="number-align-center"> {{Row.TraineesPerClass}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Duration">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Duration(Months)</mat-header-cell>
+                <mat-cell *matCellDef="let Row" class="number-align-center"> {{Row.Duration}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Curriculum">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Curriculum Followed</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Name}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="AddressOfTrainingLocation">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Address of Trianing Location</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.AddressOfTrainingLocation}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="CPName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Contact Person Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.CPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="CPLandline">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Contact Person Mobile</mat-header-cell>
+                <mat-cell *matCellDef="let Row" class="number-align-center"> {{Row.CPLandline | phoneNumber:environment.Mobile}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="District">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> District</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TehsilName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Tehsil</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="StartDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Expected Start Date</mat-header-cell>
+                <mat-cell *matCellDef="let Row" class="number-align-center"> {{Row.StartDate | date:'dd-MM-yyyy'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="IsApproved">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Approve RTP</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <span style="color:orange" *ngIf="Row.KAMID != this.userid && !Row.IsApproved" class="mat-warn">Pending for RTP Approval</span>
+                  <span style="color:green" *ngIf="(Row.KAMID != this.userid && Row.IsApproved)" class="mat-warn">RTP sent to TPM</span>
+                  <mat-slide-toggle [(ngModel)]="Row.IsApproved" *ngIf="(Row.KAMID == this.userid)" (change)="openApprovalDialogue(Row)" [disabled]="Row.IsApproved"></mat-slide-toggle>
+                </mat-cell>
+              </ng-container>
+              <!--<ng-container matColumnDef="CenterInspection">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Center Inspection</mat-header-cell>
+    <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.CenterInspection"></mat-slide-toggle> </mat-cell>
+  </ng-container>-->
+              <!--*ngIf="Row.IsApproved && Row.CenterInspectionValue"-->
+
+              <ng-container matColumnDef="NTP">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> NTP</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <!--<span style="color:orange" *ngIf="(Row.KAMID != this.userid && Row.IsApproved && !Row.NTP)" class="mat-warn">NTP Pending</span>
+      <span style="color:orange" *ngIf="(Row.KAMID == this.userid && Row.IsApproved && !Row.CenterInspectionValue)" class="mat-warn">NTP Pending</span>-->
+                  <!--<mat-slide-toggle [(ngModel)]="Row.NTP" *ngIf="Row.KAMID === this.userid && Row.IsApproved && Row.CenterInspectionValue" (change)="GenerateNTP(Row)" [disabled]="Row.NTP"></mat-slide-toggle>-->
+                  <mat-slide-toggle [(ngModel)]="Row.NTP" *ngIf="(this.userid == 67 || this.userid == 66 || this.userid == 65 ) && Row.IsApproved && Row.CenterInspectionValue" (change)="GenerateNTP(Row)" [disabled]="Row.NTP"></mat-slide-toggle>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="GenerateReport">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Inspection Report</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-raised-button color="success" *ngIf="Row.IsApproved && Row.CenterInspectionValue" (click)="GetCenterInspection(Row.ClassID)">
+                    Download Report
+                  </button>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="RejectRTP">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Reject RTP</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <mat-slide-toggle [(ngModel)]="Row.RejectRTP" *ngIf="(this.userid == 67 || this.userid == 66 || this.userid == 65 ) && Row.IsApproved && Row.CenterInspectionValue" (change)="openRejectionDialogue(Row)"></mat-slide-toggle>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="GenerateRTPReport">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>RTP Report</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-raised-button color="success" (click)="GetRTP(Row.RTPID)">
+                    Export Excel
+                  </button>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <br />
+
+            <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+          </div>
+
+        </div>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</div>
+

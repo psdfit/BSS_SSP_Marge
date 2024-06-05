@@ -1,0 +1,453 @@
+<mat-card>
+  <!-- <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim"> -->
+  <mat-toolbar  color="accent" class=" slim slim">
+     <mat-icon class="material-icons"> add_circle </mat-icon>
+     <span class="spacer">{{SpacerTitle}}</span>
+  </mat-toolbar>
+  <mat-card-content>
+     <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
+        <mat-divider>
+        </mat-divider>
+        <mat-tab label="Trade Design">
+           <div class="row">
+              <div class="col-sm-12">
+                 <form [formGroup]="SelectedTradeInfo">
+                    <fieldset class="border" [disabled]=true>
+                       <legend>Selected Trade Detail</legend>
+                       <div class="row">
+                          <div class="col-sm-2">
+                             <mat-form-field>
+                                <mat-label>Sector</mat-label>
+                                <input formControlName="SectorName" placeholder="Sector" matInput />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-2">
+                             <mat-form-field>
+                                <mat-label>Sub-Sector</mat-label>
+                                <input formControlName="SubSectorName" placeholder="SubSector" matInput />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-2">
+                             <mat-form-field>
+                                <mat-label>Certification Auth.</mat-label>
+                                <input formControlName="CertAuthName" placeholder="Certification Auth." matInput />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-2">
+                             <mat-form-field>
+                                <mat-label>Source Of Curriculum</mat-label>
+                                <input formControlName="SourceOfCurriculum" placeholder="Source Of Curriculum" matInput />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-2">
+                             <mat-form-field>
+                                <mat-label>Trainee Qualification</mat-label>
+                                <input formControlName="traineeEducation" placeholder="Trainee Qualification" matInput />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-2">
+                             <mat-form-field>
+                                <mat-label>Course Duration</mat-label>
+                                <input formControlName="Duration" placeholder="Course Duration" matInput />
+                             </mat-form-field>
+                          </div>
+                       </div>
+                    </fieldset>
+                 </form>
+              </div>
+              <div class="col-sm-12">
+                 <form [formGroup]="SelectedProgramInfo">
+                    <fieldset class="border" [disabled]=true>
+                       <legend>Selected Program Budget</legend>
+                       <div class="row">
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>Contracted Target</mat-label>
+                                <input formControlName="ContractedTarget" placeholder="Contracted Target" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>Completion Target</mat-label>
+                                <input formControlName="CompletionTarget" placeholder="Completion Target" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>CTM</mat-label>
+                                <input formControlName="CTM" placeholder="CTM" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>Stipend</mat-label>
+                                <input formControlName="Stipend" placeholder="Stipend" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>Training Cost</mat-label>
+                                <input formControlName="TrainingCost" placeholder="Training Cost" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>Bag&Badge</mat-label>
+                                <input formControlName="BagAndBadge" placeholder="Bag&Badge" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>Exam. Cost</mat-label>
+                                <input formControlName="ExamCost" placeholder="Exam. Cost" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                          <div class="col-sm-3">
+                             <mat-form-field>
+                                <mat-label>Total Cost</mat-label>
+                                <input formControlName="TotalCost" placeholder="Total Cost" matInput readonly />
+                             </mat-form-field>
+                          </div>
+                       </div>
+                    </fieldset>
+                 </form>
+              </div>
+              <div class="col-sm-12">
+                 <form (ngSubmit)="SaveTradePlanInfo()" [formGroup]="TradeDesignInfoForm">
+                 <fieldset class="border" [disabled]="TradeDesignInfoForm.disabled">
+                    <legend>Trade Design</legend>
+                    <div class="row">
+                       <div class="col-sm-12" style="text-align:right">
+                          <a color="primary" *ngIf="IsInitiated !=true" mat-raised-button (click)="addTradeLot()"><i class="fas fa-plus"></i> Trade Lot </a>
+                          <!-- <a color="primary" mat-raised-button (click)="addTradeLot()" ><i class="fas fa-save"></i> Save </a> | -->
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Select Program</mat-label>
+                             <mat-select (openedChange)="EmptyCtrl()" formControlName="Scheme" matInput required (ngModelChange)="LoadProgramData($event)">
+                             <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                             <mat-option *ngFor="let s of programDesign | like:['ProgramName',BSearchCtr.value]" [value]="s.ProgramID">{{s.ProgramName}}</mat-option>
+                             </mat-select>
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('Scheme').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Select Province</mat-label>
+                             <mat-select [disabled]="PreadOnly" multiple (openedChange)="EmptyCtrl()" (ngModelChange)="GetCluster($event)" [required]="!PreadOnly" #Province matInput formControlName="Province" (selectionChange)="[optionClick($event,'Province'),OnLocationChange()]">
+                             <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" [formControl]="PSearchCtr" /></mat-optgrp>
+                             <div class="select-all" *ngIf="!PSearchCtr.value">
+                                <mat-checkbox [checked]="SelectedAll_Province && TradeDesignInfoForm.get('Province').value.length==ProvinceData.length" id="Province" (change)="SelectAll($event,1,'Province','TradeDesignInfoForm')">All</mat-checkbox>
+                             </div>
+                             <mat-option *ngFor="let s of ProvinceData | like:['ProvinceName',PSearchCtr.value]" [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                             <mat-option *ngFor="let s of ProvinceData" disabled hidden [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                             </mat-select>
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('Province').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field >
+                             <mat-label>Select Cluster</mat-label>
+                             <mat-select multiple [disabled]="CreadOnly" (openedChange)="EmptyCtrl()" (ngModelChange)="GetDistrict($event)" [required]="!CreadOnly" #Cluster matInput formControlName="Cluster" (selectionChange)="[optionClick($event,'Cluster'),OnLocationChange()]">
+                             <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" [formControl]="CSearchCtr" /></mat-optgrp>
+                             <div class="select-all" *ngIf="!CSearchCtr.value">
+                                <mat-checkbox [checked]="SelectedAll_Cluster && TradeDesignInfoForm.get('Cluster').value.length==ClusterData.length" id="Cluster" (change)="SelectAll($event,2,'Cluster','TradeDesignInfoForm')">All</mat-checkbox>
+                             </div>
+                             <mat-option *ngFor="let s of ClusterData | like:['ClusterName',CSearchCtr.value]" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                             <mat-option *ngFor="let s of ClusterData" disabled hidden [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                             </mat-select>
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('Cluster').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field >
+                             <mat-label>District</mat-label>
+                             <mat-select multiple [disabled]="DreadOnly" (openedChange)="EmptyCtrl()" #District matInput formControlName="District" (selectionChange)="[optionClick($event,'District'),OnLocationChange()]">
+                             <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" [formControl]="DSearchCtr" /></mat-optgrp>
+                             <div class="select-all" *ngIf="!DSearchCtr.value">
+                                <mat-checkbox [checked]="SelectedAll_District&& TradeDesignInfoForm.get('District').value.length==DistrictData.length" id="District" (change)="SelectAll($event,3,'District','TradeDesignInfoForm')">All</mat-checkbox>
+                             </div>
+                             <mat-option *ngFor="let s of DistrictData | like:['DistrictName',DSearchCtr.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                             <mat-option *ngFor="let s of DistrictData" disabled hidden [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                             </mat-select>
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('District').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Gender</mat-label>
+                             <mat-select (openedChange)="EmptyCtrl()" formControlName="GenderID"   matInput required >
+                                <mat-option>Select Gender</mat-option>
+                                <mat-option *ngFor="let s of GenderData | like:['GenderName',BSearchCtr.value]" [value]="s.GenderID">{{s.GenderName}}</mat-option>
+                             </mat-select>
+                             <mat-error  *ngFor="let error of TradeDesignInfoForm.get('GenderID').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Program Focus</mat-label>
+                             <mat-select (openedChange)="EmptyCtrl()" formControlName="ProgramFocus" matInput required>
+                                <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                                <mat-option *ngFor="let s of programFocus | like:['ProgramFocusName',BSearchCtr.value]" [value]="s.ProgramFocusID">{{s.ProgramFocusName}}</mat-option>
+                             </mat-select>
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('ProgramFocus').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Select Trade</mat-label>
+                             <mat-select (openedChange)="EmptyCtrl()" (ngModelChange)="LoadTradeLayer($event)" formControlName="Trade" matInput required>
+                             <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                             <mat-option *ngFor="let s of trade | like:['TradeName',BSearchCtr.value]" [value]="s.TradeID">{{s.TradeName}}</mat-option>
+                             </mat-select>
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('Trade').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Trade Layer</mat-label>
+                             <mat-select (openedChange)="EmptyCtrl()" (ngModelChange)="LoadTradeLayerData($event)" formControlName="TradeLayer" matInput required>
+                             <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                             <mat-option *ngFor="let s of tradeLayer | like:['TradeName',BSearchCtr.value]" [value]="s.TradeDetailMapID">( {{s.Duration}}-month | {{s.SourceOfCurriculum}} ) {{s.TradeName}}</mat-option>
+                             </mat-select>
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('TradeLayer').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Exam Cost</mat-label>
+                             <input formControlName="ExamCost" placeholder="Exam Cost" NumberOnly matInput required />
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('ExamCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>CTM</mat-label>
+                             <input formControlName="CTM" placeholder="CTM Amount" NumberOnly matInput required />
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>DropOut Threshold %</mat-label>
+                             <input formControlName="ContraTargetThreshold" placeholder="DropOut Threshold %" NumberOnly matInput required />
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('ContraTargetThreshold').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Per {{ProgramDesignOn}} Contracted Target</mat-label>
+                             <input formControlName="PerSelectedContraTarget" placeholder="Per {{ProgramDesignOn}} Contracted Target"  matInput required />
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('PerSelectedContraTarget').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>{{ProgramDesignOn}} Count</mat-label>
+                             <input formControlName="SelectedCount" readonly placeholder="{{ProgramDesignOn}} Count" NumberOnly matInput required />
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Total Contracted Target</mat-label>
+                             <input formControlName="TraineeContraTarget" placeholder="Total Contracted Target"  readonly matInput required />
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('TraineeContraTarget').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Per {{ProgramDesignOn}} Completion Target</mat-label>
+                             <input formControlName="PerSelectedCompTarget" placeholder="Per {{ProgramDesignOn}} Completion Target" readonly   matInput required />
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('PerSelectedCompTarget').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-3">
+                          <mat-form-field>
+                             <mat-label>Total Completion Target</mat-label>
+                             <input formControlName="TraineeCompTarget" placeholder="Trainee Completion Target"  readonly matInput required />
+                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('TraineeCompTarget').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                          </mat-form-field>
+                       </div>
+                       <div class="col-sm-12">
+                          <mat-form-field>
+                             <mat-label>Short List {{ProgramDesignOn}}</mat-label>
+                             <textarea matInput formControlName="SelectedShortList" cols="30" rows="2" required readonly></textarea>
+                          </mat-form-field>
+                       </div>
+                    </div>
+                    <div formArrayName="TradeLot">
+                       <div class="row" *ngFor="let TradeLot of TradeDesignInfoForm.get('TradeLot')['controls']; let i = index"
+                       [formGroupName]="i">
+                       <fieldset class="border">
+                          <legend>Trade Lot {{i+1}}</legend>
+                          <div class="row">
+                             <div class="col-sm-4">
+                                <mat-form-field>
+                                   <mat-label>Trade Layer</mat-label>
+                                   <input formControlName="TradeLayer" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-4">
+                                <mat-form-field>
+                                   <mat-label>Announced {{ProgramDesignOn}} </mat-label>
+                                   <input formControlName="AnnouncedDistrict" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>Duration </mat-label>
+                                   <input formControlName="Duration" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>Trainee Cont. Target </mat-label>
+                                   <input formControlName="TraineeContTarget" NumberOnly (blur)="ChangeTradeLot(i)" matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>CTM </mat-label>
+                                   <input formControlName="CTM" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>Training Cost </mat-label>
+                                   <input formControlName="TrainingCost" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>Stipend </mat-label>
+                                   <input formControlName="Stipend" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>Support Items Cost </mat-label>
+                                   <input formControlName="BagAndBadge" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>Exam . Cost </mat-label>
+                                   <input formControlName="ExamCost" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                             <div class="col-sm-2">
+                                <mat-form-field>
+                                   <mat-label>Total Cost </mat-label>
+                                   <input formControlName="TotalCost" readonly matInput required />
+                                </mat-form-field>
+                             </div>
+                          </div>
+                       </fieldset>
+                    </div>
+              </div>
+              <div class="row" style="float:right">
+                    <div class="col-sm-12">
+                     <a color="accent" mat-raised-button (click)="ResetFrom()"  > Reset</a> |
+                    <button color="primary" *ngIf="IsInitiated !=true" mat-raised-button [disabled]="IsDisabled"><i class="fas fa-check"></i> Save </button>
+                    </div>
+              </div>
+              </fieldset>
+              </form>
+           </div>
+           </div>
+           <mat-divider>
+           </mat-divider>
+        </mat-tab>
+        <mat-tab label="Program-wise Budget">
+           <mat-toolbar *ngIf="TapIndex==1" color="accent" class=" slim slim mt-2">
+              <mat-icon class="material-icons"> view_comfy </mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <input placeholder="Search" (keyup)="applyFilter(ProgramWiseTablesData,$event)" class="search" />
+              <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport(ProgramWiseTablesData.filteredData,'Program-Wise-Budget')">
+              <i class="fas fa-file-export"></i> Export Excel
+              </button>
+           </mat-toolbar>
+           <!-- record list start -->
+           <div class="table-responsive">
+              <mat-table [dataSource]="ProgramWiseTablesData" #psort="matSort" matSort class="table table-bordered">
+              <ng-container *ngFor="let column of ProgramWiseTableColumns; let first = first" [matColumnDef]="column">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                 <ng-container *ngIf="first">
+                    <!-- <a style="color: blue; cursor: pointer;" (click)="EditTradePlan(row)">{{ row[column] }}</a> -->
+                    <!-- <span  style="color: #005b9e;text-decoration: underline;cursor: pointer;"> -->
+                    <strong>{{ row[column] }}</strong>
+                    <!-- </span> -->
+                 </ng-container>
+                 <ng-container *ngIf="!first">
+                    &nbsp; {{ row[column] }}
+                 </ng-container>
+              </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="ProgramWiseTableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: ProgramWiseTableColumns;"></mat-row>
+                  </mat-table>
+              <mat-paginator #ppaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+           </div>
+           <!-- record list end -->
+        </mat-tab>
+        <mat-tab label="Trade-wise Budget">
+           <mat-toolbar *ngIf="TapIndex==2" color="accent" class=" slim slim mt-2">
+              <mat-icon class="material-icons"> view_comfy </mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <input placeholder="Search" (keyup)="applyFilter(TradeWiseTablesData,$event)" class="search" />
+              <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport(TradeWiseTablesData.filteredData,'Trade-Wise-Budget')">
+              <i class="fas fa-file-export"></i> Export Excel
+              </button>
+           </mat-toolbar>
+           <!-- record list start -->
+           <div class="table-responsive">
+              <mat-table [dataSource]="TradeWiseTablesData" #tsort="matSort" matSort class="table table-bordered">
+              <ng-container *ngFor="let column of TradeWiseTableColumns; let first = first" [matColumnDef]="column">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                 <ng-container *ngIf="first">
+                    <!-- <a style="color: blue; cursor: pointer;" (click)="EditTradePlan(row)">{{ row[column] }}</a> -->
+                    <span (click)="EditTradePlan(row)" style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                    <strong>{{ row[column] }}</strong>
+                    </span>
+                 </ng-container>
+                 <ng-container *ngIf="!first">
+                    &nbsp; {{ row[column] }}
+                 </ng-container>
+              </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="TradeWiseTableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: TradeWiseTableColumns;"></mat-row>
+                  </mat-table>
+              <mat-paginator #tpaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+           </div>
+           <!-- record list end -->
+        </mat-tab>
+        <mat-tab label="Lot-wise Budget">
+           <mat-toolbar *ngIf="TapIndex==3" color="accent" class=" slim slim mt-2">
+              <mat-icon class="material-icons"> view_comfy </mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <input placeholder="Search" (keyup)="applyFilter(LotWiseTablesData,$event)" class="search" />
+              <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport(LotWiseTablesData.filteredData,'Lot-Wise-Budget')">
+              <i class="fas fa-file-export"></i> Export Excel
+              </button>
+           </mat-toolbar>
+           <!-- record list start -->
+           <div class="table-responsive">
+              <mat-table [dataSource]="LotWiseTablesData" #lsort="matSort" matSort class="table table-bordered">
+              <ng-container *ngFor="let column of LotWiseTableColumns" [matColumnDef]="column">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                 <ng-container > &nbsp; {{ row[column] }}</ng-container>
+              </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="LotWiseTableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: LotWiseTableColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #lpaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+           </div>
+           <!-- record list end -->
+        </mat-tab>
+     </mat-tab-group>
+  </mat-card-content>
+</mat-card>

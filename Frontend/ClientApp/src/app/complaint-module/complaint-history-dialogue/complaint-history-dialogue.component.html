@@ -1,0 +1,187 @@
+<mat-tab-group #tabGroup>
+
+  <mat-tab label="Complaint Status Change" >
+    <mat-divider></mat-divider>
+    <div id="Complainant-page" class="comp-main-div">
+      <mat-card>
+        <mat-card-content>
+          <div>
+            <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+              <mat-icon class="material-icons"> add_circle</mat-icon>
+              <span class="subheading-1">{{title + EnTextStatus}}</span>
+            </mat-toolbar>
+            <form novalidate [formGroup]="ComplaintformDialogue" (submit)="Submit()"disabled>
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 *ngIf="ShowHideMsgDiv"  style="color: red;font-weight: bold;">Complaint Has been closed</h6>
+                  <mat-form-field fxFlex>
+                    <mat-select disabled="{{disabledFields}}" placeholder="Complaint Status" formControlName="ComplaintStatusTypeID" matInput
+                      required>
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let s of ComplaintStatusTypedll" [value]="s.ComplaintStatusTypeID">
+                        {{s.ComplaintStatusType}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="ComplaintStatusTypeID.invalid && ComplaintStatusTypeID.errors.required">Complaint
+                      Status is <strong>required</strong></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field fxFlex>
+                    <textarea rows="3" type="text" readonly="{{readonly}}" formControlName="complaintStatusDetailComments"
+                      placeholder="Please write Comments..." matInput  required ></textarea>
+                    <mat-label>Complaint Comments</mat-label>
+                    <mat-error
+                      *ngIf="complaintStatusDetailComments.invalid && complaintStatusDetailComments.errors.required">
+                      Complaint Comments is <strong>required</strong></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <mat-label style="font-weight: bold;">Attachment</mat-label>
+                  <br>
+                  <input  #myInput  mat-raised-button color="primary" #fileInput type="file"   (change)="handleFileSelect($event)" required Alpha>
+                </div>
+              </div>
+              <br>
+              <div class="row col-12" >
+                <div *ngIf="ShowHideButtonDiv" >
+                  <button mat-raised-button color="primary" [disabled]="!formrights.CanEdit" matTooltip="Click to {{title}}"
+                  attr.aria-label="Click to {{savebtn+EnText}}" type="submit">
+                  <mat-icon>done</mat-icon>{{savebtn+EnText}}
+                </button>&nbsp;&nbsp;
+                <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                  attr.aria-label="Click to Reset form data" type="reset" (click)="reset()">
+                  <mat-icon>close</mat-icon> Reset
+                </button>
+                </div>
+                &nbsp;&nbsp;
+                <button type="reset" mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>Close</button>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <!-- <div mat-dialog-actions>
+    <button type="reset" mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>Close</button>
+  </div> -->
+    </div>
+  </mat-tab>
+  <mat-tab label="Complaint Detail">
+    <mat-card>
+      <mat-card-content>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> info</mat-icon>
+          <span class="subheading-1">Complaint History Status </span>
+        </mat-toolbar>
+        <div mat-dialog-content>
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <mat-card>
+                  <div class="table-responsive">
+                      <div class="row">
+                      <div class="col-md-4">
+                       <strong>Status: </strong> {{ComplaintDetail.ComplaintStatusType}}
+                      </div>
+                      <div class="col-md-3">
+                      <h5>{{ComplaintDetail.CreatedDate  | date:'M/d/yy, h:mm a'}}</h5>
+                      </div>
+                      <div class="col-md-5">
+                        <div *ngIf="ComplaintDetail.FilePath!=null">
+                       Complaint Attachment:   <a matTooltip="Check Complaint Attachment"  mat-button color="primary" (click)="GetCurrentComplaintAttachements(ComplaintDetail)" > <mat-icon>attachment</mat-icon></a>                    
+                          </div>
+                      </div>
+                      </div>
+                      <div class="row">
+                          <fieldset class="scheduler-border">
+                            <legend class="scheduler-border" style="font-weight: bold;">Description:</legend>
+                              {{ComplaintDetail.ComplaintDescription}}
+                        </fieldset>
+                        
+                      </div>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+            <div class="timeline">
+              
+              <div class="line text-muted"></div>
+              <div *ngFor="let r of Complainthistory ;let i = index">
+                <div *ngIf="r.ModifiedUserID!=0;else loggedOut">
+                  <div   class="separator text-muted">
+                    <time>{{r.ModifiedDate | date:'M/d/yy, h:mm a'}}</time>
+                  </div>&nbsp;&nbsp;<span style="color: sienna;">(Edited)</span>
+                </div>
+                
+                <ng-template #loggedOut>
+                  <div  class="separator text-muted">
+                    <time>{{r.CreatedDate | date:'M/d/yy, h:mm a'}}</time>
+                  </div>
+                </ng-template>
+                
+                <article class="panel panel-primary">
+                  <div class="panel-heading icon">
+                    <i class="glyphicon glyphicon-time"></i>
+                  </div>
+                  <div class="panel-heading">
+                    <h2 class="panel-title"> {{r.FullName}} 
+                      <button (click)="toggleEdit(r)"  *ngIf="i==lastIndex && currentUser.UserID==r.CreatedUserID" mat-icon-button color="primary" matTooltip="Edit" >
+                      <mat-icon style="color: white;"  aria-label="Edit this row">edit</mat-icon>
+                    </button>
+                    <a matTooltip="Check Complaint Status Attachment"   *ngIf="r.FilePath!=null" mat-button color="primary" (click)="GetComplaintStatusAttachements(r)" > <mat-icon style="color: white;">attachment</mat-icon></a> 
+                    <!-- <div *ngIf="r.FilePath!=null">
+                       Attachment:   <a matTooltip="Check Complaint Status Attachment"  mat-button color="primary" (click)="GetComplaintStatusAttachements(r)" > <mat-icon style="color: white;">download</mat-icon></a>                    
+                   </div> -->
+                    
+                  </h2>
+                  </div>
+                  <div class="panel-body"><b style="font-weight: bold;">Status</b> :&nbsp;&nbsp;
+                    {{r.ComplaintStatusType}}
+                  </div>
+                  <div class="panel-footer"><b style="font-weight: bold;">Comments</b> :&nbsp;&nbsp;
+                    <small>{{r.complaintStatusDetailComments}}</small>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <!--  <h1 mat-dialog-title>Complaint History</h1> -->
+
+  </mat-tab>
+</mat-tab-group>
+
+
+
+
+<!--  <div class="row">
+        <div class="col-12">
+          <mat-card>
+            <div class="table-responsive">
+              <table class="table table-bordered" style="color:lightslategrey; width:100%;">
+                <thead>
+                  <tr style="font-weight: bold;">
+                    <th>Datetime</th>
+                    <th>Chnaged By</th>
+                    <th>Complaint Status Type</th>
+                    <th>Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of Complainthistory">
+                    <td>{{r.CreatedDate  | date:'M/d/yy, h:mm a'}}</td>
+                    <td>{{r.FullName}}</td>
+                    <td>{{r.ComplaintStatusType}}</td>
+                    <td style="width: 10%;">{{r.complaintStatusDetailComments}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </mat-card>
+        </div>
+      </div> -->

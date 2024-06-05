@@ -1,0 +1,143 @@
+<mat-card>
+  <mat-toolbar color="accent" class=" slim slim">
+     <mat-icon class="material-icons"> view_comfy </mat-icon>
+     <span class="spacer">Process Approved Plan </span>
+     <input placeholder="Search" *ngIf="TapIndex==0" (keyup)="applyFilter(TablesData,$event)" class="search" />
+     <button mat-raised-button *ngIf="TapIndex==0" style="float:right;margin: 0px 7px;background: #c3d9ff"
+        (click)="DataExcelExport(TablesData.filteredData,'Program_Design_Report')">
+     <i class="fas fa-file-export"></i> Export Excel</button>
+  </mat-toolbar>
+  <mat-card-content>
+  <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
+     <mat-tab label="Approved Program List">
+        <div class="table-responsive">
+           <mat-table [dataSource]="TablesData" #Sort="matSort" matSort class="table table-bordered">
+           <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+           <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+           <mat-cell *matCellDef="let row">
+
+              <ng-container *ngIf="column !='IsCriteriaAttached' && column !='ProcessStatus' &&  column !='Criteria' &&  column !='Workflow' &&  column !='IsInitiated' && column !='IsWorkflowAttached' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart'">
+                 &nbsp; {{ row[column] }}
+              </ng-container>
+
+              <ng-container *ngIf="column =='Action'">
+                 <ng-container *ngIf="column === 'Action' && row['IsInitiated'] ===true; else elseBlock1">
+
+                  <button mat-icon-button color="accent" matTooltip="View Detail"
+                       (click)="ShowDetail(row, row['ProgramName'])">
+                       <mat-icon role="img"
+                          class="mat-icon notranslate material-icons mat-icon-no-color"
+                          aria-hidden="true">control_point</mat-icon>
+                    </button>
+
+                    <button mat-icon-button color="primary" matTooltip="Update Status"
+                       (click)="OpenDialogue(row)">
+                       <mat-icon role="img"
+                          class="mat-icon notranslate material-icons mat-icon-no-color"
+                          aria-hidden="true">edit</mat-icon>
+                    </button>
+                 </ng-container>
+
+                 <span *ngIf="row[column]===false" class="label label-warning">No</span>
+
+                 <ng-template #elseBlock1>
+                    <button mat-icon-button color="primary"
+                       matTooltip="Program has not been initiated by the PD dept.">-----</button>
+                 </ng-template>
+              </ng-container>
+
+              <ng-container *ngIf="column =='IsInitiated'">
+                &nbsp;
+                 <span *ngIf="row[column]===false" class="label label-warning">No</span>
+                 <span *ngIf="row[column]===true" class="label label-success">Yes</span>
+              </ng-container>
+
+              <ng-container *ngIf="column =='ProcessStatus'">
+                <span *ngIf="row[column]=='Pending'" class="label label-warning">{{row[column]}}</span>
+                <span *ngIf="row[column]=='In-Progress'" class="label label-info">{{row[column]}}</span>
+                <span *ngIf="row[column]=='On-Hold'" class="label label-default">{{row[column]}}</span>
+                <span *ngIf="row[column]=='Accepted'" class="label label-success">{{row[column]}}</span>
+                <span *ngIf="row[column]=='Completed'" class="label label-success">{{row[column]}}</span>
+                <span *ngIf="row[column]=='Rejected'" class="label label-danger">{{row[column]}}</span>
+                <span *ngIf="row[column]=='Send-Back'" class="label label-danger">{{row[column]}}</span>
+              </ng-container>
+
+              <ng-container *ngIf="column =='IsWorkflowAttached'">
+                &nbsp;
+                 <span *ngIf="row[column] =='0'" class="label label-warning">No</span>
+                 <span *ngIf="row[column] !='0'" class="label label-success">Yes</span>
+              </ng-container>
+
+              <ng-container *ngIf="column =='Workflow'"> &nbsp;
+                <span (click)="ViewWorkflow(row)"
+                  style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                  <strong>{{ row[column] }}</strong>
+                </span>
+              </ng-container>
+
+              <ng-container *ngIf="column =='ClassStartDate' || column =='TentativeProcessStart'">
+                 &nbsp; {{ row[column] | date:environment.DateFormat }}
+              </ng-container>
+           </mat-cell>
+           </ng-container>
+           <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+           <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+           </mat-table>
+           <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+        </div>
+        <!-- record list end -->
+     </mat-tab>
+     <mat-tab [label]="TspName" *ngIf="isChecked">
+     <!-- start trade wise budget list -->
+     <mat-toolbar color="accent" class=" slim slim">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">Trade Wise Budget</span>
+        <input placeholder="Search" (keyup)="applyFilter(tradeTablesData,$event)" class="search" />
+        <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+           (click)="DataExcelExport(tradeTablesData.filteredData,'Lot-Wise-Target')">
+        <i class="fas fa-file-export"></i> Export Excel
+        </button>
+     </mat-toolbar>
+     <div class="table-responsive">
+        <mat-table [dataSource]="tradeTablesData" #tSort="matSort" matSort class="table table-bordered">
+        <ng-container *ngFor="let column of tradeTableColumns" [matColumnDef]="column">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+           <ng-container> &nbsp; {{ row[column] }}</ng-container>
+        </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="tradeTableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: tradeTableColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #tPaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+     </div>
+     <!-- end trade wise budget list -->
+     <!-- start lot wise budget list -->
+     <mat-toolbar color="accent" class=" slim slim">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">Trade Lot Wise Budget</span>
+        <input placeholder="Search" (keyup)="applyFilter(lotTablesData,$event)" class="search" />
+        <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+           (click)="DataExcelExport(lotTablesData.filteredData,'Lot-Wise-Target')">
+        <i class="fas fa-file-export"></i> Export Excel
+        </button>
+     </mat-toolbar>
+     <div class="table-responsive">
+        <mat-table [dataSource]="lotTablesData" #lSort="matSort" matSort class="table table-bordered">
+        <ng-container *ngFor="let column of lotTableColumns" [matColumnDef]="column">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+           <ng-container> &nbsp; {{ row[column] }}</ng-container>
+        </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="lotTableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: lotTableColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #lPaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+     </div>
+     <!-- end lot wise budget list -->
+     </mat-tab>
+  </mat-tab-group>
+
+  </mat-card-content>
+  </mat-card>

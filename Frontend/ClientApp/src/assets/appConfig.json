@@ -1,0 +1,8 @@
+{
+  "UsersAPIURL": "http://localhost:55216/",
+  "ReportsAPIURL": "https://localhost:44303/",
+  "_UsersAPIURL": "http://172.19.1.19:51599/",
+  "_ReportsAPIURL": "http://172.19.1.19:44303/",
+  "__UsersAPIURL": "http://119.159.234.172:51599/",
+  "__ReportsAPIURL": "http://119.159.234.172:44303/"
+}

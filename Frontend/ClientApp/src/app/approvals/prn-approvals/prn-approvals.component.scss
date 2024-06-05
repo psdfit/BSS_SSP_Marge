@@ -1,0 +1,62 @@
+.example-month-picker .mat-calendar-period-button {
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}
+.mat-cell {
+  flex: 0 0 220px;
+}
+
+.mat-header-cell {
+  flex: 0 0 220px;
+}
+tr {
+  max-height: 0;
+  padding: 0 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: max-height 0.3s, padding 0.3s;
+}
+
+.circle {
+  border-radius: 5px;
+  margin-left: 15%;
+  width: 23px;
+  height: 15px;
+  padding: 5px !important;
+}
+
+.Yellow {
+  color: black;
+  background-color: yellow;
+  padding: 4px;
+  /*  border:1px solid black;
+*/ font-size: 100%
+}
+
+.White {
+  color: black;
+  background-color: white;
+  padding: 4px;
+  border: 1px solid black;
+  font-size: 100%
+}
+
+.Red {
+  color: white;
+  background-color: red;
+  width:3em;
+  padding: 4px;
+  /*  border: 1px solid black;
+*/ font-size: 100%
+}
+
+.Black {
+  color: white;
+  background-color: Black;
+  padding: 4px;
+  /*  border: 1px solid black;
+*/ font-size: 100%
+}

@@ -1,0 +1,223 @@
+<mat-card>
+  <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
+    <mat-icon class="material-icons"> add_circle </mat-icon>
+    <span class="spacer">CTM </span>
+  </mat-toolbar>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-sm-12">
+        <form (ngSubmit)="FetchRecord()" [formGroup]="filterForm">
+          <fieldset class="border">
+            <legend>Apply Filter</legend>
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Contract Award Start Date</mat-label>
+                  <input formControlName="ContractAwardStartDate" [matDatepicker]="ContractAwardStartDate" readonly
+                    matInput>
+                  <mat-datepicker-toggle matSuffix [for]="ContractAwardStartDate"></mat-datepicker-toggle>
+                  <mat-datepicker #ContractAwardStartDate disabled="false"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Contract Award End Date</mat-label>
+                  <input formControlName="ContractAwardEndDate" [matDatepicker]="ContractAwardEndDate" readonly
+                    matInput>
+                  <mat-datepicker-toggle matSuffix [for]="ContractAwardEndDate"></mat-datepicker-toggle>
+                  <mat-datepicker #ContractAwardEndDate disabled="false"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select Funding Source</mat-label>
+                  <mat-select formControlName="FundingSource" (openedChange)="EmptyCtrl()" #FundingSourceOpt multiple
+                    matInput>
+                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                        [formControl]="FSSearchCtr" /></mat-optgrp>
+                    <div class="select-all">
+                      <mat-checkbox [checked]="SelectedAll_FundingSourceOpt"
+                        (change)="SelectAll($event,2,'FundingSource','filterForm')">Select All</mat-checkbox>
+                    </div>
+                    <mat-option *ngFor="let s of FundingSource | like:['FundingSourceName',FSSearchCtr.value]"
+                      [value]="s.FundingSourceID">{{s.FundingSourceName}}</mat-option>
+                    <mat-option *ngFor="let s of FundingSource" disabled hidden
+                      [value]="s.FundingSourceID">{{s.FundingSourceName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select Project</mat-label>
+                  <mat-select formControlName="FundingCategory" (openedChange)="EmptyCtrl()" #FundingCategoryOpt
+                    multiple matInput>
+                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                        [formControl]="FCSearchCtr" /></mat-optgrp>
+                    <div class="select-all">
+                      <mat-checkbox [checked]="SelectedAll_FundingCategoryOpt"
+                        (change)="SelectAll($event,3,'FundingCategory','filterForm')">Select All</mat-checkbox>
+                    </div>
+                    <mat-option *ngFor="let s of FundingCategory | like:['FundingCategoryName',FCSearchCtr.value]"
+                      [value]="s.FundingCategoryID">{{s.FundingCategoryName}}</mat-option>
+                    <mat-option *ngFor="let s of FundingCategory" disabled hidden
+                      [value]="s.FundingCategoryID">{{s.FundingCategoryName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select Scheme Type</mat-label>
+                  <mat-select formControlName="SchemeType" (openedChange)="EmptyCtrl()" #SchemeTypeOpt multiple
+                    matInput>
+                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                        [formControl]="STSearchCtr" /></mat-optgrp>
+                    <div class="select-all">
+                      <mat-checkbox [checked]="SelectedAll_SchemeTypeOpt"
+                        (change)="SelectAll($event,4,'SchemeType','filterForm')">Select All</mat-checkbox>
+                    </div>
+                    <mat-option *ngFor="let s of ProgramType | like:['PTypeName',STSearchCtr.value]"
+                      [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+                    <mat-option *ngFor="let s of ProgramType" disabled hidden
+                      [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select Sector</mat-label>
+                  <mat-select formControlName="Sector" (openedChange)="EmptyCtrl()" #SectorOpt multiple matInput>
+                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                        [formControl]="BSearchCtr" /></mat-optgrp>
+                    <div class="select-all">
+                      <mat-checkbox [checked]="SelectedAll_SectorOpt"
+                        (change)="SelectAll($event,5,'Sector','filterForm')">Select All</mat-checkbox>
+                    </div>
+                    <mat-option *ngFor="let s of Sector | like:['SectorName',BSearchCtr.value]"
+                      [value]="s.SectorID">{{s.SectorName}}</mat-option>
+                    <mat-option *ngFor="let s of ProgramType" disabled hidden
+                      [value]="s.SectorID">{{s.SectorName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select Trade</mat-label>
+                  <mat-select formControlName="Trade" (openedChange)="EmptyCtrl()" #TradeData multiple matInput>
+                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                        [formControl]="BSearchCtr" /></mat-optgrp>
+                    <div class="select-all">
+                      <mat-checkbox [checked]="SelectedAll_TradeData"
+                        (change)="SelectAll($event,1,'Trade','filterForm')">Select All</mat-checkbox>
+                    </div>
+                    <mat-option *ngFor="let s of Trade | like:['TradeName',BSearchCtr.value]"
+                      [value]="s.TradeID">{{s.TradeName}}</mat-option>
+                    <mat-option *ngFor="let s of Trade" disabled hidden [value]="s.TradeID">{{s.TradeName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select Duration</mat-label>
+                  <mat-select formControlName="Duration" (openedChange)="EmptyCtrl()" matInput>
+                    <mat-option> Select Duration </mat-option>
+                    <mat-option *ngFor="let s of Duration " [value]="s.Duration">({{s.Duration}}) Month</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select Cluster</mat-label>
+                  <mat-select formControlName="Cluster" (openedChange)="EmptyCtrl()" multiple matInput>
+                    <mat-option *ngFor="let s of Cluster " [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field>
+                  <mat-label>Select District</mat-label>
+                  <mat-select formControlName="District" (openedChange)="EmptyCtrl()" multiple matInput>
+                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()"
+                        [formControl]="DSearchCtr" /></mat-optgrp>
+                    <mat-option *ngFor="let s of District | like:['DistrictName',DSearchCtr.value]"
+                      [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row" style="float:right">
+              <div class="col-sm-12">
+                <button color="primary" mat-raised-button><i class="fas fa-check"></i> Fetch </button> |
+                <a color="warn"  matTooltip="Click to Reset form data" (click)="ResetFrom()"
+                  mat-raised-button>
+                  <i class="fas fa-times"></i>
+                  Reset
+                </a>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> view_comfy </mat-icon>
+      <span class="spacer">Manage and View All</span>
+      <input placeholder="Search" (keyup)="applyFilter(TableData,$event)" class="search" />
+      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+        (click)="DataExcelExport(this.CTMBulkReport,' CTM Bulk Report')">
+        <i class="fas fa-file-export"></i> CTM Bulk Report</button>
+      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+        (click)="DataExcelExport(this.TableData.filteredData,'Trade Wise CTM')">
+        <i class="fas fa-file-export"></i> CTM Trade Wise</button>
+    </mat-toolbar>
+    <div class="table-responsive">
+      <!-- <fieldset class="border" *ngIf="CTMInclusiveOfSalesTax != undefined" >
+        <legend>Selected Trade CTM</legend>
+        <div class="row"  >
+          <div class="col-sm-6">
+            <mat-form-field>
+               <mat-label>Selected Trade</mat-label>
+               <input  placeholder="Selected Trade" [value]="SelectedTrade[0].TradeName" matInput readonly />
+            </mat-form-field>
+         </div>
+          <div class="col-sm-3">
+            <mat-form-field>
+               <mat-label>CTM Inclusive Tax</mat-label>
+               <input  placeholder="CTM Inclusive Tax"  [value]="CTMInclusiveOfSalesTax" matInput readonly />
+            </mat-form-field>
+         </div>
+          <div class="col-sm-3">
+            <mat-form-field>
+               <mat-label>CTM Exclusive Tax</mat-label>
+               <input  placeholder="CTM Exclusive Tax" [value]="CTMExclusiveOfSalesTax" matInput readonly />
+            </mat-form-field>
+         </div>
+        </div>
+        </fieldset> -->
+      <mat-table [dataSource]="TableData" #tsort="matSort" matSort class="table table-bordered">
+        <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+
+          <mat-cell *matCellDef="let row ;let i=index">
+          <ng-container *ngIf="column !='CTM Exclusive SalesTax' && column !='CTM Inclusive SalesTax'">
+             &nbsp; {{ row[column] }}</ng-container>
+           
+            <ng-container *ngIf="column =='Sr#'">
+              &nbsp; {{i+1}}
+            </ng-container>
+
+            <ng-container *ngIf="column == 'CTM Exclusive SalesTax'">
+              &nbsp; {{ row[column] | number:'1.0-0' }}
+            </ng-container>
+
+            <ng-container *ngIf="column == 'CTM Inclusive SalesTax'">
+              &nbsp; {{ row[column] | number:'1.0-0' }}
+            </ng-container>
+
+          </mat-cell>
+
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #tpaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+    </div>

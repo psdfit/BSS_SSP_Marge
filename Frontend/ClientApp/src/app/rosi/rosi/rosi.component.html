@@ -1,0 +1,1685 @@
+<!--<h1>Rosi</h1>-->
+<!--<mat-toolbar color="accent" class="mat-elevation-z2 slim">
+  <mat-icon class="material-icons">view_comfy</mat-icon>
+  <span class="subheading-1">ROSI </span>
+</mat-toolbar>-->
+<!--<mat-tab-group>
+  <mat-tab label="Scheme-Wise">-->
+<mat-card>
+  <mat-card-content>
+    <fieldset class="border">
+
+      <legend>Filters</legend>
+
+      <div class="row">
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <input matInput #ref [matDatepicker]="visitdate" placeholder="Choose a date" [(ngModel)]="filters.StartDate" (dateChange)="startChange($event)" required>
+            <mat-datepicker-toggle matSuffix [for]="visitdate"></mat-datepicker-toggle>
+            <mat-datepicker #visitdate></mat-datepicker>
+            <mat-label>Duration Start</mat-label>
+            <mat-error *ngIf="ref.invalid">This field is required.</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <input matInput [matDatepicker]="visitenddate" placeholder="Choose a date" [min]="minEndDate" [(ngModel)]="filters.EndDate" required>
+            <mat-datepicker-toggle matSuffix [for]="visitenddate"></mat-datepicker-toggle>
+            <mat-datepicker #visitenddate></mat-datepicker>
+            <mat-label>Duration End</mat-label>
+          </mat-form-field>
+        </div>
+        <!--<div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select #actualcontractual placeholder="Actual/Contractual" [(ngModel)]="filters.ActualContractualFlag" id="actualcontractualflag" matInput required>
+
+              <mat-option value=true>Actual ROSI</mat-option>
+              <mat-option value=false>Contractual ROSI</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>-->
+        <div class="col-sm-3">
+          <!--<br />-->
+          <mat-form-field fxFlex>
+
+            <!--<mat-radio-group aria-label="Select an option" [(ngModel)]="filters.EmploymentFlag" name="radioButtons1">-->
+            <!--<mat-radio-button value=false [checked]="!checkedReportedEmployment">Reported Employment</mat-radio-button>&nbsp;&nbsp;
+            <mat-radio-button value=true>Verified Employment</mat-radio-button>-->
+            <mat-select #employmentflag placeholder="Reported / Verified Employment" [(ngModel)]="filters.EmploymentFlag" id="empflag" matInput>
+              <mat-option value="false">Reported Employment</mat-option>
+              <mat-option value="true">Verified Employment</mat-option>
+            </mat-select>
+
+            <!--</mat-radio-group>-->
+          </mat-form-field>
+
+
+        </div>
+
+
+        <!--<div class="col-sm-2">
+          <button class="btn btn-success" mat-raised-button (click)="ResetFilters()">Clear Filters</button>
+
+        </div>-->
+
+
+      </div>
+
+      <hr class="rounded">
+
+
+      <div class="row">
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.OrganizationIDs!=''" mat-icon-button (click)="clearOrganizationFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #organization placeholder="Organization" [(ngModel)]="filters.OrganizationIDs" (selectionChange)="[UpdateFiltersIDs()]" id="orgId" matInput>
+              <!--<mat-select #organization placeholder="Organization" [(ngModel)]="filters.OrganizationID" id="orgId" matInput required>-->
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchOrg" autofocus /></mat-optgrp>
+              <div class="select-all">
+                <!--<mat-checkbox [(ngModel)]="allSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionORG()">Select All</mat-checkbox>-->
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of Organizations | like:['OName',SearchOrg.value]" [value]="s.OID">{{s.OName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.FundingSourceIDs!=''" mat-icon-button (click)="clearFundingSourceFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #fundingSource placeholder="Funding Source" [(ngModel)]="filters.FundingSourceIDs" (selectionChange)="[optionFSourceClick()]" id="fundingSourceId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchFSource" autofocus /></mat-optgrp>
+
+              <!--<mat-select #fundingSource placeholder="Funding Source" [(ngModel)]="filters.FundingSourceID" id="fundingSourceId" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="fsAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionFundingS()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of FundingSources | like:['FundingSourceName',SearchFSource.value]" [value]="s.FundingSourceID">{{s.FundingSourceName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.PTypeIDs!=''" mat-icon-button (click)="clearProgramTypeFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #ptype placeholder="Program Type" [(ngModel)]="filters.PTypeIDs" (selectionChange)="[optionPTypeClick()]" id="programType" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchPType" autofocus /></mat-optgrp>
+
+              <!--<mat-select #ptype placeholder="Program Type" [(ngModel)]="filters.PTypeID" id="programType" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="ptAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionptype()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of ProgramTypes | like:['PTypeName',SearchPType.value]" [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.SchemeIDs!=''" mat-icon-button (click)="clearSchemeFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeIDs" (selectionChange)="[optionSchemeClick()]" id="schemeId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+
+              <!--<mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" id="schemeId" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="schAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionscheme()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of Schemes| like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.SectorIDs!=''" mat-icon-button (click)="clearSectorFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #sector placeholder="Sector" [(ngModel)]="filters.SectorIDs" (selectionChange)="[optionSectorClick()]" id="sectorId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSect" autofocus /></mat-optgrp>
+
+              <!--<mat-select #sector placeholder="Sector" [(ngModel)]="filters.SectorID" id="sectorId" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="sectAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionssector()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of Sectors | like:['SectorName',SearchSect.value]" [value]="s.SectorID">{{s.SectorName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.ClusterIDs!=''" mat-icon-button (click)="clearClusterFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #cluster placeholder="Cluster" [(ngModel)]="filters.ClusterIDs" (selectionChange)="[optionClusterClick()]" id="clusterId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchClus" autofocus /></mat-optgrp>
+
+              <!--<mat-select #cluster placeholder="Cluster" [(ngModel)]="filters.ClusterID" id="clusterId" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="clstAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionscluster()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of Clusters | like:['ClusterName',SearchClus.value]" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.DistrictIDs!=''" mat-icon-button (click)="clearDistrictFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #district placeholder="District" [(ngModel)]="filters.DistrictIDs" (selectionChange)="[optionDistrictClick()]" id="districtId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchDist" autofocus /></mat-optgrp>
+
+              <!--<mat-select #district placeholder="District" [(ngModel)]="filters.DistrictID" id="districtId" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="distAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionsdistrict()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of Districts | like:['DistrictName',SearchDist.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.TSPIDs!=''" mat-icon-button (click)="clearTSPFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #tsp placeholder="TSP" [(ngModel)]="filters.TSPIDs" (selectionChange)="[optionTspClick()]" id="tspId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+
+              <!--<mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" id="tspId" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="tspAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionstsp()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of TSPs | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.TradeIDs!=''" mat-icon-button (click)="clearTradeFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #trade placeholder="Trade" [(ngModel)]="filters.TradeIDs" (selectionChange)="[optionTradeClick()]" id="tradeId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTrd" autofocus /></mat-optgrp>
+
+              <!--<mat-select #trade placeholder="Trade" [(ngModel)]="filters.TradeID" id="tradeId" matInput required>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="trdAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectiontrade()">Select All</mat-checkbox>
+              </div>
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <mat-option *ngFor="let s of Trades | like:['TradeName',SearchTrd.value]" [value]="s.TradeID">{{s.TradeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.GenderIDs!=''" mat-icon-button (click)="clearGenderFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #gender placeholder="Gender" [(ngModel)]="filters.GenderIDs" (selectionChange)="[optionGenderClick()]" id="genderId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchGen" autofocus /></mat-optgrp>
+
+              <!--<mat-select #fundingSource placeholder="Gender" [(ngModel)]="filters.GenderID" id="genderId" matInput required>-->
+              <!--<mat-option value="">--Select--</mat-option>-->
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="gendAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectiongender()">Select All</mat-checkbox>
+              </div>
+              <mat-option *ngFor="let s of Genders | like:['GenderName',SearchGen.value]" [value]="s.GenderID">{{s.GenderName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <button mat-button matSuffix *ngIf="filtersValues.DurationIDs!=''" mat-icon-button (click)="clearDurationFilter($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select multiple #duration placeholder="Duration" [(ngModel)]="filters.DurationIDs" (selectionChange)="[UpdateFiltersIDs()]" id="durationId" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchDur" autofocus /></mat-optgrp>
+
+              <div class="select-all">
+                <mat-checkbox [(ngModel)]="durAllSelected" [ngModelOptions]="{standalone: true}" (change)="toggleAllSelectionduration()">Select All</mat-checkbox>
+              </div>
+              <mat-option *ngFor="let d of Durations" [value]="d.Duration">{{d.Duration}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--<div class="col-sm-1">
+
+        </div>-->
+
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-12">
+          <!--<button class="btn btn-primary" mat-raised-button (click)="getROSIByFilters()">Calculate ROSI</button>-->
+          <button style="float: right;" class="btn btn-danger" mat-raised-button (click)="ResetFilters()">Reset/Clear All Filters</button>
+          <button style="float: right;margin-right:15px" class="btn btn-primary" mat-raised-button (click)="[getCalculatedROSIByFilters(),getCalculatedROSIDataSetByFilters()]">Calculate ROSI</button>
+
+        </div>
+        <!--<div class="col-sm-3" >-->
+        <!--<br />-->
+        <!--</div>-->
+
+      </div>
+      <br />
+    </fieldset>
+
+    <div>
+      <fieldset class="border">
+        <legend>Calculations</legend>
+        <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
+
+          <mat-tab label="Result set">
+
+            <div class="col-12">
+              <div class="row">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr style="height:30px">
+                        <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+                        <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+                        <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+                        <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+                        <th *ngIf="filters.SectorIDs!=''">Sector</th>
+                        <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+                        <th *ngIf="filters.DistrictIDs!=''">District</th>
+                        <th *ngIf="filters.TSPIDs!=''">TSP</th>
+                        <th *ngIf="filters.TradeIDs!=''">Trade</th>
+                        <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+                        <th>Contractual ROSI %</th>
+                        <th>Forcasted ROSI %</th>
+                        <th>Actual ROSI %</th>
+                        <th>Organization </th>
+                        <th *ngIf="filtersValues.FundingSourceIDs!=''"> FundingSource</th>
+                        <th *ngIf="filtersValues.PTypeIDs!=''">Program Type </th>
+                        <th *ngIf="filtersValues.SchemeIDs!=''">Scheme</th>
+                        <th *ngIf="filtersValues.SectorIDs!=''">Sector</th>
+                        <th *ngIf="filtersValues.ClusterIDs!=''">Cluster</th>
+                        <th *ngIf="filtersValues.DistrictIDs!=''">District</th>
+                        <th *ngIf="filtersValues.TSPIDs!=''">TSP</th>
+                        <th *ngIf="filtersValues.TradeIDs!=''">Trade</th>
+                        <th *ngIf="filtersValues.GenderIDs!=''">Gender</th>
+                        <th *ngIf="filtersValues.DurationIDs!=''">Duration (Months)</th>
+                        <th style="position: sticky">Verified Average Wage Rate (For Contractual ROSI)</th>
+                        <th style="position: sticky">Verified Average Wage Rate (For Forecasted/Actual ROSI)</th>
+                        <th>Minimum wage rate for unskilled labor (For Contractual ROSI)</th>
+                        <th>Minimum wage rate for unskilled labor (For Forecasted/Actual ROSI)</th>
+                        <th>Contractual Employment Commitment</th>
+                        <th>No Of Reported Trainees</th>
+                        <th>No Of Verified Trainees</th>
+                        <th>Contractual CTM</th>
+                        <th>Actual CTM</th>
+                        <th>Contractual Average Duration</th>
+                        <th>Actual Average Duration</th>
+                        <th>No Of Contracted Trainees</th>
+                        <th>No Of Actual Completed Trainees</th>
+                        <!--<th>Employment Margin Reported</th>
+                        <th>Employment Margin Verified</th>-->
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let c of calculatedROSI; let i =index;">
+                        <!--<td [ngStyle]="{'background-color': '#83C2FB'}">{{c.ContractualROSI}} %</td>-->
+                        <td>{{c.ContractualROSI | number: '1.0-0'}} %</td>
+                        <td>{{c.ReportedForcastedROSI | number: '1.0-0'}} %</td>
+                        <td>{{c.ActualROSI | number: '1.0-0'}} %</td>
+                        <td *ngIf="c.OrganizationName">{{c.OrganizationName}}</td>
+                        <td *ngIf="filtersValues.FundingSourceIDs!=''">{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+                        <td *ngIf="filtersValues.PTypeIDs!=''">{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+                        <td *ngIf="filtersValues.SchemeIDs!=''">{{c.SchemeName?c.SchemeName:''}}</td>
+                        <td *ngIf="filtersValues.SectorIDs!=''">{{c.SectorName?c.SectorName:''}}</td>
+                        <td *ngIf="filtersValues.ClusterIDs!=''">{{c.ClusterName?c.ClusterName:''}}</td>
+                        <td *ngIf="filtersValues.DistrictIDs!=''">{{c.DistrictName?c.DistrictName:''}}</td>
+                        <td *ngIf="filtersValues.TSPIDs!=''">{{c.TSPName?c.TSPName:''}}</td>
+                        <td *ngIf="filtersValues.TradeIDs!=''">{{c.TradeName?c.TradeName:''}}</td>
+                        <td *ngIf="filtersValues.GenderIDs!=''">{{c.GenderName?c.GenderName:''}}</td>
+                        <td *ngIf="filtersValues.DurationIDs!=''">{{c.Duration?c.Duration:''}}</td>
+                        <td style="position: sticky">{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+                        <td style="position: sticky">{{c.VerifiedAverageWageRateForecastedActual | number : env.Decimal}}</td>
+                        <td>{{c.OpportunityCost | number : env.Decimal}}</td>
+                        <td>{{c.OpportunityCostForecastedActual | number : env.Decimal}}</td>
+                        <td>{{c.ContractualEmploymentCommitment}}</td>
+                        <td>{{c.NoOfReportedTrainees}}</td>
+                        <td>{{c.NoOfVerifiedTrainees}}</td>
+                        <td>{{c.ContractualCTM | number : env.Decimal}}</td>
+                        <td>{{c.ActualCTM | number : env.Decimal}}</td>
+                        <td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>
+                        <td>{{c.ActualAverageDuration | number : env.Decimal}}</td>
+                        <td>{{c.NoOfContractedTrainees}}</td>
+                        <td>{{c.NoOfActualCompletedTrainees}}</td>
+                        <!--s}-->
+                        <!--<td>{{c.EmploymentMarginReported}}</td>
+                        <td>{{c.EmploymentMarginVerified}}</td>-->
+
+
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+            <!--<div class="table-responsive">
+            <mat-table [dataSource]="rosiByScheme" matSort>
+
+              <ng-container matColumnDef="SchemeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="SchemeCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="SchemeType">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Type</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.SchemeType}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Contractual">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Contractual}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="CancelledClasses">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Cancelled Classes</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.CancelledClasses}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="NetContractual">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Net Contractual</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.NetContractual}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="CompletedTrainees">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Completed Trainees</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.CompletedTrainees}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ReportedEmployed">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Reported Employed</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.ReportedEmployed}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="VerifiedTrainees">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Verified/Reported Employed</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.VerifiedTrainees}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="CostPerAppendix">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Cost Per Appendix</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.CostPerAppendix}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Appendix">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Appendix</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Appendix}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Testing">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Testing</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Testing}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Total">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Total</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Total}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="OpportunityCost">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Opportunity Cost</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.OpportunityCost}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="AverageWageRate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Average Wage Rate</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.AverageWageRate}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="AverageTrainingCost">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Average Training Cost</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.AverageTrainingCost}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="NetIncrease">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Net Increase</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.NetIncrease}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="VerifiedOverCommitmentRatio">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Verified Over Commitment</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.VerifiedOverCommitmentRatio}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="MarginofEmployment">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Margin of Employment</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.MarginofEmployment | number : '1.2-2'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ROSI" >
+                <mat-header-cell *matHeaderCellDef mat-sort-header [attr.colspan]="5"> ROSI</mat-header-cell>
+                <mat-cell *matCellDef="let Row" style="background-color:gold"><strong> {{Row.ROSI | number: '1.0-0'}} % </strong></mat-cell>
+              </ng-container>
+
+
+              <mat-header-row *matHeaderRowDef="displayedColumnsROSI"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumnsROSI;"></mat-row>
+            </mat-table>-->
+            <!--<mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>-->
+            <!--</div>-->
+          </mat-tab>
+          <mat-tab label="Contractual ROSI Data Set">
+            <div class="row">
+              <div class="col-sm-12">
+                <button mat-raised-button color="success" style="float:right" *ngIf="calculatedROSIDataSet?.length > 0" (click)="exportToExcelContractualROSI()">Export Excel</button>
+                <br />
+
+              </div>
+            </div>
+            <br />
+
+            <div class="col-12">
+              <div class="row">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+                        <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+                        <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+                        <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+                        <th *ngIf="filters.SectorIDs!=''">Sector</th>
+                        <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+                        <th *ngIf="filters.DistrictIDs!=''">District</th>
+                        <th *ngIf="filters.TSPIDs!=''">TSP</th>
+                        <th *ngIf="filters.TradeIDs!=''">Trade</th>
+                        <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+
+                        <th>ClassCode</th>
+                        <th>Duration (Months)</th>
+                        <th>Total Cost Per Class</th>
+                        <th>Employment Payout %</th>
+                        <th>Employment Commitment %</th>
+                        <th>Contractual Weighted Total</th>
+                        <th>Actual Weighted Total</th>
+
+                        <th>Verified Average Wage Rate</th>
+                        <th>Minimum wage rate for unskilled labor</th>
+                        <th>Contractual Employment Commitment</th>
+                        <th>No Of Reported Trainees</th>
+                        <!--<th>No Of Verified Trainees</th>-->
+                        <th>Contractual CTM</th>
+                        <!--<th>Actual CTM</th>-->
+                        <th>Contractual Average Duration</th>
+                        <!--<th>Actual Average Duration</th>-->
+                        <th>No Of Contracted Trainees</th>
+                        <!--<th>No Of Actual Completed Trainees</th>-->
+                        <th>Contractual ROSI Numerator </th>
+                        <th>Contractual ROSI Denominator </th>
+                        <!--<th>Reported Forecasted ROSI Numerator </th>
+                        <th>Reported Forecasted ROSI Denominator </th>
+                        <th>Verified Forecasted ROSI Numerator </th>
+                        <th>Verified Forecasted ROSI Denominator </th>
+                        <th>Actual ROSI Numerator </th>
+                        <th>Actual ROSIDenominator </th>
+                        <th>Verified Actual ROSI Numerator </th>
+                        <th>Verified Actual ROSI Denominator </th>-->
+                        <th>Organization</th>
+                        <th> FundingSource</th>
+                        <th>Program Type </th>
+                        <th>Scheme</th>
+                        <th>Sector</th>
+                        <th>Cluster</th>
+                        <th>District</th>
+                        <th>TSP</th>
+                        <th>Trade</th>
+                        <th>Gender</th>
+
+                        <!--<th>Employment Margin Reported</th>
+                        <th>Employment Margin Verified</th>-->
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let c of calculatedROSIDataSet; let i =index;">
+
+                        <!--<td>{{c.ReportedForcastedROSI}} </td>
+                        <td>{{c.ActualROSI}} </td>-->
+
+                        <td>{{c.ClassCode}}</td>
+                        <td>{{c.Duration?c.Duration:''}}</td>
+                        <td>{{c.TotalCostPerClass?c.TotalCostPerClass:''}}</td>
+                        <td>{{c.EmploymentPayout?c.EmploymentPayout:''}}</td>
+                        <td>{{c.OverallEmploymentCommitment?c.OverallEmploymentCommitment:''}}</td>
+                        <td>{{c.ContractualWeightedTotal?c.ContractualWeightedTotal:''}}</td>
+                        <td>{{c.ActualWeightedTotal?c.ActualWeightedTotal:''}}</td>
+                        <td>{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+                        <td>{{c.OpportunityCost| number : env.Decimal }}</td>
+                        <td>{{c.ContractualEmploymentCommitment | number : env.Decimal}}</td>
+                        <td>{{c.NoOfReportedTrainees}}</td>
+                        <!--<td>{{c.NoOfVerifiedTrainees}}</td>-->
+                        <td>{{c.ContractualCTM}}</td>
+                        <!--<td>{{c.ActualCTM}}</td>-->
+                        <td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>
+                        <!--<td>{{c.ActualAverageDuration | number : env.Decimal}}</td>-->
+                        <td>{{c.NoOfContractedTrainees}}</td>
+                        <!--<td>{{c.NoOfActualCompletedTrainees}}</td>-->
+                        <td>{{c.ContractualROSINumerator}} </td>
+                        <td>{{c.ContractualROSIDenominator}} </td>
+                        <!--<td>{{c.ReportedForecastedROSINumerator}} </td>
+                        <td>{{c.ReportedForecastedROSIDenominator}} </td>
+                        <td>{{c.VerifiedForecastedROSINumerator}} </td>
+                        <td>{{c.VerifiedForecastedROSIDenominator}} </td>
+                        <td>{{c.ActualROSINumerator}} </td>
+                        <td>{{c.ActualROSIDenominator}} </td>-->
+                        <!--<td>{{c.VerifiedActualROSINumerator}} </td>
+                        <td>{{c.VerifiedActualROSIDenominator}} </td>-->
+                        <td>{{c.OrganizationName}}</td>
+                        <td>{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+                        <td>{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+                        <td>{{c.SchemeName?c.SchemeName:''}}</td>
+                        <td>{{c.SectorName?c.SectorName:''}}</td>
+                        <td>{{c.ClusterName?c.ClusterName:''}}</td>
+                        <td>{{c.DistrictName?c.DistrictName:''}}</td>
+                        <td>{{c.TSPName?c.TSPName:''}}</td>
+                        <td>{{c.TradeName?c.TradeName:''}}</td>
+                        <td>{{c.GenderName?c.GenderName:''}}</td>
+
+                        <!---}-->
+                        <!--<td>{{c.EmploymentMarginReported}}</td>
+                        <td>{{c.EmploymentMarginVerified}}</td>-->
+
+
+                      </tr>
+                    </tbody>
+
+
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+          </mat-tab>
+          <mat-tab label="Forecasted ROSI Data Set">
+            <div class="row">
+              <div class="col-sm-12">
+                <button mat-raised-button color="success" style="float:right" *ngIf="calculatedROSIDataSet?.length > 0" (click)="exportToExcelForecastedROSI()">Export Excel</button>
+                <br />
+
+              </div>
+            </div>
+            <br />
+
+            <div class="col-12">
+              <div class="row">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+                        <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+                        <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+                        <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+                        <th *ngIf="filters.SectorIDs!=''">Sector</th>
+                        <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+                        <th *ngIf="filters.DistrictIDs!=''">District</th>
+                        <th *ngIf="filters.TSPIDs!=''">TSP</th>
+                        <th *ngIf="filters.TradeIDs!=''">Trade</th>
+                        <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+
+                        <th>ClassCode</th>
+                        <th>Duration (Months)</th>
+                        <th>Total Cost Per Class</th>
+                        <th>Actual Cost Per Class</th>
+                        <th>Employment Payout %</th>
+                        <th>Employment Commitment %</th>
+                        <th>Verified Average Wage Rate</th>
+                        <th>Minimum wage rate for unskilled labor</th>
+                        <!--<th>Contractual Employment Commitment</th>-->
+                        <th>No Of Reported Trainees</th>
+                        <th>No Of Verified Trainees</th>
+                        <th>Contractual CTM</th>
+                        <!--<th>Actual CTM</th>-->
+                        <!--<th>Contractual Average Duration</th>-->
+                        <th>Actual Average Duration</th>
+                        <th>No Of Contracted Trainees</th>
+                        <th>No Of Actual Completed Trainees</th>
+                        <!--<th>Contractual ROSI Numerator </th>
+                        <th>Contractual ROSI Denominator </th>-->
+                        <th>Forecasted ROSI Numerator (based on Reported Employment)</th>
+                        <th>Forecasted ROSI Denominator (based on Reported Employment)</th>
+                        <th>Forecasted ROSI Numerator (based on Verified Employment)</th>
+                        <th>Forecasted ROSI Denominator (based on Verified Employment)</th>
+                        <!--<th>Actual ROSI Numerator </th>
+                        <th>Actual ROSIDenominator </th>
+                        <th>Verified Actual ROSI Numerator </th>
+                        <th>Verified Actual ROSI Denominator </th>-->
+                        <th>Organization</th>
+                        <th> FundingSource</th>
+                        <th>Program Type </th>
+                        <th>Scheme</th>
+                        <th>Sector</th>
+                        <th>Cluster</th>
+                        <th>District</th>
+                        <th>TSP</th>
+                        <th>Trade</th>
+                        <th>Gender</th>
+
+                        <!--<th>Employment Margin Reported</th>
+                        <th>Employment Margin Verified</th>-->
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let c of calculatedROSIDataSet; let i =index;">
+
+                        <!--<td>{{c.ReportedForcastedROSI}} </td>
+                        <td>{{c.ActualROSI}} </td>-->
+
+                        <td>{{c.ClassCode}}</td>
+                        <td>{{c.Duration?c.Duration:''}}</td>
+                        <td>{{c.TotalCostPerClass?c.TotalCostPerClass:''}}</td>
+                        <td>{{c.ActualCostPerClass?c.ActualCostPerClass:''}}</td>
+                        <td>{{c.EmploymentPayout?c.EmploymentPayout:''}}</td>
+                        <td>{{c.OverallEmploymentCommitment?c.OverallEmploymentCommitment:''}}</td>
+                        <td>{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+                        <td>{{c.OpportunityCost | number : env.Decimal}}</td>
+                        <!--<td>{{c.ContractualEmploymentCommitment}}</td>-->
+                        <td>{{c.NoOfReportedTrainees}}</td>
+                        <td>{{c.NoOfVerifiedTrainees}}</td>
+                        <td>{{c.ContractualCTM}}</td>
+                        <!--<td>{{c.ActualCTM}}</td>-->
+                        <!--<td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>-->
+                        <td>{{c.ActualAverageDuration | number : env.Decimal}}</td>
+                        <td>{{c.NoOfContractedTrainees}}</td>
+                        <td>{{c.NoOfActualCompletedTrainees}}</td>
+                        <!--<td>{{c.ContractualROSINumerator}} </td>
+                        <td>{{c.ContractualROSIDenominator}} </td>-->
+                        <td>{{c.ReportedForecastedROSINumerator}} </td>
+                        <td>{{c.ReportedForecastedROSIDenominator}} </td>
+                        <td>{{c.VerifiedForecastedROSINumerator}} </td>
+                        <td>{{c.VerifiedForecastedROSIDenominator}} </td>
+                        <!--<td>{{c.ActualROSINumerator}} </td>
+                        <td>{{c.ActualROSIDenominator}} </td>
+                        <td>{{c.VerifiedActualROSINumerator}} </td>
+                        <td>{{c.VerifiedActualROSIDenominator}} </td>-->
+                        <td>{{c.OrganizationName}}</td>
+                        <td>{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+                        <td>{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+                        <td>{{c.SchemeName?c.SchemeName:''}}</td>
+                        <td>{{c.SectorName?c.SectorName:''}}</td>
+                        <td>{{c.ClusterName?c.ClusterName:''}}</td>
+                        <td>{{c.DistrictName?c.DistrictName:''}}</td>
+                        <td>{{c.TSPName?c.TSPName:''}}</td>
+                        <td>{{c.TradeName?c.TradeName:''}}</td>
+                        <td>{{c.GenderName?c.GenderName:''}}</td>
+
+                        <!---}-->
+                        <!--<td>{{c.EmploymentMarginReported}}</td>
+                        <td>{{c.EmploymentMarginVerified}}</td>-->
+
+
+                      </tr>
+                    </tbody>
+
+
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+          </mat-tab>
+          <mat-tab label="Actual ROSI Data Set">
+            <div class="row">
+              <div class="col-sm-12">
+                <button mat-raised-button color="success" style="float:right" *ngIf="calculatedROSIDataSet?.length > 0" (click)="exportToExcelActualROSI()">Export Excel</button>
+                <br />
+
+              </div>
+            </div>
+            <br />
+
+            <div class="col-12">
+              <div class="row">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+                        <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+                        <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+                        <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+                        <th *ngIf="filters.SectorIDs!=''">Sector</th>
+                        <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+                        <th *ngIf="filters.DistrictIDs!=''">District</th>
+                        <th *ngIf="filters.TSPIDs!=''">TSP</th>
+                        <th *ngIf="filters.TradeIDs!=''">Trade</th>
+                        <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+
+                        <th>ClassCode</th>
+                        <th>Duration (Months)</th>
+                        <th>Total Cost Per Class</th>
+                        <th>Actual Cost Per Class</th>
+                        <th>Employment Payout %</th>
+                        <th>Employment Commitment %</th>
+                        <th>Verified Average Wage Rate</th>
+                        <th>Minimum wage rate for unskilled labor</th>
+                        <!--<th>Contractual Employment Commitment</th>-->
+                        <th>No Of Reported Trainees</th>
+                        <th>No Of Verified Trainees</th>
+                        <!--<th>Contractual CTM</th>-->
+                        <th>Actual CTM</th>
+                        <!--<th>Contractual Average Duration</th>-->
+                        <th>Actual Average Duration</th>
+                        <th>No Of Contracted Trainees</th>
+                        <th>No Of Actual Completed Trainees</th>
+                        <!--<th>Contractual ROSI Numerator </th>
+                        <th>Contractual ROSI Denominator </th>
+                        <th>Reported Forecasted ROSI Numerator </th>
+                        <th>Reported Forecasted ROSI Denominator </th>
+                        <th>Verified Forecasted ROSI Numerator </th>
+                        <th>Verified Forecasted ROSI Denominator </th>-->
+                        <th>Actual ROSI Numerator (based on Reported Employment)</th>
+                        <th>Actual ROSI Denominator (based on Reported Employment)</th>
+                        <th>Actual ROSI Numerator (based on Verified Employment)</th>
+                        <th>Actual ROSI Denominator(based on Verified Employment)</th>
+                        <th>Organization</th>
+                        <th> FundingSource</th>
+                        <th>Program Type </th>
+                        <th>Scheme</th>
+                        <th>Sector</th>
+                        <th>Cluster</th>
+                        <th>District</th>
+                        <th>TSP</th>
+                        <th>Trade</th>
+                        <th>Gender</th>
+
+                        <!--<th>Employment Margin Reported</th>
+                        <th>Employment Margin Verified</th>-->
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let c of calculatedROSIDataSet; let i =index;">
+
+                        <!--<td>{{c.ReportedForcastedROSI}} </td>
+                        <td>{{c.ActualROSI}} </td>-->
+
+                        <td>{{c.ClassCode}}</td>
+                        <td>{{c.Duration?c.Duration:''}}</td>
+                        <td>{{c.TotalCostPerClass?c.TotalCostPerClass:''}}</td>
+                        <td>{{c.ActualCostPerClass?c.ActualCostPerClass:''}}</td>
+                        <td>{{c.EmploymentPayout?c.EmploymentPayout:''}}</td>
+                        <td>{{c.OverallEmploymentCommitment?c.OverallEmploymentCommitment:''}}</td>
+                        <td>{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+                        <td>{{c.OpportunityCost | number : env.Decimal}}</td>
+                        <!--<td>{{c.ContractualEmploymentCommitment}}</td>-->
+                        <td>{{c.NoOfReportedTrainees}}</td>
+                        <td>{{c.NoOfVerifiedTrainees}}</td>
+                        <!--<td>{{c.ContractualCTM}}</td>-->
+                        <td>{{c.ActualCTM}}</td>
+                        <!--<td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>-->
+                        <td>{{c.ActualAverageDuration | number : env.Decimal}}</td>
+                        <td>{{c.NoOfContractedTrainees}}</td>
+                        <td>{{c.NoOfActualCompletedTrainees}}</td>
+                        <!--<td>{{c.ContractualROSINumerator}} </td>
+                        <td>{{c.ContractualROSIDenominator}} </td>
+                        <td>{{c.ReportedForecastedROSINumerator}} </td>
+                        <td>{{c.ReportedForecastedROSIDenominator}} </td>
+                        <td>{{c.VerifiedForecastedROSINumerator}} </td>
+                        <td>{{c.VerifiedForecastedROSIDenominator}} </td>-->
+                        <td>{{c.ActualROSINumerator}} </td>
+                        <td>{{c.ActualROSIDenominator}} </td>
+                        <td>{{c.VerifiedActualROSINumerator}} </td>
+                        <td>{{c.VerifiedActualROSIDenominator}} </td>
+                        <td>{{c.OrganizationName}}</td>
+                        <td>{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+                        <td>{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+                        <td>{{c.SchemeName?c.SchemeName:''}}</td>
+                        <td>{{c.SectorName?c.SectorName:''}}</td>
+                        <td>{{c.ClusterName?c.ClusterName:''}}</td>
+                        <td>{{c.DistrictName?c.DistrictName:''}}</td>
+                        <td>{{c.TSPName?c.TSPName:''}}</td>
+                        <td>{{c.TradeName?c.TradeName:''}}</td>
+                        <td>{{c.GenderName?c.GenderName:''}}</td>
+
+                        <!---}-->
+                        <!--<td>{{c.EmploymentMarginReported}}</td>
+                        <td>{{c.EmploymentMarginVerified}}</td>-->
+
+
+                      </tr>
+                    </tbody>
+
+
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+          </mat-tab>
+
+        </mat-tab-group>
+
+      </fieldset>
+
+    </div>
+
+
+  </mat-card-content>
+</mat-card>
+
+<div>
+  <!--<mat-card>
+    <mat-card-content>
+      <div>
+        <fieldset class="border">
+          <legend>Calculations</legend>
+          <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
+
+            <mat-tab label="Result set">
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>-->
+  <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+  <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+  <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+  <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+  <th *ngIf="filters.SectorIDs!=''">Sector</th>
+  <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+  <th *ngIf="filters.DistrictIDs!=''">District</th>
+  <th *ngIf="filters.TSPIDs!=''">TSP</th>
+  <th *ngIf="filters.TradeIDs!=''">Trade</th>
+  <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+  <!--<th>Contractual ROSI %</th>
+  <th>Forcasted ROSI %</th>
+  <th>Actual ROSI %</th>
+  <th>Organization </th>
+  <th *ngIf="filtersValues.FundingSourceIDs!=''"> FundingSource</th>
+  <th *ngIf="filtersValues.PTypeIDs!=''">Program Type </th>
+  <th *ngIf="filtersValues.SchemeIDs!=''">Scheme</th>
+  <th *ngIf="filtersValues.SectorIDs!=''">Sector</th>
+  <th *ngIf="filtersValues.ClusterIDs!=''">Cluster</th>
+  <th *ngIf="filtersValues.DistrictIDs!=''">District</th>
+  <th *ngIf="filtersValues.TSPIDs!=''">TSP</th>
+  <th *ngIf="filtersValues.TradeIDs!=''">Trade</th>
+  <th *ngIf="filtersValues.GenderIDs!=''">Gender</th>
+  <th *ngIf="filtersValues.DurationIDs!=''">Duration (Months)</th>
+  <th style="position: sticky">Verified Average Wage Rate</th>
+  <th>Minimum wage rate for unskilled labor</th>
+  <th>Contractual Employment Commitment</th>
+  <th>No Of Reported Trainees</th>
+  <th>No Of Verified Trainees</th>
+  <th>Contractual CTM</th>
+  <th>Actual CTM</th>
+  <th>Contractual Average Duration</th>
+  <th>Actual Average Duration</th>
+  <th>No Of Contracted Trainees</th>
+  <th>No Of Actual Completed Trainees</th>-->
+  <!--<th>Employment Margin Reported</th>
+  <th>Employment Margin Verified</th>-->
+  <!--</tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of calculatedROSI; let i =index;">
+      <td>{{c.ContractualROSI}} %</td>
+      <td>{{c.ReportedForcastedROSI}} %</td>
+      <td>{{c.ActualROSI}} %</td>
+      <td *ngIf="c.OrganizationName">{{c.OrganizationName}}</td>
+      <td *ngIf="filtersValues.FundingSourceIDs!=''">{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+      <td *ngIf="filtersValues.PTypeIDs!=''">{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+      <td *ngIf="filtersValues.SchemeIDs!=''">{{c.SchemeName?c.SchemeName:''}}</td>
+      <td *ngIf="filtersValues.SectorIDs!=''">{{c.SectorName?c.SectorName:''}}</td>
+      <td *ngIf="filtersValues.ClusterIDs!=''">{{c.ClusterName?c.ClusterName:''}}</td>
+      <td *ngIf="filtersValues.DistrictIDs!=''">{{c.DistrictName?c.DistrictName:''}}</td>
+      <td *ngIf="filtersValues.TSPIDs!=''">{{c.TSPName?c.TSPName:''}}</td>
+      <td *ngIf="filtersValues.TradeIDs!=''">{{c.TradeName?c.TradeName:''}}</td>
+      <td *ngIf="filtersValues.GenderIDs!=''">{{c.GenderName?c.GenderName:''}}</td>
+      <td *ngIf="filtersValues.DurationIDs!=''">{{c.Duration?c.Duration:''}}</td>
+      <td style="position: sticky">{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+      <td>{{c.OpportunityCost}}</td>
+      <td>{{c.ContractualEmploymentCommitment}}</td>
+      <td>{{c.NoOfReportedTrainees}}</td>
+      <td>{{c.NoOfVerifiedTrainees}}</td>
+      <td>{{c.ContractualCTM}}</td>
+      <td>{{c.ActualCTM}}</td>
+      <td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>
+      <td>{{c.ActualAverageDuration | number : env.Decimal}}</td>
+      <td>{{c.NoOfContractedTrainees}}</td>
+      <td>{{c.NoOfActualCompletedTrainees}}</td>-->
+  <!--s}-->
+  <!--<td>{{c.EmploymentMarginReported}}</td>
+  <td>{{c.EmploymentMarginVerified}}</td>-->
+  <!--</tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>-->
+  <!--<div class="table-responsive">
+  <mat-table [dataSource]="rosiByScheme" matSort>
+
+    <ng-container matColumnDef="SchemeName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="TSPName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Name</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="SchemeCode">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Code</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="SchemeType">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Type</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.SchemeType}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Contractual">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.Contractual}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="CancelledClasses">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Cancelled Classes</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.CancelledClasses}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="NetContractual">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Net Contractual</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.NetContractual}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="CompletedTrainees">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Completed Trainees</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.CompletedTrainees}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ReportedEmployed">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Reported Employed</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.ReportedEmployed}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="VerifiedTrainees">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Verified/Reported Employed</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.VerifiedTrainees}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="CostPerAppendix">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Cost Per Appendix</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.CostPerAppendix}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Appendix">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Appendix</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.Appendix}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Testing">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Testing</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.Testing}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Total">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Total</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.Total}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="OpportunityCost">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Opportunity Cost</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.OpportunityCost}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="AverageWageRate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Average Wage Rate</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.AverageWageRate}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="AverageTrainingCost">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Average Training Cost</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.AverageTrainingCost}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="NetIncrease">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Net Increase</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.NetIncrease}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="VerifiedOverCommitmentRatio">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Verified Over Commitment</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.VerifiedOverCommitmentRatio}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="MarginofEmployment">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Margin of Employment</mat-header-cell>
+      <mat-cell *matCellDef="let Row"> {{Row.MarginofEmployment | number : '1.2-2'}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ROSI" >
+      <mat-header-cell *matHeaderCellDef mat-sort-header [attr.colspan]="5"> ROSI</mat-header-cell>
+      <mat-cell *matCellDef="let Row" style="background-color:gold"><strong> {{Row.ROSI | number: '1.0-0'}} % </strong></mat-cell>
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="displayedColumnsROSI"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumnsROSI;"></mat-row>
+  </mat-table>-->
+  <!--<mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>-->
+  <!--</div>-->
+  <!--</mat-tab>
+  <mat-tab label="Contractual ROSI Data Set">
+    <div class="row">
+      <div class="col-sm-12">
+        <button mat-raised-button color="success" style="float:right" *ngIf="calculatedROSIDataSet?.length > 0" (click)="exportToExcelContractualROSI()">Export Excel</button>
+        <br />
+
+      </div>
+    </div>
+    <br />
+
+    <div class="col-12">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>-->
+  <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+  <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+  <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+  <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+  <th *ngIf="filters.SectorIDs!=''">Sector</th>
+  <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+  <th *ngIf="filters.DistrictIDs!=''">District</th>
+  <th *ngIf="filters.TSPIDs!=''">TSP</th>
+  <th *ngIf="filters.TradeIDs!=''">Trade</th>
+  <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+  <!--<th>ClassCode</th>
+  <th>Duration (Months)</th>
+  <th>Verified Average Wage Rate</th>
+  <th>Minimum wage rate for unskilled labor</th>
+  <th>Contractual Employment Commitment</th>
+  <th>No Of Reported Trainees</th>-->
+  <!--<th>No Of Verified Trainees</th>-->
+  <!--<th>Contractual CTM</th>-->
+  <!--<th>Actual CTM</th>-->
+  <!--<th>Contractual Average Duration</th>-->
+  <!--<th>Actual Average Duration</th>-->
+  <!--<th>No Of Contracted Trainees</th>-->
+  <!--<th>No Of Actual Completed Trainees</th>-->
+  <!--<th>Contractual ROSI Numerator </th>
+  <th>Contractual ROSI Denominator </th>-->
+  <!--<th>Reported Forecasted ROSI Numerator </th>
+  <th>Reported Forecasted ROSI Denominator </th>
+  <th>Verified Forecasted ROSI Numerator </th>
+  <th>Verified Forecasted ROSI Denominator </th>
+  <th>Actual ROSI Numerator </th>
+  <th>Actual ROSIDenominator </th>
+  <th>Verified Actual ROSI Numerator </th>
+  <th>Verified Actual ROSI Denominator </th>-->
+  <!--<th>Organization</th>
+  <th> FundingSource</th>
+  <th>Program Type </th>
+  <th>Scheme</th>
+  <th>Sector</th>
+  <th>Cluster</th>
+  <th>District</th>
+  <th>TSP</th>
+  <th>Trade</th>
+  <th>Gender</th>-->
+  <!--<th>Employment Margin Reported</th>
+  <th>Employment Margin Verified</th>-->
+  <!--</tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of calculatedROSIDataSet; let i =index;">-->
+  <!--<td>{{c.ReportedForcastedROSI}} </td>
+  <td>{{c.ActualROSI}} </td>-->
+  <!--<td>{{c.ClassCode}}</td>
+  <td>{{c.Duration?c.Duration:''}}</td>
+  <td>{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+  <td>{{c.OpportunityCost| number : env.Decimal }}</td>
+  <td>{{c.ContractualEmploymentCommitment}}</td>
+  <td>{{c.NoOfReportedTrainees}}</td>-->
+  <!--<td>{{c.NoOfVerifiedTrainees}}</td>-->
+  <!--<td>{{c.ContractualCTM}}</td>-->
+  <!--<td>{{c.ActualCTM}}</td>-->
+  <!--<td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>-->
+  <!--<td>{{c.ActualAverageDuration | number : env.Decimal}}</td>-->
+  <!--<td>{{c.NoOfContractedTrainees}}</td>-->
+  <!--<td>{{c.NoOfActualCompletedTrainees}}</td>-->
+  <!--<td>{{c.ContractualROSINumerator}} </td>
+  <td>{{c.ContractualROSIDenominator}} </td>-->
+  <!--<td>{{c.ReportedForecastedROSINumerator}} </td>
+  <td>{{c.ReportedForecastedROSIDenominator}} </td>
+  <td>{{c.VerifiedForecastedROSINumerator}} </td>
+  <td>{{c.VerifiedForecastedROSIDenominator}} </td>
+  <td>{{c.ActualROSINumerator}} </td>
+  <td>{{c.ActualROSIDenominator}} </td>-->
+  <!--<td>{{c.VerifiedActualROSINumerator}} </td>
+  <td>{{c.VerifiedActualROSIDenominator}} </td>-->
+  <!--<td>{{c.OrganizationName}}</td>
+  <td>{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+  <td>{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+  <td>{{c.SchemeName?c.SchemeName:''}}</td>
+  <td>{{c.SectorName?c.SectorName:''}}</td>
+  <td>{{c.ClusterName?c.ClusterName:''}}</td>
+  <td>{{c.DistrictName?c.DistrictName:''}}</td>
+  <td>{{c.TSPName?c.TSPName:''}}</td>
+  <td>{{c.TradeName?c.TradeName:''}}</td>
+  <td>{{c.GenderName?c.GenderName:''}}</td>-->
+  <!---}-->
+  <!--<td>{{c.EmploymentMarginReported}}</td>
+  <td>{{c.EmploymentMarginVerified}}</td>-->
+  <!--</tr>
+            </tbody>
+
+
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+  </mat-tab>
+  <mat-tab label="Forecasted ROSI Data Set">
+    <div class="row">
+      <div class="col-sm-12">
+        <button mat-raised-button color="success" style="float:right" *ngIf="calculatedROSIDataSet?.length > 0" (click)="exportToExcelForecastedROSI()">Export Excel</button>
+        <br />
+
+      </div>
+    </div>
+    <br />
+
+    <div class="col-12">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>-->
+  <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+  <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+  <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+  <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+  <th *ngIf="filters.SectorIDs!=''">Sector</th>
+  <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+  <th *ngIf="filters.DistrictIDs!=''">District</th>
+  <th *ngIf="filters.TSPIDs!=''">TSP</th>
+  <th *ngIf="filters.TradeIDs!=''">Trade</th>
+  <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+  <!--<th>ClassCode</th>
+  <th>Duration (Months)</th>
+  <th>Verified Average Wage Rate</th>
+  <th>Minimum wage rate for unskilled labor</th>-->
+  <!--<th>Contractual Employment Commitment</th>-->
+  <!--<th>No Of Reported Trainees</th>
+  <th>No Of Verified Trainees</th>
+  <th>Contractual CTM</th>-->
+  <!--<th>Actual CTM</th>-->
+  <!--<th>Contractual Average Duration</th>-->
+  <!--<th>Actual Average Duration</th>
+  <th>No Of Contracted Trainees</th>
+  <th>No Of Actual Completed Trainees</th>-->
+  <!--<th>Contractual ROSI Numerator </th>
+  <th>Contractual ROSI Denominator </th>-->
+  <!--<th>Forecasted ROSI Numerator (based on Reported Employment)</th>
+  <th>Forecasted ROSI Denominator (based on Reported Employment)</th>
+  <th>Forecasted ROSI Numerator (based on Verified Employment)</th>
+  <th>Forecasted ROSI Denominator (based on Verified Employment)</th>-->
+  <!--<th>Actual ROSI Numerator </th>
+  <th>Actual ROSIDenominator </th>
+  <th>Verified Actual ROSI Numerator </th>
+  <th>Verified Actual ROSI Denominator </th>-->
+  <!--<th>Organization</th>
+  <th> FundingSource</th>
+  <th>Program Type </th>
+  <th>Scheme</th>
+  <th>Sector</th>
+  <th>Cluster</th>
+  <th>District</th>
+  <th>TSP</th>
+  <th>Trade</th>
+  <th>Gender</th>-->
+  <!--<th>Employment Margin Reported</th>
+  <th>Employment Margin Verified</th>-->
+  <!--</tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of calculatedROSIDataSet; let i =index;">-->
+  <!--<td>{{c.ReportedForcastedROSI}} </td>
+  <td>{{c.ActualROSI}} </td>-->
+  <!--<td>{{c.ClassCode}}</td>
+  <td>{{c.Duration?c.Duration:''}}</td>
+  <td>{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+  <td>{{c.OpportunityCost | number : env.Decimal}}</td>-->
+  <!--<td>{{c.ContractualEmploymentCommitment}}</td>-->
+  <!--<td>{{c.NoOfReportedTrainees}}</td>
+  <td>{{c.NoOfVerifiedTrainees}}</td>
+  <td>{{c.ContractualCTM}}</td>-->
+  <!--<td>{{c.ActualCTM}}</td>-->
+  <!--<td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>
+  <td>{{c.ActualAverageDuration | number : env.Decimal}}</td>
+  <td>{{c.NoOfContractedTrainees}}</td>
+  <td>{{c.NoOfActualCompletedTrainees}}</td>-->
+  <!--<td>{{c.ContractualROSINumerator}} </td>
+  <td>{{c.ContractualROSIDenominator}} </td>-->
+  <!--<td>{{c.ReportedForecastedROSINumerator}} </td>
+  <td>{{c.ReportedForecastedROSIDenominator}} </td>
+  <td>{{c.VerifiedForecastedROSINumerator}} </td>
+  <td>{{c.VerifiedForecastedROSIDenominator}} </td>-->
+  <!--<td>{{c.ActualROSINumerator}} </td>
+  <td>{{c.ActualROSIDenominator}} </td>
+  <td>{{c.VerifiedActualROSINumerator}} </td>
+  <td>{{c.VerifiedActualROSIDenominator}} </td>-->
+  <!--<td>{{c.OrganizationName}}</td>
+  <td>{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+  <td>{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+  <td>{{c.SchemeName?c.SchemeName:''}}</td>
+  <td>{{c.SectorName?c.SectorName:''}}</td>
+  <td>{{c.ClusterName?c.ClusterName:''}}</td>
+  <td>{{c.DistrictName?c.DistrictName:''}}</td>
+  <td>{{c.TSPName?c.TSPName:''}}</td>
+  <td>{{c.TradeName?c.TradeName:''}}</td>
+  <td>{{c.GenderName?c.GenderName:''}}</td>-->
+  <!---}-->
+  <!--<td>{{c.EmploymentMarginReported}}</td>
+  <td>{{c.EmploymentMarginVerified}}</td>-->
+  <!--</tr>
+            </tbody>
+
+
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+  </mat-tab>
+  <mat-tab label="Actual ROSI Data Set">
+    <div class="row">
+      <div class="col-sm-12">
+        <button mat-raised-button color="success" style="float:right" *ngIf="calculatedROSIDataSet?.length > 0" (click)="exportToExcelActualROSI()">Export Excel</button>
+        <br />
+
+      </div>
+    </div>
+    <br />
+
+    <div class="col-12">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>-->
+  <!--<th *ngIf="filters.OrganizationIDs!=''">Organization </th>
+  <th *ngIf="filters.PTypeIDs!=''">Program Type </th>
+  <th *ngIf="filters.FundingSourceIDs!=''"> FundingSource   </th>
+  <th *ngIf="filters.SchemeIDs!=''">Scheme</th>
+  <th *ngIf="filters.SectorIDs!=''">Sector</th>
+  <th *ngIf="filters.ClusterIDs!=''">Cluster</th>
+  <th *ngIf="filters.DistrictIDs!=''">District</th>
+  <th *ngIf="filters.TSPIDs!=''">TSP</th>
+  <th *ngIf="filters.TradeIDs!=''">Trade</th>
+  <th *ngIf="filters.DurationIDs!=''">Duration</th>-->
+  <!--<th>ClassCode</th>
+  <th>Duration (Months)</th>
+  <th>Verified Average Wage Rate</th>
+  <th>Minimum wage rate for unskilled labor</th>-->
+  <!--<th>Contractual Employment Commitment</th>-->
+  <!--<th>No Of Reported Trainees</th>
+  <th>No Of Verified Trainees</th>-->
+  <!--<th>Contractual CTM</th>-->
+  <!--<th>Actual CTM</th>-->
+  <!--<th>Contractual Average Duration</th>-->
+  <!--<th>Actual Average Duration</th>
+  <th>No Of Contracted Trainees</th>
+  <th>No Of Actual Completed Trainees</th>-->
+  <!--<th>Contractual ROSI Numerator </th>
+  <th>Contractual ROSI Denominator </th>
+  <th>Reported Forecasted ROSI Numerator </th>
+  <th>Reported Forecasted ROSI Denominator </th>
+  <th>Verified Forecasted ROSI Numerator </th>
+  <th>Verified Forecasted ROSI Denominator </th>-->
+  <!--<th>Actual ROSI Numerator (based on Reported Employment)</th>
+  <th>Actual ROSI Denominator (based on Reported Employment)</th>
+  <th>Actual ROSI Numerator (based on Verified Employment)</th>
+  <th>Actual ROSI Denominator(based on Verified Employment)</th>
+  <th>Organization</th>
+  <th> FundingSource</th>
+  <th>Program Type </th>
+  <th>Scheme</th>
+  <th>Sector</th>
+  <th>Cluster</th>
+  <th>District</th>
+  <th>TSP</th>
+  <th>Trade</th>
+  <th>Gender</th>-->
+  <!--<th>Employment Margin Reported</th>
+  <th>Employment Margin Verified</th>-->
+  <!--</tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of calculatedROSIDataSet; let i =index;">-->
+  <!--<td>{{c.ReportedForcastedROSI}} </td>
+  <td>{{c.ActualROSI}} </td>-->
+  <!--<td>{{c.ClassCode}}</td>
+  <td>{{c.Duration?c.Duration:''}}</td>
+  <td>{{c.VerifiedAverageWageRate | number : env.Decimal}}</td>
+  <td>{{c.OpportunityCost | number : env.Decimal}}</td>-->
+  <!--<td>{{c.ContractualEmploymentCommitment}}</td>-->
+  <!--<td>{{c.NoOfReportedTrainees}}</td>
+  <td>{{c.NoOfVerifiedTrainees}}</td>-->
+  <!--<td>{{c.ContractualCTM}}</td>-->
+  <!--<td>{{c.ActualCTM}}</td>-->
+  <!--<td>{{c.ContractualAverageDuration | number : env.Decimal}}</td>-->
+  <!--<td>{{c.ActualAverageDuration | number : env.Decimal}}</td>
+  <td>{{c.NoOfContractedTrainees}}</td>
+  <td>{{c.NoOfActualCompletedTrainees}}</td>-->
+  <!--<td>{{c.ContractualROSINumerator}} </td>
+  <td>{{c.ContractualROSIDenominator}} </td>
+  <td>{{c.ReportedForecastedROSINumerator}} </td>
+  <td>{{c.ReportedForecastedROSIDenominator}} </td>
+  <td>{{c.VerifiedForecastedROSINumerator}} </td>
+  <td>{{c.VerifiedForecastedROSIDenominator}} </td>-->
+  <!--<td>{{c.ActualROSINumerator}} </td>
+  <td>{{c.ActualROSIDenominator}} </td>
+  <td>{{c.VerifiedActualROSINumerator}} </td>
+  <td>{{c.VerifiedActualROSIDenominator}} </td>
+  <td>{{c.OrganizationName}}</td>
+  <td>{{c.FundingSourceName?c.FundingSourceName:''}}</td>
+  <td>{{c.ProgramTypeName?c.ProgramTypeName:''}}</td>
+  <td>{{c.SchemeName?c.SchemeName:''}}</td>
+  <td>{{c.SectorName?c.SectorName:''}}</td>
+  <td>{{c.ClusterName?c.ClusterName:''}}</td>
+  <td>{{c.DistrictName?c.DistrictName:''}}</td>
+  <td>{{c.TSPName?c.TSPName:''}}</td>
+  <td>{{c.TradeName?c.TradeName:''}}</td>
+  <td>{{c.GenderName?c.GenderName:''}}</td>-->
+  <!---}-->
+  <!--<td>{{c.EmploymentMarginReported}}</td>
+  <td>{{c.EmploymentMarginVerified}}</td>-->
+  <!--</tr>
+                      </tbody>
+
+
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+
+
+
+
+            </mat-tab>
+
+          </mat-tab-group>
+
+        </fieldset>
+
+      </div>
+    </mat-card-content>
+  </mat-card>-->
+
+
+</div>
+<!--<div class="row">
+
+  <div class="col-12">
+    <div class="table-responsive">
+      <table class="table table-bordered col-12" style="color:lightslategrey;padding-left:300px">
+        <tr *ngFor="let u of rosiArray">
+          <td></td>
+          <th>Scheme Name</th>
+          <td>{{u.SchemeName}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <td></td>
+          <th>Scheme Code</th>
+          <td>{{u.SchemeCode}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <td></td>
+          <th>Scheme Type</th>
+          <td>{{u.SchemeType}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <td rowspan="6">Trainees</td>
+          <th>Contractual</th>
+          <td>{{u.Contractual}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Cancelled Classes</th>
+          <td>{{u.CancelledClasses}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>NetContractual</th>
+          <td>{{u.NetContractual}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Completed</th>
+          <td>{{u.CompletedTrainees}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>ReportedEmployed</th>
+          <td>{{u.ReportedEmployed}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Verified</th>
+          <td>{{u.VerifiedTrainees}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <td rowspan="4">Cost Per Trainee</td>
+          <th>Cost Per Appedix</th>
+          <td>{{u.CostPerAppendix}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Appendix</th>
+          <td>{{u.Appendix}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Testing</th>
+          <td>{{u.Testing}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Total</th>
+          <td>{{u.Total}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <td rowspan="3">Income</td>
+          <th>Wage Rate</th>
+          <td>{{u.AvergaeWageRate}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Opportunity Cost</th>
+          <td>{{u.OpportunityCost}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Net Increase</th>
+          <td>{{u.NetIncrease}}</td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <td rowspan="3">ROSI</td>
+          <th>Numerator</th>
+          <td></td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>Deniminator</th>
+          <td></td>
+        </tr>
+        <tr *ngFor="let u of rosiArray">
+          <th>ROSI</th>
+          <td>{{u.ROSI}}  %</td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+</div>-->
+<!--</mat-tab>-->
+<!--<mat-tab label="TSP-Wise">
+
+    <br />
+
+    <div class="row">
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-select #tsp placeholder="TSP" (selectionChange)="FilteredRosiByTSP(tsp.value)" id="tspId" matInput required>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let s of TSPs" [value]="s.TSPID">{{s.TSPCode}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <br />
+    <br />
+
+    <div>
+      <mat-card>
+        <mat-card-content>
+          <div>
+
+            <div fxLayout="column">
+              <mat-table [dataSource]="rosiByTSP" matSort>
+
+                <ng-container matColumnDef="TSPName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="OpportunityCost">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Opportunity Cost</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.OpportunityCost}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CompletedTrainees">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Completed Trainees</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.CompletedTrainees}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="VerifiedTrainees">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Verified Trainees</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.VerifiedTrainees}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ROSI">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> ROSI</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ROSI}} % </mat-cell>
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumnsTSPROSI"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumnsTSPROSI;"></mat-row>
+              </mat-table>
+              <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+
+    </div>
+
+
+  </mat-tab>
+  <mat-tab label="Class-Wise">
+
+    <br />
+
+    <div class="row">
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-select #class placeholder="Class" (selectionChange)="FilteredRosiByClass(class.value)" id="classId" matInput required>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let s of Classes" [value]="s.ClassID">{{s.ClassID}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <br />
+    <br />
+
+    <div>
+      <mat-card>
+        <mat-card-content>
+          <div>
+
+            <div fxLayout="column">
+              <mat-table [dataSource]="rosiByClass" matSort>
+
+                <ng-container matColumnDef="ClassCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="OpportunityCost">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Opportunity Cost</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.OpportunityCost}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CompletedTrainees">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Completed Trainees</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.CompletedTrainees}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="VerifiedTrainees">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Verified Trainees</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.VerifiedTrainees}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ROSI">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> ROSI</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ROSI}} % </mat-cell>
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumnsClassROSI"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumnsClassROSI;"></mat-row>
+              </mat-table>
+              <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+
+    </div>
+
+  </mat-tab>
+</mat-tab-group>-->

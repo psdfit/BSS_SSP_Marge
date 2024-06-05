@@ -1,0 +1,161 @@
+<div id="Roles-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div fxFlex fxLayoutAlign="space-around space-around" fxLayout="column" fxLayoutGap="10px">
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> apps</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate [formGroup]="rolesform" (submit)="rolesform.valid && Submit()">
+
+          <div fxLayout="column" fxLayout.gt-xs="row">
+            <div fxLayout="row wrap" fxFlex="100">
+              <div fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-sm="33" fxFlex.gt-md="25">
+                <mat-form-field>
+                  <input type="text" formControlName="RoleTitle" placeholder="RoleTitle" matInput maxlength="100" required/>
+                  <mat-label>Role Title</mat-label>
+                  <mat-error *ngIf="RoleTitle.invalid && RoleTitle.errors.required">Role Title is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="10px">
+            <div fxLayout="row wrap" fxFlex="100%">
+              <mat-accordion fxFlex class="custom-acrd">
+                <mat-expansion-panel *ngFor="let r of rolesrights | groupBy: 'ModuleTitle'" color="primary">
+                  <mat-expansion-panel-header>
+                    {{r.key}}
+                  </mat-expansion-panel-header>
+                  <mat-list Dense>
+                    <mat-list-item>
+                          <h1 mat-subheader> Select All </h1>
+                          <table style="margin-left: 245px;">
+                            <tbody>
+                              <tr>
+                                <div class="Row">
+                                  <div class="col-md-4"></div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary"  (change)="SelAdd(r.CanAdd,r.value,'CanAdd')" [(ngModel)]="r.CanAdd" [ngModelOptions]="{standalone: true}">Can Add</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary"   (change)="SelAdd(r.CanEdit,r.value,'CanEdit')" [(ngModel)]="r.CanEdit" [ngModelOptions]="{standalone: true}">Can Edit</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary"   (change)="SelAdd(r.CanDelete,r.value,'CanDelete')" [(ngModel)]="r.CanDelete" [ngModelOptions]="{standalone: true}">Can Delete</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary"  (change)="SelAdd(r.CanView,r.value,'CanView')" [(ngModel)]="r.CanView" [ngModelOptions]="{standalone: true}">Can View</mat-checkbox>
+                                </td>
+                              </div>
+                            </div>
+                              </tr>
+                            </tbody>
+                          </table>
+                         <!--  <mat-checkbox color="primary"  (change)="SelAdd(r.CanAdd,r.value,'CanAdd')" [(ngModel)]="r.CanAdd" [ngModelOptions]="{standalone: true}">{{r.key!='Reports'? 'Can Add' : 'Can View'}}</mat-checkbox>
+                          <mat-checkbox color="primary" *ngIf="r.key!='Reports'"  (change)="SelAdd(r.CanEdit,r.value,'CanEdit')" [(ngModel)]="r.CanEdit" [ngModelOptions]="{standalone: true}">Can Edit</mat-checkbox>
+                          <mat-checkbox color="primary" *ngIf="r.key!='Reports'"  (change)="SelAdd(r.CanDelete,r.value,'CanDelete')" [(ngModel)]="r.CanDelete" [ngModelOptions]="{standalone: true}">Can Delete</mat-checkbox>
+                          <mat-checkbox color="primary" *ngIf="r.key!='Reports'" (change)="SelAdd(r.CanView,r.value,'CanView')" [(ngModel)]="r.CanView" [ngModelOptions]="{standalone: true}">Can View</mat-checkbox>
+                         -->
+                        
+                          <mat-divider></mat-divider>
+                    </mat-list-item>
+                  </mat-list>
+                  <mat-list dense>
+                    <mat-list-item *ngFor="let form of r.value">
+                      <h1 matLine> {{form.FormName}}</h1>
+                      <table>
+                        <tbody>
+                          <tr>
+                            <div class="Row">
+                            <div class="col-md-3">
+                            <td>
+                              <mat-checkbox name="canadd" *ngIf="form.IsAddible==true"  [(ngModel)]="form.CanAdd" [ngModelOptions]="{standalone: true}">Can Add</mat-checkbox>
+                            </td>
+                          </div>
+                            <div class="col-md-3">
+                            <td>
+                              <mat-checkbox name="canEdit" *ngIf="form.IsEditable==true" [(ngModel)]="form.CanEdit" [ngModelOptions]="{standalone: true}">Can Edit</mat-checkbox>
+                            </td>
+                          </div>
+                            <div class="col-md-3">
+                            <td>
+                             <mat-checkbox name="canDelete" *ngIf="form.IsDeletable==true" [(ngModel)]="form.CanDelete" [ngModelOptions]="{standalone: true}">Can Delete</mat-checkbox>
+                            </td>
+                          </div>
+                            <div class="col-md-3">
+                            <td>
+                             <mat-checkbox name="CanView" *ngIf="form.IsViewable==true" [(ngModel)]="form.CanView" [ngModelOptions]="{standalone: true}">Can View</mat-checkbox>
+                            </td>
+                          </div>
+                        </div>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <mat-divider></mat-divider>
+                    </mat-list-item>
+                  </mat-list>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </div>
+          <br />
+          <div fxLayout="row" fxLayoutGap="20px" [style.marginTop.px]="10">
+            <button mat-raised-button color="primary"  matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working || (RoleID.value < 1 && !rights.CanAdd)">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset()" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons ">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column" class="mat-elevation-z8">
+          <mat-table [dataSource]="roles" matSort fxFlex class="action">
+
+            <ng-container matColumnDef="RoleTitle">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> RoleTitle</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.RoleTitle}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!rights.CanDelete" (ngModelChange)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!rights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

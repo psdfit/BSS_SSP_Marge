@@ -1,0 +1,83 @@
+<div class="row">
+  <div class="col-2">
+    <mat-form-field fxFlex>
+      <mat-select placeholder="Program Type" [(ngModel)]="filters.PTypeID" (selectionChange)="Changemarker()"  id="PTypeID" matInput>
+          <mat-option  value="0">All</mat-option>
+          <mat-option  *ngFor="let s of ProgramType" [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+      </mat-select>
+  </mat-form-field>
+  </div>
+  <div class="col-2">
+    <mat-form-field fxFlex>
+      <mat-select placeholder="Sector" [(ngModel)]="filters.SectorID" (selectionChange)="[Changemarker()]" id="sectorid" matInput>
+          <mat-option  value="0">All</mat-option>
+          <mat-option  *ngFor="let s of Sector" [value]="s.SectorID">{{s.SectorName}}</mat-option>
+      </mat-select>
+  </mat-form-field>
+  </div>
+  <div class="col-2">
+    <mat-form-field fxFlex>
+      <mat-select placeholder="Clustor" [(ngModel)]="filters.ClusterID"  (selectionChange)="[getDistrict(),Changemarker()]" id="clusterid" matInput>
+        <mat-option  value="0">All</mat-option>  
+        <mat-option  *ngFor="let s of Clustor" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+      </mat-select>
+  </mat-form-field>
+  </div>
+  <div class="col-3">
+    <mat-form-field fxFlex>
+      <mat-select placeholder="District" [(ngModel)]="filters.DistrictID" (selectionChange)="[getTehsil(),Changemarker()]" id="districtid" matInput>
+          <mat-option  value="0">All</mat-option>
+          <mat-option  *ngFor="let s of District" [value]="s.DistrictID">{{s.DistrictName+' - '+s.DistrictNameUrdu}}</mat-option>
+      </mat-select>
+  </mat-form-field>
+  </div>
+  <div class="col-3">
+    <mat-form-field fxFlex>
+      <mat-select placeholder="Tehsil" [(ngModel)]="filters.TehsilID" (selectionChange)="[Changemarker()]"  id="tehsilid" matInput>
+          <mat-option  value="0">All</mat-option>
+          <mat-option  *ngFor="let s of Tehsil" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+      </mat-select>
+  </mat-form-field>
+  </div>
+  <!-- <div class="col-3 h-100">
+    <div class="card h-100">
+      <div class="card-body">
+          
+        <mat-form-field fxFlex>
+          <mat-select placeholder="Clustor" formControlName="ClusterID" id="clusterid" matInput>
+              <mat-option (click)="selectCluster(s)" *ngFor="let s of Clustor" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+          </mat-select>
+      </mat-form-field>
+
+          <mat-form-field fxFlex>
+              <mat-select placeholder="District" formControlName="DistrictID" id="districtid" matInput>
+                  <mat-option (click)="selectDistrict(s)" *ngFor="let s of District" [value]="s.DistrictID">{{s.DistrictName+' - '+s.DistrictNameUrdu}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex>
+              <mat-select placeholder="Tehsil" formControlName="TehsilID" id="tehsilid" matInput>
+                  <mat-option (click)="selectTehsil(s)" *ngFor="let s of Tehsil" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex>
+              <mat-select placeholder="Sector" formControlName="SectorID" id="sectorid" matInput>
+                  <mat-option (click)="selectSector(s)" *ngFor="let s of Sector" [value]="s.SectorID">{{s.SectorName}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+
+      </div>
+    </div>
+  </div> -->
+</div>
+<div class="row" style="height: 100%;">
+    <div class="col-12 h-100">
+      <div class="card" style="height:95%;">
+        <div class="card-body map-body" style="padding: 0px;">
+          <div style="height: 100%;" id="map"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

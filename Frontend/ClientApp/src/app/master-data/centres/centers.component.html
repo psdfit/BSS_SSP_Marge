@@ -1,0 +1,204 @@
+<div id="Centers-page" class="comp-main-div" >
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate [formGroup]="centersform" (submit)="Submit()">
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="CenterName" placeholder="Center Name" matInput required />
+                <mat-label>Center Name</mat-label>
+                <mat-error *ngIf="CenterName.invalid && CenterName.errors.required">Center Name is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div><div class="col-sm-6">
+                    <mat-form-field fxFlex>
+                      <input type="text" formControlName="CenterAddress" placeholder="Center Address" matInput maxlength="500" required />
+                      <mat-label>Center Address</mat-label>
+                      <mat-error *ngIf="CenterAddress.invalid && CenterAddress.errors.required">Address is <strong>required</strong></mat-error>
+                    </mat-form-field>
+            </div>
+            <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="CenterGeoLocation" placeholder="CenterGeoLocation" matInput maxlength="100" />
+      <mat-label>CenterGeoLocation</mat-label>
+
+    </mat-form-field>
+  </div>-->
+            <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="number" id="centerdistrict" placeholder="CenterDistrict" NumberOnly formControlName="CenterDistrict" matInput>
+
+    </mat-form-field>
+  </div>-->
+
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select placeholder="District" formControlName="CenterDistrict" id="districtid" matInput required>
+                  <mat-option *ngFor="let s of District" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                  <mat-error *ngIf="CenterDistrict.invalid && CenterDistrict.errors.required">District is <strong>required</strong></mat-error>
+                </mat-select>
+                <!--<mat-error *ngIf="CenterDistrict.invalid && CenterDistrict.errors.required">District is <strong>required</strong></mat-error>-->
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select placeholder="Tehsil" formControlName="CenterTehsil" id="tehsilid" matInput required>
+                  <mat-option *ngFor="let s of Tehsil" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+                  <mat-error *ngIf="CenterTehsil.invalid && CenterTehsil.errors.required">Tehsil is <strong>required</strong></mat-error>
+                </mat-select>
+                <!--<mat-error *ngIf="CenterTehsil.invalid && CenterTehsil.errors.required">Tehsil is <strong>required</strong></mat-error>-->
+              </mat-form-field>
+            </div>
+
+            <!--<div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="number" id="centertehsil" placeholder="CenterTehsil" NumberOnly formControlName="CenterTehsil" matInput>
+
+              </mat-form-field>
+            </div>-->
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="CenterInchargeName" placeholder="Center Incharge Name" matInput maxlength="100" required />
+                <mat-label>Center Incharge Name</mat-label>
+                <mat-error *ngIf="CenterInchargeName.invalid && CenterInchargeName.errors.required">Incharge Name is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div><div class="col-sm-6">
+                    <mat-form-field fxFlex>
+                      <input type="text" formControlName="CenterInchargeMobile" placeholder="Center Incharge Mobile" matInput minlength="11" maxlength="11" NumberOnly required />
+                      <mat-label>Center Incharge Mobile</mat-label>
+                      <mat-error *ngIf="CenterInchargeMobile.invalid && CenterInchargeMobile.errors.required">Incharge Mobile is <strong>required</strong></mat-error>
+                    </mat-form-field>
+            </div>
+            <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="UID" placeholder="UID" matInput />
+      <mat-label>UID</mat-label>
+
+    </mat-form-field>
+  </div> <div class="col-sm-6">
+    <mat-checkbox formControlName="IsMigrated">IsMigrated</mat-checkbox>
+  </div>
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="HouseNo" placeholder="HouseNo" matInput />
+      <mat-label>HouseNo</mat-label>
+
+    </mat-form-field>
+  </div><div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="Street" placeholder="Street" matInput />
+      <mat-label>Street</mat-label>
+
+    </mat-form-field>
+  </div><div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="Town" placeholder="Town" matInput />
+      <mat-label>Town</mat-label>
+
+    </mat-form-field>
+  </div>-->
+          </div>
+          <div class="row col-12">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working  || (CenterID.value<1 && !formrights.CanAdd)">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset()" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div class="table-responsive">
+          <mat-table [dataSource]="centers" matSort>
+
+            <ng-container matColumnDef="CenterName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Center Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CenterName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CenterAddress">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Center Address</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CenterAddress}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CenterGeoLocation">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> CenterGeoLocation</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CenterGeoLocation}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CenterDistrict">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Center District</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CenterTehsil">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Center Tehsil</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CenterInchargeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Incharge Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CenterInchargeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CenterInchargeMobile">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Incharge Mobile</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CenterInchargeMobile}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="UID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> UID</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.UID}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="IsMigrated">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> IsMigrated</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-checkbox [checked]="Row.IsMigrated">IsMigrated</mat-checkbox>  </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="HouseNo">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> HouseNo</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.HouseNo}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Street">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Street</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Street}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Town">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Town</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Town}} </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

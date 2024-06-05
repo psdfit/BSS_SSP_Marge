@@ -1,0 +1,158 @@
+<div id="MasterSheet-page" class="comp-main-div">
+
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <span class="spacer">Skills Scholarship Initiative </span>
+          <div class="spacer"></div>
+          <button mat-button color="White" title="View Session Control" (click)="hideDiv()" *ngIf="currentUser.UserLevel!=4">{{ buttonTitle }}</button>
+
+        </mat-toolbar>
+        <div fxLayout="column" [hidden]="isDivHidden">
+
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getSkillsScholarshipData()]" id="SchemeId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of Scheme" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="currentUser.UserLevel!=4">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Locality" [(ngModel)]="filters.Locality" [formControl]="LocalityFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getClusterDropdown()]" id="Locality" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option value="1">Cluster</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="currentUser.UserLevel!=4">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Cluster" [(ngModel)]="filters.Cluster" [formControl]="ClusterFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getSkillsScholarshipData()]" id="Cluster" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of Cluster" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="currentUser.UserLevel!=4">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="TSP" [(ngModel)]="filters.TSPID" [formControl]="TSPFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getSkillsScholarshipData()]" id="TSPId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let r of TSP" [value]="r.TSPID">{{r.TSPName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div>
+            <div class=" table-responsive">
+              <mat-table [dataSource]="SkillsScholarshipArray" matSort class="table table-bordered custom-width">
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Actions</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">
+                    <button mat-button color="primary" title="Start FCFS Enrollment" [disabled]="Row.HasRaceStarted ? true : false" (click)="getStartRaceOfRow(Row)">Start FCFS Enrollment</button>
+                    <button mat-button color="primary" title="Stop FCFS Enrollment" [disabled]="Row.HasRaceStarted ? (Row.RaceStopped ? true : false) : false" (click)="getStopRaceOfRow(Row)">Stop FCFS Enrollment</button>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TradeName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trade Name </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TradeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="NoOfAssociate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> No. of Associates </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.NoOfAssociate}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TradeTarget">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> No. of total seats available </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TradeTarget}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EnrolmentsCompleted">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> No. of Enrolments Completed (Overall) </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.EnrolmentsCompleted}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="RemainingSeats">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Remaining capacity of Associate </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.RemainingSeats}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="OverallEnrolments">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> No. of Enrolments Completed (TSP) </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.OverallEnrolments}}</mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" tabindex="0"></mat-row>
+
+              </mat-table>
+              <mat-paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </div>
+        </div>
+
+        <div fxLayout="column" [hidden]="SessionControl">
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getUsersSessionData()]" id="SchemeId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of Scheme" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="TSP" [(ngModel)]="filters.TSPID" [formControl]="TSPFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getUsersSessionData()]" id="TSPId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let r of TSP" [value]="r.TSPID">{{r.TSPName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div>
+            <div class=" table-responsive">
+              <mat-table [dataSource]="UsersSessionDate" matSort class="table table-bordered custom-width">
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Actions</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">
+                    <button mat-button color="primary" title="Clear Session" (click)="DeleteSessionOfRow(Row)">Clear Session</button>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TSPName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="UserName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> User Name </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.UserName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="LoginDateTime">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Login Date Time </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.LoginDate}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SessionID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> SessionID </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.SessionID}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IPAddress">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> IPAddress </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.IPAddress}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columnsForTable2"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsForTable2;" tabindex="0"></mat-row>
+
+              </mat-table>
+              <mat-paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+</mat-card-content>
+  </mat-card>
+</div>
+<!--*ngIf="Row.RoleId == TpmID || Row.UserID == 2"-->

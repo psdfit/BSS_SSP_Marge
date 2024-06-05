@@ -1,0 +1,148 @@
+<mat-toolbar color="accent" class=" slim slim">
+  <mat-icon class="material-icons"> add_circle </mat-icon>
+  <span class="spacer">Association Evaluation</span>
+</mat-toolbar>
+<mat-card-content>
+  <div class="row" style="padding: 10px !important;">
+    <div class="col-sm-6">
+      <fieldset class="border">
+        <legend>TSP Association Submission Details</legend>
+        <div class="row">
+          <div class="table-responsive">
+            <mat-table [dataSource]="TablesData" #sort="matSort" matSort class="table table-bordered">
+              <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <ng-container *ngIf=" column !='Action' &&  column!='Evidence'">
+                    &nbsp;{{ row[column] }}
+                  </ng-container>
+                  <ng-container *ngIf="column =='Evidence'">
+                    &nbsp; <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
+                      matTooltip="Preview document" class="file-lable">
+                      <mat-icon>get_app</mat-icon>
+                    </a>
+                  </ng-container>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="col-sm-6">
+      <form (ngSubmit)="Save()" [formGroup]="AssociationEvaluationForm">
+        <fieldset class="border">
+          <legend>Association Evaluation Details</legend>
+          <div class="row">
+            <div class="col-6">
+              <mat-form-field>
+                <mat-label>Tsp Name</mat-label>
+                <input formControlName="TspName" matInput placeholder="Tsp Name" required readonly />
+                <mat-error *ngFor="let error of AssociationEvaluationForm.get('TspName').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-6">
+              <mat-form-field>
+                <mat-label>Program</mat-label>
+                <input formControlName="Program" matInput placeholder="Program" required readonly />
+                <mat-error *ngFor="let error of AssociationEvaluationForm.get('Program').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-12">
+              <mat-form-field>
+                <mat-label>Trade Lot</mat-label>
+                <input formControlName="TradeLot" matInput placeholder="Trade Lot" required readonly />
+                <mat-error *ngFor="let error of AssociationEvaluationForm.get('Program').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-6">
+              <mat-form-field>
+                <mat-label>Verified Capacity Mor.</mat-label>
+                <input formControlName="VerifiedCapacityMorning" numberOnly matInput
+                  placeholder="Verified Capacity Mor." required />
+                <mat-error
+                  *ngFor="let error of AssociationEvaluationForm.get('VerifiedCapacityMorning').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-6">
+              <mat-form-field>
+                <mat-label>Verified Capacity Eve.</mat-label>
+                <input formControlName="VerifiedCapacityEvening" numberOnly matInput
+                  placeholder="Verified Capacity Eve." required />
+                <mat-error
+                  *ngFor="let error of AssociationEvaluationForm.get('VerifiedCapacityEvening').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-6">
+              <mat-form-field>
+                <mat-label>Marks BasedOn Evaluation</mat-label>
+                <input formControlName="MarksBasedOnEvaluation" numberOnly matInput
+                  placeholder="Marks Based On Evaluation" required />
+                <mat-error
+                  *ngFor="let error of AssociationEvaluationForm.get('MarksBasedOnEvaluation').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            
+            <!-- <div class="col-6">
+              <mat-form-field>
+                <mat-label>Category Based On Evaluation</mat-label>
+                <input formControlName="CategoryBasedOnEvaluation" matInput placeholder="Category Based On Evaluation"
+                  required />
+                <mat-error
+                  *ngFor="let error of AssociationEvaluationForm.get('CategoryBasedOnEvaluation').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div> -->
+
+            
+            <div class="col-6">
+              <mat-form-field>
+                <mat-label>Select Category On Evaluation</mat-label>
+                <mat-select placeholder="Select Category On  Evaluation" formControlName="CategoryBasedOnEvaluation" matInput required>
+                  <mat-option value="A">A</mat-option>
+                  <mat-option value="B">B</mat-option>
+                  <mat-option value="C">C</mat-option>
+                  <mat-option value="D">D</mat-option>
+                  <mat-option value="E">E</mat-option>
+                </mat-select>
+                <mat-error *ngFor="let error of AssociationEvaluationForm.get('CategoryBasedOnEvaluation').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-12">
+              <mat-form-field>
+                <mat-label>Select Status</mat-label>
+                <mat-select placeholder="Select Status" formControlName="Status" matInput required>
+                  <mat-option *ngFor="let s of Status " [value]="s.TspTradeStatusID">{{s.Status}}</mat-option>
+                </mat-select>
+                <mat-error *ngFor="let error of AssociationEvaluationForm.get('Status').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row" style="float:right;margin-bottom: 5px;">
+            <div class="col-12">
+              <button color="accent" mat-raised-button matDialogClose> <i class="fas fa-close"></i> Close </button> |
+              <button color="primary" mat-raised-button><i class="fas fa-check"></i> Save </button>
+            </div>
+          </div>
+
+        </fieldset>
+      </form>
+    </div>
+  </div>

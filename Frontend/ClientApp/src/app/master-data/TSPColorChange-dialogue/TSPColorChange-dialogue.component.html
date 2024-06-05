@@ -1,0 +1,38 @@
+<h1 mat-dialog-title>TSP Color Change</h1>
+<div mat-dialog-content style="overflow:unset;">
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <form [formGroup]="TSPColorform" (submit)="Submit()">
+          <div class="row">
+            <div class="col-md-12">
+              <mat-form-field fxFlex>
+                 <mat-select  placeholder="TSP Color" formControlName="TSPColorID"  matInput required>
+                  <mat-option *ngFor="let s of GetTSPColor"  [value]="s">{{s.TSPColorName}}
+                   <span class="circle"  [ngStyle]="{'background-color': s.TSPColorCode,'color':s.TSPColorCode}" style="margin-left: 10%;" >background-color</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="TSPColorID.invalid && TSPColorID.errors.required">TSP Color Name is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row col-12">
+            <div mat-dialog-actions>
+              <button mat-button class="btn-info" mat-raised-button color="primary" [disabled]="!formrights.CanAdd" matTooltip="Click to save"
+              attr.aria-label="Click to Save" type="submit" >Save</button>
+            </div>
+            &nbsp;&nbsp;
+            <div mat-dialog-actions>
+              <button type="reset" mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>Close</button>
+            </div>
+          </div>
+          <br>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+  
+</div>
+
+
+

@@ -1,0 +1,104 @@
+<mat-card>
+ 
+  
+  <mat-card-content>
+    <div class="row">
+      <div class="col-sm-12">
+        <form [formGroup]="AnnualPlanInfoForm" >
+          <fieldset class="border">
+            <legend>Registration Analysis Report</legend>
+             <div class="row">
+                <div class="col-sm-2">
+                   <mat-form-field>
+                      <mat-label>TSP Name</mat-label>
+                      <mat-select (openedChange)="EmptyCtrl()" formControlName="TSPName" matInput required (selectionChange)="[getDependantFilters()]" >
+                        <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                        <mat-option>Select TSP Name</mat-option>
+                        <mat-option *ngFor="let s of uniqueTSPName | like:['TspName',BSearchCtr.value]" [value]="s.TspID">{{s.TspName}}</mat-option>
+                      </mat-select>
+                      <mat-error  *ngFor="let error of AnnualPlanInfoForm.get('TSPName').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                   </mat-form-field>
+                </div>
+                <div class="col-sm-2">
+                 <mat-form-field>
+                    <mat-label>Trade</mat-label>
+                    <mat-select (openedChange)="EmptyCtrl()" formControlName="Trade" matInput required (selectionChange)="[getDependantFilters()]" >
+                      <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr"  /></mat-optgrp>
+                      <mat-option>Select Trade</mat-option>
+                      <mat-option *ngFor="let t of uniqueTrade | like:['TradeName',BSearchCtr.value]" [value]="t.TradeID">{{t.TradeName}}</mat-option>
+                    </mat-select>
+                    <mat-error  *ngFor="let error of AnnualPlanInfoForm.get('Trade').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+                 </mat-form-field>
+              </div>
+              <div class="col-sm-2">
+               <mat-form-field>
+                  <mat-label>Province</mat-label>
+                  <mat-select (openedChange)="EmptyCtrl()" formControlName="Province" matInput required (selectionChange)="[getDependantFilters()]" >
+                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                    <mat-option>Select Province</mat-option>
+                    <mat-option *ngFor="let s of uniqueProvinces | like:['Province',BSearchCtr.value]" [value]="s.ProvinceID">{{s.Province}}</mat-option>
+                  </mat-select>
+                  <mat-error  *ngFor="let error of AnnualPlanInfoForm.get('Province').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+               </mat-form-field>
+            </div>
+            <div class="col-sm-2">
+             <mat-form-field>
+                <mat-label>Cluster</mat-label>
+                <mat-select (openedChange)="EmptyCtrl()" formControlName="Cluster" matInput required (selectionChange)="[getDependantFilters()]" >
+                  <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                  <mat-option>Select Cluster</mat-option>
+                  <mat-option *ngFor="let s of uniqueCluster | like:['Cluster',BSearchCtr.value]" [value]="s.ClusterID">{{s.Cluster}}</mat-option>
+                </mat-select>
+                <mat-error  *ngFor="let error of AnnualPlanInfoForm.get('Cluster').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+             </mat-form-field>
+          </div>
+     
+          <div class="col-sm-2">
+           <mat-form-field>
+              <mat-label>Distrct</mat-label>
+              <mat-select (openedChange)="EmptyCtrl()" formControlName="Distrct" matInput required (selectionChange)="[getDependantFilters()]" >
+                <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                <mat-option >Select District</mat-option>
+                <mat-option *ngFor="let s of uniqueDistrct | like:['District',BSearchCtr.value]" [value]="s.DistrictID">{{s.District}}</mat-option>
+              </mat-select>
+              <mat-error  *ngFor="let error of AnnualPlanInfoForm.get('Distrct').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+           </mat-form-field>
+        </div>
+             </div>
+          </fieldset>
+          </form>
+     
+      </div>
+    </div>
+    <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> view_comfy </mat-icon>
+      <span class="spacer">Manage and View All</span>
+      <input placeholder="Search" (keyup)="applyFilter(TableData,$event)" class="search" />
+      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+        (click)="DataExcelExport(this.TableData.filteredData,' Design')">
+        <i class="fas fa-file-export"></i> Export Excel</button>
+    </mat-toolbar>
+    <div class="table-responsive">
+      <mat-table [dataSource]="TableData" #tsort="matSort" matSort class="table table-bordered">
+        <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <ng-container *ngIf="column !='ContractAwardDate'"> &nbsp; {{ row[column] }}</ng-container>
+           
+            <ng-container *ngIf="column =='ContractAwardDate'">
+              &nbsp; {{ row[column] | date:environment.DateFormat }}
+            </ng-container>
+          </mat-cell>
+        </ng-container>
+
+
+
+        <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #tpaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+    </div>
+
+    </mat-card-content>
+    </mat-card>
+  

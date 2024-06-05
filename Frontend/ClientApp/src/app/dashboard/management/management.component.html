@@ -1,0 +1,482 @@
+<div id="dashboard-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Management Dashboard</span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="row" style="margin-top: -20px;">
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Select Trade" [(ngModel)]="selectedValueTrade" (selectionChange)="onChangeTrade($event)" (openedChange)="EmptyCtrl('Trade')" matInput>
+              <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTrade" autofocus /></mat-optgrp>
+              <mat-option value="" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of Trades | like:['tradeName',SearchTrade.value]" [value]="s.tradeID">{{s.tradeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Select Cluster" [(ngModel)]="selectedValueCluster" (selectionChange)="onChangeCluster($event)" (openedChange)="EmptyCtrl('Cluster')" matInput>
+              <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCluster" autofocus /></mat-optgrp>
+              <mat-option value="" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of Clusters | like:['ClusterName',SearchCluster.value]" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Select District" [(ngModel)]="selectedValueDistrict" (selectionChange)="onChangeDistrict($event)" (openedChange)="EmptyCtrl('District')" matInput>
+              <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchDistrict" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of Districts | like:['DistrictName',SearchDistrict.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Select Program" [(ngModel)]="selectedValueProgram" (selectionChange)="onChangeProgram($event)" (openedChange)="EmptyCtrl('Program')" matInput>
+              <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchProgram" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of Programs | like:['PTypeName',SearchProgram.value]" [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </div>
+      <div class="row" style="margin-top: -25px;">
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Select Scheme" [(ngModel)]="selectedValueScheme" (selectionChange)="onChangeScheme($event)" (openedChange)="EmptyCtrl('Scheme')" matInput>
+              <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchScheme" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchScheme.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Select TSP" [(ngModel)]="selectedValueTSP" (selectionChange)="onChangeTSP($event)" (openedChange)="EmptyCtrl('TSP')" matInput>
+              <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of TSPs | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-label>Duration Start</mat-label>
+            <input matInput [matDatepicker]="pickerStart" [(ngModel)]="selectedValueStart" readonly (dateChange)="onChangeStartDate($event)">
+            <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+            <mat-datepicker #pickerStart></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-label>Duration End</mat-label>
+            <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="selectedValueEnd" readonly (dateChange)="onChangeEndDate($event)">
+            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+            <mat-datepicker #pickerEnd></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+      </div>
+      <!--<mat-toolbar color="accent" class="slim slim">
+    <span class="spacer">Beginning Training</span>
+    <div class="spacer"></div>
+  </mat-toolbar>-->
+      <div class="row home-grid height-img">
+        <div class="col-sm-12">
+          <mat-grid-list cols="5" rowHeight="3:1">
+            <mat-grid-tile class="row">
+
+              <div class="col-sm-10">
+                <h1>
+                  {{UnverifiedTrainees | number : '1.0-0'}}
+                </h1>
+                <span>Unverified Trainees</span>
+              </div>
+              <div class="col-sm-2 p-0 text-right pink">
+                <img src="../../assets/images/vendor.png" alt="" />
+              </div>
+
+            </mat-grid-tile>
+            <mat-grid-tile class="row">
+
+              <div class="col-sm-10">
+                <h1>
+                  {{TrainingProviders | number : '1.0-0'}}
+                </h1>
+                <span>Service Providers</span>
+              </div>
+              <div class="col-sm-2 p-0 text-right pink">
+                <img src="../../assets/images/scheme.png" alt="" />
+              </div>
+
+            </mat-grid-tile>
+            <mat-grid-tile class="row">
+
+              <div class="col-sm-10">
+                <h1>
+                  {{ContractedClasses | number : '1.0-0'}}
+                </h1>
+                <span>Contracted Classes</span>
+              </div>
+              <div class="col-sm-2 p-0 text-right pink">
+                <img src="../../assets/images/training.png" alt="" />
+              </div>
+            </mat-grid-tile>
+
+            <mat-grid-tile class="row">
+              <div class="col-sm-10">
+                <h1>
+                  {{EnrolledTrainees | number : '1.0-0'}}
+                </h1>
+                <span>Enrolled Trainees</span>
+              </div>
+              <div class="col-sm-2 p-0 text-right pink">
+                <img src="../../assets/images/classes.png" alt="" />
+              </div>
+            </mat-grid-tile>
+            <mat-grid-tile class="row">
+              <div class="col-sm-10">
+                <h1>
+                  {{ContractedTrainees | number : '1.0-0'}}
+                </h1>
+                <span>Contracted Trainees</span>
+              </div>
+              <div class="col-sm-2 p-0 text-right pink">
+                <img src="../../assets/images/training.png" alt="" />
+              </div>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
+      </div>
+
+      <!--<mat-toolbar color="accent" class="slim slim">
+    <span class="spacer">Scheme Defination</span>
+    <div class="spacer"></div>
+  </mat-toolbar>-->
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Men, Women, Minor & Disable %</div>
+            <div id="containerSDGuage" style="width:100%;"></div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Gender Segregation</div>
+            <div id="containerSDPie" style="width:100%;"></div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Expelled & DropOuts</div>
+            <div id="containerExpDrops" style="width:100%;"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Monitoring</span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="home-grid height-img" style="margin-bottom: 12px;">
+        <mat-grid-list cols="5" rowHeight="2:1">
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{StipendAmount | number : '1.0-0'}}
+              </h1>
+              <span>Stipend Amount</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/vendor.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{CompletedTrainee | number : '1.0-0'}}
+              </h1>
+              <span>Completed Trainees</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/training.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{ContractToEnroll}}
+              </h1>
+              <span>Contract to Enroll</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/scheme.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{EnrollToComplete}}
+              </h1>
+              <span>Enroll to complete</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/classes.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{IncomeRatioEmp | number : '1.0-0'}}
+              </h1>
+              <span>Income (Employeed)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/vendor.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{IncomeRatioUnEmp | number : '1.0-0'}}
+              </h1>
+              <span>Income (Un-Employeed)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/training.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{Passed | number : '1.0-0'}}
+              </h1>
+              <span>Passed Trainees</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/vendor.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{EnrolledToPass}} %
+              </h1>
+              <span>Enrolled to Pass Ratio</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/classes.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{ContractToPass}} %
+              </h1>
+              <span>Contract to Pass Ratio</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/training.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{CompleteToPass}} %
+              </h1>
+              <span>Completed to Pass Ratio</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/scheme.png" alt="" />
+            </div>
+          </mat-grid-tile>
+
+        </mat-grid-list>
+      </div>
+
+
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Exam & Certification</span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Violations</div>
+            <div id="containerViolations" style="width:100%;"></div>
+          </div>
+
+        </div>
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Payments Detail</div>
+            <div id="containerPayments" style="width:100%"></div>
+          </div>
+
+        </div>
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Trainee Comparison</div>
+            <div id="containerPassed" style="width:100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Placement & Employment</span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Placements (Reported & Verified)</div>
+            <div id="containerPlacemnent" style="width:100%"></div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Placements Reported Ratio</div>
+            <div id="containerPlacemnent1" style="width:100%"></div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Placements Verified Ratio</div>
+            <div id="containerPlacemnent2" style="width:100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">ROSI</span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="home-grid height-img" style="margin-bottom: 12px;">
+        <mat-grid-list cols="5" rowHeight="2:1">
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{AverageWageRate | number : '1.2-2'}}
+              </h1>
+              <span>Average Wage Rate</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/vendor.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{OpportunityCost | number : '1.2-2'}}
+              </h1>
+              <span>Opportunity Cost</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/training.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{VerifiedTrainees}}
+              </h1>
+              <span>Verified Employed</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/scheme.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{ContractualCTM | number : '1.2-2'}}
+              </h1>
+              <span>CTM (Contractual)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/classes.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{ActualCTM | number : '1.2-2'}}
+              </h1>
+              <span>CTM (Actual)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/classes.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{OpportunityCostForecast | number : '1.2-2'}}
+              </h1>
+              <span>Opportunity Cost (Forecast)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/vendor.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{AverageWageRateForecast | number : '1.2-2'}}
+              </h1>
+              <span>Average Wage Rate (Forecast)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/scheme.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{ContractualROSI}}%
+              </h1>
+              <span>ROSI (Contractual)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/classes.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{ForecastROSI}}%
+              </h1>
+              <span>ROSI (Forecast)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/scheme.png" alt="" />
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="row">
+            <div class="col-sm-10">
+              <h1>
+                {{ActualROSI}}%
+              </h1>
+              <span>ROSI (Actual)</span>
+            </div>
+            <div class="col-sm-2 p-0 text-right pink">
+              <img class="height50" src="../../assets/images/vendor.png" alt="" />
+            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</div>

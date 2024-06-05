@@ -1,0 +1,221 @@
+PRN Master for PRN Master Row:
+RD_PRNMaster
+
+PRN Detail against PRN Master Row
+RD_PRN
+--------------------------
+Columns Used in BSS against Invoice types.
+populatePRNByIDsData(data: any, _ProcessKey: string) {
+    return data.map(item => {
+      return {
+        'Class Code': item.ClassCode
+        , 'Invoice No': item.InvoiceNumber
+        , Trade: item.TradeName
+        , 'Certification Authority':item.CertAuthName
+        , Duration: item.Duration
+        , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
+        , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
+        , 'Class Status': item.ClassStatus
+        , 'Contractual Trainees': item.ContractualTrainees
+        , 'Claimed Trainees': item.ClaimedTrainees
+        , 'Enrolled Trainees': item.EnrolledTrainees
+        , 'CNIC Verified': item.CNICVerified
+        , 'CNIC Verified Excesses': item.CNICVExcesses
+        , 'Dropouts Verified': item.DropoutsVerified
+        , 'Expelled Verified': item.ExpelledVerified
+        , 'Pass Verified': item.PassVerified
+        , 'Failed Verified': item.FailedVerified
+        , 'Absent Verified': item.AbsentVerified
+        , 'CNIC Unverified': item.CNICUnverified
+        , 'CNIC UnVerified Excesses': item.CNICUnVExcesses
+        , 'Dropouts Unverified': item.DropoutsUnverified
+        , 'Expelled UnVerified': item.ExpelledUnverified
+        , 'Pass Unverified': item.PassUnverified
+        , 'Failed Unverified': item.FailedUnverified
+        , 'Absent Unverified': item.AbsentUnverified
+        , 'Dropout (Pass/Fail/Absent)': item.DropoutPassFailAbsent
+        , 'Expelled (Pass/Fail/Absent)': item.ExpelledPassFailAbsent
+        , 'Deduction Since Inception Dropout': item.DeductionSinIncepDropout
+        , 'Max Attendance': item.MaxAttendance
+        , 'Payment Withheld Physical Count': item.PaymentWithheldPhysicalCount
+        , 'Deduction Marginal': item.DeductionMarginal
+        , 'Deduction Extra Registered For Exam': item.DeductionExtraRegisteredForExam
+        , 'Deduction Failed Trainees': item.DeductionFailedTrainees
+        , 'Deduction Uniform Bag Receiving': item.DeductionUniformBagReceiving
+        , 'Payment Withheld Since Inception UnV CNIC': item.PaymentWithheldSinIncepUnVCNIC
+        , 'Penalty TPM Reports': item.PenaltyTPMReports
+        , 'Penalty Imposed By MnE': item.PenaltyImposedByME
+        , 'Reimbursement UnV Trainees': item.ReimbursementUnVTrainees
+        , 'Reimbursement Attandance': item.ReimbursementAttandance
+        , 'Employment Commitment Percentage': item.EmploymentCommitmentPercentage
+        , 'Completed Trainees': item.CompletedTrainees
+        , 'Employment Commitment Trainees': item.GraduatedCommitmentTrainees
+        , 'Employment Reported': item.EmploymentReported
+        , 'Verified Trainees': item.VerifiedTrainees
+        , 'Verified to Commitment': (item.VerifiedToCompletedCommitment) + '%'
+        // tslint:disable-next-line: max-line-length
+        , 'Expelled Regular Verified For The Month': (item.ExpelledRegularVerifiedForTheMonth)
+        , 'Certification Cost Deduction (All Types)': item.ExtraTraineeDeductCompletion + item.UnVDeductCompletion + item.DropOutDeductCompletion + item.AbsentDeductCompletion
+        , 'Payment To Be Released Trainees': item.PaymentToBeReleasedTrainees
+        , 'Status': item.StatusApproved
+        , 'Approval Date': this.datePipe.transform(item.FinalApprovalDate, 'dd/MM/yyyy')
+        , 'Creation Date': this.datePipe.transform(item.CreationDate, 'dd/MM/yyyy')
+
+      };
+    });
+  }
+
+
+  populateData(data: any, ProcessKey: string) {
+    if (ProcessKey === EnumApprovalProcess.PRN_F) {
+      return data.map(item => {
+        return {
+          'Class Code': item.ClassCode
+          , 'Invoice No': item.InvoiceNumber
+          , Trade: item.TradeName
+          , 'Certification Authority':item.CertAuthName
+          , Duration: item.Duration
+          , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
+          , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
+          , 'Class Status': item.ClassStatus
+          , 'Contractual Trainees': item.ContractualTrainees
+          , 'Claimed Trainees': item.ClaimedTrainees
+          , 'Enrolled Trainees': item.EnrolledTrainees
+          , 'CNIC Verified': item.CNICVerified
+          , 'CNIC Verified Excesses': item.CNICVExcesses
+          , 'Dropouts Verified': item.DropoutsVerified
+          , 'Expelled Verified': item.ExpelledVerified
+          , 'Pass Verified': item.PassVerified
+          , 'Failed Verified': item.FailedVerified
+          , 'Absent Verified': item.AbsentVerified
+          , 'CNIC Unverified': item.CNICUnverified
+          , 'CNIC UnVerified Excesses': item.CNICUnVExcesses
+          , 'Dropouts Unverified': item.DropoutsUnverified
+          , 'Expelled UnVerified': item.ExpelledUnverified
+          , 'Pass Unverified': item.PassUnverified
+          , 'Failed Unverified': item.FailedUnverified
+          , 'Absent Unverified': item.AbsentUnverified
+          , 'Dropout (Pass/Fail/Absent)': item.DropoutPassFailAbsent
+          , 'Expelled (Pass/Fail/Absent)': item.ExpelledPassFailAbsent
+          , 'Deduction Since Inception Dropout': item.DeductionSinIncepDropout
+          , 'Max Attendance': item.MaxAttendance
+          , 'Payment Withheld Physical Count': item.PaymentWithheldPhysicalCount
+          , 'Deduction Marginal': item.DeductionMarginal
+          , 'Deduction Extra Registered For Exam': item.DeductionExtraRegisteredForExam
+          , 'Deduction Failed Trainees': item.DeductionFailedTrainees
+          , 'Deduction Uniform Bag Receiving': item.DeductionUniformBagReceiving
+          , 'Payment Withheld Since Inception UnV CNIC': item.PaymentWithheldSinIncepUnVCNIC
+          , 'Penalty TPM Reports': item.PenaltyTPMReports
+          , 'Penalty Imposed By MnE': item.PenaltyImposedByME
+          , 'Reimbursement UnV Trainees': item.ReimbursementUnVTrainees
+          , 'Reimbursement Attandance': item.ReimbursementAttandance
+          , 'Employment Commitment Percentage': item.EmploymentCommitmentPercentage
+          , 'Completed Trainees': item.CompletedTrainees
+          , 'Employment Commitment Trainees': item.GraduatedCommitmentTrainees
+          , 'Employment Reported': item.EmploymentReported
+          , 'Verified Trainees': item.VerifiedTrainees
+          , 'Verified to Commitment': (item.VerifiedToCompletedCommitment) + '%'
+          , 'Payment To Be Released Trainees': item.PaymentToBeReleasedTrainees
+          , 'Status': item.StatusApproved
+          , 'Approval Date': this.datePipe.transform(item.FinalApprovalDate, 'dd/MM/yyyy')
+          , 'Creation Date': this.datePipe.transform(item.CreationDate, 'dd/MM/yyyy')
+        };
+      });
+    }
+    else if (ProcessKey === EnumApprovalProcess.PRN_C) {
+      return data.map(item => {
+        return {
+          'Class Code': item.ClassCode
+          , 'Invoice No': item.InvoiceNumber
+          , Trade: item.TradeName
+          , 'Certification Authority':item.CertAuthName
+          , Duration: item.Duration
+          , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
+          , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
+          , 'Class Status': item.ClassStatus
+          , 'Contractual Trainees': item.ContractualTrainees
+          , 'Claimed Trainees': item.ClaimedTrainees
+          , 'Enrolled Trainees': item.EnrolledTrainees
+          , 'CNIC Verified': item.CNICVerified
+          , 'CNIC Verified Excesses': item.CNICVExcesses
+          , 'Dropouts Verified': item.DropoutsVerified
+          , 'Expelled Verified': item.ExpelledVerified
+          , 'Pass Verified': item.PassVerified
+          , 'Failed Verified': item.FailedVerified
+          , 'Absent Verified': item.AbsentVerified
+          , 'CNIC Unverified': item.CNICUnverified
+          , 'CNIC UnVerified Excesses': item.CNICUnVExcesses
+          , 'Dropouts Unverified': item.DropoutsUnverified
+          , 'Expelled UnVerified': item.ExpelledUnverified
+          , 'Pass Unverified': item.PassUnverified
+          , 'Failed Unverified': item.FailedUnverified
+          , 'Absent Unverified': item.AbsentUnverified
+          , 'Dropout (Pass/Fail/Absent)': item.DropoutPassFailAbsent
+          , 'Expelled (Pass/Fail/Absent)': item.ExpelledPassFailAbsent
+          , 'Deduction Since Inception Dropout': item.DeductionSinIncepDropout
+          , 'Max Attendance': item.MaxAttendance
+          , 'Payment Withheld Physical Count': item.PaymentWithheldPhysicalCount
+          , 'Deduction Marginal': item.DeductionMarginal
+          , 'Deduction Extra Registered For Exam': item.DeductionExtraRegisteredForExam
+          , 'Deduction Failed Trainees': item.DeductionFailedTrainees
+          , 'Deduction Uniform Bag Receiving': item.DeductionUniformBagReceiving
+          , 'Payment Withheld Since Inception UnV CNIC': item.PaymentWithheldSinIncepUnVCNIC
+          , 'Penalty TPM Reports': item.PenaltyTPMReports
+          , 'Penalty Imposed By MnE': item.PenaltyImposedByME
+          , 'Reimbursement UnV Trainees': item.ReimbursementUnVTrainees
+          , 'Reimbursement Attandance': item.ReimbursementAttandance
+          // tslint:disable-next-line: max-line-length
+          , 'Certification Cost Deduction (All Types)': item.ExtraTraineeDeductCompletion + item.UnVDeductCompletion + item.DropOutDeductCompletion + item.AbsentDeductCompletion
+          , 'Payment To Be Released Trainees': item.PaymentToBeReleasedTrainees
+          , 'Status': item.StatusApproved
+          , 'Approval Date': this.datePipe.transform(item.FinalApprovalDate, 'dd/MM/yyyy')
+          , 'Creation Date': this.datePipe.transform(item.CreationDate, 'dd/MM/yyyy')
+        };
+      });
+    }
+    else if (ProcessKey === EnumApprovalProcess.PRN_R) {
+      return data.map(item => {
+        return {
+          'Class Code': item.ClassCode
+          , 'Invoice No': item.InvoiceNumber
+          , Trade: item.TradeName
+          , 'Certification Authority':item.CertAuthName
+          , Duration: item.Duration
+          , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
+          , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
+          , 'Class Status': item.ClassStatus
+          , 'Contractual Trainees': item.ContractualTrainees
+          , 'Claimed Trainees': item.ClaimedTrainees
+          , 'Enrolled Trainees': item.EnrolledTrainees
+          , 'CNIC Verified': item.CNICVerified
+          , 'CNIC Verified Excesses': item.CNICVExcesses
+          , 'Dropouts Verified': item.DropoutsVerified
+          , 'Expelled Verified': item.ExpelledVerified
+          , 'CNIC Unverified': item.CNICUnverified
+          , 'CNIC UnVerified Excesses': item.CNICUnVExcesses
+          , 'Dropouts Unverified': item.DropoutsUnverified
+          , 'Expelled UnVerified': item.ExpelledUnverified
+          , 'NonFunctional Visit 1': item.NonFunctionalVisit1
+          , 'NonFunctional Visit 2': item.NonFunctionalVisit2
+          , 'NonFunctional Visit 3': item.NonFunctionalVisit3
+          , 'NonFunctional Visit 1 Date': this.datePipe.transform(item.NonFunctionalVisit1Date, 'dd/MM/yyyy')
+          , 'NonFunctional Visit 2 Date': this.datePipe.transform(item.NonFunctionalVisit2Date, 'dd/MM/yyyy')
+          , 'NonFunctional Visit 3 Date': this.datePipe.transform(item.NonFunctionalVisit3Date, 'dd/MM/yyyy')
+          , 'Deduction Since Inception Dropout': item.DeductionSinIncepDropout
+          , 'Max Attendance': item.MaxAttendance
+          , 'Payment Withheld Physical Count': item.PaymentWithheldPhysicalCount
+          , 'Deduction Marginal': item.DeductionMarginal
+          , 'Payment Withheld Since Inception UnV CNIC': item.PaymentWithheldSinIncepUnVCNIC
+          , 'Penalty TPM Reports': item.PenaltyTPMReports
+          , 'Penalty Imposed By MnE': item.PenaltyImposedByME
+          , 'Reimbursement UnV Trainees': item.ReimbursementUnVTrainees
+          , 'Reimbursement Attandance': item.ReimbursementAttandance
+          , 'Expelled Regular Verified For The Month': (item.ExpelledRegularVerifiedForTheMonth)
+          , 'Payment To Be Released Trainees': item.PaymentToBeReleasedTrainees
+          , 'Status': item.StatusApproved
+          , 'Approval Date': this.datePipe.transform(item.FinalApprovalDate, 'dd/MM/yyyy')
+          , 'Creation Date': this.datePipe.transform(item.CreationDate, 'dd/MM/yyyy')
+        };
+      });
+    }
+  }

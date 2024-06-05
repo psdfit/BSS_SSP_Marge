@@ -1,0 +1,110 @@
+<mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+  <mat-icon class="material-icons">view_comfy</mat-icon>
+  <span class="spacer">Events Linked with CRM Call Center</span>
+  <div class="spacer"></div>
+</mat-toolbar><div>
+  <mat-card>
+    <mat-card-content>
+      <div>
+
+        <div fxLayout="column">
+          <mat-table [dataSource]="visitplan" matSort multiTemplateDataRows>
+
+            <ng-container matColumnDef="VisitTypeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Visit Type</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitTypeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitStartDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Visit Start Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitStartDate | date:'dd/MM/yyyy'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitEndDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Visit End Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitEndDate | date:'dd/MM/yyyy'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitStartTime">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Visit Start Time</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitStartTime | date:'shortTime'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitEndTime">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Visit End Time</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitEndTime | date:'shortTime'}} </mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="CallCenterAgentStatus">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Coming</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <mat-radio-group [(ngModel)]="Row.CallCenterAgentStatus" (change)="updateCallCenterAgentVisitingStatus($event.value,Row.VisitPlanID)">
+                  <mat-radio-button value="Yes">Yes</mat-radio-button>
+                  <mat-radio-button value="No">No</mat-radio-button>
+                </mat-radio-group>
+              </mat-cell>
+            </ng-container>-->
+
+            <ng-container matColumnDef="expandedDetail">
+              <mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
+                <div class="row"
+                     [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
+                  
+                    <div class="col-12">
+                      <div class="table-responsive">
+                        <table class="table table-bordered col-12" style="color:lightslategrey">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Participant</th>
+                              <th>Email</th>
+                              <th>Participating</th>
+                              <th>Add Other Participant</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let u of users; let i = index">
+                              <td>{{u.FullName}}</td>
+                              <td>{{u.Email}}</td>
+                              <td>
+                                <input id="yes" type="radio" value="Yes" name="UserStatus{{i}}" [(ngModel)]="u.UserStatusByCallCenter" (change)="updateVisitingStatusByCallCenterAgent($event,u.VisitPlanID, u.UserID)">
+                                <label>Yes</label>
+
+                                <input id="no" type="radio" value="No" name="UserStatus{{i}}" [(ngModel)]="u.UserStatusByCallCenter" (change)="updateVisitingStatusByCallCenterAgent($event,u.VisitPlanID, u.UserID)">
+                                <label>No</label>
+
+                              </td>
+                              <td>
+                                <a mat-button color="primary" (click)="openDialog(u.VisitPlanID,u.UserID)">
+                                  ADD<mat-icon></mat-icon>
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                
+
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" matTooltip="View Event Users" (click)="GetRelevantUsers(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+
+
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="expandedElement=  null "></mat-row>
+            <mat-row *matRowDef="let rows; columns: ['expandedDetail']" [ngClass]="{'example-detail-row': expandedElement!=rows}"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+
+</div>
+

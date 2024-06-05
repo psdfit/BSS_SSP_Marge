@@ -1,0 +1,85 @@
+<div id="inception-report-enrollment-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <!--<mat-select #scheme placeholder="Trade" [(ngModel)]="filters.TradeID" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getInceptionReportList(),getTSPDetailByScheme(scheme.value)]" id="SchemeId" matInput required>-->
+              <mat-select #scheme placeholder="Class Code" [(ngModel)]="filters.ClassID" [formControl]="classFilter" (selectionChange)="[getPotentialTraineesList()]" (openedChange)="EmptyCtrl()"  id="ClassId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchClassList" /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of filtersList" [value]="s.ClassID">{{s.ClassCode}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div class="table-responsive">
+          <mat-table [dataSource]="potentialTraineesList" matSort>
+
+            <ng-container matColumnDef="TradeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trade</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeCNIC">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee CNIC</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeEmail">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Email</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeEmail}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineePhone">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Phone</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineePhone}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="GenderName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Gender</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="DistrictName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee District</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TehsilName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Tehsil</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="ClassCode">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Class Code</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <a mat-icon-button  matTooltip="Trainee's Registration" color="primary" (click)="routeToRegistration(Row)">
+                  <mat-icon aria-label="Trainee's Registration">supervised_user_circle</mat-icon>
+
+                </a>
+              </mat-cell>
+            </ng-container>
+
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,201 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Purchase Order Approval Requests</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-label>Process</mat-label>
+              <mat-select #process [(ngModel)]="processKey" (selectionChange)="GetPOHeaderByFiltersByFilters()" matInput>
+                <mat-option value="" selected>-- All --</mat-option>
+                <mat-option [value]="enumApprovalProcess.PO_TSP">TSP</mat-option>
+                <mat-option [value]="enumApprovalProcess.PO_SRN">SRN</mat-option>
+                <mat-option [value]="enumApprovalProcess.PO_TRN">TRN</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-label>Month</mat-label>
+              <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
+              <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
+              <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
+                              (monthSelected)="chosenMonthHandler($event, customDatePicker)">
+              </mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[GetPOHeaderByFiltersByFilters()]" id="SchemeId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+                <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[GetPOHeaderByFiltersByFilters()]" id="TspId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                <mat-option value="0" selected>--All--</mat-option>
+
+                <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="text-center" *ngIf="!POHeaders">
+          <p>No Records</p>
+        </div>
+        <div style="padding-bottom: 10px;padding-top: 10px;">
+          <div class="row">
+            <div class="col-sm-12">
+              <button (click)="ExportToExcel('PO_Summary')" class="btn btn-success">Download Summary</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive" *ngIf="POHeaders" #TABLE>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr#</th>
+                <th>Actions</th>
+                <!--<th>Doc Entry</th>-->
+                <th>Status</th>
+                <th>U_IPS</th>
+                <th>Doc Num</th>
+                <th>Doc Type</th>
+                <th>Doc Date</th>
+                <th>Doc DueDate</th>
+                <th>Doc Total</th>
+                <th>Printed</th>
+                <th>Card Code</th>
+                <th>Card Name</th>
+                <th>Comments</th>
+                <th>Journal Memo</th>
+                <th>CtlAccount</th>
+                <th>U-SCHEME</th>
+                <th>U-Sch-Code</th>
+                <th>SAP Code</th>
+                <th>BPL ID</th>
+                <th>Month</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of POHeaders; let i=index">
+                <tr>
+                  <td class="number-align-center">{{i+1}}</td>
+                  <td>
+                    <a color="primary" mat-button (click)="openApprovalDialogue(r)">
+                      Decision
+                    </a>
+                    <a color="primary"
+                       mat-button (click)="GetPoLinesForHeader(r.POHeaderID,r)">
+                      PO Lines<mat-icon>{{r.POLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                    </a>
+                  </td>
+                  <td class="number-align-center">
+                    <span *ngIf="r.DocNum !=0" class="text-success">Approved</span>
+                    <span *ngIf="r.DocNum ==0 || !r.DocNum" class="text-danger">Pending</span>
+                  </td>
+                  <td>{{r.POHeaderID}}</td>
+                  <td class="number-align-center">{{r.DocNum}}</td>
+                  <td>{{r.DocType}}</td>
+                  <td class="number-align-center">{{r.DocDate | date:environment.DateFormat}}</td>
+                  <td class="number-align-center">{{r.DocDueDate | date:environment.DateFormat}}</td>
+                  <td class="decimal-align-right">{{r.DocTotal | number: environment.Decimal}}</td>
+                  <td class="number-align-center">{{r.Printed}}</td>
+                  <td>{{r.CardCode}}</td>
+                  <td>{{r.CardName}}</td>
+                  <td>{{r.Comments}}</td>
+                  <td>{{r.JournalMemo}}</td>
+                  <td>{{r.CtlAccount}}</td>
+                  <td>{{r.U_SCHEME}}</td>
+                  <td>{{r.U_Sch_Code}}</td>
+                  <td>{{r.SAPID}}</td>
+                  <td>{{r.BPLId}}</td>
+                  <td class="number-align-center">{{r.Month | date:environment.DateFormat}}</td>
+                </tr>
+                <!--Nested Grid for POLines Table-->
+                <tr *ngIf="r.POLines">
+                  <td colspan="17">
+                    <div>
+                      <table class="table table-bordered" style="color:lightslategrey">
+                        <thead>
+                          <tr>
+                            <th>Line No</th>
+                            <th>Description</th>
+                            <th>Account Code</th>
+                            <th>Ocr Code</th>
+                            <th>Tax Code</th>
+                            <th>Wt Liable</th>
+                            <th>Ocr Code2</th>
+                            <th>Ocr Code3</th>
+                            <th>U-Class-Code</th>
+                            <th>U-Batch</th>
+                            <th>U-Batch-Duration</th>
+                            <th>U-Trainee-Per-Class</th>
+                            <th>U-Testing-Fee</th>
+                            <th>U-Uniform-Bag</th>
+                            <th>U-Stipend</th>
+                            <th>U-Training-Cost</th>
+                            <th>U-Cost-Trainee-FMont</th>
+                            <th>U-Cost-Trainee-2Mont</th>
+                            <th>U-Cost-Trainee-Month</th>
+                            <th>U-Cost-Trai-2nd-Last</th>
+                            <th>U-Cost-Trainee-LMont</th>
+                            <th>Line Total</th>
+                            <th>Line Status</th>
+                            <th>U-Class-Start-Date</th>
+                            <th>U-Class-End-Date</th>
+                            <th>Created Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let c of r.POLines">
+                            <td class="number-align-center">{{c.LineNum}}</td>
+                            <td>{{c.Dscription}}</td>
+                            <td class="number-align-center">{{c.AcctCode}}</td>
+                            <td class="number-align-center">{{c.OcrCode}}</td>
+                            <td class="number-align-center">{{c.TaxCode}}</td>
+                            <td class="number-align-center">{{c.WtLiable}}</td>
+                            <td class="number-align-center">{{c.OcrCode2}}</td>
+                            <td class="number-align-center">{{c.OcrCode3}}</td>
+                            <td class="number-align-center">{{c.U_Class_Code}}</td>
+                            <td class="number-align-center">{{c.U_Batch}}</td>
+                            <td class="number-align-center">{{c.U_Batch_Duration}}</td>
+                            <td class="number-align-center">{{c.U_Trainee_Per_Class}}</td>
+                            <td class="decimal-align-right">{{c.U_Testing_Fee | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{c.U_Uniform_Bag | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{c.U_Stipend | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{c.U_Training_Cost | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.U_Cost_Trainee_FMont  | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.U_Cost_Trainee_2Mont  | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.U_Cost_Trainee_Month  | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.U_Cost_Trai_2nd_Last  | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.U_Cost_Trainee_LMont  | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{c.LineTotal | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.LineStatus}}</td>
+                            <td class="number-align-center">{{c.U_Class_Start_Date | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{c.U_Class_End_Date | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{c.CreatedDate | date:environment.DateTimeFormat}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+                <!--Nested Grid ends here-->
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

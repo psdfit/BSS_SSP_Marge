@@ -1,0 +1,151 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<div class="main_wrapper">
+  <header *ngIf="isLoggedIn$ | async" class="">
+    <!-- <div class="logo_area">
+      <a href="#" title="">
+        <img src="assets/images/logo.png" alt="" width="45px" />
+      </a>
+      <strong>Business Support  <span>System (BSS)</span></strong>
+      <a href="javascript:void(0);" class="menu_btn" (click)="sopen= !sopen" title=""> <i *ngIf="sopen" class="fas fa-bars"></i> <i *ngIf="!sopen" class="fas fa-times "></i> </a>
+    </div> -->
+    <!-- logo Area -->
+    <!-- <div class="page_title">
+    <h1> <strong>{{title}}</strong></h1>
+
+
+
+  </div>Page Title -->
+
+  <div class="header_links">
+    <ul class="breadcrump">
+      <!--<li><a href="#" title="">Package Info</a></li>-->
+      <li>{{pTitle}}</li>
+    </ul>
+    <div class="user_profile">
+      <a href="javascript:void(0);" title=""> <img [src]="img" alt="" /></a>
+      <span class="username">{{user.FullName}}</span>
+
+    </div>
+    <a href="javascript:void(0);" [matMenuTriggerFor]="bell" title="">  <mat-icon>notifications</mat-icon> <span class="style">{{NotificationCount}}</span> </a>
+    <mat-menu #bell="matMenu" style="margin:0;" class="noti-panel">
+      <div class="drop-content" infiniteScroll [infiniteScrollDistance]="5" [infiniteScrollThrottle]="1000" (scrolled)="onScroll()" [scrollWindow]="false">
+        <div class="card-header">Notification</div>
+        <div *ngFor="let s of NotificationslIST">
+          <div class="list-noti" *ngIf="s.IsRead==true;else loggedOut" >
+            <h5 (click)="openDialogForNotificationDetail(s)">{{s.Subject}}</h5>
+            <p>{{s?.Body}}</p>
+            <p class="time">{{s.CreatedDate  | date:'M/d/yy, h:mm a'}}</p>
+          </div>
+          <ng-template #loggedOut>
+            <div class="list-noti tick">
+              <h5 (click)="openDialogForNotificationDetail(s)">{{s.Subject}}</h5>
+              <p>{{s?.Body}}</p>
+              <p class="time">{{s.CreatedDate  | date:'M/d/yy, h:mm a'}}</p>
+          </div>
+          </ng-template>
+        </div>
+        
+       
+        
+      </div>
+      <div class="notify-drop-footer text-center">
+        <a routerLink="/notification/viewallnotification"><i class="fa fa-eye"></i> View All</a>
+      </div>
+    </mat-menu>
+    <a href="javascript:void(0);" [matMenuTriggerFor]="menu" title=""> <i class="ion-android-settings"></i> </a>
+    <mat-menu #menu="matMenu" style="margin:0;">
+      <button mat-menu-item (click)="openDialog()">Change Password</button>
+
+    </mat-menu>
+    
+
+    <!--<a href="javascript:void(0);" title=""> <i class="ion-android-search"></i> </a>-->
+    <!--*>-->
+    
+      <a href="javascript:void(0);" [matMenuTriggerFor]="org" title="" *ngIf="user.UserLevel==2"> <i class="fas fa-city"></i> <span class="small">Org Name</span> <i class="fas fa-angle-down"></i> </a>
+      <mat-menu #org="matMenu" style="margin:0;">
+        <button mat-menu-item *ngFor="let org of userOrgs" (click)="setOrg(org);">
+
+          <span>{{org.OName}}</span>
+        </button>
+      </mat-menu>
+
+
+    <a href="javascript:void(0);" (click)="logout()" title=""> <i class="ion-log-out"></i> </a>
+  </div><!-- Header Links -->
+  </header><!-- Header -->
+  <div id="target"> </div>
+  <div class="">
+    <div class="col-12">
+      <div class="row">
+
+        <div class="app_body1" autosize>
+
+          <!-- <div class="sidemenu_container" [ngClass]="!sopen ?'':'collapsed'">
+
+            <div class="sidemenu ">
+
+              <a matTooltip="Dashboard"
+                 mat-ripple
+                 [style.position]="'relative'"
+                 routerLinkActive="selected"
+                 [routerLink]="''">
+                <h2>Dashboard</h2>
+              </a>
+              <ul class="collapsible" *ngFor="let navItems of mainMenuItems  | groupBy:'parent' ;let i= index">
+                <li class="mt-4 showdrop" (click)="open[i]=!open[i]">
+                  {{navItems.key}}<i class="{{ open[i] ? 'ion-arrow-down-c' : 'ion-arrow-right-c'}}"></i>
+                </li>
+
+                <li *ngFor="let navItem of navItems.value | orderBy :'title'" class="hidedrop">
+                  <a *ngIf="open[i]" matTooltip="{{navItem.title}}"
+                     mat-list-item
+                     mat-ripple
+                     [style.position]="'relative'"
+                     routerLinkActive="selected"
+                     [routerLink]="navItem.path">
+                    <i class="fas fa-chevron-right"></i>
+                    <span *ngIf="isExpanded">{{navItem.title}}</span>
+                  </a>
+                </li>
+
+              </ul>
+
+
+            </div>
+
+
+          </div> -->
+
+
+
+
+
+          <div class="main-div" [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''">
+
+
+            <router-outlet #o="outlet" (deactivate)="onDeactivate()"></router-outlet>
+
+
+
+          </div>
+
+          <footer>
+            © 2020 Punjab Skills Development Fund
+          </footer>
+        </div>
+
+
+
+      </div>
+
+    </div>
+    
+  </div>
+
+</div>
+
+
+
+

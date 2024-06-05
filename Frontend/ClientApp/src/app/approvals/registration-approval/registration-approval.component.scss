@@ -1,0 +1,34 @@
+.mat-cell {
+  border: 1px solid black;
+}
+
+.mat-header-cell {
+  border: 1px solid black;
+}
+
+mat-row, mat-footer-row,mat-header-row {
+  min-height: 23px !important;
+}
+
+
+
+.table-responsive {
+  white-space: nowrap !important;
+}
+
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+mat-row, mat-header-row, mat-footer-row {
+  display: table-row !important;
+}
+
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+}
+.label {font-size: 100% !important;}
+

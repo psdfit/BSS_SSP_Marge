@@ -1,0 +1,107 @@
+<div id="Report-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="slim slim">
+          <span class="spacer">{{titleName}}</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <form novalidate #noForm="ngForm" [formGroup]="genForm" (ngSubmit)="generateReport(report.value, subreport.value)">
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <mat-label>Select Report's Name</mat-label>
+                    <mat-select #report placeholder="Report Name's" (openedChange)="EmptyCtrl()" (selectionChange)="getSubReportsName(report.value)" formControlName="ReportName" matInput>
+                      <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchRName" autofocus /></mat-optgrp>
+                      <mat-option *ngFor="let s of reportsArray | like:['ReportName',SearchRName.value]" [value]="s">{{s.ReportName}}</mat-option>
+                      <mat-error *ngIf="ReportName.invalid && ReportName.errors.required">required</mat-error>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <mat-label>Select Sub Report's Name</mat-label>
+                    <mat-select #subreport placeholder="Sub Report Name's" (openedChange)="EmptyCtrl()" (selectionChange)="getSubReportsFilters(subreport.value)" formControlName="SubReportName" matInput>
+                      <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSRName" autofocus /></mat-optgrp>
+                      <mat-option *ngFor="let s of subReportsArray | like:['SubReportName',SearchSRName.value]" [value]="s">{{s.SubReportName}}</mat-option>
+                      <mat-error *ngIf="SubReportName.invalid && SubReportName.errors.required">required</mat-error>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+              </div>
+
+              <!-- Start Filter Section  -->
+              <div class="row">
+                <div class="col-6" *ngFor="let filter of filtersData; index as i">
+
+                  <mat-form-field fxFlex *ngIf="filter.First != 'Calendar' && filter.First !='Start Date'  && filter.First !='End Date'">
+                   <mat-label>Select {{filter.First}}</mat-label>
+                    <mat-select #filters placeholder={{filter.First}} (selectionChange)="[saveFiltersData(i,filters.value,filter.First)]" id="FiltersID" matInput>
+                      <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchFilters.controls[i]" autofocus /></mat-optgrp>
+                      <mat-option value="0">--All--</mat-option>
+                      <mat-option *ngFor="let s of filter.Second | like :['Name',SearchFilters.controls[i].value]" [value]="s">{{s.Name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex *ngIf="filter.First == 'Calendar'">
+                    <input matInput [matDatepicker]="dp" [formControl]="date">
+                    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker #dp  startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)" panelClass="example-month-picker">
+                    </mat-datepicker>
+                    <mat-label>Month</mat-label>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex *ngIf="filter.First == 'Start Date'">
+                    <input matInput [matDatepicker]="dp1" [formControl]="startDate">
+                    <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                    <mat-datepicker #dp1 startView="multi-year" (yearSelected)="chosenYearHandlerForStartDate($event)" (monthSelected)="chosenMonthHandlerForStartDate($event, dp1)" panelClass="example-month-picker">
+                    </mat-datepicker>
+                    <mat-label>Start Date </mat-label>
+                  </mat-form-field>
+                  
+
+                  <mat-form-field fxFlex *ngIf="filter.First == 'End Date'">
+                    <input matInput [matDatepicker]="dp2" [formControl]="endDate">
+                    <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                    <mat-datepicker #dp2 startView="multi-year" (yearSelected)="chosenYearHandlerForEndDate($event)" (monthSelected)="chosenMonthHandlerForEndDate($event, dp2)" panelClass="example-month-picker">
+                    </mat-datepicker>
+                    <mat-label>End Date</mat-label>
+                  </mat-form-field>
+
+                </div>
+              </div>
+              <!-- End Filter Section  -->
+
+              <div class="row">
+                <div class="col-6">
+                  <button mat-raised-button color="success" type="submit" [disabled]="genForm.invalid">  Generate Report </button>
+                </div>
+              </div>
+
+              <div class="row">
+
+                <div class="col-sm-12">
+                  <br />
+                  <div *ngIf="error !='' " class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error !</strong> {{error}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,10 @@
+@import "~@angular/material/theming";
+@include mat-core();
+/* For use in src/lib/core/theming/_palette.scss */
+$md-primary: ( 50 : #e1e8f0, 100 : #b3c6da, 200 : #81a1c2, 300 : #4e7baa, 400 : #285e97, 500 : #024285, 600 : #023c7d, 700 : #013372, 800 : #012b68, 900 : #011d55, A100 : #87a5ff, A200 : #547eff, A400 : #2158ff, A700 : #0845ff, contrast: ( 50 : #000000, 100 : #000000, 200 : #000000, 300 : #ffffff, 400 : #ffffff, 500 : #ffffff, 600 : #ffffff, 700 : #ffffff, 800 : #ffffff, 900 : #ffffff, A100 : #000000, A200 : #000000, A400 : #ffffff, A700 : #ffffff, ) );
+
+$md-accent: ( 50 : #fff6e3, 100 : #feeab8, 200 : #fedc89, 300 : #fecd5a, 400 : #fdc336, 500 : #fdb813, 600 : #fdb111, 700 : #fca80e, 800 : #fca00b, 900 : #fc9106, A100 : #ffffff, A200 : #fff8f0, A400 : #ffdfbd, A700 : #ffd3a3, contrast: ( 50 : #000000, 100 : #000000, 200 : #000000, 300 : #000000, 400 : #000000, 500 : #000000, 600 : #000000, 700 : #000000, 800 : #000000, 900 : #000000, A100 : #000000, A200 : #000000, A400 : #000000, A700 : #000000, ) );
+$custom-theme-primary: mat-palette($md-primary);
+$custom-theme-accent: mat-palette($md-accent);
+$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent);
+@include angular-material-theme($custom-theme);

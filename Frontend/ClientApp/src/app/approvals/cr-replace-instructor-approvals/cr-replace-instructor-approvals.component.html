@@ -1,0 +1,113 @@
+
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Pending Approvals</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <!--<button (click)="OK()">click</button>-->
+
+        <div class="text-center" *ngIf="!instructorReplacementrequests">
+          <p>No Pending Approval</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Scheme</th>
+                <th>TSP</th>
+                <th>Class Code</th>
+                <th>Trade</th>
+                <th>Instructors (Qualification)</th>
+                <!--<th>Class End Time (HH:MM)</th>
+                <th>Class Total Hours (HH:MM)</th>
+                <th>Shift</th>-->
+                <!--<th>Gender</th>-->
+              
+                <!--<th>Head Landline</th>
+                <th>Contact Person Name</th>
+                <th>Contact Person Designation</th>
+                <th>Contact Person Email</th>
+                <th>Contact Person Landline</th>
+                <th>Bank Name</th>
+                <th>Bank Account Number</th>
+                <th>Account Type</th>
+                <th>Bank Branch</th>-->
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of instructorReplacementrequests">
+                <tr>
+                  <td>
+                    <button mat-raised-button color="primary" type="button" mat-button (click)="openApprovalDialogue(r)">
+                      Decision
+                    </button>
+                    <span class="p-4 text-dark" *ngIf="r.IsApproved">Approved</span>
+                    <a color="primary" matTooltip="Check currently mapped instructor details" *ngIf="!r.IsApproved"
+                       mat-icon-button (click)="GetCurrentMappedInstructorByID(r)">
+                      <mat-icon>{{r.currentMappedInstructor ?'remove_circle':'control_point' }}</mat-icon>
+                    </a>
+                  </td>
+                  <td>{{r.SchemeName}}</td>
+                  <td>{{r.TSPName}}</td>
+                  <td  style="color: #005b9e;"> <a class="myAnchor" (click)="openClassJourneyDialogue(r.ClassID)"> <strong>{{r.ClassCode}}</strong> </a></td>
+                  <td>{{r.TradeName}}</td>
+                  <td>{{r.InstructorName}}</td>
+                  <!--<td>{{r.ClassEndTime | date: 'HH:mm'}}</td>
+                  <td>{{r.ClassTotalHours}}</td>
+                  <td>{{r.Shift}}</td>-->
+                  
+
+                    <!--<td>{{r.GenderName}}</td>-->
+
+                </tr>
+                <tr *ngIf="r.currentMappedInstructor">
+                  <td colspan="12">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>
+
+                            </th>
+                            <th>Scheme</th>
+                            <th>TSP</th>
+                            <th>Class Code</th>
+                            <th>Trade</th>
+                            <th>Instructors (Qualification)</th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let l of r.currentMappedInstructor">
+                            <td></td>
+                            <td>{{l.SchemeName}}</td>
+                            <td>{{l.TSPName}}</td>
+                            <td  style="color: #005b9e;"> <a class="myAnchor" target="_blank" (click)="openClassJourneyDialogue(r.ClassID)"> <strong>{{r.ClassCode}}</strong> </a></td>
+                            <td>{{l.TradeName}}</td>
+                            <td>{{l.InstructorName}}</td>
+
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+
+            </tbody>
+          </table>
+        </div>
+        <!--</mat-step>-->
+
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

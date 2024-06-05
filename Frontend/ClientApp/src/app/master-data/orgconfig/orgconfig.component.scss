@@ -1,0 +1,108 @@
+td input {
+  min-width: 90px;
+  line-height: 1.125;
+}
+.multiformfields{
+display:flex;
+}
+.form-group > label {
+  display: block;
+  font-size: inherit;
+  color: rgba(0, 0, 0, 0.6);
+  font-family: inherit;
+  margin-bottom: 0;
+}
+.multiformfields .form-group {
+  margin-right: 7px;
+  width: 100%;
+}
+.multiformfields .form-group input {
+  font-size: 10px;
+}
+.accordion-header .table-condensed label, .accordion-header .table-condensed mat-hint {
+  font-size: 13px !important;
+  margin-bottom: 4px !important;
+  display: block;
+  color: #fff;
+}
+.table-condensed label, .table-condensed mat-hint {
+  font-size: 10px !important;
+  margin-bottom: 4px !important;
+  display: block;
+}
+.form-group span.placeholder, .form-group span {
+  font-size: 11px;
+  display: block;
+  /* color: bisque;*/
+  color: #2a2482;
+  margin-top: 5px;
+}
+.table-responsive select {
+  min-width: 150px;
+}
+.accordion-header .table td, .accordion-header .table th {
+  border-top: 0;
+  color: #fff;
+}
+.table-responsive td .numeric {
+  min-width: 60px !important;
+  padding: 6px 6px;
+}
+
+.menu .accordion-heading {
+  position: relative;
+}
+
+.menu .accordion-heading .edit {
+  position: absolute;
+  top: 8px;
+  right: 30px;
+}
+
+.menu .area {
+  border-left: 4px solid #f38787;
+}
+
+.menu .equipamento {
+  border-left: 4px solid #65c465;
+}
+
+.menu .ponto {
+  border-left: 4px solid #98b3fa;
+}
+
+.menu .collapse.in {
+  overflow: visible;
+}
+
+
+.accordion {
+  margin-bottom: 20px;
+}
+
+.accordion-group {
+  margin-bottom: 2px;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.accordion-heading {
+  border-bottom: 0;
+}
+
+.accordion-heading .accordion-toggle {
+  display: block;
+  padding: 8px 15px;
+}
+
+.accordion-toggle {
+  cursor: pointer;
+}
+
+.accordion-inner {
+  padding: 9px 15px;
+  border-top: 1px solid #e5e5e5;
+}
+

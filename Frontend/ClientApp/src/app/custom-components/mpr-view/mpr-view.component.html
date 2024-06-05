@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>MPR</h2>
+<div mat-dialog-content>
+
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <!--<mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Monthly Progress Report</span>
+          <div class="spacer"></div>
+        </mat-toolbar>-->
+
+        <div class="table-responsive" style="width:100%;">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+
+                <th>Month</th>
+                <th>Report Date</th>
+                <!--<th>Number Of Months</th>-->
+                <th>TSP Name</th>
+                <th>Trade Name</th>
+                <th>Class Code</th>
+                <th>Batch</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of mpr">
+                <tr>
+
+                  <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                  <td class="number-align-center">{{r.ReportDate | date:environment.DateFormat}}</td>
+                  <!--<td>{{r.NumberOfMonths}}</td>-->
+                  <td>{{r.TSPName}}</td>
+                  <td>{{r.TradeName}}</td>
+                  <td>{{r.ClassCode}}</td>
+                  <td class="number-align-center">{{r.Batch}}</td>
+                </tr>
+                <tr *ngIf="r.mprDetails">
+                  <td colspan="9">
+                    <div>
+                      <table class="table table-bordered" style="color:lightslategrey">
+                        <thead>
+                          <tr>
+
+                            <th>Trainee Code</th>
+                            <th>Trainee Name</th>
+                            <th>Class Code</th>
+                            <th>TSP Name</th>
+                            <th>Trainee CNIC</th>
+                            <th>Is Extra</th>
+                            <th>Is Marginal</th>
+                            <th>CNIC Verified</th>
+                            <th>Stipend Recommended</th>
+                            <th>Trainee Status</th>
+                            <th>Comments</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let c of r.mprDetails">
+
+                            <td>{{c.TraineeCode}}</td>
+                            <td>{{c.TraineeName}}</td>
+                            <td>{{c.ClassCode}}</td>
+                            <td>{{c.TSPName}}</td>
+                            <td class="number-align-center">{{c.TraineeCNIC}}</td>
+                            <td class="number-align-center">{{c.ExtraStatus}}</td>
+                            <td class="number-align-center">{{c.IsMarginal}}</td>
+                            <td class="number-align-center">{{c.CNICVerificationStatus}}</td>
+                            <td class="decimal-align-right">{{c.StipendAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.TraineeStatusName}}</td>
+                            <td>{{c.Reason}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+                <!--Nested Grid ends here-->
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" mat-dialog-close>Close</button>
+</mat-dialog-actions>

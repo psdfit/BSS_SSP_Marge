@@ -1,0 +1,221 @@
+<div id="KAMAssignment-page" class="comp-main-div" >
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate #nform="ngForm" [formGroup]="kamassignmentform" (submit)="Submit(nform)">
+
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select placeholder="User" (openedChange)="EmptyCtrl($event)" formControlName="UserID" id="userid" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchUsr" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of Users | like:['UserName',SearchUsr.value]" [value]="s.UserID">{{s.UserName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="UserID.invalid && UserID.errors.required">User is <strong>required</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!--<div class="row">
+            <div class="col-sm-12">
+
+              <mat-accordion fxFlex>
+
+                <mat-expansion-panel *ngFor="let r of TSPs | groupBy : 'SchemeName'" color="primary">
+                  <mat-expansion-panel-header>
+                    {{r.key}}
+                  </mat-expansion-panel-header>
+
+                  <mat-list dense>
+
+                    <mat-list-item *ngFor="let tsp of r.value|  where: NotSelected">
+
+                      <h1 matLine class="col-10"><div class="col-6">{{tsp.TSPName}}</div><div class="col-6"> {{tsp.DistrictName}}</div></h1>
+                      <mat-checkbox name="Selected" [(ngModel)]="tsp.IsSelected" [ngModelOptions]="{standalone: true}" [disabled]="tsp.AssignedUser > 0 && tsp.AssignedUser!=UserID.value"></mat-checkbox>
+                      <mat-divider></mat-divider>
+                    </mat-list-item>
+                  </mat-list>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </div>
+          <br />-->
+          <!--<mat-card>
+          <mat-card-content>-->
+          <!--<div>-->
+        <fieldset class="border">
+          <legend>Un-Assigned TSPs List</legend>
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select placeholder="Select Region" (openedChange)="EmptyCtrl($event)" [(ngModel)]="filters.RegionID" [ngModelOptions]="{standalone: true}" id="regionid" (selectionChange)="FilterDistrictsByRegion($event.value)" matInput>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchRegion" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of RegionArray | like:['RegionName',SearchRegion.value]" [value]="s.RegionID">{{s.RegionName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+
+                <mat-select placeholder="Select District" (openedChange)="EmptyCtrl($event)" [(ngModel)]="filters.DistrictID" [ngModelOptions]="{standalone: true}" [disabled]="regionNotSelected" id="districtid" (selectionChange)="FilterTSPsByDistrict($event.value)" matInput>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchDistrict" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of FilteredDistricts | like:['DistrictName',SearchDistrict.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                </mat-select>
+
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <div fxLayout="column">
+            <mat-table [dataSource]="TSPs|  where: NotSelected" matSort>
+
+              <ng-container matColumnDef="TspID">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> TSP </mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="RegionName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                  Region
+                  <!--<input type="text" placeholder="Search" (keyup)="applyFilterDistrict($event.target.value)" class="search" />-->
+                </mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  {{Row.RegionName}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="DistrictName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                  District
+                  <!--<input type="text" placeholder="Search" (keyup)="applyFilterDistrict($event.target.value)" class="search" />-->
+                </mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  {{Row.DistrictName}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="IsSelected">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Selected</mat-header-cell>
+                <mat-cell *matCellDef="let Row"><mat-checkbox name="Selected" [(ngModel)]="Row.IsSelected" [ngModelOptions]="{standalone: true}"></mat-checkbox> </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedtspColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedtspColumns;"></mat-row>
+            </mat-table>
+          </div>
+        </fieldset>
+          <br />
+          <!--</div>-->
+          <!--</mat-card-content>
+          </mat-card>-->
+
+          <div class="row col-12">
+
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working  || (KamID.value<1 && !formrights.CanAdd)">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset()" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View Assigned KAMs</span>
+
+          <div class="spacer"></div>
+          <button class="btn btn-success" mat-raised-button (click)="ResetFilters()">Clear Filters</button>
+        </mat-toolbar>
+        <div class="row">
+          <div class="col-sm-6">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="KAM" (openedChange)="EmptyCtrl($event)" [(ngModel)]="filters.UserID" (selectionChange)="FilterKAMAssignmentsByTSPOrKAM()" id="userid" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchUsr" autofocus /></mat-optgrp>
+                <!--<mat-option value=0>--Select--</mat-option>-->
+                <mat-option *ngFor="let s of Users | like:['UserName',SearchUsr.value]" [value]="s.UserID">{{s.UserName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-6">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="TSP" (openedChange)="EmptyCtrl($event)" [(ngModel)]="filters.TSPID" (selectionChange)="FilterKAMAssignmentsByTSPOrKAM()" id="tspid" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                <!--<mat-option value=0>--Select--</mat-option>-->
+                <mat-option *ngFor="let s of kamassignmentArray | like:['TSPName',SearchTSP.value]" [value]="s.TspID">{{s.TSPName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        
+        <div fxLayout="column">
+          <mat-table [dataSource]="kamassignment" matSort>
+
+            <ng-container matColumnDef="TSPID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TSP </mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                {{Row.TSPName}}
+                <!--<a mat-button color="primary" (click)="openHistoryDialogue(Row)">History </a>-->
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="RegionName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Region </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.RegionName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="DistrictName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> District </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="UserID">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> User </mat-header-cell>
+        <mat-cell *matCellDef="let Row"> {{Row.UserName}} </mat-cell>
+      </ng-container>-->
+            <ng-container matColumnDef="KAM">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> KAM </mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="User" [(ngModel)]="Row.UserID" id="userid" matInput name="Users" required>
+                    <mat-option *ngFor="let s of Users" [value]="s.UserID">{{s.UserName}}</mat-option>
+                  </mat-select>
+                  <!--<mat-error *ngIf="UserID.invalid && UserID.errors.required">User is <strong>required</strong></mat-error>-->
+
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+
+            <!--<ng-container matColumnDef="InActive">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+        <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+      </ng-container>-->
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <!--<button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" >
+            <mat-icon aria-label="Edit this row">edit</mat-icon>
+          </button>-->
+                <a mat-button color="primary"  [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">Update </a>
+                <a mat-button color="primary"  [disabled]="!formrights.CanView" (click)="openHistoryDialogue(Row)">History </a>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

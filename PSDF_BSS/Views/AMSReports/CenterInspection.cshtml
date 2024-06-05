@@ -1,0 +1,835 @@
+﻿@model DataLayer.Models.CenterInspectionReportModel
+@{
+    int counter = 1;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Center Inspection</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        body {
+            -webkit-print-color-adjust: exact !important;
+        }
+
+        .row {
+            page-break-inside: avoid;
+        }
+
+        .tg_tsp {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_tsp td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_tsp th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_tsp .tg_tsp-axxb {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-hle0 {
+                background-color: #ffffff;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-0pky {
+                border-color: inherit;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-7btt {
+                border-color: inherit;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-lgs3 {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+        .tg_cmr {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_cmr td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_cmr th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_cmr .tg_cmr-axxb {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-zlqz {
+                border-color: inherit;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-zv36 {
+                background-color: #ffffff;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-6e8n {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-0pky {
+                border-color: inherit;
+                text-align: left;
+                vertical-align: top
+            }
+
+        .tg_pot {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_pot td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_pot th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_pot .tg_pot-kmbl {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+            .tg_pot .tg_pot-jkz3 {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_pot .tg_pot-m2fn {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_pot .tg_pot-q24q {
+                background-color: #c0c0c0;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+        .tg_viot {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_viot td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_viot th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_viot .tg_viot-eufz {
+                background-color: #C0C0C0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_viot .tg_viot-kmbl {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+            .tg_viot .tg_viot-uked {
+                background-color: #C0C0C0;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_viot .tg_viot-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+
+        .tg_rem {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_rem td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_rem th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_rem .tg_rem-1wig {
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_rem .tg_rem-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+
+        .tg_sign {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_sign td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_sign th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_sign .tg_sign-abx8 {
+                background-color: #c0c0c0;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_sign .tg_sign-u1yq {
+                background-color: #c0c0c0;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_sign .tg_sign-ziz6 {
+                background-color: #C0C0C0;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_sign .tg_sign-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+    </style>
+</head>
+<body class="mx-auto" style="width: 95%;">
+    <div class="text-center body">
+        <p><strong>Punjab Skills Development Fund</strong></p>
+        <p><strong>TRAINING CENTRE INSPECTION/REPORT FORM</strong></p>
+    </div>
+    <div class="row">
+        <p><strong>TRAINING CENTRE INFORMATION</strong></p>
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-lgs3">Service Provider Name</td>
+                    <td class="tg_tsp-0pky">
+                        <strong>
+                            @if (Model.CenterInspectionModelList.Count > 0)
+                            {
+                                @Model.CenterInspectionModelList[0].TSPName
+                            }
+                        </strong>
+                    </td>
+                    <td class="tg_tsp-lgs3">Name of Institute/Centre (if any)</td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-lgs3">Visit Date & Time</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionModelList[0].VisitDateTime
+                        }
+                    </td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionModelList[0].TrainingCentreName
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-lgs3">Name of Product</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionModelList[0].NameOfProject
+                        }
+                    </td>
+                    <td class="tg_tsp-lgs3">Training Centre Address</td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-lgs3">Number of classes inspected in the centre</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionModelList[0].ClassesInspectedCount
+                        }
+                    </td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionModelList[0].TrainingCentreAddress
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-lgs3">Name of centre Incharge/ Representative of TSP</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionModelList[0].CentreInchargeName
+                        }
+                     </td>
+                    <td class="tg_tsp-0pky"></td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-lgs3">His/her mobile number</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionModelList[0].CentreInchargeMob
+                        }
+                    </td>
+                    <td class="tg_tsp-0pky"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-lgs3">Sr #.</td>
+                    <td class="tg_tsp-lgs3">Parameter</td>
+                    <td class="tg_tsp-axxb">Compliance</td>
+                    <td class="tg_tsp-axxb">Observatory Remarks to Elaborate Compliance Conditions</td>
+                    <td class="tg_tsp-axxb">PSDF Compliance Standard/Need</td>
+                    <td class="tg_tsp-axxb">Recommendation Remarks</td>
+                </tr>
+                @foreach (var item in Model.CenterInspectionDataModelList)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@counter</td>
+                        <td class="tg_tsp-0pky">@item.LocationAccessSuitablity</td>
+                        <td class="tg_tsp-0pky">@item.LocAccessSuitabilityValue</td>
+                        <td class="tg_tsp-0pky">@item.LocAccessSuitabilityObservRemarks</td>
+                        <td class="tg_tsp-0pky">The training centre should be situated at reasonable location that is easily accessible.No garbage, drainage lines or dirt around.</td>
+                        <td class="tg_tsp-0pky">@item.LocAccessSuitabilityRecomRemarks</td>
+                    </tr>
+
+                    counter += 1;
+                }
+
+
+                @foreach (var item in Model.CenterInspectionDataModelList1)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@counter</td>
+                        <td class="tg_tsp-0pky">@item.SecurityPremises</td>
+                        <td class="tg_tsp-0pky">@item.SecurityPremValue</td>
+                        <td class="tg_tsp-0pky">@item.SecurityPremObservRemarks</td>
+                        <td class="tg_tsp-0pky">The area where training centre is located should have proper boundary wall with secure entrance.</td>
+                        <td class="tg_tsp-0pky">@item.SecurityPremRecomRemarks</td>
+                    </tr>
+                    counter += 1;
+                }
+                @foreach (var item in Model.CenterInspectionDataModelList2)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky"></td>
+                        <td class="tg_tsp-0pky">@item.StructuralIntegrityCompliance</td>
+                        <td class="tg_tsp-0pky">@item.StructIntegValue</td>
+                        <td class="tg_tsp-0pky">@item.StructIntegObservRemarks</td>
+                        <td class="tg_tsp-0pky">A building that is weak in structure forexample major flaws in construction of walls and ceiling; major cracks that can collapse the building or serious gaps in electrical wiring that can cause accidents is not acceptable.</td>
+                        <td class="tg_tsp-0pky">@item.StructIntegRecomRemarks</td>
+                    </tr>
+                    counter += 1;
+                }
+                @foreach (var item in Model.CenterInspectionDataModelList3)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@counter</td>
+                        <td class="tg_tsp-0pky">@item.CentreInchargeRoom</td>
+                        <td class="tg_tsp-0pky">@item.CentreInchrgRoomValue</td>
+                        <td class="tg_tsp-0pky">@item.CentreInchrgRoomObservRemarks</td>
+                        <td class="tg_tsp-0pky">There should be a room for the centre incharge.</td>
+                        <td class="tg_tsp-0pky">@item.CentreInchrgRoomRecomRemarks</td>
+
+                    </tr>
+                    counter += 1;
+                }
+                @foreach (var item in Model.CenterInspectionAdditionalComplianceaModelList)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@counter</td>
+                        <td class="tg_tsp-0pky">@item.parameter</td>
+                        <td class="tg_tsp-0pky">@item.complaince</td>
+                        <td class="tg_tsp-0pky">@item.observatoryRemarks</td>
+                        <td class="tg_tsp-0pky">@item.psdfStandard</td>
+                        <td class="tg_tsp-0pky">@item.recommendationRemarks</td>
+                    </tr>
+                    counter += 1;
+                }
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <p><strong>TRADE INFORMATION (Detail of Trades to be conducted at the centre)</strong></p>
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-axxb"></td>
+                    <td class="tg_tsp-axxb"></td>
+                    <td class="tg_tsp-axxb"></td>
+                    <td class="tg_tsp-axxb"></td>
+                    <td class="tg_tsp-axxb" colspan="2">Lab Equipment / Tools availability (YES/NO)</td>
+                    <td class="tg_tsp-axxb" colspan="2">Lab Requirements Is the room sufficient for Practical Training?</td>
+                    <td class="tg_tsp-axxb">Power Backup availability in the labs</td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-axxb">Sr. No</td>
+                    <td class="tg_tsp-axxb">Trade</td>
+                    <td class="tg_tsp-axxb">No of Classes Per Batch</td>
+                    <td class="tg_tsp-axxb">Total No. of Contractual Trainees Per Class</td>
+                    <td class="tg_tsp-axxb"> The quantity is sufficient for no of contractual trainees?</td>
+                    <td class="tg_tsp-axxb">No of items Missing</td>
+                    <td class="tg_tsp-axxb">No of Rooms for Labs</td>
+                    <td class="tg_tsp-axxb">Is the space sufficient for trainees per class?</td>
+                    <td class="tg_tsp-axxb"></td>
+                </tr>
+                @foreach (var item in Model.CenterInspectionTradeDetailModelList.Select((r, i) => new { Row = r, Index = i }))
+                {
+                    int index = item.Index + 1;
+                    <tr>
+                        <td class="tg_tsp-0pky">@index</td>
+                        <td class="tg_tsp-0pky">@item.Row.tradeName</td>
+                        <td class="tg_tsp-0pky">@item.Row.classesPerBatch</td>
+                        <td class="tg_tsp-0pky">@item.Row.totalContractrualTraineesPerClass</td>
+                        <td class="tg_tsp-0pky">@item.Row.quantitySufficient</td>
+                        <td class="tg_tsp-0pky">@item.Row.noOfItemsMissing</td>
+                        <td class="tg_tsp-0pky">@item.Row.noOfRoomsForLab</td>
+                        <td class="tg_tsp-0pky">@item.Row.isSpaceSufficient</td>
+                        <td class="tg_tsp-0pky">@item.Row.powerBackupAvailability</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <p><strong>CLASS INFORMATION (Detail of Classes to be conducted at the centre)</strong></p>
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-axxb">Sr. No</td>
+                    <td class="tg_tsp-axxb">Class code</td>
+                    <td class="tg_tsp-axxb">Trade</td>
+                    <td class="tg_tsp-axxb">Expected starting date of class</td>
+                    <td class="tg_tsp-axxb">Black-board/Whiteboard in classrooms  (YES / NO)</td>
+                    <td class="tg_tsp-axxb">Chairs/Benches in the classrooms are sufficient (According to class need) (YES / NO)</td>
+                    <td class="tg_tsp-axxb">Light & Bulbs availability (YES / NO)</td>
+                    <td class="tg_tsp-axxb">Ventilation & Fans availability (YES / NO)</td>
+                    <td class="tg_tsp-axxb">Is the space sufficient for Trainees per Class? (YES / NO)</td>
+                </tr>
+                @foreach (var item in Model.CenterInspectionClassDetailModelList.Select((r, i) => new { Row = r, Index = i }))
+                {
+                    int index = item.Index + 1;
+                    <tr>
+                        <td class="tg_tsp-0pky">@index</td>
+                        <td class="tg_tsp-0pky">@item.Row.ClassCode</td>
+                        <td class="tg_tsp-0pky">@item.Row.TradeName</td>
+                        <td class="tg_tsp-0pky">@item.Row.ExpectedStartDate</td>
+                        <td class="tg_tsp-0pky">@item.Row.BoardAval</td>
+                        <td class="tg_tsp-0pky">@item.Row.SufficientFurniture</td>
+                        <td class="tg_tsp-0pky">@item.Row.LightAval</td>
+                        <td class="tg_tsp-0pky">@item.Row.VentFanAval</td>
+                        <td class="tg_tsp-0pky">@item.Row.ClassSpaceSufficient</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <p>
+            <strong>
+                Are one or more of the following key facilities necessary for the approval of a centre missing? 
+                @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                {
+                    @Model.CenterInspectionNecessaryFacilitiesModelList[0].KeyFacMissing
+                }
+            </strong>
+        </p>
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-0pky">a</td>
+                    <td class="tg_tsp-0pky">Structural integrity compliance of building</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].StructIntegValue
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-0pky">b</td>
+                    <td class="tg_tsp-0pky">Chairs/benches/blackboard</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].KeyFacBuildingStructInteg
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-0pky">c</td>
+                    <td class="tg_tsp-0pky">Backup electricity/power supply availability(If applicable)</td>
+                    <td class="tg_tsp-0pky">
+                       @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].KeyFacElecBackup
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-0pky">d</td>
+                    <td class="tg_tsp-0pky">Workshop/equipment availability)</td>
+                    <td class="tg_tsp-0pky">
+                       @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].KeyFacEquipAval
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-axxb">Name of Monitoring Officer</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].FMName
+                        }
+                    </td>
+                    <td class="tg_tsp-axxb">Name of TSP Representative</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].SignOffTspName
+                        }
+                    </td>
+                    <td class="tg_tsp-axxb">Name of TPM Field Incharge</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].DistrictInchargeName
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-axxb">Signature</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].FMSignatureImgPath
+                        }
+                    </td>
+                    <td class="tg_tsp-axxb">Signature</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].TspSignatureImgPath
+                        }
+                    </td>
+                    <td class="tg_tsp-axxb">Signature</td>
+                    <td class="tg_tsp-0pky"></td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-axxb">Date</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].FMSubmissionDateTime
+                        }
+                    </td>
+                    <td class="tg_tsp-axxb">Date</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].FMSubmissionDateTime
+                        }
+                    </td>
+                    <td class="tg_tsp-axxb">Date</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].FMSubmissionDateTime
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <div class="form-group">
+            <form class="form">
+                <div class="form-group">
+                    <label class="tg_tsp-0pky"><strong>TSP Remarks</strong></label>
+                    <textarea class="form-control" rows="5" id="comment" style="border: 1px solid black; height: 75px;">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].SignOffTspRemarks
+                        }
+                     </textarea>
+                </div>
+            </form>
+            <br />
+            <form class="form">
+                <div class="form-group">
+                    <label class="tg_tsp-0pky"><strong>Field Monitoring Remarks</strong></label>
+                    <textarea class="form-control" rows="5" id="comment" style="border: 1px solid black; height: 75px;">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionNecessaryFacilitiesModelList[0].SignOffFmRemarks
+                        }
+                    </textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <table class="table tg_cmr">
+            <tbody>
+                <tr>
+                    <td class="tg_cmr-6e8n">Trade Name</td>
+                    <td class="tg_cmr-zv36" colspan="3">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionTradeToolsModelList[0].TradeName
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_cmr-6e8n">Course Duration</td>
+                    <td class="tg_cmr-zv36" colspan="3">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionTradeToolsModelList[0].TradeDuration
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_cmr-6e8n">Trainees Headcount</td>
+                    <td class="tg_cmr-zv36" colspan="3">
+                        @if (Model.CenterInspectionNecessaryFacilitiesModelList.Count > 0)
+                        {
+                            @Model.CenterInspectionTradeToolsModelList[0].headCount
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_cmr-axxb">Sr. No.</td>
+                    <td class="tg_cmr-axxb">Tool Name</td>
+                    <td class="tg_cmr-axxb">Tool Quantity Tool </td>
+                    <td class="tg_cmr-axxb">Actual Quantity</td>
+                </tr>
+                @foreach (var item in Model.CenterInspectionTradeToolsModelList.Select((r, i) => new { Row = r, Index = i }))
+                {
+                    int index = item.Index + 1;
+                    <tr>
+                        <td class="tg_cmr-0pky">@index</td>
+                        <td class="tg_cmr-0pky">@item.Row.ToolName</td>
+                        <td class="tg_cmr-zlqz">@item.Row.QuantityTotal</td>
+                        <td class="tg_cmr-zlqz">@item.Row.QuantityFound</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>

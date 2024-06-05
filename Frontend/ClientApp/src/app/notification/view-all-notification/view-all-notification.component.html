@@ -1,0 +1,78 @@
+<mat-card>
+    <mat-card-content>
+      <div class="main-content" *ngIf="ViewAllOpennotificationDiv">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Current open Notification</span>
+            <div class="spacer"></div>
+
+          </mat-toolbar>
+        <div  fxLayout="column" class="mat-elevation-z8">
+          <mat-table [dataSource]="ViewOpenNotification" matSort style="background-color: #fdb813;">
+            <ng-container matColumnDef="NotificationName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Notification Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.NotificationName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Subject">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Subject</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Subject}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="PushNotificationDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Date Time</mat-header-cell>
+              <mat-cell *matCellDef="let Row" style="color:white;font-weight: bold;"> {{Row.DateDiff}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="History">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> History</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" matTooltip="View History" >
+                    <mat-icon  (click)="openDialogForNotificationDetail(Row)" aria-label="View History">card_membership</mat-icon>
+                  </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+      </div>
+     <br>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Manage and View All</span>
+            <div class="spacer"></div>
+            <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+          </mat-toolbar>
+        <div fxLayout="column" class="mat-elevation-z8">
+          <mat-table [dataSource]="ViewAllNotificationsArray" matSort>
+            <ng-container matColumnDef="NotificationName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Notification Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.NotificationName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Subject">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Subject</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Subject}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="PushNotificationDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Date Time</mat-header-cell>
+              <mat-cell *matCellDef="let Row" style="color: #B97745;font-weight: bold;"> {{Row.DateDiff}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="History">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> History</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" matTooltip="View History" >
+                    <mat-icon  (click)="openDialogForNotificationDetail(Row)" aria-label="View History">card_membership</mat-icon>
+                  </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator #PageNotification [pageSize]="5" [length]="resultsLength"  [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+

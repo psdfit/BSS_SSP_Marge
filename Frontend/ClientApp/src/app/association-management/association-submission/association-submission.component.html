@@ -1,0 +1,251 @@
+<mat-card>
+  <mat-toolbar color="accent" class="slim slim" *ngIf="isChecked == false">
+    <mat-icon class="material-icons">view_comfy</mat-icon>
+    <span class="spacer">Association Submission</span>
+    <input placeholder="Search" *ngIf="TapIndex == 0" (keyup)="applyFilter(TablesData, $event)" class="search" />
+    <!-- <button mat-raised-button *ngIf="TapIndex == 0" style="float: right; margin: 0px 7px; background: #c3d9ff"
+      (click)="DataExcelExport(TablesData.filteredData, 'Program_Design_Report')">
+      <i class="fas fa-file-export"></i> Export Excel
+    </button> -->
+  </mat-toolbar>
+  <mat-card-content>
+    <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
+      <mat-tab label="Announced Program">
+        <ng-container *ngFor="let item of TablesData.filteredData">
+          <fieldset class="border">
+            <legend>
+              <span *ngIf="item.ProgramStatus=='Active'" class="label label-success"> Active | {{item.Program}}</span>
+              <span *ngIf="item.ProgramStatus=='InActive'" class="label label-warning"> InActive | {{item.Program}}
+              </span>
+            </legend>
+            <div class="row">
+              <div class="col-sm-4">
+                <mat-form-field>
+                  <mat-label>Program</mat-label>
+                  <input type="text" matInput readonly [value]="item.Program">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-2">
+                <mat-form-field>
+                  <mat-label>Start Date</mat-label>
+                  <input type="text" matInput readonly [value]="item.AssociationStartDate">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-2">
+                <mat-form-field>
+                  <mat-label>End Date</mat-label>
+                  <input type="text" matInput readonly [value]="item.AssociationEndDate">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-2">
+                <mat-form-field>
+                  <mat-label>Total Days</mat-label>
+                  <input type="text" matInput readonly [value]="item.TotalDays">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-2">
+                <mat-form-field>
+                  <mat-label> Program Status</mat-label>
+                  <input type="text" matInput readonly [value]="item.ProgramStatus">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <mat-form-field>
+                  <mat-label>Program Detail</mat-label>
+                  <textarea rows="3" readonly matInput>{{item.Detail}} </textarea>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row" style="float: right;margin-bottom: 3px;">
+              <div class="col-sm-12">
+                <!-- <button mat-raised-button color="primary" [disabled]="item.ProgramStatus!='Active'" (click)="AssociationDetail(item)" matTooltip="Click To Proceed"><mat-icon>skip_next</mat-icon> Proceed Next </button> -->
+                <button mat-raised-button [color]="item.ProgramStatus=='InActive'?'accent':'primary'"
+                  (click)="AssociationDetail(item)" matTooltip="Click To Proceed"><mat-icon>skip_next</mat-icon> Proceed
+                  Next </button>
+              </div>
+            </div>
+          </fieldset>
+        </ng-container>
+      </mat-tab>
+      <mat-tab label="Association Submission" *ngIf="isChecked">
+        <mat-card>
+          <mat-toolbar color="accent" class="slim slim">
+            <mat-icon class="material-icons">add_circle</mat-icon>
+            <span class="spacer">{{ SpacerTitle }}</span>
+          </mat-toolbar>
+          <mat-card-content>
+            <form (ngSubmit)="Save()" [formGroup]="AssociationForm">
+              <fieldset class="border">
+                <legend>Association Submission</legend>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <mat-form-field>
+                      <mat-select placeholder="Select Training Location" formControlName="TrainingLocation" matInput
+                        required>
+                        <mat-option *ngFor="let item of trainingLocation" [value]="item.TrainingLocationID"
+                          [disabled]="isOptionDisabled(item)">
+                          {{ item.TrainingLocationName }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngFor="let error of AssociationForm.get('TrainingLocation').errors | keyvalue">
+                        {{ getErrorMessage(error.key, error.value) }}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-8">
+                    <mat-form-field>
+                      <mat-select placeholder="Select Trade Lot" id="TradeLot" formControlName="TradeLot" matInput
+                        required>
+                        <mat-option *ngFor="let item of TradeLot" [disabled]="item.tradeLotDisabled"
+                          [matTooltip]="item.LotNo" [value]="item.TradeLotID">
+                          {{ item.LotNo }}</mat-option>
+                      </mat-select>
+                      <mat-error *ngFor="let error of AssociationForm.get('TradeLot').errors | keyvalue">
+                        {{ getErrorMessage(error.key, error.value) }}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                    <mat-form-field>
+                      <mat-select placeholder="Select Trainer" formControlName="TrainerDetailID" matInput required>
+                        <mat-option *ngFor="let item of TrainerProfile" [matTooltip]="item.TrainerName"
+                          [value]="item.TrainerDetailID">
+                          {{ item.TrainerName }}</mat-option>
+                      </mat-select>
+                      <mat-error *ngFor="let error of AssociationForm.get('TrainerDetailID').errors | keyvalue">
+                        {{ getErrorMessage(error.key, error.value) }}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <ng-container *ngFor="let item of associationDetail.controls; let i = index">
+                  <fieldset class="border" formArrayName="associationDetail">
+                    <legend>{{associationDetail.value[i].CategoryTitle}}</legend>
+                    <form *ngIf="associationDetail.length > 0" [formGroupName]="i">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <mat-label>Attachment for Evidence</mat-label>
+                          <file-upload formControlName="Evidence" accept="application/pdf,image/jpeg,image/png" required
+                            maxSize="1024" [nopreview]="true" matInput></file-upload>
+                        </div>
+                        <div class="col-sm-8">
+                          <mat-form-field>
+                            <mat-label>Remarks</mat-label>
+                            <input formControlName="Remarks" placeholder="Enter Remarks" matInput required />
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <ng-container *ngFor="let item of CriteriaSubCategory">
+                        <div class="row border-bottom" 
+                          *ngIf="item.CriteriaMainCategoryID == CriteriaMainCategory[i].CriteriaMainCategoryID">
+                          <div class="col-sm-4">
+                            <mat-form-field>
+                              <mat-label>Title</mat-label>
+                              <input type="text" matInput readonly [matTooltip]="item.SubCategoryTitle"
+                                [value]="item.SubCategoryTitle">
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-1">
+                            <mat-form-field>
+                              <mat-label>Marks</mat-label>
+                              <input type="text" matInput readonly [matTooltip]="item.MaxMarks" [value]="item.MaxMarks">
+                            </mat-form-field>
+                          </div>
+
+                          <div class="col-sm-7">
+                            <mat-form-field>
+                              <mat-label>Criteria</mat-label>
+                              <input type="text" matInput readonly [matTooltip]="item.Criteria" [value]="item.Criteria">
+                            </mat-form-field>
+                          </div>
+
+                          <div [class]="item.Attachment?'col-sm-11':'col-sm-12'">
+                            <mat-form-field>
+                              <mat-label>Description</mat-label>
+                              <input type="text" matInput readonly [matTooltip]="item.SubCategoryDesc"
+                                [value]="item.SubCategoryDesc">
+                            </mat-form-field>
+                          </div>
+                          
+                          <div class="col-sm-1" *ngIf="item.Attachment">
+                            <a style="cursor: pointer; background: #eceae7 !important; font-size: 1.3rem; position: relative;top: 26px; border-radius: 6px;"
+                              (click)="ShowPreview(item.Attachment)" color="primary"
+                              matTooltip="Preview uploaded document" class="file-lable">
+                              <mat-icon style="position: relative; top: 4px; cursor: pointer;">get_app</mat-icon>
+                            </a>
+                          </div>
+                      
+                        </div>
+                      </ng-container>
+                    </form>
+                  </fieldset>
+                </ng-container>
+                <div class="row" style="float: right">
+                  <div class="col-sm-12">
+                    <a color="warn" matTooltip="Click to Reset form data" (click)="ResetFrom()" mat-raised-button>
+                      <i class="fas fa-times"></i>
+                      Reset
+                    </a> |
+                    <button color="primary" mat-raised-button
+                      [disabled]="AssociationForm.invalid || ProgramStatus!='Active'">
+                      <i class="fas fa-check"></i> {{ savebtn }} Record
+                    </button>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+            <!-- record list start -->
+            <mat-divider>
+            </mat-divider>
+            <!-- record list start -->
+            <mat-toolbar color="accent" class=" slim slim">
+              <mat-icon class="material-icons"> view_comfy </mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <input placeholder="Search" (keyup)="applyFilter(AssociationTablesData,$event)" class="search" />
+              <button *ngIf="AssociationTablesData.filteredData.length > 0" mat-raised-button color="accent"
+                style="float:right;margin: 0px 7px;" (click)="proceedAssociationPayment()">Proceed To Pay</button>
+              <!-- <button mat-raised-button  style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport(BankTablesData.filteredData,'Bank Detail')">
+                       <i class="fas fa-file-export"></i> Export Excel</button> -->
+            </mat-toolbar>
+            <div class="table-responsive">
+              <mat-table [dataSource]="AssociationTablesData" #AssociationSort="matSort" matSort>
+                <ng-container *ngFor="let column of AssociationTableColumns" [matColumnDef]="column">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <ng-container *ngIf="column !='TradeLotTitle' && column !='EvaluationStatus'"> &nbsp; {{ row[column] }}</ng-container>
+                    
+                    <ng-container *ngIf="column == 'TradeLotTitle' &&   (row['PaymentStatus'] =='PAID' &&  row['EvaluationStatus'] =='Rejected') || (row['PaymentStatus'] !='PAID' &&  row['EvaluationStatus'] =='Rejected')  "> &nbsp;
+                      <span (click)="Edit(row)" style="color: #005b9e;cursor: pointer;">
+                        <strong>{{ row[column] }}</strong>
+                      </span>
+                    </ng-container>
+
+                    <ng-container *ngIf="column =='TradeLotTitle' && (row['PaymentStatus'] =='PAID'  &&  row['EvaluationStatus'] =='Accepted') "> &nbsp;
+                      <span>
+                        <strong>{{ row[column] }}</strong>
+                      </span>
+                    </ng-container>
+
+                    <ng-container *ngIf="column =='EvaluationStatus'">
+                      <span *ngIf="row[column]=='On-Hold'" class="label label-default">{{row[column]}}</span>
+                      <span *ngIf="row[column]=='Accepted'" class="label label-success">{{row[column]}}</span>
+                      <span *ngIf="row[column]=='Pending'" class="label label-warning">{{row[column]}}</span>
+                      <span *ngIf="row[column]=='Rejected'" class="label label-danger">{{row[column]}}</span>
+                    </ng-container>
+
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="AssociationTableColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: AssociationTableColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #AssociationPaginator="matPaginator" [pageSize]="10"
+                [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+            </div>
+            <!-- record list end -->
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

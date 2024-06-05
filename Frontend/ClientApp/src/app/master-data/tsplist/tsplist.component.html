@@ -1,0 +1,142 @@
+<div id="TSPDetail-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate [formGroup]="tsplistform" (submit)="Submit()">
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="TSPName" placeholder="TSPName" matInput maxlength="250" required />
+                <mat-label>TSP Name</mat-label>
+                <mat-error *ngIf="TSPName.invalid && TSPName.errors.required">TSP Name is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div><div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="Address" placeholder="Address" matInput maxlength="500" required />
+                <mat-label>Address</mat-label>
+                <mat-error *ngIf="Address.invalid && Address.errors.required">Address is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" inputmode="numeric" id="ntn" placeholder="XXXXXX-X" NumberOnly formControlName="NTN" [imask]="maskNTN" [unmask]="false" maxlength="10" matInput required>
+                <mat-label>NTN (XXXXXX-X)</mat-label>
+                <mat-error *ngIf="NTN.invalid && NTN.errors.required">NTN is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" inputmode="numeric" id="pntn" placeholder="XXXXXXX-X" NumberOnly maxlength="10" [imask]="maskPNTN" [unmask]="false" formControlName="PNTN" matInput>
+                <mat-label>PNTN (XXXXXXX-X)</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="GST" placeholder="XXXXXXX-X" matInput maxlength="15"[imask]="maskGST" [unmask]="false" />
+                <mat-label>GST Number (XXXXXXX-X)</mat-label>
+
+              </mat-form-field>
+            </div> <div class="col-sm-6">
+                     <mat-form-field fxFlex>
+                       <input type="text" inputmode="numeric" id="ftn" placeholder="XXXXXX-X" maxlength="10" NumberOnly formControlName="FTN" [imask]="maskFTN" [unmask]="false" matInput>
+                       <mat-label>FTN (XXXXXX-X)</mat-label>
+                     </mat-form-field>
+            </div>
+
+          </div>
+          <div class="row col-12">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working  || (TSPMasterID.value<1 && !formrights.CanAdd)">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="button" (click)="reset()" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column">
+          <mat-table [dataSource]="tspmaster" matSort>
+
+            <ng-container matColumnDef="TSPName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Address">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Address</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Address}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="NTN">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> NTN</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.NTN}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="PNTN">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> PNTN</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.PNTN}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="GST">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> GST</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.GST}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="FTN">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> FTN</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.FTN}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="UID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> UID</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.UID}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="IsMigrated">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> IsMigrated</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-checkbox [checked]="Row.IsMigrated">IsMigrated</mat-checkbox>  </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="UserID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> UserID </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.UserName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SAPID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> SAPID</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.SAPID}} </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+</div>

@@ -1,0 +1,105 @@
+<mat-card>
+  <mat-card-content>
+      <mat-toolbar color="accent" class=" slim slim">
+        <mat-icon class="material-icons">view_comfy</mat-icon>
+        <span class="spacer">Cancelation</span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="row">
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl($event)" id="SchemeId" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+              <mat-option value="0">--Select--</mat-option>
+              <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl($event)" id="TspId" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-option value="0">--Select--</mat-option>
+              <mat-option *ngFor="let s of TSP  | where:['SchemeID',filters.SchemeID] | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[getDataByFilters()]" id="ClassId" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+              <mat-option value="0">--Select--</mat-option>
+              <mat-option *ngFor="let item of Classes | where:['TSPID',filters.TSPID] | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--<div class="col-sm-3">
+        <mat-icon aria-label="Edit this row" (click)="openChangeRequestDialog()">update</mat-icon>
+      </div>-->
+      </div>
+      <div class="col-12">
+        <div class="row">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Serial No</th>
+                  <th>Month </th>
+                  <th>Invoice Type   </th>
+                  <th>MPR      </th>
+                  <th>PRN (Regular/Completion/Final)      </th>
+                  <th>Invoice (Regular/Completion/Final)</th>
+
+                  <th>SRN</th>
+                  <th>PO</th>
+                  <th>Invoice (SRN)</th>
+                  <!--<th> Action</th>-->
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let Inv of ClassData; let i =index;">
+                  <td>{{i+1}}</td>
+                  <td>{{Inv.Month| date:'MMM-yyyy' }}</td>
+                  <td>{{Inv.InvoiceType}}   </td>
+                  <td>
+                    {{Inv.MPRID>0?'':'Not Generated'}}
+                    <a class="myAnchor" *ngIf="Inv.MPRID>0" (click)='GetMPR(Inv.MPRID)'>View Detail</a>
+                  </td>
+                  <td>
+                    {{Inv.PRNID>0?'':'Not Generated'}}
+                    <a class="myAnchor" *ngIf="Inv.PRNID>0" (click)='GetPRN(Inv.PRNID)'>View Detail</a>
+                  </td>
+                  <td>
+                    {{Inv.Invoices>0?'':'Not Generated'    }}
+                    <a class="myAnchor" *ngIf="Inv.Invoices>0" (click)='GetInv(Inv.Invoices)'>View Detail</a>
+                    <b class="myDivider" *ngIf="(Inv.Invoices>0 && Inv.InvIsCanceled<=0)">|</b>
+                    <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="(Inv.Invoices>0 && Inv.InvIsCanceled<=0)" (click)="Cancel(Inv.InvoicesHeader, 'Inv', Inv.ClassID)" mat-icon-button><mat-icon>cancel_presentation</mat-icon></a>
+                  </td>
+
+                  <td>
+                    {{Inv.SRNID>0?'':'Not Generated'       }}
+                    <a class="myAnchor" *ngIf="Inv.SRNID>0" (click)='GetSRN(Inv.SRNID)'>View Detail</a>
+                  </td>
+                  <td>
+                    {{Inv.POLineID>0?'':'Not Generated'    }}
+                    <a class="myAnchor" *ngIf="Inv.POLineID>0" (click)='GetPO(Inv.POLineID)'>View Detail</a>
+                  </td>
+                  <td>
+                    {{Inv.SRNInvoice>0?'':'Not Generated'  }}
+                    <a class="myAnchor" *ngIf="Inv.SRNInvoice>0" (click)='GetInv(Inv.SRNInvoice)'>View Detail</a>
+                    <b class="myDivider" *ngIf="(Inv.SRNInvoice>0 && Inv.InvIsCanceled<=0)">|</b>
+                    <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="(Inv.SRNInvoice>0 && Inv.InvIsCanceled<=0)" (click)="Cancel(Inv.SRNInvoice, 'Inv', Inv.ClassID)" mat-icon-button><mat-icon>cancel_presentation</mat-icon></a>
+                  </td>
+                  <!--<td>
+                    <a class="myAnchor" matTooltip="Mark for cancelation" color="warn" *ngIf="(Inv.MPRID>0 || Inv.PRNID>0 ) && (!Inv.InCancelation && !Inv.RegenrateMPR && !Inv.RegenratePRN &&!Inv.InvSapID &&!Inv.SRNInvSapID &&!Inv.POSapID)" (click)="Cancel(Inv)" mat-icon-button><mat-icon>auto_delete</mat-icon></a>
+                    <span *ngIf="Inv.InCancelation">In Cancelation</span>
+                    <a class="myAnchor" matTooltip="Regenrate" color="primary" *ngIf="Inv.RegenrateMPR || Inv.RegenratePRN" (click)="Regenrate(Inv,i)" mat-icon-button><mat-icon>restore_from_trash</mat-icon></a>
+                  </td>-->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </mat-card-content>
+</mat-card>

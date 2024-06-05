@@ -1,0 +1,112 @@
+file-upload {
+  display: block;
+  border: 2px dashed #ccc;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+.mat-column-Sr {
+  flex: 0 0 70px;
+  justify-content: center;
+}
+.mat-column-Check {
+  flex: 0 0 70px;
+  justify-content: center;
+}
+.mat-column-TraineeImg {
+  flex: 0 0 70px;
+  justify-content: center;
+}
+.mat-column-TraineeCNIC {
+  flex: 0 0 150px;
+  justify-content: center;
+}
+.mat-column-TraineeCode {
+  flex: 0 0 150px;
+  justify-content: center;
+}
+.mat-column-TraineeName {
+  flex: 0 0 150px;
+}
+.mat-column-FatherName {
+  flex: 0 0 150px;
+}
+.mat-column-ContactNumber1 {
+  flex: 0 0 150px;
+  justify-content: center;
+}
+.mat-column-ClassCode {
+  flex: 0 0 150px;
+  justify-content: center;
+}
+.mat-column-TradeName {
+  flex: 0 0 150px;
+}
+.mat-column-SchemeName {
+  flex: 0 0 150px;
+}
+.mat-column-TrainingAddressLocation {
+  flex: 0 0 150px;
+}
+.mat-column-DistrictName {
+  flex: 0 0 150px;
+}
+.mat-column-DateOfBirth {
+  flex: 0 0 150px;
+  justify-content: center;
+}
+.mat-column-IsExtra {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+.mat-column-Action {
+  flex: 0 0 150px;
+  justify-content: center;
+}
+.search {
+  padding: 0px;
+
+}
+.mat-cell {
+  border: 1px solid black;
+}
+
+.mat-header-cell {
+  border: 1px solid black;
+}
+
+mat-row, mat-footer-row {
+  min-height: 19px !important;
+}
+
+mat-header-row {
+  min-height: 23px !important;
+}
+
+.table-responsive {
+  white-space: nowrap !important;
+}
+
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+mat-row, mat-header-row, mat-footer-row {
+  display: table-row !important;
+}
+
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+}
+/*.mat-cell {
+  flex: 0 0 150px;
+}
+
+.mat-header-cell {
+  flex: 0 0 150px;
+}*/
+
+

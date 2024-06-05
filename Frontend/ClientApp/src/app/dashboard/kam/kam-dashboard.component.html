@@ -1,0 +1,335 @@
+<div id="dashboard-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">KAM Dashboard</span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="row" style="margin-top: -20px;">
+
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Select TSP" [(ngModel)]="selectedValueTSP" (selectionChange)="getKAMDashboardData()" (openedChange)="EmptyCtrl('District')" matInput>
+              <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of TSPsArray | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--<div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-label>Month</mat-label>
+            <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
+            <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
+            <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #customDatePicker startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+          </mat-form-field>
+        </div>-->
+      </div>
+
+      <mat-card class="home-grid">
+        <mat-card-content>
+          <!--<fieldset class="border">
+        <legend>Change Request</legend>-->
+          <div class="row home-grid height-img">
+            <div class="col-sm-12">
+              <div fxLayout="column">
+                <mat-grid-list cols="5"  rowHeight="100px">
+
+
+                  <mat-grid-tile class="row" style="cursor: pointer;"  (click)="openDraftTraineeDialog('Draft Trainee Report')">
+                    <div class="col-sm-8">
+                      <h1>
+                        <span style="font-size:20px">
+                          {{DraftTrainee}}
+                        </span>
+                      </h1>
+                      <span>Draft Trainee(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right blue">
+                      <img src="../../assets/images/training.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+
+                  <mat-grid-tile class="row" style="cursor: pointer;"  (click)="UnverifiedTraineeEmailAddress()">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{UnverifiedTraineeEmail}}
+                      </h1>
+                      <span>Unverified Trainee's Email</span><br />
+                      <span [style.color]="'red'" style="font-size:13px">Click To Download</span>
+
+                    </div>
+                    <div class="col-sm-4 text-right blue">
+                      <img src="../../assets/images/training.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+
+                  <mat-grid-tile class="row">
+
+                    <div class="col-sm-10">
+                      <h1>
+                        {{ContractualToEnrolled}} %
+                      </h1>
+                      <span>Contractual : Enrolled</span>
+                    </div>
+                    <div class="col-sm-2 p-0 text-right pink">
+                      <img class="height50" src="../../assets/images/vendor.png" alt="" />
+                    </div>
+
+                  </mat-grid-tile>
+
+                  <mat-grid-tile class="row" (click)="openKamDeadlineDialog()">
+
+                    <div class="col-sm-10">
+                      <h1>
+                        {{TotalDeadlines | number : '1.0-0'}}
+                      </h1>
+                      <span>DeadLines</span>
+                    </div>
+                    <div class="col-sm-2 p-0 text-right pink">
+                      <img class="height50" src="../../assets/images/classes.png" alt="" />
+                    </div>
+
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row">
+
+                    <div class="col-sm-10" style="cursor: pointer;" [routerLink]="['/complaint/complainthandling']">
+                      <!--href="{{LinkForCRM}}"-->
+                      <!--<a href="" target="_blank">-->
+                        <h1>
+                          {{TotalComplaints | number : '1.0-0'}}
+                        </h1>
+                        <span>Complaints</span>
+                      <!--</a>-->
+
+                    </div>
+                    <div class="col-sm-2 p-0 text-right pink">
+                      <img class="height50" src="../../assets/images/training.png" alt="" />
+                    </div>
+
+                  </mat-grid-tile>
+
+
+                </mat-grid-list>
+
+              </div>
+            </div>
+          </div>
+          <!--</fieldset>-->
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="home-grid">
+        <mat-card-content>
+          <!--<fieldset class="border">
+        <legend>Change Request</legend>-->
+          <div class="row home-grid height-img">
+            <div class="col-sm-12" style="cursor: pointer;">
+              <div fxLayout="column">
+                <mat-grid-list cols="4" *ngFor="let tile of DashboardStats" rowHeight="100px">
+                  <mat-grid-tile class="row" (click)="openPendingClassesDialog('PendingInceptionReports')">
+
+                    <div class="col-sm-10">
+                      <h1>
+                        {{tile.PendingInceptionReports}}
+                      </h1>
+                      <span>Pending Inception Reports</span>
+                    </div>
+                    <div class="col-sm-2 p-0 text-right pink">
+                      <img class="height50" src="../../assets/images/vendor.png" alt="" />
+                    </div>
+
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row" (click)="openPendingClassesDialog('PendingRegisterations')">
+
+                    <div class="col-sm-10">
+                      <h1>
+                        {{tile.PendingRegisterations | number : '1.0-0'}}
+                      </h1>
+                      <span>Pending Registerations</span>
+                    </div>
+                    <div class="col-sm-2 p-0 text-right pink">
+                      <img class="height50" src="../../assets/images/scheme.png" alt="" />
+                    </div>
+
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row" (click)="openPendingClassesDialog('PendingRTPs')">
+
+                    <div class="col-sm-10">
+                      <h1>
+                        {{tile.PendingRTPs | number : '1.0-0'}}
+                      </h1>
+                      <span>Pending RTPs</span>
+                    </div>
+                    <div class="col-sm-2 p-0 text-right pink">
+                      <img class="height50" src="../../assets/images/classes.png" alt="" />
+                    </div>
+
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row" style="cursor: pointer;" (click)="openPendingClassesDialog('KAMDashboardpendingclasses')">
+                    <div class="col-sm-10">
+                      <h1>
+                        {{PendingClassesForEmployment | number : '1.0-0'}}
+                      </h1>
+                      <span>Pending Employments</span>
+                    </div>
+                    <div class="col-sm-2 p-0 text-right pink">
+                      <img class="height50" src="../../assets/images/scheme.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+
+                </mat-grid-list>
+
+              </div>
+            </div>
+          </div>
+          <!--</fieldset>-->
+
+        </mat-card-content>
+      </mat-card>
+
+
+
+      <div class="row">
+
+        <!--<div class="col-sm-6">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Complaints</div>
+            <div id="containerPassed" style="width:100%;"></div>
+          </div>
+        </div>-->
+        <div class="col-sm-12">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Classes</div>
+            <div id="containerClasses" style="width:100%;"></div>
+          </div>
+        </div>
+        <!--<div class="col-sm-6">
+          <div class="card shadow custom-managment">
+            <div class="card-header">Class Status</div>
+            <div id="containerSDPie" style="width:100%;"></div>
+          </div>
+        </div>-->
+
+      </div>
+
+      <!--</mat-card-content>
+    </mat-card>-->
+      <!--<mat-card>
+    <mat-card-content>-->
+      <!--<div class="main-content">-->
+       
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Send Email to TSP(s)</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <fieldset class="border">
+          <legend>List of TSP(s)</legend>
+
+          <!--   <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
+
+      <mat-tab  label="TSP(s)"> -->
+          <div fxLayout="column" class="table-responsive">
+            <mat-table [dataSource]="TSPs" #SortTSP="matSort" style="max-height:300px;" matSort>
+              <ng-container matColumnDef="select">
+                <mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox (change)="$event ? masterToggle() : null"
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()">
+                  </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                                (change)="$event ? selection.toggle(row) : null"
+                                [checked]="selection.isSelected(row)">
+                  </mat-checkbox>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPCode}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPColorName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Color</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TSPColorName}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Action" stickyEnd>
+                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-icon-button matTooltip="edit" color="primary">
+                    <mat-icon aria-label="Edit this row">edit</mat-icon>
+
+                  </button>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumnsTSP"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumnsTSP;" tabindex="0"></mat-row>
+
+            </mat-table>
+
+
+            <mat-paginator style="margin-top:10px" #PageTSP [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+          </div>
+          <div *ngIf="this.selection.selected.length">
+            <form [formGroup]="editorform">
+              <hr>
+
+              <div class="row" style="margin-bottom: 20px;">
+
+              </div>
+
+
+              <div class="row" *ngIf="this.selection.selected.length">
+                <div class="col-sm-12">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="subject" placeholder="Subject" matInput maxlength="250" required />
+                    <mat-label>Subject</mat-label>
+                    <mat-error *ngIf="subject.invalid && subject.errors.required">Subject is <strong>required</strong></mat-error>
+
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="this.selection.selected.length" style="margin-top : 20px;height:200px;margin-bottom: 40px;">
+                <!--<mat-form-field>-->
+                <!--<mat-label>Comments</mat-label>-->
+                <!--<label for="editor">rich</label>-->
+                <quill-editor id="editor" formControlName="editor" [modules]="modules" (onEditorChanged)="triggerChangeDetection()"></quill-editor>
+                <!--</mat-form-field>-->
+              </div>
+              <br />
+              <hr>
+              <div class="row" *ngIf="this.selection.selected.length">
+                <div class="col-3">
+                  <button style="margin-top:20px;" class="btn btn-primary" mat-raised-button [disabled]="!this.selection.selected.length" (click)="sendEmailToSelectedUsers()">Send Email to selected TSP(s)</button>
+                </div>
+                <div class="col-sm-3">
+                  <label>Email Attachment File</label>
+                  <file-upload [nopreview]="true" matInput [accept]="" [disabled]="!this.selection.selected.length" formControlName="EmailAttachmentFile"></file-upload>
+                </div>
+              </div>
+
+
+            </form>
+          </div>
+
+        </fieldset>
+
+
+    </mat-card-content>
+      </mat-card>
+
+
+</div>

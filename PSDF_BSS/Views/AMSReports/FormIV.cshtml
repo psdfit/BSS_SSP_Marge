@@ -1,0 +1,395 @@
+﻿@model DataLayer.Models.AMS.FormFourModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form IV</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        body {
+            -webkit-print-color-adjust: exact !important;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        .tg_tsp {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_tsp td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_tsp th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_tsp .tg_tsp-axxb {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-hle0 {
+                background-color: #ffffff;
+                border-color: inherit;
+                color: #000000;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-0pky {
+                border-color: inherit;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-7btt {
+                border-color: inherit;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-lgs3 {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+        .tg_cmr {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_cmr td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_cmr th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_cmr .tg_cmr-axxb {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-zlqz {
+                border-color: inherit;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-zv36 {
+                background-color: #ffffff;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-6e8n {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-0pky {
+                border-color: inherit;
+                text-align: left;
+                vertical-align: top
+            }
+
+        .tg_pot {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_pot td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_pot th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_pot .tg_pot-kmbl {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+            .tg_pot .tg_pot-jkz3 {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_pot .tg_pot-m2fn {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_pot .tg_pot-q24q {
+                background-color: #c0c0c0;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+        .tg_viot {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_viot td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_viot th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_viot .tg_viot-eufz {
+                background-color: #C0C0C0;
+                border-color: inherit;
+                color: #000000;
+                background-color: yellow;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_viot .tg_viot-kmbl {
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+            .tg_viot .tg_viot-uked {
+                background-color: #C0C0C0;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_viot .tg_viot-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+    </style>
+</head>
+<body class="mx-auto" style="width: 95%;">
+    <div>
+        <p><strong>Punjab Skills Development Fund</strong></p>
+        <br />
+        <p><strong>Form IV - TSP Monitoring Report</strong></p>
+    </div>
+    <div class="row">
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-axxb" colspan="2">Monthly Monitoring Report of TSP</td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-0pky">Service Provider Name</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.Details.Count > 0)
+                        {
+                            @Model.Details[0].SchemeName
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-0pky">Training Scheme</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.Details.Count > 0)
+                        {
+                            @Model.Details[0].TSPName
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-0pky">Month/Year</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.Details.Count > 0)
+                        {
+                            @Model.Details[0].MonthForReport
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-0pky">Number of Monthly Visits (all classess)</td>
+                    <td class="tg_tsp-0pky">
+                        @if (Model.Details.Count > 0)
+                        {
+                            @(Model.Details[0].NumberOfMonthlyVisits + " visits for each class")
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <table class="table tg_tsp">
+            <tbody>
+                <tr>
+                    <td class="tg_tsp-axxb" colspan="6">MONTHLY VIOLATION COUNT</td>
+                    <td class="tg_tsp-axxb">OBSERVATIONS</td>
+                    <td class="tg_tsp-axxb">Remarks</td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-axxb">Sr. No</td>
+                    <td class="tg_tsp-axxb">Class Code</td>
+                    <td class="tg_tsp-axxb" colspan="4">Violations</td>
+                    <td class="tg_tsp-axxb"></td>
+                    <td class="tg_tsp-axxb"></td>
+                </tr>
+                <tr>
+                    <td class="tg_tsp-axxb"></td>
+                    <td class="tg_tsp-axxb"></td>
+                    <td class="tg_tsp-axxb">Minor</td>
+                    <td class="tg_tsp-axxb">Major</td>
+                    <td class="tg_tsp-axxb">Serious</td>
+                    <td class="tg_tsp-axxb">Total</td>
+                    <td class="tg_tsp-axxb">Total</td>
+                    <td class="tg_tsp-axxb"></td>
+                </tr>
+                @foreach (var item in Model.Details.Select((r, i) => new { Row = r, Index = i }))
+                {
+                    int index = item.Index + 1;
+                    <tr>
+                        <td class="tg_tsp-0pky">@index</td>
+                        <td class="tg_tsp-0pky">@item.Row.ClassCode</td>
+                        <td class="tg_tsp-0pky">@item.Row.Minor</td>
+                        <td class="tg_tsp-0pky">@item.Row.Major</td>
+                        <td class="tg_tsp-0pky">@item.Row.Serious</td>
+                        <td class="tg_tsp-0pky">@item.Row.Total</td>
+                        <td class="tg_tsp-0pky">@item.Row.Observation</td>
+                        <td class="tg_tsp-0pky">@item.Row.Remarks</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="tg_tsp-axxb" colspan="2">Total violations in month</td>
+                    <td class="tg_tsp-axxb">@Model.Total.TotalMinor</td>
+                    <td class="tg_tsp-axxb">@Model.Total.TotalMajor</td>
+                    <td class="tg_tsp-axxb">@Model.Total.TotalSerious</td>
+                    <td class="tg_tsp-axxb">@Model.Total.TotalTotal</td>
+                    <td class="tg_tsp-axxb">@Model.Total.TotalObservation</td>
+                    <td class="tg_tsp-axxb"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>

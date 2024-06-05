@@ -1,0 +1,203 @@
+<mat-card>
+  <mat-toolbar color="accent" class=" slim slim">
+    <mat-icon class="material-icons"> add_circle </mat-icon>
+    <span class="spacer">{{SpacerTitle}}</span>
+  </mat-toolbar>
+  <mat-card-content>
+    <form (ngSubmit)="Save()" [formGroup]="ProcessScheduleForm">
+      <fieldset class="border">
+        <legend>Process List</legend>
+        <div class="row">
+          <div class="col-sm-6">
+            <!-- <mat-form-field>
+              <mat-label>Program Title</mat-label>
+              <input formControlName="ProgramTitle" matInput placeholder="Program Title" required />
+              <mat-error *ngFor="let error of ProcessScheduleForm.get('ProgramTitle').errors | keyvalue">
+                {{getErrorMessage(error.key, error.value) }}
+              </mat-error>
+            </mat-form-field> -->
+            <mat-form-field>
+              <mat-label>Select Program</mat-label>
+              <mat-select formControlName="ProgramID"  matInput required>
+                <mat-optgrp class="ddlsrchheader"> <input placeholder="Search Program"
+                    (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
+                <mat-option *ngFor="let s of programData | like:['ProgramName',BSearchCtr.value]"
+                  [value]="s.ProgramID">{{s.ProgramName}}</mat-option>
+              </mat-select>
+              <mat-error *ngFor="let error of ProcessScheduleForm.get('ProgramID').errors | keyvalue">
+                {{getErrorMessage(error.key, error.value) }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Program Start Date</mat-label>
+              <input formControlName="ProgramStartDate" [max]="maxDate" [matDatepicker]="ProgramStartDate" readonly
+                matInput required>
+              <mat-datepicker-toggle matSuffix [for]="ProgramStartDate"></mat-datepicker-toggle>
+              <mat-datepicker #ProgramStartDate disabled="false"></mat-datepicker>
+              <mat-error *ngFor="let error of ProcessScheduleForm.get('ProgramStartDate').errors | keyvalue">
+                {{getErrorMessage(error.key, error.value) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Total Days</mat-label>
+              <input formControlName="TotalDays" matInput placeholder="TotalDays" readonly required />
+              <mat-error *ngFor="let error of ProcessScheduleForm.get('TotalDays').errors | keyvalue">
+                {{getErrorMessage(error.key, error.value) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-2" hidden>
+            <mat-form-field>
+              <mat-label>Total Process</mat-label>
+              <input formControlName="TotalProcess" matInput placeholder="TotalProcess" readonly required />
+              <mat-error *ngFor="let error of ProcessScheduleForm.get('TotalProcess').errors | keyvalue">
+                {{getErrorMessage(error.key, error.value) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- <fieldset class="border">
+            <legend>Task</legend> -->
+        <div class="table-responsive">
+          <table class="table  table-bordered " formArrayName="processDetails">
+            <thead>
+              <tr>
+                <th><b>Action</b></th>
+                <th><b>SR#</b></th>
+                <th><b>Process Name</b></th>
+                <th><b>Process Start Date</b></th>
+                <th><b>Process End Date</b></th>
+                <th><b>Process Days</b></th>
+                <th><b>Is Locked</b></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr [formGroupName]="i" *ngFor="let item of processDetails.controls;let i=index">
+                <td style="vertical-align: middle;" >
+                <!-- <a class="border-btn btn-danger" *ngIf="ProcessScheduleEditRecord.length"  (click)="RemoveDetail(i,ProcessScheduleEditRecord[i])" ><i class="fas fa-times"></i></a> -->
+                <a class="border-btn btn-danger" *ngIf="processDetails.length>1"
+                    (click)="RemoveDetail(i,processDetails)"><i class="fas fa-times"></i></a>
+                </td>
+                <td>{{i+1}}</td>
+                <td>
+                  <!-- <mat-form-field>
+                    <mat-label>Process Name</mat-label>
+                    <textarea name="" id="" formControlName="ProcessName" required matInput rows="2"></textarea>
+                  </mat-form-field> -->
+                  <mat-form-field>
+                    <mat-label>Select Process</mat-label>
+                    <mat-select formControlName="ProcessID" (ngModelChange)="GetProcessID($event,i)" matInput required>
+                      <mat-optgrp class="ddlsrchheader"> <input placeholder="Search Process"
+                          (keydown)="$event.stopPropagation()" [formControl]="PSearchCtr" /></mat-optgrp>
+                      <mat-option *ngFor="let s of ProcessScheduleData | like:['ProcessName',PSearchCtr.value]"
+                        [value]="s.ProcessID">{{s.ProcessName}}</mat-option>
+                      <mat-option *ngFor="let s of ProcessScheduleData" disabled hidden
+                        [value]="s.ProcessID">{{s.ProcessName}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <mat-label>Process Start Date</mat-label>
+                    <input formControlName="ProcessStartDate" [max]="maxDate" (ngModelChange)="GetProcessDate(i)"
+                      readonly [matDatepicker]="ProcessStartDate" matInput required>
+                    <mat-datepicker-toggle matSuffix [for]="ProcessStartDate"></mat-datepicker-toggle>
+                    <mat-datepicker #ProcessStartDate disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <mat-label>Process End Date</mat-label>
+                    <!-- <input formControlName="ProcessEndDate" [max]="maxDate" (ngModelChange)="GetProcessDate($event,i)"  [matDatepicker]="ProcessEndDate" readonly matInput -->
+                    <input formControlName="ProcessEndDate" [max]="maxDate" [matDatepicker]="ProcessEndDate" readonly
+                      matInput required>
+                    <mat-datepicker-toggle matSuffix [for]="ProcessEndDate"></mat-datepicker-toggle>
+                    <mat-datepicker #ProcessEndDate disabled="true"></mat-datepicker>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <mat-label>Process Days</mat-label>
+                    <input formControlName="ProcessDays" (ngModelChange)="GetProcessDays(i)" NumberOnly matInput
+                      required />
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <mat-label>Is Locked</mat-label>
+                    <mat-select formControlName="IsLocked" matInput required>
+                      <mat-option value="0">No</mat-option>
+                      <mat-option value="1">Yes</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="8">
+                  <a (click)="AddProcessScheduleDetails()" color="primary" mat-raised-button>+ Add</a>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <!-- </fieldset> -->
+        <div class="row" style="float:right">
+          <div class="col-sm-12">
+            <!-- <button color="primary" mat-raised-button [disabled]="ProcessScheduleForm.invalid"><i class="fas fa-check"></i> {{savebtn}} Record </button> | -->
+            <button color="primary" [disabled]="isDisabled" mat-raised-button [disabled]="ProcessScheduleForm.get('InActive').value"><i
+                class="fas fa-check"></i> {{savebtn}} Record </button> |
+            <button color="warn" type="reset" matTooltip="Click to Reset form data" (click)="ResetFrom()"
+              mat-raised-button>
+              <i class="fas fa-times"></i>
+              Reset
+            </button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+    <!-- record list start -->
+    <mat-toolbar color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> view_comfy </mat-icon>
+      <span class="spacer">Manage and View All</span>
+      <input placeholder="Search" (keyup)="applyFilter(ProcessScheduleTablesData,$event)" class="search" />
+      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+        (click)="DataExcelExport(ProcessScheduleTablesData.filteredData,'Process Schedule Report')">
+        <i class="fas fa-file-export"></i> Export Excel</button>
+    </mat-toolbar>
+    <div class="table-responsive">
+      <mat-table [dataSource]="ProcessScheduleTablesData" #ProcessScheduleSort="matSort" matSort>
+        <ng-container *ngFor="let column of ProcessScheduleTableColumns" [matColumnDef]="column">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <ng-container
+              *ngIf="column !='ProgramTitle'  && column !='CreatedDate' && column !='ProgramStartDate' && column !='InActive' ">
+              &nbsp;{{ row[column] }}
+            </ng-container>
+            <ng-container *ngIf="column =='ProgramTitle'"> &nbsp;
+              <span (click)="Edit(row.ProcessScheduleMasterID)"
+                style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                <strong>{{ row[column] }}</strong>
+              </span>
+            </ng-container>
+            <ng-container *ngIf="column =='InActive'"> &nbsp;
+              <span *ngIf="row[column]===false" class="label label-success">No</span>
+              <span *ngIf="row[column]===true" class="label label-warning ">Yes</span>
+            </ng-container>
+            <ng-container *ngIf="column =='CreatedDate' || column =='ProgramStartDate'">
+              &nbsp; {{ row[column] | date:environment.DateFormat }}
+            </ng-container>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="ProcessScheduleTableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: ProcessScheduleTableColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator [pageSize]="10" #ProcessSchedulePaginator="matPaginator"
+        [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>

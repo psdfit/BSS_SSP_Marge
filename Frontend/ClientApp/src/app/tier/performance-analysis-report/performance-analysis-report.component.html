@@ -1,0 +1,57 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+        <mat-icon class="material-icons"> add_circle</mat-icon>
+        <span class="subheading-1">Infrastructure</span>
+      </mat-toolbar>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Stream</th>
+            <th>SchemeName</th>
+            <th>Training Service Provider</th>
+            <th>Trade</th>
+            <th>Total Classes</th>
+            <th>Total Visists</th>
+            <th>No. of visit Months</th>
+            <th>Infrastructure 10%</th>
+            <th>Violation 10%</th>
+            <th>Attendance 10%</th>
+            <th>Deliverables 20%</th>
+            <th>Completion Percentage 25%</th>
+            <th>Placement Ratio 25%</th>
+            <th>Total</th>
+            <th>Performance in Percentage%</th>
+            <th>
+              Avg. Training Cost per trainee per month in Rupees (excluding tax
+              and stipend amount)
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of report">
+            <td>{{ r.Stream }}</td>
+            <td>{{ r.SchemeName }}</td>
+            <td>{{ r.TSPName }}</td>
+            <td>{{ r.TradeName }}</td>
+            <td>{{ r.ClassCount }}</td>
+            <td>{{ r.TotalVisits }}</td>
+            <td>{{ r.TotalMonthVisits }}</td>
+            <td>{{ r.Infrastructure }}</td>
+            <td>{{ r.VoilationSummaryFinalScore }}</td>
+            <td>{{ r.Attendance }}</td>
+            <td>{{ r.Deliverables }}</td>
+            <td>{{ r.CompletionScore }}</td>
+            <td>{{ r.EmploymentCompletion }}</td>
+            <td>{{ r.Total }}</td>
+            <td>{{ r.PerformanceInPercentage }}</td>
+            <td>{{ r.AvgTraineeCost }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

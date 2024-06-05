@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSDF_BSS", "PSDF_BSS\PSDF_BSS.csproj", "{37533FEB-D171-43E7-AB8E-3091D02E0C18}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ClientApp", "Frontend\ClientApp\", "{35B2D700-E653-4867-A1EC-F17BE4546363}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_31177"
+		Debug.AspNetCompiler.PhysicalPath = "Frontend\ClientApp\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_31177\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_31177"
+		Release.AspNetCompiler.PhysicalPath = "Frontend\ClientApp\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_31177\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "31177"
+		SlnRelativePath = "Frontend\ClientApp\"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSDF_BSS.Reports", "PSDF_BSS.Reports\PSDF_BSS.Reports.csproj", "{FD9B82B5-C4AC-4DE5-8CEA-B565D8E6D095}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4FA5369F-089C-4335-A9B8-B62FAB17EBE9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSDF_BSS.API", "PSDF_BSS.API\PSDF_BSS.API.csproj", "{AF9A36D2-7BFC-4CC8-BD91-E7DE7BDE407B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{81253B41-A9CF-4B1A-9EB4-3A6134E7F5A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37533FEB-D171-43E7-AB8E-3091D02E0C18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37533FEB-D171-43E7-AB8E-3091D02E0C18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37533FEB-D171-43E7-AB8E-3091D02E0C18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37533FEB-D171-43E7-AB8E-3091D02E0C18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35B2D700-E653-4867-A1EC-F17BE4546363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35B2D700-E653-4867-A1EC-F17BE4546363}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD9B82B5-C4AC-4DE5-8CEA-B565D8E6D095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD9B82B5-C4AC-4DE5-8CEA-B565D8E6D095}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD9B82B5-C4AC-4DE5-8CEA-B565D8E6D095}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{AF9A36D2-7BFC-4CC8-BD91-E7DE7BDE407B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF9A36D2-7BFC-4CC8-BD91-E7DE7BDE407B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF9A36D2-7BFC-4CC8-BD91-E7DE7BDE407B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81253B41-A9CF-4B1A-9EB4-3A6134E7F5A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81253B41-A9CF-4B1A-9EB4-3A6134E7F5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81253B41-A9CF-4B1A-9EB4-3A6134E7F5A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81253B41-A9CF-4B1A-9EB4-3A6134E7F5A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FEAA2313-0FD3-42D1-AC57-2599778C45AB}
+	EndGlobalSection
+EndGlobal

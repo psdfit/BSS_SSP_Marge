@@ -1,0 +1,287 @@
+<mat-card>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-label>Month</mat-label>
+          <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
+          <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
+          <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #customDatePicker startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl($event)" id="SchemeId" (selectionChange)="[getDependantFilters(),GetInvoicesForApproval()]" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+        <mat-form-field fxFlex>
+          <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[getClassesByTsp(tsp.value),GetInvoicesForApproval()]" id="TspId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let s of TSP  | where:['SchemeID',filters.SchemeID] | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[GetInvoicesForApproval()]" id="ClassId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let item of Classes | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--<div class="col-sm-2">
+        <mat-form-field fxFlex>
+          <mat-label>Month</mat-label>
+          <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
+          <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
+          <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
+                          (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+        </mat-form-field>
+      </div>-->
+      <!--<div class="col-sm-3">
+        <mat-icon aria-label="Edit this row" (click)="openChangeRequestDialog()">update</mat-icon>
+      </div>-->
+    </div>
+    <div class="col-12">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>AP Approval Status</th>
+                <th>TSP</th>
+                <th>Invoice Month</th>
+                <th>Invoice Type</th>
+                <th>U_IPS</th>
+                <th>Doc Date</th>
+                <th>Doc Total</th>
+                <th>Card Code</th>
+                <th>Card Name</th>
+                <th>Comments</th>
+                <th>CreatedDate</th>
+                <th>AP Draft ID</th>
+                <th>AP No</th>
+                <th>AP Transaction No</th>
+                <th>Withholding Tax Amount</th>
+                <th>Sales Tax Amount</th>
+                <th>After Tax Amount</th>
+                <th>AP Date</th>
+                <th>Branch Name</th>
+                <th>Outgoing Transaction No</th>
+                <th>Cheque Amount</th>
+                <th>Cheque No</th>
+                <th>Cheque Date</th>
+                <th>Bank Name</th>
+                <th>Bank Acount No</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!InvoiceHeaders">
+                No data found
+              </tr>
+              <ng-container *ngFor="let r of InvoiceHeaders">
+                <tr>
+                  <td class="number-align-center">
+                    Details
+                    <a color="primary"
+                       mat-icon-button (click)="getDataByFiltersForTSPInvoice(r)">
+                      <!--mat-button (click)="GetInvoiceLines(r)">-->
+                      <mat-icon>{{r.ClassData ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                    </a>
+                  </td>
+                  <td class="number-align-center">
+                    <span *ngIf="r.SAPCODE !=0" class="text-success"><b>Approved</b></span>
+                    <span *ngIf="r.SAPCODE ==0" class="text-danger"><b>Pending</b></span>
+                  </td>
+                  <td>{{r.TSPName}}</td>
+                  <td class="number-align-center">{{r.U_Month | date:environment.MonthFormat}}</td>
+                  <td>{{r.DisplayName}}</td>
+                  <td class="number-align-center">{{r.InvoiceHeaderID}}</td>
+                  <td class="number-align-center">{{r.DocDate | date:environment.DateFormat}}</td>
+                  <td class="decimal-align-right">{{r.DocTotal | number: environment.Decimal}}</td>
+                  <td>{{r.CardCode}}</td>
+                  <td>{{r.CardName}}</td>
+                  <td>{{r.Comments}}</td>
+                  <td class="number-align-center">{{r.CreatedDate | date:environment.DateTimeFormat}}</td>
+                  <td>
+                    {{r.APDraftID>0?r.APDraftID:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.APNo>0?r.APNo:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.APTransactionNo>0?r.APTransactionNo:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.WithholdingTaxAmount>0?r.WithholdingTaxAmount:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.SalesTaxAmount>0?r.SalesTaxAmount:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.AfterTaxAmount>0?r.AfterTaxAmount:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.APDate}}
+                  </td>
+                  <td>
+                    {{r.BranchName>0?r.BranchName:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.OG_TransactionNo>0?r.OG_TransactionNo:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.OG_ChequeAmount>0?r.APDrOG_ChequeAmountaftID:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.OG_ChequeNo>0?r.OG_ChequeNo:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.OG_ChequeDate}}
+                  </td>
+                  <td>
+                    {{r.OG_BankName!=0?r.OG_BankName:'N/A'}}
+                  </td>
+                  <td>
+                    {{r.OG_BankAccountNo!=0?r.OG_BankAccountNo:'N/A'}}
+                  </td>
+                </tr>
+                <tr *ngIf="r.ClassData">
+                  <td colspan="26">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Class Code </th>
+                            <th>Month </th>
+                            <th>Invoice Type   </th>
+                            <th>MPR Generated     </th>
+                            <th>Payment Note Generated     </th>
+                            <!--<th>Invoice Prepared   </th>
+
+                            <th>Draft In SAP</th>-->
+                            <!--<th>AP Draft ID</th>
+                            <th>AP No</th>
+                            <th>AP Transaction No</th>
+                            <th>Withholding Tax Amount</th>
+                            <th>Sales Tax Amount</th>
+                            <th>After Tax Amount</th>
+                            <th>AP Date</th>
+                            <th>Branch Name</th>
+                            <th>Outgoing Transaction No</th>
+                            <th>Cheque Amount</th>
+                            <th>Cheque No</th>
+                            <th>Cheque Date</th>
+                            <th>Bank Name</th>
+                            <th>Bank Acount No</th>-->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let Inv of r.ClassData; let i =index;">
+                            <td>{{Inv.ClassCode}}</td>
+                            <td>{{Inv.Month| date:'MMM-yyyy' }}</td>
+                            <!--<td>{{Inv.InvoiceType}}   </td>-->
+                            <td>{{Inv.InvoiceType=='2nd Last'?'Final 1':Inv.InvoiceType=='Final'?'Final 2':Inv.InvoiceType}}   </td>
+                            <td [ngStyle]="{'color': Inv.MPRID > 0 ? 'green':'red'}">
+                              <!--{{Inv.MPRID>0?'':'No'}}-->
+                              {{Inv.MPRID>0?'':Inv.InvoiceType=='2nd Last'?'N/A':Inv.InvoiceType=='Final'?'N/A':'No'}}
+                              <a mat-icon-button *ngIf="Inv.MPRID>0" (click)='GetMPR(Inv.MPRID)'>Yes</a>
+                            </td>
+                            <td [ngStyle]="{'color': Inv.PRNID > 0 ? 'green':'red'}">
+                              {{Inv.PRNID>0?'':'No'}}
+                              <a mat-icon-button *ngIf="Inv.PRNID>0" (click)='GetPRN(Inv.PRNMasterID)'>Yes</a>
+                            </td>
+                            <!--<td [ngStyle]="{'color': Inv.Invoices > 0 ? 'green':'red'}">
+                              {{Inv.Invoices>0?'':'No'}}
+                              <a mat-icon-button *ngIf="Inv.Invoices>0" (click)='GetInv(Inv.Invoices)'>Yes</a>
+                            </td>-->
+
+                            <!--<td>
+                              {{Inv.SRNID>0?'':'No'       }}
+                              <a mat-icon-button *ngIf="Inv.SRNID>0" (click)='GetSRN(Inv.SRNID)'>Yes</a>
+                            </td>-->
+                            <!--<td [ngStyle]="{'color': Inv.POLineID > 0 ? 'green':'red'}">
+                              {{Inv.POLineID>0?'Yes':'No'    }}
+                              <a mat-icon-button *ngIf="Inv.POLineID>0" (click)='GetPO(Inv.POLineID)'>Yes</a>
+                            </td>
+                            <td [ngStyle]="{'color': Inv.SRNInvoice > 0 ? 'green':'red'}" >
+                              {{Inv.SRNInvoice>0?'':'No'  }}
+                              <a mat-icon-button *ngIf="Inv.SRNInvoice>0" (click)='GetInv(Inv.SRNInvoice)'>Yes</a>
+                            </td>-->
+                            <!--<td [ngStyle]="{'color': Inv.SRNInvSapID > 0 ? 'green':'red'}">
+                              {{Inv.SRNInvSapID>0?'':'No'  }}
+                              <a mat-icon-button *ngIf="Inv.SRNInvSapID>0">Yes</a>
+                            </td>-->
+                            <!--<td>
+                              {{Inv.APDraftID>0?Inv.APDraftID:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.APNo>0?Inv.APNo:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.APTransactionNo>0?Inv.APTransactionNo:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.WithholdingTaxAmount>0?Inv.WithholdingTaxAmount:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.SalesTaxAmount>0?Inv.SalesTaxAmount:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.AfterTaxAmount>0?Inv.AfterTaxAmount:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.APDate}}
+                            </td>
+                            <td>
+                              {{Inv.BranchName>0?Inv.BranchName:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.OG_TransactionNo>0?Inv.OG_TransactionNo:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.OG_ChequeAmount>0?Inv.APDrOG_ChequeAmountaftID:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.OG_ChequeNo>0?Inv.OG_ChequeNo:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.OG_ChequeDate}}
+                            </td>
+                            <td>
+                              {{Inv.OG_BankName!=0?Inv.OG_BankName:'N/A'}}
+                            </td>
+                            <td>
+                              {{Inv.OG_BankAccountNo!=0?Inv.OG_BankAccountNo:'N/A'}}
+                            </td>-->
+                            <!--<td>
+                              <a matTooltip="Mark for cancelation" color="warn" *ngIf="(Inv.MPRID>0 || Inv.PRNID>0 ) && (!Inv.InCancelation && !Inv.RegenrateMPR && !Inv.RegenratePRN &&!Inv.InvSapID &&!Inv.SRNInvSapID &&!Inv.POSapID)" (click)="Cancel(Inv)" mat-icon-button><mat-icon>auto_delete</mat-icon></a>
+                              <span *ngIf="Inv.InCancelation">In Cancelation</span>
+                              <a matTooltip="Regenrate" color="primary" *ngIf="Inv.RegenrateMPR || Inv.RegenratePRN" (click)="Regenrate(Inv,i)" mat-icon-button><mat-icon>restore_from_trash</mat-icon></a>
+                            </td>-->
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+
+
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

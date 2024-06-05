@@ -1,0 +1,750 @@
+<mat-card-content style="height: 100%;">
+  <!--<mat-tab-group style="height: 100%;">-->
+  <!--<mat-tab label="Dashboard">-->
+  <div id="product-casting-page" class="comp-main-div">
+    <div class="row">
+      <div class="col-sm-4">
+        <mat-form-field fxFlex>
+          <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" [formControl]="schemeFilter"
+            (openedChange)="EmptyCtrl($event)" (selectionChange)="[getDependantFilters(),getDataByFilters()]"
+            id="SchemeId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search"
+                (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">
+              {{s.SchemeName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+        <mat-form-field fxFlex>
+          <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" [formControl]="tspFilter"
+            (openedChange)="EmptyCtrl($event)" (selectionChange)="[getDataByFilters(),getClassesByTsp(tsp.value)]"
+            id="TspId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search"
+                (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option
+              *ngFor="let s of TSPDetail  | like:['TSPName',SearchTSP.value] |where :['SchemeID',filters.SchemeID]"
+              [value]="s.TSPID">{{s.TSPName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <mat-form-field fxFlex>
+          <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" [formControl]="classFilter"
+            (openedChange)="EmptyCtrl($event)" (selectionChange)="[getDataByFilters()]" id="ClassId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search"
+                (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let item of classesArray  | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">
+              {{item.ClassCode}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-card class="home-grid">
+      <mat-card-content>
+        <div style="cursor: pointer;">
+          <div fxLayout="column">
+            <mat-grid-list [cols]="UnverifiedTraineeEmail == 0 || UnverifiedTraineeEmail == '0'? 3 : 4"
+              *ngFor="let tile of homePendingStates" rowHeight="100px">
+              <!-- <mat-grid-list  *ngFor="let tile of homePendingStates" rowHeight="100px"> -->
+              <mat-grid-tile *ngIf="UnverifiedTraineeEmail > 0 || UnverifiedTraineeEmail != '0'" class="row"
+                (click)="UnverifiedTraineeEmailAddress()">
+                <div class="col-sm-8">
+                  <h1>
+                    {{UnverifiedTraineeEmail}}
+                  </h1>
+                  <span>Unverified Trainee's Email</span><br />
+                  <span [style.color]="'red'" style="font-size:13px">Click To Download</span>
+                </div>
+                <div class="col-sm-4 text-right pink">
+                  <img src="../../assets/images/vendor.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row" (click)="openPendingClassesDialog('PendingInceptionReports')">
+                <div class="col-sm-9">
+                  <h1>
+                    {{tile.PendingInceptionReports}}
+                  </h1>
+                  <span>Pending Inception Report(s)</span><br />
+                  <span *ngIf="((tile.PendingInceptionReports !=0) && tile.InceptionReportDeadline)"
+                    [style.color]="'red'" style="font-size:13px">Deadline :
+                    {{tile.InceptionReportDeadline | date}}</span>
+                </div>
+                <div class="col-sm-3 text-right green">
+                  <img src="../../assets/images/scheme.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row" (click)="openPendingClassesDialog('PendingRegisterations')">
+                <div class="col-sm-8">
+                  <h1>
+                    {{tile.PendingRegisterations}}
+                  </h1>
+                  <span>Pending Registeration(s)</span><br />
+                  <span *ngIf="tile.TraineeRegistrationDeadline" [style.color]="'red'" style="font-size:13px">Deadline :
+                    {{tile.TraineeRegistrationDeadline | date}}</span>
+                </div>
+                <div class="col-sm-4 text-right pink">
+                  <img src="../../assets/images/vendor.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row" (click)="openPendingClassesDialog('PendingRTPs')"
+                *ngIf="hideTilesForCommmunityTSP">
+                <div class="col-sm-8">
+                  <h1>
+                    {{tile.PendingRTPs}}
+                  </h1>
+                  <span>Pending RTP(s)</span><br />
+                  <span *ngIf="tile.RTPDeadline" [style.color]="'red'" style="font-size:13px">Deadline :
+                    {{tile.RTPDeadline | date}}</span>
+                </div>
+                <div class="col-sm-4 text-right orange">
+                  <img src="../../assets/images/classes.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row" *ngIf="!hideTilesForCommmunityTSP">
+                <div class="col-sm-8" [routerLink]="['/placement/trainee-list']">
+                  <h1>
+                    {{tile.PendingEmployments}}
+                  </h1>
+                  <span>Pending Employment(s)</span><br />
+                  <span *ngIf="((tile.PendingEmployments !=0) && tile.EmploymentDeadline)" [style.color]="'red'"
+                    style="font-size:13px">Deadline : {{tile.EmploymentDeadline | date}}</span>
+                </div>
+                <div class="col-sm-4 text-right orange">
+                  <img src="../../assets/images/classes.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <!--<mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.Trainees}}
+                      </h1>
+                      <span> Total Trainee(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right blue">
+                      <img src="../../assets/images/training.png" alt="" />
+                    </div>
+                  </mat-grid-tile>-->
+            </mat-grid-list>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="home-grid" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+      <mat-card-content>
+        <div>
+          <div fxLayout="column">
+            <mat-grid-list cols="5" *ngFor="let tile of homeStates" rowHeight="100px">
+              <mat-grid-tile class="row">
+                <div class="col-sm-8">
+                  <h1>
+                    {{tile.Schemes}}
+                  </h1>
+                  <span>Total Scheme(s)</span>
+                </div>
+                <div class="col-sm-4 text-right green">
+                  <img src="../../assets/images/scheme.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row">
+                <div class="col-sm-8">
+                  <h1>
+                    {{tile.TSPs}}
+                  </h1>
+                  <span> Total TSP(s)</span>
+                </div>
+                <div class="col-sm-4 text-right pink">
+                  <img src="../../assets/images/vendor.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row">
+                <div class="col-sm-8">
+                  <h1>
+                    {{tile.Classes}}
+                  </h1>
+                  <span> Total Class(s)</span>
+                </div>
+                <div class="col-sm-4 text-right orange">
+                  <img src="../../assets/images/classes.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row" style="cursor: pointer;">
+                <div class="col-sm-8">
+                  <h1>
+                    <span style="font-size:20px">
+                      {{tile.Trainees}}/<span [style.color]="'red'" style="font-size:20px">{{tile.SavedTrainees}}</span>
+                    </span>
+                  </h1>
+                  <span>Submitted / Saved Trainee(s)</span>
+                </div>
+                <div class="col-sm-4 text-right blue">
+                  <img src="../../assets/images/training.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <!-- <mat-grid-tile class="row" style="cursor: pointer;"  (click)="UnverifiedTraineeEmailAddress()">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{UnverifiedTraineeEmail}}
+                      </h1>
+                      <span>Unverified Trainee's Email</span><br />
+                      <span [style.color]="'red'" style="font-size:13px">Click To Download</span>
+                    </div>
+                    <div class="col-sm-4 text-right blue">
+                      <img src="../../assets/images/training.png" alt="" />
+                    </div>
+                  </mat-grid-tile> -->
+              <!-- <mat-grid-list   [cols]="UnverifiedTraineeEmail == 0 || UnverifiedTraineeEmail == '0'? 3 : 4"  *ngFor="let tile of homePendingStates" rowHeight="100px">
+                    <mat-grid-tile *ngIf="UnverifiedTraineeEmail > 0 || UnverifiedTraineeEmail != '0'"  class="row" (click)="UnverifiedTraineeEmailAddress()">
+                      <div class="col-sm-8">
+                        <h1>
+                          {{UnverifiedTraineeEmail}}
+                        </h1>
+                        <span>Unverified Trainee's Email</span><br />
+                        <span [style.color]="'red'" style="font-size:13px">Click To Download</span>
+                      </div>
+                      <div class="col-sm-4 text-right pink">
+                        <img src="../../assets/images/vendor.png" alt="" />
+                      </div>
+                    </mat-grid-tile> -->
+            </mat-grid-list>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="home-grid" *ngIf="currentUser.UserLevel == enumUserLevel.TSP">
+      <mat-card-content>
+        <div>
+          <div fxLayout="column">
+            <mat-grid-list cols="4" *ngFor="let tile of homeStates" rowHeight="100px">
+              <mat-grid-tile class="row">
+                <div class="col-sm-8">
+                  <h1>
+                    {{tile.Schemes}}
+                  </h1>
+                  <span>Total Scheme(s)</span>
+                </div>
+                <div class="col-sm-4 text-right green">
+                  <img src="../../assets/images/scheme.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <!--<mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.TSPs}}
+                      </h1>
+                      <span> Total TSP(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right pink">
+                      <img src="../../assets/images/vendor.png" alt="" />
+                    </div>
+                  </mat-grid-tile>-->
+              <mat-grid-tile class="row">
+                <div class="col-sm-8">
+                  <h1>
+                    {{tile.Classes}}
+                  </h1>
+                  <span> Total Class(s)</span>
+                </div>
+                <div class="col-sm-4 text-right orange">
+                  <img src="../../assets/images/classes.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row" style="cursor: pointer;" >
+                <div class="col-sm-8">
+                  <h1>
+                    <span style="font-size:20px">
+                      {{tile.Trainees}}
+                      /
+                      <span [style.color]="'red'" style="font-size:20px">{{tile.SavedTrainees}}</span>
+                    </span>
+                  </h1>
+                  <span>Submitted / Saved Trainee(s)</span>
+                </div>
+                <div class="col-sm-4 text-right blue">
+                  <img src="../../assets/images/training.png" alt="" />
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="row" style="cursor: pointer;"
+                (click)="openDraftTraineeDialog('Draft Trainee Report')">
+                <div class="col-sm-8">
+                  <h1>
+                    <span style="font-size:20px">
+                      {{DraftTrainee}}
+                    </span>
+                  </h1>
+                  <span>Draft Trainee(s)</span>
+                </div>
+                <div class="col-sm-4 text-right blue">
+                  <img src="../../assets/images/training.png" alt="" />
+                </div>
+              </mat-grid-tile>
+            </mat-grid-list>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <div class="row" *ngIf="currentUser.UserLevel == enumUserLevel.TSP">
+      <!--<div class="row" *ngIf="currentUser.UserLevel == enumUserLevel.TSP && filters.ClassID == 0">-->
+      <div class="col-sm-12" *ngIf="filters.ClassID == 0">
+        <div class="card shadow custom-managment">
+          <div class="card-header">Class Status</div>
+          <div id="containerPassed" style="width:100%;"></div>
+        </div>
+      </div>
+    </div>
+    <mat-card>
+      <mat-card-content>
+        <div class="main-content">
+          <mat-card-content>
+            <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
+              <mat-tab label="Scheme(s)">
+                <div>
+                  <div class="table-responsive">
+                    <mat-table [dataSource]="Scheme" #SortScheme="matSort" matSort>
+                      <ng-container matColumnDef="SchemeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="SchemeCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.SchemeCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PTypeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Program Type</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PTypeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PCategoryName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Program Category</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PCategoryName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FundingSourceName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Funding Source</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FundingSourceName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="GenderName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Gender</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="MinAge">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Minimum Age</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.MinAge}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="MaxAge">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Maximum Age</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.MaxAge}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StipendMode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Stipend Mode</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StipendMode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="BusinessRuleType">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Business Rule Type</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.BusinessRuleType}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Action" stickyEnd>
+                        <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <button mat-icon-button matTooltip="edit" color="primary">
+                            <mat-icon aria-label="Edit this row">edit</mat-icon>
+                          </button>
+                        </mat-cell>
+                      </ng-container>
+                      <mat-header-row *matHeaderRowDef="displayedColumnsScheme"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsScheme;" tabindex="0"></mat-row>
+                    </mat-table>
+                    <mat-paginator #PageScheme [pageSize]="10" [length]="resultsSchemeLength"
+                      [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                  <!--<div class="table-pagination row">
+                        <div class="col-sm-4">
+                          Showing 1 to 10 of 57 entries
+                        </div>
+                        <div class="col-sm-8 text-right">
+                          <div class="dual-button">
+                            <a href="" class="btn-icon"><i class="fas fa-file-export"></i> Export XML</a>
+                            <a href="" class="btn-icon"><i class="far fa-file-pdf"></i> Export PDF</a>
+                          </div>
+                          <nav aria-label="navigation">
+                            <ul class="pagination justify-content-end">
+                              <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="fas fa-long-arrow-alt-left"></i> Previous</a>
+                              </li>
+                              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                              <li class="page-item"><a class="page-link" href="#">2</a></li>
+                              <li class="page-item"><a class="page-link" href="#">3</a></li>
+                              <li class="page-item">
+                                <a class="page-link" href="#">Next <i class="fas fa-long-arrow-alt-right"></i></a>
+                              </li>
+                            </ul>
+                          </nav>
+                        </div>
+                      </div>-->
+                </div>
+              </mat-tab>
+              <mat-tab label="TSP(s)">
+                <div>
+                  <div fxLayout="column" class="table-responsive">
+                    <mat-table [dataSource]="TSPs" #SortTSP="matSort" matSort>
+                      <ng-container matColumnDef="TSPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="SchemeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Address">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Address}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="NTN">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>NTN</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.NTN}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PNTN">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>PNTN</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PNTN}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="GST">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>GST</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.GST}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FTN">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>FTN</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FTN}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Head Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Contact Person</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPLandline">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Landline</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPLandline}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Action" stickyEnd>
+                        <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <button mat-icon-button matTooltip="edit" color="primary">
+                            <mat-icon aria-label="Edit this row">edit</mat-icon>
+                          </button>
+                        </mat-cell>
+                      </ng-container>
+                      <mat-header-row *matHeaderRowDef="displayedColumnsTSP"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsTSP;" tabindex="0"></mat-row>
+                    </mat-table>
+                    <mat-paginator #PageTSP [pageSize]="10" [length]="resultsTspLength"
+                      [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-tab>
+              <mat-tab label="Class(s)">
+                <div>
+                  <div class="table-responsive">
+                    <mat-table [dataSource]="Class" #SortClass="matSort" matSort class="custom-width">
+                      <ng-container matColumnDef="sn">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Sr#</mat-header-cell>
+                        <mat-cell *matCellDef="let Row; let i = index;"><strong>{{ Row.Sr || ""}}</strong></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> ClassCode</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" class="myAnchor"> <a
+                            (click)="openClassJourneyDialogue(Row.ClassID)"> <strong>{{Row.ClassCode}}</strong> </a>
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassStatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"><strong>{{Row.ClassStatusName}}</strong> </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Duration">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Duration</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StartDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> StartDate</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StartDate | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="EndDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> EndDate</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.EndDate | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TrainingAddressLocation">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Address</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TrainingAddressLocation}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="GenderName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Gender</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineesPerClass">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual Trainees</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineesPerClass}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TehsilName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Tehsil Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CertAuthName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Certification Authority</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CertAuthName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DistrictName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>District</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="InceptionReportDueOn">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Inception Report Due Date</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.InceptionReportDueOn | date:'dd-MM-yyy'}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeRegistrationDueOn">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Registration Due Date
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeRegistrationDueOn | date:'dd-MM-yyy'}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="NTPStatus">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>NTP Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"><span
+                            *ngIf="currentUser.UserLevel == enumUserLevel.TSP && (Row.PTypeName == enumBusinessRuleTypes.Community) && (!Row.TrainingAddressLocation || Row.TrainingAddressLocation == null)">
+                            {{Row.NTPStatus}}</span> </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="RTP">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Create RTP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <mat-slide-toggle
+                            *ngIf="currentUser.UserLevel == enumUserLevel.TSP && (Row.PTypeName == enumBusinessRuleTypes.Community) && (!Row.TrainingAddressLocation || Row.TrainingAddressLocation == null) && Row.KamID>0"
+                            [(ngModel)]="Row.RTP" [disabled]="Row.RTP" (change)="openDialog(Row)"></mat-slide-toggle>
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Action">
+                        <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <span color="warn" *ngIf="currentUser.UserLevel == enumUserLevel.TSP && Row.KamID==0"
+                            class="mat-warn">Waiting for Kam Assignment</span>
+                          <a mat-icon-button *ngIf="currentUser.UserLevel == enumUserLevel.TSP && Row.KamID>0"
+                            matTooltip="Inception Report" color="primary" (click)="routeToInceptionReport(Row)">
+                            <!--[routerLink]="['/inception-report/inception',Row.ClassID]"-->
+                            <mat-icon aria-label="Edit this row">chrome_reader_mode</mat-icon>
+                          </a>
+                          <a mat-icon-button *ngIf="currentUser.UserLevel == enumUserLevel.TSP && Row.KamID>0"
+                            matTooltip="Trainee's Registration" color="primary" (click)="routeToRegistration(Row)">
+                            <mat-icon aria-label="Trainee's Registration">supervised_user_circle</mat-icon>
+                          </a>
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="InternalUserAction">
+                        <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <a mat-icon-button
+                            *ngIf="currentUser.UserLevel == enumUserLevel.AdminGroup || currentUser.UserLevel == enumUserLevel.OrganizationGroup && Row.ShowInceptionToInternal === 'Yes'"
+                            matTooltip="Inception Report" color="primary" (click)="routeToInceptionReport(Row)">
+                            <!--[routerLink]="['/inception-report/inception',Row.ClassID]"-->
+                            <mat-icon aria-label="Edit this row">chrome_reader_mode</mat-icon>
+                          </a>
+                        </mat-cell>
+                      </ng-container>
+                      <!-- Group header cells-->
+                      <!--ma-->
+                      <ng-container matColumnDef="groupHeader">
+                        <mat-cell mat-cell colspan="999" *matCellDef="let group">
+                          <!--<strong>{{group.groupName}}</strong>-->
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="groupReducer">
+                        <mat-cell *matCellDef="let group let i=index;">
+                          <!--er-->
+                          <div fxFill fxLayoutAlign="center center" style="cursor: pointer;">
+                            <span>
+                              <!--<strong>{{ (PageClass.pageIndex * PageClass.pageSize) + i+1}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;-->
+                              <mat-icon *ngIf="!group.reduced">remove_circle_outline</mat-icon>
+                              <mat-icon *ngIf="group.reduced">ucadd_circle_outline</mat-icon>
+                              &nbsp;&nbsp;<strong>{{group.groupName}}</strong>
+                            </span>
+                          </div>
+                        </mat-cell>
+                      </ng-container>
+                      <!-- Group line -->
+                      <mat-row class="clickable"
+                        *matRowDef="let row; columns: ['groupReducer']; when: isGroup ;sticky: true"
+                        (click)="reduceGroup(row)" tabindex="0">
+                      </mat-row>
+                      <mat-header-row *matHeaderRowDef="displayedColumnsClass"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsClass;" tabindex="0"></mat-row>
+                    </mat-table>
+                    <mat-paginator #PageClass [pageSize]="10" [length]="resultsClassLength"
+                      [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-tab>
+              <mat-tab label="Trainee(s)" (click)="getTraineeData()">
+                <div>
+                  <div fxLayout="column" class="table-responsive">
+                    <mat-table [dataSource]="Trainees" #SortTrainee="matSort" matSort>
+                      <ng-container matColumnDef="sn">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Sr#</mat-header-cell>
+                        <mat-cell *matCellDef="let Row; let i = index;">
+                          {{ (PageTrainee.pageIndex * PageTrainee.pageSize) + i+1}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeName}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" class="myAnchor"> <a
+                            (click)="openTraineeJourneyDialogue(Row.TraineeCode)"> {{Row.TraineeCode}} </a> </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Class Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassBatch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassBatch}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StatusName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCNIC">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="GuardianName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Guardian/NextToKin Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.GuardianNextToKinName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FatherName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="GenderName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Gender</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeAge">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Age</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeAge}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ContactNumber1">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Contact Number</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ContactNumber1}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeEmail">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Email</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeEmail}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PermanentResidence">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Permanent Residence</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PermanentResidence}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PermanentDistrictName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Permanent District</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PermanentDistrictName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PermanentTehsilName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Permanent Tehsil</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PermanentTehsilName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeDoc" style="visibility:hidden">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Documents</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <div *ngIf="Row.TraineeDoc!=''">
+                            <a matTooltip="Check Trainee Attachment" mat-button color="primary"
+                              (click)="GetCurrentComplaintAttachements(Row)">
+                              <mat-icon>attachment</mat-icon>
+                            </a>
+                          </div>
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Action" stickyEnd>
+                        <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <button mat-icon-button matTooltip="edit" color="primary">
+                            <mat-icon aria-label="Edit this row">edit</mat-icon>
+                          </button>
+                        </mat-cell>
+                      </ng-container>
+                      <mat-header-row *matHeaderRowDef="displayedColumnsTrainee"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsTrainee;" tabindex="0"></mat-row>
+                    </mat-table>
+                    <mat-paginator #PageTrainee [pageSize]="10" [length]="resultsTraineeLength"
+                      [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </mat-card-content>
+          <!--<div class="card card-chart">
+                <div class="card-header card-header-success">
+                  <canvas class="ct-chart" #dailySalesChart></canvas>
+                  <progress id="animationProgress" max="1" value="0" style="width: 100%"></progress>
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title">Daily Sales</h4>
+                  <p class="card-category">
+                      <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
+                  </p>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <i class="material-icons">access_time</i> updated 4 minutes ago
+                  </div>
+                </div>
+              </div>-->
+          <!--</div>-->
+          <!--<div class="col-md-6">
+              <div class="card card-chart">
+                <div class="card-header card-header-warning">
+                  <canvas class="ct-chart" #TopCust></canvas>
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title">Top 10 Customers</h4>
+                  <p class="card-category">Last 6 Months Sale</p>
+                </div>-->
+          <!--</div>-->
+        </div>
+        <!--<div class="col-md-4">
+              <div class="card card-chart">
+                <div class="card-header card-header-danger">
+                  <div class="ct-chart" id="completedTasksChart"></div>
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title">Completed Tasks</h4>
+                  <p class="card-category">Last Campaign Performance</p>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                  </div>
+                </div>
+              </div>
+            </div>-->
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <!--</mat-tab>-->
+  <!--<mat-tab label="GIS" style="height: 100%;">
+      <div style="height: 100%;">
+        <div style="height: 100%;" id="map"></div>
+      </div>
+    </mat-tab>-->
+  <!--</mat-tab-group>-->
+</mat-card-content>

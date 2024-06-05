@@ -1,0 +1,118 @@
+
+<mat-card>
+  <mat-card-content>
+    <div id="PBTE-page" class="comp-main-div">
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">TPM RTP List</span>
+          <div class="spacer"></div>
+          <button mat-raised-button color="success"  *ngIf="tpmrtps.data?.length > 0" (click)="exportToExcel()">Export Excel</button>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div class="table-responsive">
+          <mat-table matTableExporter [dataSource]="tpmrtps" #SortClass="matSort" matSort>
+
+            <ng-container matColumnDef="SchemeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TSPName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="DistrictName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>District</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TehsilName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Tehsil</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CreatedDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Date of Request</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CreatedDate | date:'dd-MM-yyyy'}} </mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="RTPID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>RTP</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.RTPID}} </mat-cell>
+            </ng-container>-->
+            <!--<ng-container matColumnDef="ClassID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+            </ng-container>-->
+            <ng-container matColumnDef="ClassCode">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+              <mat-cell *matCellDef="let Row" style="color: #005b9e;"> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TradeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineesPerClass">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> No.Of Trainees</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineesPerClass}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Duration">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Duration(Months)</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Curriculum">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Curriculum Followed</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Name}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="AddressOfTrainingLocation">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Address</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.AddressOfTrainingLocation}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CPName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Contact Person Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CPName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CPLandline">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Contact Person Mobile</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CPLandline  | phoneNumber:environment.Mobile}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="StartDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Expected Start Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.StartDate | date:'dd-MM-yyyy'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Comments">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Comments</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Comments}} </mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button  matTooltip="Submit Center Inspection" mat-icon-button color="primary" (click)="openCenterInspectionDialog(Row)">
+
+                  <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
+                </button>
+
+              </mat-cell>
+
+            </ng-container>-->
+
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <br />
+
+
+
+          <mat-paginator #PageClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+        </div>
+
+      </div>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+
+
+
+
+

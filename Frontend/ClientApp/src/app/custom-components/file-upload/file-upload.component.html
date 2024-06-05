@@ -1,0 +1,50 @@
+<!--<div class="uploadcontainer">
+  <div class="avatar-upload">
+    <div class="avatar-edit">
+      <input type='file' #filectl name="file" accept="*" id="imageUpload" [disabled]="disabled" (change)="handleInputChange($event)" />
+      <label for="imageUpload" id="file-drag" class="uploader" ondragover="return false;"
+             [class.loaded]="loaded"
+             [style.outlineColor]="dragging ? activeColor : baseColor"
+             (dragenter)="handleDragEnter()"
+             (dragleave)="handleDragLeave()"
+             (drop)="handleDrop($event)"></label>
+    </div>
+    <div class="avatar-preview">
+      <div class="avatar-preview" id="imagePreview" [ngStyle]="{'background-image':'url(' +imageSrc+')' }"></div>
+      </div>
+  </div>
+</div>-->
+<!--<img class="avatar-preview" id="imagePreview" [src]="imageSrc | safe"
+    (load)="handleImageLoad()"
+    [class.loaded]="imageLoaded">-->
+
+<div *ngIf="!nopreview" style="position: relative;display: inline-flex;">
+
+  <label class="uploader " ondragover="return false;"
+         [class.loaded]="loaded"
+         [style.outlineColor]="dragging ? activeColor : baseColor"
+         (dragenter)="handleDragEnter()"
+         (dragleave)="handleDragLeave()"
+         (drop)="handleDrop($event)" [style.width]="(imageSrc.length>0) ? divcss:nodivcss">
+    <i class="material-icons" [style.color]="dragging ? ((imageSrc.length>0) ? overlayColor : activeColor):((imageSrc.length > 0) ? overlayColor : baseColor)">
+      backup
+    </i>
+    <img [src]="imageSrc | safe"
+         (load)="handleImageLoad()"
+         [class.loaded]="imageLoaded" />
+    <input type="file" #filectl name="{{id}}" [accept]="accept" [disabled]="disabled" (change)="handleInputChange($event)">
+    &nbsp;&nbsp;
+
+    <span *ngIf="imageSrc == ''"> Choose File </span>
+  </label>
+  <p *ngIf="imageSrc == ''" style="font-size: 75%;">{{imgTypeNote}}</p>
+  <p *ngIf="imageSrc == ''" style="font-size: 75%;">{{imgSizeNote}}</p>
+
+  <button class="mat-icon-button fileuploader-items" *ngIf="imageSrc && !disabled" (click)="cancel(filectl)" type="button" style="position:absolute;top:-7px;right:-14px">
+    <i class="material-icons">close</i>
+  </button>
+</div>
+<div *ngIf="nopreview" class="">
+  <input type="file" name="{{id}}"  id="{{id}}" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" [accept]="accept" [disabled]="disabled" (change)="handleInputChange($event)" />
+  <label for="{{id}}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17" matTooltip="{{imageSrc == ''? 'Choose a file&hellip;':FileName}}"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg> <span matTooltip="{{imageSrc == ''? 'Choose a file&hellip;':FileName}}">{{imageSrc == ''? 'Choose a file&hellip;':FileName}}</span></label>
+</div>

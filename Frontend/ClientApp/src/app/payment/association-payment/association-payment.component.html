@@ -1,0 +1,107 @@
+<mat-card>
+   <mat-card-content>
+      <ng-container>
+         <div [hidden]="DTablesData.filteredData.length==0">
+            <mat-toolbar color="accent" class=" slim slim">
+               <mat-icon class="material-icons"> view_comfy </mat-icon>
+               <span class="spacer">Association Payment</span>
+               <button mat-raised-button color="accent" style="float:right;margin: 0px 7px;"
+                  (click)="ProceedPayment()">Proceed To Pay</button>
+               <input placeholder="Search" (keyup)="applyFilter(this.DTablesData,$event)" class="search" />
+            </mat-toolbar>
+            <fieldset class="border">
+               <legend>Proceed To Pay</legend>
+               <div class="row">
+                  <div class="col-sm-4">
+                     <mat-form-field>
+                        <mat-label>Total No. Classes </mat-label>
+                        <input placeholder="Total No. Classes" [value]="TotalClasses" matInput readonly />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field>
+                        <mat-label>Association Fee/Per Class</mat-label>
+                        <input placeholder="Association Fee/Per Class"
+                           [value]="AssociationFee.length>0?AssociationFee[0].AssociationFee:0 " matInput readonly />
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field>
+                        <mat-label>Total Association Fee</mat-label>
+                        <input placeholder="Total Association Fee" [value]="TotalAssociationFee" matInput readonly />
+                     </mat-form-field>
+                  </div>
+               </div>
+               <div class="table-responsive">
+                  <mat-table [dataSource]="DTablesData" #DSort="matSort" matSort>
+                     <ng-container *ngFor="let column of DTableColumns" [matColumnDef]="column">
+                        <ng-container *ngIf="column == 'TradeLot'; else elseBlock">
+                           <mat-header-cell *matHeaderCellDef mat-sort-header>
+                              <!-- <mat-checkbox (change)="onCheckboxChange(); $event ? masterToggle() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox> -->
+                              Action
+                           </mat-header-cell>
+                           <mat-cell *matCellDef="let row">
+                              <!-- <mat-checkbox style="position: relative;top: 5px !important;" (click)="$event.stopPropagation()"
+                          (change)="onCheckboxChange(); $event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)"  >
+                          </mat-checkbox> -->
+                              <mat-checkbox style="position: relative; top: 5px !important;left: 10px;"
+                                 (click)="$event.stopPropagation()" (change)="onCheckboxChange(); selection.toggle(row)"
+                                 [checked]="selection.isSelected(row)" [(ngModel)]="row.isChecked">
+                              </mat-checkbox>
+                           </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="column == 'NoOfClass'; else elseBlock">
+                           <mat-header-cell *matHeaderCellDef mat-sort-header>
+                              No. Of Classes Applied
+                           </mat-header-cell>
+                           <mat-cell *matCellDef="let row">
+                              <mat-form-field>
+                                 <mat-label>No. of Classes</mat-label>
+                                 <input placeholder="Enter No. of Classes" [disabled]="!row.isChecked"
+                                    [(ngModel)]="row.NoOfClass" NumberOnly (ngModelChange)="ChangeNoOfClass(row)"
+                                    matInput required />
+                              </mat-form-field>
+                           </mat-cell>
+                        </ng-container>
+                        <ng-template #elseBlock>
+                           <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column)
+                              }}</mat-header-cell>
+                           <mat-cell *matCellDef="let row">
+                              <ng-container> &nbsp;{{row[column]}}</ng-container>
+                           </mat-cell>
+                        </ng-template>
+                     </ng-container>
+                     <mat-header-row *matHeaderRowDef="DTableColumns"></mat-header-row>
+                     <mat-row *matRowDef="let row; columns: DTableColumns;"></mat-row>
+                  </mat-table>
+                  <mat-paginator #DPaginator="matPaginator" [pageSize]="10"
+                     [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+               </div>
+            </fieldset>
+         </div>
+      </ng-container>
+      <!-- <div class="table-responsive" *ngIf="TablesData.filteredData.length>0"> -->
+      <div class="table-responsive" [hidden]="TablesData.filteredData.length==0">
+         <mat-toolbar color="accent" class=" slim slim mt-2 ">
+            <mat-icon class="material-icons"> view_comfy </mat-icon>
+            <span class="spacer">Training Location Payment Detail</span>
+            <input placeholder="Search" (keyup)="applyFilter(this.TablesData,$event)" class="search" />
+         </mat-toolbar>
+         <mat-table [dataSource]="TablesData" #Sort="matSort" matSort>
+            <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+               <mat-cell *matCellDef="let row">
+                  <ng-container> &nbsp;{{row[column]}}</ng-container>
+               </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+         </mat-table>
+         <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+      </div>
+   </mat-card-content>
+</mat-card>

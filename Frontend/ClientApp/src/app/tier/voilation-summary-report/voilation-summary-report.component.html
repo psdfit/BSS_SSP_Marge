@@ -1,0 +1,213 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+        <mat-icon class="material-icons"> add_circle</mat-icon>
+        <span class="subheading-1">Voilation Summary</span>
+      </mat-toolbar>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <!-- <tr>
+            <th rowspan="2">Average of monthly Score</th>
+            <th rowspan="2">On a scale of 5</th>
+            <th rowspan="2">70% weightage (w * 0.07)</th>
+            <th rowspan="2">Average of monthly score</th>
+            <th rowspan="2">On a scale of 5</th>
+            <th rowspan="2">30% weightage (W * 0.30)</th>
+            <th rowspan="2">Final Score (X+Z)</th>
+          </tr> -->
+          <tr>
+            <td>Stream</td>
+            <td>Scheme</td>
+            <td>TSP</td>
+            <td>Trade</td>
+            <td>Month</td>
+            <td>Fake/Ghost Trainee</td>
+            <td>Fee Charge</td>
+            <td>Unannounced center relocation</td>
+            <td>Total</td>
+            <td>Average Monthly Score</td>
+            <td>On a scale of 5</td>
+            <td>70% weightage (W * 0.70)</td>
+            <td>Non-Functional</td>
+            <td>Total</td>
+            <td>Average Monthly Score</td>
+            <td>On a scale of 5</td>
+            <td>30% weightage (W * 0.30)</td>
+            <td>Final Score</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of Summary">
+            <td>{{ item.Stream }}</td>
+            <td>{{ item.SchemeName }}</td>
+            <td>{{ item.TSPName }}</td>
+            <td>{{ item.TradeName }}</td>
+            <td>
+              <div>
+                {{ item.ItemsList[0].MonthName }}
+              </div>
+              <div>
+                {{ item.ItemsList[1].MonthName }}
+              </div>
+              <div>
+                {{ item.ItemsList[2].MonthName }}
+              </div>
+              <div>
+                {{ item.ItemsList[3].MonthName }}
+              </div>
+              <div>
+                {{ item.ItemsList[4].MonthName }}
+              </div>
+              <div>
+                {{ item.ItemsList[5].MonthName }}
+              </div>
+            </td>
+            <td>
+              <div *ngFor="let obj of item.ItemsList">
+                <div>
+                  {{ obj.FakeGhost }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div *ngFor="let obj of item.ItemsList">
+                <div>
+                  {{ obj.FeeCharge }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div *ngFor="let obj of item.ItemsList">
+                <div>
+                  {{ obj.CenterRelocation }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div *ngFor="let obj of item.ItemsList">
+                <div>
+                  {{ obj.CFFTotal }}
+                </div>
+              </div>
+            </td>
+            <td>
+              {{ item.AvgMonthlyScore }}
+            </td>
+            <td>
+              {{ item.CFFOnScaleOfFive }}
+            </td>
+            <td>
+              {{ item.SeventyPercentWeightage }}
+            </td>
+            <td>
+              <div *ngFor="let obj of item.ItemsList">
+                <div>
+                  {{ obj.NonFunctional }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div *ngFor="let obj of item.ItemsList">
+                <div>
+                  {{ obj.NonFunctionalTotal }}
+                </div>
+              </div>
+            </td>
+            <td>
+              {{ item.AvgMonthlyScoreNonFunc }}
+            </td>
+            <td>
+              {{ item.NonFuncOnScaleOfFive }}
+            </td>
+            <td>
+              {{ item.ThirtyPercentWeightage }}
+            </td>
+            <td>
+              {{ item.FinalScore }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- <style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-lboi{border-color:inherit;text-align:left;vertical-align:middle}
+.tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle}
+.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
+<table class="tg" style="undefined;table-layout: fixed; width: 1384px">
+<colgroup>
+<col style="width: 221.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+<col style="width: 77.5px">
+</colgroup>
+<thead>
+  <tr>
+    <th class="tg-lboi" colspan="4">Month</th>
+    <th class="tg-0pky" colspan="4">(Month Name)</th>
+    <th class="tg-9wq8" rowspan="2">Average of monthly Score</th>
+    <th class="tg-lboi" rowspan="2">On a scale of 5</th>
+    <th class="tg-lboi" rowspan="2">70% weightage (w * 0.07)</th>
+    <th class="tg-0pky">(Month Name)</th>
+    <th class="tg-lboi" rowspan="2">Average of monthly score</th>
+    <th class="tg-lboi" rowspan="2">On a scale of 5</th>
+    <th class="tg-lboi" rowspan="2">30% weightage (W * 0.30)</th>
+    <th class="tg-lboi" rowspan="2">Final Score (X+Z)</th>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Stream</td>
+    <td class="tg-0pky">Scheme</td>
+    <td class="tg-0pky">TSP</td>
+    <td class="tg-0pky">Trade</td>
+    <td class="tg-0pky">Fake/Ghost Trainee</td>
+    <td class="tg-0pky">Fee Charge</td>
+    <td class="tg-0pky">Unannounced center relocation</td>
+    <td class="tg-0pky">Total</td>
+    <td class="tg-0pky">Non-Functional</td>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky">1</td>
+    <td class="tg-0pky">2</td>
+    <td class="tg-0pky">3</td>
+    <td class="tg-0pky">4</td>
+    <td class="tg-0pky">5</td>
+    <td class="tg-0pky">6</td>
+    <td class="tg-0pky">7</td>
+    <td class="tg-0pky">8</td>
+    <td class="tg-c3ow">9</td>
+    <td class="tg-0pky">10</td>
+    <td class="tg-0pky">11</td>
+    <td class="tg-0pky">12</td>
+    <td class="tg-0pky">13</td>
+    <td class="tg-0pky">14</td>
+    <td class="tg-0pky">15</td>
+    <td class="tg-0pky">16</td>
+  </tr>
+</tbody>
+</table> -->

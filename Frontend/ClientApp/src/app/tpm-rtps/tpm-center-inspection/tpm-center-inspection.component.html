@@ -1,0 +1,114 @@
+<div>
+  <mat-toolbar color="accent" class=" slim slim">
+    <mat-icon class="material-icons">view_comfy</mat-icon>
+    <span class="spacer">TPM Center Inspection Form</span>
+    <div class="spacer"></div>
+    <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+  </mat-toolbar>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <form novalidate [formGroup]="centerinspectionform" (submit)="Submit()">
+          <div class="row">
+
+
+            <div class="col-sm-4">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="ClassID" placeholder="ClassID" matInput required />
+                <mat-label>ClassID</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="ClassCode" placeholder="ClassCode" matInput required />
+                <mat-label>ClassCode</mat-label>
+              </mat-form-field>
+            </div>            <div class="col-sm-4">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="TradeName" placeholder="Name" matInput required />
+                <mat-label>Trade</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+              <mat-form-field fxFlex>
+                <input matInput [matDatepicker]="expecteddate" placeholder="Choose a date" formControlName="ExpectedStartDate">
+                <mat-datepicker-toggle matSuffix [for]="expecteddate"></mat-datepicker-toggle>
+                <mat-datepicker #expecteddate></mat-datepicker>
+                <mat-label>Start Date</mat-label>
+              </mat-form-field>
+            </div>
+
+
+
+
+          </div>
+          <br />
+
+          <div class="row">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit">
+              <mat-icon>done</mat-icon>Submit Centre Inspection Report
+            </button>&nbsp;&nbsp;
+            <!--<button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="button" (click)="reset()" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>-->
+          </div>
+        </form>
+      </div>
+      <!--<div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()" cdkFocusInitial>No Thanks</button>
+        <button mat-button (click)="Submit()">Save</button>
+      </div>-->
+    </mat-card-content>
+  </mat-card>
+</div>
+      <!--<mat-card>
+        <mat-card-content>
+          <div id="PBTE-page" class="comp-main-div">
+            <div>
+
+              <div class="table-responsive">
+                <mat-table matTableExporter [dataSource]="tpmrtps" #SortClass="matSort" matSort>
+
+                  <ng-container matColumnDef="ClassID">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> ClassID</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ClassCode">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ExpectedStartDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Expected Start Date</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.ExpectedStartDate}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TradeName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trade Name</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                  </ng-container>
+
+
+                  <mat-header-row *matHeaderRowDef="displayedColumnsClasses"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumnsClasses;"></mat-row>
+                </mat-table>
+                <br />
+
+                
+
+                <mat-paginator #PageClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+              </div>
+
+            </div>
+          </div>
+
+        </mat-card-content>
+      </mat-card>-->
+
+
+
+
+
+

@@ -1,0 +1,123 @@
+<mat-card>
+  <mat-card-content>
+    <mat-toolbar color="accent" class=" slim slim">
+      <mat-icon class="material-icons">view_comfy</mat-icon>
+      <span class="spacer">Cancelation</span>
+      <div class="spacer"></div>
+    </mat-toolbar>
+    <div class="row">
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl($event)" id="SchemeId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl($event)" id="TspId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let s of TSP  | where:['SchemeID',filters.SchemeID] | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-3">
+        <mat-form-field fxFlex>
+          <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[getDataByFilters()]" id="ClassId" matInput required>
+            <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+            <mat-option value="0">--Select--</mat-option>
+            <mat-option *ngFor="let item of Classes | where:['TSPID',filters.TSPID] | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--<div class="col-sm-3">
+        <mat-icon aria-label="Edit this row" (click)="openChangeRequestDialog()">update</mat-icon>
+      </div>-->
+    </div>
+    <div class="col-12">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>SR#</th>
+                <th>Month</th>
+                <th>Invoice Type</th>
+                <th>PO (TSP)</th>
+                <th>MPR</th>
+                <th>PRN (Regular/Complete/Final)</th>
+                <th>Invoice (Regular/Complete/Final)</th>
+                <th>SRN</th>
+                <th>PO (SRN)</th>
+                <th>Invoice (SRN)</th>
+                <!--<th> Action</th>-->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let Inv of ClassData; let i =index;">
+                <td>{{i+1}}</td>
+                <td>{{Inv.Month| date:'MMM-yyyy'}}</td>
+                <td>{{Inv.InvoiceType}}   </td>
+                <td>
+                  {{Inv.POHeaderID>0?'':'Not Generated'}}
+                  <a class="myAnchor" *ngIf="Inv.POHeaderID>0" (click)='GetPO(Inv.POHeaderID)'>View Detail</a>
+                  <b class="myDivider" *ngIf="(Inv.POHeaderID>0 && Inv.POHeaderIsCanceled<=0)">|</b>
+                  <a class="myAnchor" matTooltip="Cancel PO" color="warn" *ngIf="(Inv.POHeaderID>0 && Inv.POHeaderIsCanceled<=0)" (click)="Cancel(Inv.POHeaderID, 'PO_TSP', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.MPRIsCanceled>0 ? 'red' : 'black'}">{{Inv.MPRID>0?'':Inv.MPRIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.MPRID>0" (click)='GetMPR(Inv.MPRID)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.MPRID>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel MPR" color="warn" *ngIf="Inv.MPRID>0" (click)="Cancel(Inv.MPRID, 'MPR', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+
+                  <b class="myDivider" *ngIf="(Inv.MPRID<=0 && Inv.MPRIsCanceled>=1)">|</b>
+                  <a class="myAnchor" matTooltip="Generate MPR" color="warn" *ngIf="(Inv.MPRID<=0 && Inv.MPRIsCanceled>=1)" (click)="Generate(Inv, 'MPR', i)" mat-icon-button><mat-icon>add_box</mat-icon></a>
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.PRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.PRNID>0?'':Inv.PRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.PRNID>0" (click)='GetPRN(Inv.PRNMasterID)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.PRNID>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel PRN" color="warn" *ngIf="Inv.PRNID>0" (click)="Cancel(Inv.PRNMasterID, 'PRN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+
+                  <b class="myDivider" *ngIf="(Inv.PRNID<=0 && Inv.PRNIsCanceled>=1 && Inv.InvoiceType=='Regular')">|</b>
+                  <a class="myAnchor" matTooltip="Generate PRN" color="warn" *ngIf="(Inv.PRNID<=0 && Inv.PRNIsCanceled>=1 && Inv.InvoiceType=='Regular')" (click)="Generate(Inv, 'PRN', i)" mat-icon-button><mat-icon>add_box</mat-icon></a>
+
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.InvIsCanceled>0 ? 'red' : 'black'}">{{Inv.InvHeader>0?'':Inv.InvIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.InvHeader>0" (click)='GetInv(Inv.InvHeader)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.InvHeader>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="Inv.InvHeader>0" (click)="Cancel(Inv.InvHeader, 'Inv_R', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td>
+
+                <td>
+                  <span [ngStyle]="{'color': Inv.SRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.SRNID>0?'':Inv.SRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.SRNID>0" (click)='GetSRN(Inv.SRNID)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.SRNID>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel SRN" color="warn" *ngIf="Inv.SRNID>0" (click)="Cancel(Inv.SRNID, 'SRN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.POHeaderSRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.POHeaderIDSRN>0?'':Inv.POHeaderSRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.POHeaderIDSRN>0" (click)='GetPO(Inv.POHeaderIDSRN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.POHeaderIDSRN>0">|</b>                  
+                  <a class="myAnchor" matTooltip="Cancel PO" color="warn" *ngIf="Inv.POHeaderIDSRN>0" (click)="Cancel(Inv.POHeaderIDSRN, 'PO_SRN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.InvSRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.InvHeaderSRN>0?'':Inv.InvSRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.InvHeaderSRN>0" (click)='GetInv(Inv.InvHeaderSRN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.InvHeaderSRN>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="Inv.InvHeaderSRN>0" (click)="Cancel(Inv.InvHeaderSRN, 'Inv_S', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,55 @@
+<h1 mat-dialog-title>Update Trainee Status</h1>
+<div mat-dialog-content>
+  <form novalidate [formGroup]="tsrForm">
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Trainee Code</mat-label>
+          <input formControlName="TraineeCode" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Trainee Name</mat-label>
+          <input formControlName="TraineeName" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>CNIC</mat-label>
+          <input formControlName="TraineeCNIC" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field fxFlex>
+          <mat-label>Trainee Status</mat-label>
+          <mat-select placeholder="Trainee Status" formControlName="TraineeStatusTypeID" (selectionChange)="onTraineeStatusChange($event)"  matInput required>
+            <mat-option *ngFor="let s of statusData " [value]="s.TraineeStatusTypeID" [disabled]="checkStatusTypesSelection(s.TraineeStatusTypeID)">{{s.StatusName}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="TraineeStatusTypeID.invalid && TraineeStatusTypeID.errors.required"><strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Status Change Reason</mat-label>
+          <mat-select placeholder="Trainee Status Change Reason" formControlName="TraineeReason"  (selectionChange)="onTraineeReasonChange($event)"  matInput required>
+            <mat-option *ngFor="let s of reasonData " [value]="s.TraineeReason">{{s.TraineeReason}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="TraineeReason.invalid && TraineeReason.errors.required"><strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+     <div class="col-8">
+        <mat-form-field>
+          <mat-label>Other Reason</mat-label>
+          <input type="text"  placeholder="Other Reason" formControlName="ContactNumber1"  matInput required>
+          <mat-error *ngIf="ContactNumber1.invalid && ContactNumber1.errors.required"><strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+  <button mat-button (click)="onSaveClick()">Save</button>
+</div>
+

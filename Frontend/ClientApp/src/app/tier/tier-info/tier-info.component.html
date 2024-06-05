@@ -1,0 +1,86 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Tier Information</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <!--<button (click)="OK()">click</button>-->
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Trade</th>
+                <th>TSP Code</th>
+                <th>TSP Name</th>
+                <th>Reporting Month</th>
+                <th>Aggregated<br />Percentage of <br />Attendance report</th>
+                <th>
+                  Aggregated Percentage<br />
+                  of Violation <br />Summary report
+                </th>
+                <th>
+                  Aggregated Percentage<br />
+                  of Deliverables (FTI & Industry) <br />report
+                </th>
+                <th>
+                  Aggregated Percentage<br />
+                  of Deliverables (CS & Community)<br />
+                  report
+                </th>
+                <th>
+                  Aggregated Percentage <br />of Completion <br />% y report
+                </th>
+                <th>
+                  Aggregated Percentage <br />of Employment <br />Ratio report
+                </th>
+                <th>Final Averag Score</th>
+                <th>Tier</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <tr *ngFor="let r of tiers">
+                <td>{{ r.SchemeName }}</td>
+                <td>{{ r.SchemeCode }}</td>
+                <td>{{ r.Description }}</td>
+                <td>{{ r.CreatedDate }}</td>
+                <td>{{ r.UserName }}</td>
+                <td>{{ r.PTypeName }}</td>
+                <td>{{ r.PCategoryName }}</td>
+                <td>{{ r.FundingSourceName }}</td>
+                <td>{{ r.FundingCategoryName }}</td>
+                <td>{{ r.PaymentSchedule }}</td>
+                <td>{{ r.Stipend }}</td>
+                <td>{{ r.StipendMode }}</td>
+                <td>{{ r.UniformAndBag }}</td>
+                <td>{{ r.MinimumEducation }}</td>
+                <td>{{ r.MaximumEducation }}</td>
+                <td>{{ r.MinAge }}</td>
+                <td>{{ r.MaxAge }}</td>
+                <td>{{ r.GenderName }}</td>
+                <td>{{ r.ContractAwardDate }}</td>
+                <td>{{ r.BusinessRuleType }}</td>
+                <td>{{ r.OName }}</td>
+                <td>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    type="button"
+                    mat-button
+                    matStepperNext
+                    (click)="GetTsps(r.SchemeID)"
+                  >
+                    TSPs
+                  </button>
+                </td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

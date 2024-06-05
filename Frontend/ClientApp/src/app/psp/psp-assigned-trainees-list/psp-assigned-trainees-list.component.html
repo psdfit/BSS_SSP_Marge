@@ -1,0 +1,111 @@
+<div id="inception-report-list-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Trainee List for Employment</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+
+        <div class="row">
+
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Batch" [(ngModel)]="pspfilters.PSPBatchID" (selectionChange)="GetPSPAssignedTraineesByID()" id="pspBatchId" matInput>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let item of pspbatches" [value]="item.PSPBatchID">{{item.BatchName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-1">
+
+          </div>
+          <div class="col-sm-3">
+            <br/>
+            <button class="btn btn-success" matTooltip="Export Trainees Data" (click)="ExportSelectedTraineesList()">
+              <!--<mat-icon>supervisor_account</mat-icon>--> Export Trainees
+            </button>
+          </div>
+
+          <div class="col-sm-6">
+            <!--<button color="primary" matTooltip="Import Trainee Data For Employment" (click)="openEmploymentDialog()" mat-icon-button class="file-lable">-->
+              <!--<mat-icon>supervisor_account</mat-icon>--> <!--Import Trainee Data For Employment
+            </button>-->
+            <label>&nbsp;&nbsp;Import Trainee Data &nbsp;&nbsp;</label>
+            <input placeholder="Upload Excel File to Add Placement data" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" type="file" (change)="onFileChange($event)" />
+
+          </div>
+
+          <!--<a color="primary" matTooltip="Export Trainees Data" mat-icon-button class="file-lable">
+    <mat-icon>get_app</mat-icon>
+  </a>|<a color="primary" matTooltip="Import Trainees Data" mat-icon-button class="file-lable">
+    <mat-icon>publish</mat-icon>
+    <input placeholder="Upload Excel File to Add Placement data" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" type="file" class="file-input" />
+  </a>-->
+
+        </div>
+
+        <div class="table-responsive">
+          <mat-table [dataSource]="PSPAssignedTraineesList" matSort>
+
+            <ng-container matColumnDef="select">
+              <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="TraineeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="FatherName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Father Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeCNIC">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC of Trainer</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ContactNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Contact</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ContactNumber1}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Batch">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.BatchName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <a mat-icon-button matTooltip="Go To Employment Form" color="primary" [routerLink]="['/psp-employment/psp-employment',Row.PSPBatchID,Row.TraineeID]">
+                  <mat-icon aria-label="Edit this row">chrome_reader_mode</mat-icon>
+                </a>
+              </mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="ResultStatusName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Status
+    </mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.ResultStatusName}} </mat-cell>
+  </ng-container>-->
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

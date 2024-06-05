@@ -1,0 +1,27 @@
+<mat-card class="home-grid">
+  <mat-card-content>
+    <fieldset class="border">
+      <legend>Deadlines</legend>
+      <div class="row">
+        <div class="table-responsive ">
+          <table class="table table-bordered d-md-table">
+            <thead>
+              <tr>
+                <th>Process Name</th>
+                <th>DeadLine Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!--<tr class="kamtr" *ngFor="let t of KAMInfo">-->
+              <tr class="kamtr" *ngFor="let t of deadlinesFinalResult">
+                <td class="number-align-center">{{t.DeadlineType }}</td>
+                <td class="number-align-center">{{t.DeadlineDate | date:env.DateFormat}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </fieldset>
+  </mat-card-content>
+</mat-card>

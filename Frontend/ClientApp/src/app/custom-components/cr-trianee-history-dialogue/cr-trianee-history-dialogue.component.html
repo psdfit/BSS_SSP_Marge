@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>Trainee Change Request History</h1>
+<div mat-dialog-content style="overflow:unset;">
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Datetime</th>
+                <th>Trainee Name</th>
+                <th>Father Name</th>
+                <th>Trainee CNIC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!--<ng-container *ngIf="history.length > 0">-->
+              <tr *ngFor="let r of traineehistory">
+                <td>{{r.CreatedDate | date:'dd MMM, y, hh:mm:ss a'}}</td>
+                <td>{{r.TraineeName}}</td>
+                <td>{{r.FatherName}}</td>
+                <td>{{r.TraineeCNIC}}</td>
+              </tr>
+              <!--</ng-container>-->
+              <tr *ngIf="traineehistory.length==0">
+                <td colspan="4" class="text-center">No record found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>Close</button>
+  </div>
+</div>
+
+

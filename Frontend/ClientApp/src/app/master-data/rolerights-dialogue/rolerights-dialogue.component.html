@@ -1,0 +1,66 @@
+<h1 mat-dialog-title>Are you sure?</h1>
+<div mat-dialog-content style="overflow:unset;">
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <h6>Count: ({{SelectedPermission.length}})</h6>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Form Name</th>
+                <th>Module Title</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container>
+                <tr *ngFor="let r of SelectedPermission">
+                  <td>{{r.FormName}}</td>
+                  <td>{{r.ModuleTitle}}</td>
+                  <div class="Row">
+                  <div class="col-md-3">
+                  <td>
+                    <mat-checkbox name="canadd"  *ngIf="r.IsAddible==true" [disabled]="true"  [(ngModel)]="r.CanAdd" >Can Add</mat-checkbox>
+                  </td>
+                </div>
+                  <div class="col-md-3">
+                  <td>
+                    <mat-checkbox name="CanEdit" *ngIf="r.IsEditable==true"   [disabled]="true" [(ngModel)]="r.CanEdit" >Can Edit</mat-checkbox>
+                  </td>
+                </div>
+                <div class="col-md-3">
+                  <td>
+                    <mat-checkbox name="CanDelete" *ngIf="r.IsDeletable==true" [disabled]="true"  [(ngModel)]="r.CanDelete">Can Delete</mat-checkbox>
+                  </td>
+                </div>
+                  <div class="col-md-3">
+                  <td>
+                    <mat-checkbox name="CanView" *ngIf="r.IsViewable==true" [disabled]="true" [(ngModel)]="r.CanView" >Can View</mat-checkbox>
+                  </td>
+                </div>
+              </div>
+                </tr>
+
+              </ng-container>
+              <ng-container *ngIf="SelectedPermission.length==0">
+                <tr>
+                  <td colspan="4" class="text-center">No record found</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </mat-card>
+      <br />
+    
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <ng-container >
+      <button mat-button class="btn-success" (click)="Save()">Yes</button>
+    </ng-container>
+    <button mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>No</button>
+  </div>
+</div>
+
+

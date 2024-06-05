@@ -1,0 +1,317 @@
+<span mat-dialog-title>Event Plan <strong class="text-danger " *ngIf="isOpenChange"> {{isOpenChangeMessage}} </strong></span>
+
+<div id="VisitPlan-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-dialog-content>
+          <form novalidate [formGroup]="visitplanform" (submit)="Submit()">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select formControlName="VisitType" (selectionChange)='FilterUsers($event)' placeholder="Event Type" id="visitid" matInput required>
+                    <mat-option value="1">{{'Internal Visit'}}</mat-option>
+                    <mat-option value="2">{{'Organization'}}</mat-option>
+                    <mat-option value="3">{{"TPM Visit"}}</mat-option>
+                    <mat-option value="4">{{"TSP Orientation"}}</mat-option>
+                    <mat-option value="5">{{"M&C"}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select multiple placeholder="Scheme" formControlName="SchemeIDs" id="SchemeIDs" (selectionChange)="GetTSPUsersByScheme($event)" matInput required>
+                    <mat-option *ngFor="let s of schemes" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                    <mat-error *ngIf="SchemeIDs.invalid && SchemeIDs.errors.required"></mat-error>
+
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select multiple placeholder="Participant" formControlName="UserIDs" id="userid" matInput required>
+                    <mat-option *ngFor="let s of UserSelected" [value]="s.UserID">{{s.FullName}}</mat-option>
+                  </mat-select>
+
+                  <!--<mat-select placeholder="User" formControlName="UserID" id="userid" matInput required>
+          <mat-option *ngFor="let s of UserSelected " [value]="s.UserID">{{s.UserName}}</mat-option>
+        </mat-select>-->
+                  <mat-error *ngIf="UserIDs.invalid && UserIDs.errors.required">Participant is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3" *ngIf="!IsMasterSheet">
+                <mat-form-field fxFlex>
+
+                  <mat-select multiple placeholder="Class" formControlName="ClassIDs" id="ClassID" [disabled]="disableClassFlag" matInput>
+                    <mat-option *ngFor="let s of classes" [value]="s.ClassID">{{s.ClassCode}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3  form-group">
+                <mat-radio-group aria-label="Select an option" (change)="radioChange($event)" [disabled]="disableRadioFlag" fxFlex>
+                  <mat-radio-button value="1" [checked]="checked">Select Region</mat-radio-button><br />  <br />
+                  <mat-radio-button value="2" [checked]="checked2">Select Cluster</mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+            <div class="col-sm-3" *ngIf="checked2">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Cluster" formControlName="ClusterID" id="clusterid" [disabled]="disableClusterFlag" matInput required>
+                  <mat-option *ngFor="let s of clusters" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="ClusterID.invalid && ClusterID.errors.required">Cluster is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="checked">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Region" formControlName="RegionID" id="regionID" matInput required>
+                  <mat-option *ngFor="let s of regions" [value]="s.RegionID">{{s.RegionName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="RegionID.invalid && RegionID.errors.required">Region is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="!RegionFilter">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="District" formControlName="DistrictID" id="districtid" [disabled]="disableDistrictFlag" matInput required>
+                  <mat-option *ngFor="let s of districts | where :['ClusterID', ClusterID.value || 'RegionID', RegionID.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                </mat-select>
+                <!--<mat-error *ngIf="DistrictID.invalid && DistrictID.errors.required">District is <strong>required</strong></mat-error>-->
+              </mat-form-field>
+            </div>
+              <div class="col-sm-3" *ngIf="RegionFilter">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="District" formControlName="DistrictID" id="districtid" [disabled]="disableDistrictFlag" matInput required>
+                  <mat-option *ngFor="let s of districts | where :['RegionID', RegionID.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                </mat-select>
+                <!--<mat-error *ngIf="DistrictID.invalid && DistrictID.errors.required">District is <strong>required</strong></mat-error>-->
+              </mat-form-field>
+            </div>
+
+
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="Venue" placeholder="Venue" matInput required />
+                <mat-label>Venue</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <input matInput [matDatepicker]="visitdate" placeholder="Choose a date" formControlName="VisitStartDate" [disabled]="!IsMasterSheet || TSPUnAccess" required>
+                <mat-datepicker-toggle matSuffix [for]="visitdate"></mat-datepicker-toggle>
+                <mat-datepicker #visitdate></mat-datepicker>
+                <mat-label>Start Date</mat-label>
+                <mat-error *ngIf="VisitStartDate.invalid && VisitStartDate.errors.required">Visit Date is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <input matInput [matDatepicker]="visitenddate" placeholder="Choose a date" formControlName="VisitEndDate" [min]="minEndDate" [disabled]="TSPUnAccess" required>
+                <mat-datepicker-toggle matSuffix [for]="visitenddate"></mat-datepicker-toggle>
+                <mat-datepicker #visitenddate></mat-datepicker>
+                <mat-label>End Date</mat-label>
+                <mat-error *ngIf="VisitEndDate.invalid && VisitEndDate.errors.required">Visit End Date is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-3">
+              <!--<div class="form-group">-->
+              <mat-form-field>
+
+                <ngx-material-timepicker #picker1></ngx-material-timepicker>
+                <input matInput [ngxTimepicker]="picker1" placeholder="Choose a Start time" [format]="24"  (ngModelChange)="ChekTimeDifference()" [disabled]="TSPUnAccess" formControlName="VisitStartTime">
+                <mat-label>Start Time</mat-label>
+
+              </mat-form-field>
+
+              <!--<mat-label>ClassStartTime</mat-label>-->
+              <!--</div>-->
+            </div>
+            <div class="col-sm-3">
+              <!--<div class="form-group">-->
+              <mat-form-field>
+
+                <ngx-material-timepicker #picker2></ngx-material-timepicker>
+                <input matInput [ngxTimepicker]="picker2" placeholder="Choose End time" [format]="24"  (ngModelChange)="ChekTimeDifference()" [disabled]="TSPUnAccess" formControlName="VisitEndTime">
+                <mat-label>End Time</mat-label>
+
+              </mat-form-field>
+
+              <!--<mat-label>ClassStartTime</mat-label>-->
+              <!--</div>-->
+            </div>
+            <div class="col-sm-3" style="max-height:10px">
+              <!--<br />-->
+              <!--<mat-form-field fxFlex>-->
+              <!--<input type="text" formControlName="Attachment" placeholder="Attachment" matInput maxlength="max" />-->
+              <!--<h6><small class="text-danger" *ngIf="Attachment.invalid && Attachment.errors.required"> required </small></h6>-->
+              <file-upload formControlName="Attachment">File</file-upload>
+              <mat-error *ngIf="Attachment.invalid && Attachment.errors.required">Attachment is <strong>required</strong></mat-error>
+              <!--<mat-label>Attachment</mat-label>-->
+              <!--</mat-form-field>-->
+            </div>
+
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>Comments</mat-label>
+                <textarea matInput formControlName="Comments" ></textarea>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <br/>
+              <br/>
+              <mat-checkbox formControlName="LinkWithCRM"><h5 matLine> Link With CRM</h5></mat-checkbox>
+            </div>
+            <br />
+            <br />
+            <br />
+
+            <!--<div *ngIf="enableRichText">
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+            </div>-->
+
+
+
+            <div class="form-group" *ngIf="enableRichText" style="margin-top : 100px">
+              <!--<mat-form-field>-->
+              <!--<mat-label>Comments</mat-label>-->
+              <!--<label for="editor">rich</label>-->
+              <quill-editor id="editor" formControlName="editor" (onEditorChanged)="triggerChangeDetection()"></quill-editor>
+              <!--</mat-form-field>-->
+            </div>
+
+
+
+
+            <!--<div class="col-sm-4">
+    <mat-checkbox formControlName="IsVisited">Visited</mat-checkbox>
+  </div>-->
+</div>
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div class="row">
+              <button mat-raised-button color="primary" [disabled]="!formrights.CanAdd" matTooltip="Click to {{title}}"
+                      attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="TSPUnAccess">
+                <mat-icon>done</mat-icon>{{savebtn+EnText}}
+              </button>&nbsp;&nbsp;
+              <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                      attr.aria-label="Click to Reset form data" type="button" (click)="reset()" [disabled]="working || TSPUnAccess">
+                <mat-icon>close</mat-icon> Reset
+              </button>
+
+
+
+            </div>
+          </form>
+        </mat-dialog-content>
+      </div>
+      <!--<div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()" cdkFocusInitial>No Thanks</button>
+        <button mat-button (click)="Submit()">Save</button>
+      </div>-->
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+</div>
+
+<div>
+
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Already Planned Visits</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column">
+          <mat-table [dataSource]="visitplan" matSort>
+
+            <!--<ng-container matColumnDef="VisitType">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Event Type</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitType}} </mat-cell>
+            </ng-container>-->
+            <!--<ng-container matColumnDef="UserID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> User </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.UserName}} </mat-cell>
+            </ng-container>-->
+            <!--<ng-container matColumnDef="ClassID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+            </ng-container>-->
+            <ng-container matColumnDef="GenerateReport">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Generate Report</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button *ngIf="Row.VisitType == 4 || Row.VisitType == 5" mat-raised-button color="success" (click)="getUserReportDate(Row.VisitPlanID)">
+                  Export Excel
+                </button>
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitTypeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Event Type</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitTypeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitStartDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitStartDate | date:'dd/MM/yyyy'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitEndDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitEndDate | date:'dd/MM/yyyy'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitStartTime">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Start Time</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitStartTime | date: 'HH:mm'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitEndTime">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>End Time</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitEndTime | date: 'HH:mm'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="UserStatus">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Participating</mat-header-cell>
+              <mat-cell *matCellDef="let Row" >
+                  <mat-radio-group [(ngModel)]="Row.UserStatus" (change)="updateVisiting($event.value,Row.VisitPlanID)">
+                    <mat-radio-button value="Yes" >Yes</mat-radio-button>
+                    <mat-radio-button value="No">No</mat-radio-button>
+                  </mat-radio-group>
+              </mat-cell>
+            </ng-container>
+            <!--<ng-container matColumnDef="Attachment">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Attachment</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Attachment}} </mat-cell>
+            </ng-container>-->
+            <!--<ng-container matColumnDef="Comments">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Comments</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Comments}} </mat-cell>
+            </ng-container-->>
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Cancel</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle *ngIf="Row.CreatedUserID == this.data.UserID" [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" matTooltip="View Visit Details" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

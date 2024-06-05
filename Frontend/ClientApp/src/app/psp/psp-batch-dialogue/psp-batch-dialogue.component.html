@@ -1,0 +1,33 @@
+<div id="PSP-Batch-Dialogue-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <span class="spacer">Create Batch for selected trainees</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+      </div>
+      <div>
+        <form novalidate [formGroup]="pspbatchform">
+          <div class="row">
+
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="BatchName" placeholder="Batch Name" matInput maxlength="250" />
+                <mat-error *ngIf="BatchName.invalid && BatchName.errors.required">Batch Name is <strong>required</strong></mat-error>
+                <mat-label>Batch Name</mat-label>
+              </mat-form-field>
+            </div>
+
+          </div>
+          
+        </form>
+      </div>
+      <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()" cdkFocusInitial>No Thanks</button>
+        <button mat-button  [disabled]="!formrights.CanAdd" (click)="Submit()">Save</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+</div>

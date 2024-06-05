@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>Update Class Status</h1>
+<div mat-dialog-content>
+  <form novalidate [formGroup]="csrForm">
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Scheme Name</mat-label>
+          <input formControlName="SchemeName" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>TSP Name</mat-label>
+          <input formControlName="TSPName" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Class Code</mat-label>
+          <input formControlName="ClassCode" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field fxFlex>
+          <mat-label>Class Status</mat-label>
+          <mat-select placeholder="CLass Status" formControlName="ClassStatusID" matInput required>
+            <mat-option *ngFor="let s of statusData" [value]="s.ClassStatusID" [disabled]="checkStatusTypesSelection(s.ClassStatusID)">{{s.ClassStatusName}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="ClassStatusID.invalid && ClassStatusID.errors.required"><strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+  <button mat-button (click)="onSaveClick()">Save</button>
+</div>
+

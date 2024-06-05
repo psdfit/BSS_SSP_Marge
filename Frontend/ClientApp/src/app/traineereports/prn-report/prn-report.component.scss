@@ -1,0 +1,21 @@
+.example-month-picker .mat-calendar-period-button {
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}
+.mat-cell {
+  flex: 0 0 220px;
+}
+
+.mat-header-cell {
+  flex: 0 0 220px;
+}
+tr {
+  max-height: 0;
+  padding: 0 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: max-height 0.3s, padding 0.3s;
+}

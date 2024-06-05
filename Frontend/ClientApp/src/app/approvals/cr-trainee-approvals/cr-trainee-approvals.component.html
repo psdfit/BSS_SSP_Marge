@@ -1,0 +1,170 @@
+
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Un-Verified Trainees Change Request Approvals</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <!--<button (click)="OK()">click</button>-->
+
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetSubmittedTrainees(), getTSPDetailByScheme(scheme.value)]" id="SchemeId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSchemeList" /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSchemeList.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetSubmittedTrainees(),getClassesByTsp(tsp.value)]" id="TspId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSPList" autofocus /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of TSPDetail | like:['TSPName',SearchTSPList.value] | where :['SchemeID',filters.SchemeID]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl()" (selectionChange)="GetSubmittedTrainees()" id="ClassId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchClassList" /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchClassList.value] | where :['TSPID',filters.TSPID]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <br />
+            <button mat-raised-button color="success" style="float:right" *ngIf="trainees?.length > 0" (click)="exportToExcel('MasterSheet')">Export Excel</button>
+          </div>
+
+        </div>
+
+
+
+
+
+        <div class="text-center" *ngIf="!trainees">
+          <p>No Pending Approval</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th></th>
+                <th>Trainee Name</th>
+                <th>Father Name</th>
+                <th>Trainee CNIC</th>
+                <th>CNIC Issue Date</th>
+                <th>Contact Number</th>
+                <th>House #</th>
+                <th>Street # / Mohalla</th>
+                <th>Mauza / Town</th>
+                <th>District</th>
+                <th>Tehsil</th>
+                <th>Trainee Email</th>
+                <th>Trainee Picture</th>
+
+                <!--<th>Head Landline</th>
+  <th>Contact Person Name</th>
+  <th>Contact Person Designation</th>
+  <th>Contact Person Email</th>
+  <th>Contact Person Landline</th>
+  <th>Bank Name</th>
+  <th>Bank Account Number</th>
+  <th>Account Type</th>
+  <th>Bank Branch</th>-->
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of trainees">
+                <tr>
+                  <td>
+                    <button mat-raised-button color="primary" type="button" mat-button (click)="openApprovalDialogue(r)">
+                      Decision
+                    </button>&nbsp;&nbsp;
+                    <span class="p-4 text-dark" *ngIf="r.IsApproved">Approved</span>
+                    <a color="primary" matTooltip="Check Trainee current details" *ngIf="!r.IsApproved"
+                       mat-icon-button (click)="GetCurrentTraineeByID(r)">
+                      <mat-icon>{{r.currentTrainee ?'remove_circle':'control_point' }}</mat-icon>
+                    </a>
+                    <a mat-button color="primary" (click)="openHistoryDialogue(r)">History </a>
+                  </td>
+                  <td style="color:orangered">Requested</td>
+                  <td>{{r.TraineeName}}</td>
+                  <td>{{r.FatherName}}</td>
+                  <td>{{r.TraineeCNIC}}</td>
+                  <td>{{r.CNICIssueDate | date:'dd MMM, y'}}</td>
+                  <td>{{r.ContactNumber1}}</td>
+                  <td>{{r.TraineeHouseNumber}}</td>
+                  <td>{{r.TraineeStreetMohalla}}</td>
+                  <td>{{r.TraineeMauzaTown}}</td>
+                  <td>{{r.DistrictName}}</td>
+                  <td>{{r.TehsilName}}</td>
+                  <td>{{r.TraineeEmail}}</td>
+                  <td><img [src]="r.TraineechangeImage" alt="" width="50px"srcset=""></td>
+                </tr>
+                <tr *ngIf="r.currentTrainee">
+                  <td colspan="14">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th width="260px"  colspan="4">Status</th>
+                            <th>Trainee Name</th>
+                            <th>Father Name</th>
+                            <th>Trainee CNIC</th>
+                            <th>CNIC Issue Date</th>
+                            <th>Contact Number</th>
+                            <th>House #</th>
+                            <th>Street # / Mohalla</th>
+                            <th>Mauza / Town</th>
+                            <th>District</th>
+                            <th>Tehsil</th>
+                            <th>Trainee Email</th>
+                            <th>Trainee Picture</th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let l of r.currentTrainee">
+                            <td style="color:green" colspan="4">Existing</td>
+                            <td>{{l.TraineeName}}</td>
+                            <td>{{l.FatherName}}</td>
+                            <td>{{l.TraineeCNIC}}</td>
+                            <td>{{l.CNICIssueDate | date:'dd MMM, y'}}</td>
+                            <td>{{l.ContactNumber1}}</td>
+                            <td>{{l.TraineeHouseNumber}}</td>
+                            <td>{{l.TraineeStreetMohalla}}</td>
+                            <td>{{l.TraineeMauzaTown}}</td>
+                            <td>{{l.DistrictName}}</td>
+                            <td>{{l.TehsilName}}</td>
+                            <td>{{l.TraineeEmail}}</td>
+                            <td><img [src]="l.TraineeImg" alt="" width="50px"srcset=""></td>
+
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <!--</mat-step>-->
+
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

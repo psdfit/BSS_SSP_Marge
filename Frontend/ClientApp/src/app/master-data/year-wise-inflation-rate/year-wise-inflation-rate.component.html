@@ -1,0 +1,109 @@
+<div id="YearWiseInflationRate-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate [formGroup]="inflationRateform" (submit)="inflationRateform.valid && Submit()">
+          <div class="row">
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <mat-select formControlName="FinancialYear" placeholder="Financial Year" id="visitid" matInput required>
+                  <mat-option *ngFor="let s of years" [value]="s">{{s}}</mat-option>
+
+                </mat-select>
+                <!--<input type="number" formControlName="FinancialYear" placeholder="Financial Year" matInput maxlength="100" required />-->
+                <mat-label>Financial Year</mat-label>
+                <mat-error *ngIf="FinancialYear.invalid && FinancialYear.errors.required">Financial Year is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div><div class="col-sm-6">
+                    <mat-form-field fxFlex>
+                      <mat-select formControlName="Month" placeholder="Month" id="visitid" matInput required>
+                        <mat-option value="January">{{'January'}}</mat-option>
+                        <mat-option value="Februray">{{'Februray'}}</mat-option>
+                        <mat-option value="March">{{"March"}}</mat-option>
+                        <mat-option value="April">{{"April"}}</mat-option>
+                        <mat-option value="May">{{"May"}}</mat-option>
+                        <mat-option value="June">{{"June"}}</mat-option>
+                        <mat-option value="July">{{"July"}}</mat-option>
+                        <mat-option value="August">{{"August"}}</mat-option>
+                        <mat-option value="September">{{"September"}}</mat-option>
+                        <mat-option value="October">{{"October"}}</mat-option>
+                        <mat-option value="November">{{"November"}}</mat-option>
+                        <mat-option value="December">{{"December"}}</mat-option>
+                      </mat-select>
+                      <!--<input type="text" formControlName="Month" placeholder="Month" matInput maxlength="100" required />-->
+                      <mat-label>Month</mat-label>
+                      <mat-error *ngIf="Month.invalid && Month.errors.required">Month is <strong>required</strong></mat-error>
+                    </mat-form-field>
+            </div> <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="number" id="inflation" placeholder="Inflation" formControlName="Inflation" min="0" max="100" oninput="validity.valid||(value='');" matInput required>
+                <mat-error *ngIf="Inflation.invalid && Inflation.errors.required">Inflation is <strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row col-12">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working  || (IRID.value<1 && !formrights.CanAdd)">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset()" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column">
+          <mat-table [dataSource]="yearwiseinflationrate" matSort>
+
+            <ng-container matColumnDef="FinancialYear">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Financial Year</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.FinancialYear}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Month">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Month</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Month}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Inflation">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Inflation</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Inflation}} </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

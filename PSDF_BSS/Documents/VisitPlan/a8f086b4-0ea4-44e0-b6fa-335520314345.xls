@@ -1,0 +1,159 @@
+ProvinceID,DistrictID,DistrictName
+1,1,Attock
+1,2,Bahawalnagar
+1,3,Bahawalpur
+1,4,Bhakkar
+1,5,Chakwal
+1,6,Chiniot
+1,7,Dera Ghazi Khan
+1,8,Faisalabad
+1,9,Gujranwala
+1,10,Gujrat
+1,11,Hafizabad
+1,12,Islamabad
+1,13,Jhang
+1,14,Jhelum
+1,15,Karachi
+1,16,Kasur
+1,17,Khanewal
+1,18,Khushab
+1,19,Lahore
+1,20,Layyah
+1,21,Lodhran
+1,22,Mandi Bahauddin
+1,23,Mianwali
+1,24,Multan
+1,25,Muzaffargarh
+1,26,Nanakana Sahib
+1,27,Narowal
+1,28,Okara
+1,29,Others
+1,30,Pakpattan
+1,31,Rahimyar Khan
+1,32,Rajanpur
+1,33,Rawalpindi
+1,34,Sahiwal
+1,35,Sargodha
+1,36,Sheikhupura
+1,37,Sialkot
+1,38,Toba Tek Singh
+1,39,Vehari
+1,40,Tando Allahyaar
+1,41,Haripur
+1,42,Mansehra
+1,43,Nowshera
+1,44,Bhimber
+1,45,PSDF DIsctrict
+1,46,Karachi
+2,50,Badin 
+2,51,Sujawal 
+2,52,Thatta 
+2,53,Dadu 
+2,54,Hyderabad 
+2,55,Jamshoro 
+2,56,Matiari 
+2,57,Tando Allahyar 
+2,58,Tando Muhammad Khan 
+2,59,Karachi Central 
+2,60,Karachi East 
+2,61,Karachi South 
+2,62,Karachi West 
+2,63,Korangi 
+2,64,Malir 
+2,65,Jacobabad 
+2,66,Kashmore 
+2,67,Larkana 
+2,68,Qambar-Shahdadkot 
+2,69,Shikarpur 
+2,70,Mirpur Khas 
+2,71,Sanghar 
+2,72,Tharparkar 
+2,73,Umerkot 
+2,74,Ghotki 
+2,75,Khairpur Mirs 
+2,76,Sukkur 
+2,77,Naushahro Feroze 
+2,78,Shaheed Benazir Abad 
+3,79,Bannu 
+3,80,Lakki Marwat 
+3,81,Dera Ismail Khan 
+3,82,Tank 
+3,83,Mansehra 
+3,84,Abbottabad 
+3,85,Batagram 
+3,86,Haripur 
+3,87,Lower Kohistan 
+3,88,Torghar 
+3,89,Upper Kohistan 
+3,90,Hangu 
+3,91,Karak 
+3,92,Kohat 
+3,93,Buner 
+3,94,Chitral Upper 
+3,95,Chitral Lower 
+3,96,Lower Dir 
+3,97,Malakand 
+3,98,Shangla 
+3,99,Swat 
+3,100,Upper Dir 
+3,101,Mardan 
+3,102,Swabi 
+3,103,Charsadda 
+3,104,Nowshera 
+3,105,Peshawar 
+4,106,Awaran 
+4,107,Kalat 
+4,108,Kharan 
+4,109,Khuzdar 
+4,110,Lasbela 
+4,111,Mastung 
+4,112,Washuk 
+4,113,Gwadar 
+4,114,Kech 
+4,115,Panjgur 
+4,116,Jafarabad 
+4,117,Jhal Magsi 
+4,118,Kachi 
+4,119,Lehri 
+4,120,Nasirabad 
+4,121,Sohbatpur 
+4,122,Chagai 
+4,123,Killa Abdullah 
+4,124,Nushki 
+4,125,Pishin 
+4,126,Quetta 
+4,127,Dera Bugti 
+4,128,Harnai 
+4,129,Kohlu 
+4,130,Sibi 
+4,131,Ziarat 
+4,132,Barkhan 
+4,133,Killa Saifullah 
+4,134,Loralai 
+4,135,Musakhel 
+4,136,Sherani 
+4,137,Zhob 
+5,138,Ghanche 
+5,139,Rondu 
+5,140,Shigar 
+5,141,Skardu 
+5,142,Astore 
+5,143,Darel 
+5,144,Diamir 
+5,145,Tangir 
+5,146,Ghizer 
+5,147,Gilgit 
+5,148,Gupis-Yasin 
+5,149,Hunza 
+5,150,Nagar 
+6,151,Kotli 
+6,151,Kotli 
+6,152,Mirpur 
+6,153,Bhimber 
+6,154,Hattian Bala 
+6,155,Muzaffarabad 
+6,156,Neelum 
+6,157,Bagh 
+6,158,Haveli 
+6,159,Poonch 
+6,160,Sudhnoti 

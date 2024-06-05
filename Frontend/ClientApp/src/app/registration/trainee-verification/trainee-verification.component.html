@@ -1,0 +1,78 @@
+<div id="TraineeVarification-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Trainee's Verification</span>
+          <div class="spacer"></div>
+         <!-- <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <div fxLayout="column">
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" matInput required>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let item of schemeArray" [value]="item.SchemeID">{{item.SchemeName}}</mat-option>
+
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" matInput required>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let item of tspDetailArray |where :['SchemeID',schemeFilter.value]" [value]="item.TSPID">{{item.TSPName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Class" [formControl]="classFilter"  id="ClassId" matInput required>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let item of classesArray |where :['TSPID',tspFilter.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div fxLayout="column" class="">
+            <mat-table [dataSource]="traineeProfileArray" matSort class="table table-bordered">
+              <mat-header-row *matHeaderRowDef="displayedColumnsTraineeProfileList"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumnsTraineeProfileList;"></mat-row>
+              <ng-container matColumnDef="TraineeCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row" class="myAnchor" > 
+                  <a (click)="openTraineeJourneyDialogue(Row.TraineeCode)"> {{Row.TraineeCode}} </a> </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeCNIC">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ClassCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row" class="myAnchor" >  <a (click)="openClassJourneyDialogue(Row.ClassID)"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TraineeVerified">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Verified</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <i class="text-success" *ngIf="Row.TraineeVerified"> Yes </i>
+                  <i class="text-danger" *ngIf="!Row.TraineeVerified"> No </i>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                <mat-cell *matCellDef="let Row">
+                  <button mat-icon-button color="primary" [disabled]="!formRights.CanEdit" (click)="openDialog(Row)">
+                    <mat-icon matTooltip="Trainee's verification">beenhere</mat-icon>
+                  </button>
+                </mat-cell>
+              </ng-container>
+            </mat-table>
+            <mat-paginator [pageSize]="5" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

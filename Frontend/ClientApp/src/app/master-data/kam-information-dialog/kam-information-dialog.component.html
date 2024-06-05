@@ -1,0 +1,23 @@
+<div id="kam-info-dialog-page" class="comp-main-div">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">KAM Information</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+        <div fxLayout="column" class="mat-elevation-z8">
+          <mat-table [dataSource]="KAMInfo" matSort>
+
+            <ng-container matColumnDef="KAMName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Name of KAM</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.FullName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="KAMEmail">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Email}} </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+</div>

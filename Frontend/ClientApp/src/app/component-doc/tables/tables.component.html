@@ -1,0 +1,55 @@
+<div id="AcademicDiscipline-page" class="comp-main-div">
+   
+    <mat-divider></mat-divider>
+    <mat-card>
+      <mat-card-content>
+      <div class="row">
+        <div class="col-sm-12">
+            <div>
+                <mat-toolbar color="accent" class=" slim slim">
+                  <mat-icon class="material-icons">view_comfy</mat-icon>
+                  <span class="spacer">Manage and View All</span>
+                  <div class="spacer"></div>
+                  <input type="text" placeholder="Search" (keyup)="applyFilter($event)" class="search" />
+                  <button mat-raised-button color="success" style="float:right;margin: 0px 5px;"  (click)="DataExcelExport()">Export Excel</button>
+
+                </mat-toolbar>
+                <div fxLayout="column" class="table-responsive">
+                  <mat-table [dataSource]="academicdiscipline" matSort class="table table-bordered custom-width">
+        
+                    <ng-container matColumnDef="AcademicDisciplineName">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Academic Discipline Name</mat-header-cell>
+                      <mat-cell *matCellDef="let Row"> {{Row.AcademicDisciplineName}} </mat-cell>
+                    </ng-container>
+        
+        
+
+                    <!-- <ng-container matColumnDef="InActive">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+                      <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" ></mat-slide-toggle> </mat-cell>
+                    </ng-container>
+       -->
+                    <ng-container matColumnDef="Action">
+                      <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                      <mat-cell *matCellDef="let Row">
+                        <button mat-icon-button color="primary" >
+                          <mat-icon aria-label="Edit this row">edit</mat-icon>
+                        </button>
+                      </mat-cell>
+                    </ng-container>
+
+            
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                 
+                  </mat-table>
+                  <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                </div>
+              </div>
+
+        </div>
+      </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  

@@ -1,0 +1,170 @@
+
+<div id="srn-disbursement-page" class="comp-main-div">
+
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Stipend Disbursement Status</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <div class="row">
+          <div class="col-sm-2">
+            <mat-form-field fxFlex>
+              <mat-label>Month</mat-label>
+              <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly required>
+              <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
+              <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
+                              (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" [formControl]="schemeFilter" (openedChange)="EmptyCtrl($event)" (selectionChange)="[getSRNDisbursementTraineeData(),getTSPDetailByScheme(scheme.value)]" id="SchemeId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" [formControl]="tspFilter" (openedChange)="EmptyCtrl($event)" (selectionChange)="[getSRNDisbursementTraineeData(),getClassesByTsp(tsp.value)]" id="TspId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of TSPDetail  | like:['TSPName',SearchTSP.value] |where :['SchemeID',filters.SchemeID]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" [formControl]="classFilter" (openedChange)="EmptyCtrl($event)" (selectionChange)="getSRNDisbursementTraineeData()" id="ClassId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let item of Classes  | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <!--<button style="margin-left:78%" class="btn btn-success" mat-raised-button (click)="exportsrndisbursementtrainee.exportTable('xlsx', {fileName:'SRN-Disbursement-Status-Report', sheet: 'Srn_Disbursement_Status', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>-->
+          <button *ngIf="srnDisbursementTrainees.filteredData.length != 0" style="margin-left:78%" class="btn btn-success" mat-raised-button (click)="generateExcel()">Export to Excel</button>
+          <button *ngIf="srnDisbursementTrainees.filteredData.length != 0" style="float:right;margin-left:1%" color="primary" mat-raised-button (click)="SubmitDisbursement();">  Submit  </button>
+
+
+        </div>
+
+
+        <div class="table-responsive">
+          <mat-table  *ngIf="srnDisbursementTrainees.filteredData.length != 0" matTableExporter [dataSource]="srnDisbursementTrainees" #SortTrainee="matSort" #exportsrndisbursementtrainee="matTableExporter" matSort>
+
+            <ng-container matColumnDef="SchemeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TSPName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>TSP Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TradeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trade</mat-header-cell>
+              <mat-cell *matCellDef="let Row">{{Row.TradeName}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClassCode">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee ID</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> <a class="myAnchor" (click)="openTraineeJourneyDialogue(Row.TraineeCode)" style="color: #005b9e;"> {{Row.TraineeCode}} </a></mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeCode">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>TraineeCode</mat-header-cell>
+              <mat-cell *matCellDef="let Row">{{Row.TraineeCode}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="FatherName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TraineeCNIC">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee CNIC</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="DistrictName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>District Name</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ContactNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Contact Number</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ContactNumber}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Comments">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Comments</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Comments}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Amount">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Amount</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Amount}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Batch">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TokenNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TokenNumber</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TokenNumber}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="TransactionNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> TransactionNumber</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.TransactionNumber}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Redeem">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Redeem}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Month">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Month</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Month | date:environment.MonthFormat}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="NumberOfMonths">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>NumberOfMonths</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.NumberOfMonths}} </mat-cell>
+            </ng-container>
+
+
+
+
+            <mat-header-row *matHeaderRowDef="displayedColumnsTrainees"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumnsTrainees;"></mat-row>
+
+          </mat-table>
+          <br />
+
+          <div class="group" *ngIf="srnDisbursementTrainees.filteredData.length != 0">
+            <input id="name" name="name" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onTraineeFileChange($event)" required>
+            <label for="name">Update Token No./ Transaction No./ Redeem  &nbsp;&nbsp;</label>
+
+          </div>
+          <div class="text-center" *ngIf="srnDisbursementTrainees.filteredData.length == 0">
+            <p>No Records Found</p>
+          </div>
+
+
+          <mat-paginator #PageTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

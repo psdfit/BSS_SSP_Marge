@@ -1,0 +1,86 @@
+<div id="dashboard-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Class Journey</span>
+        <div class="spacer"></div>
+        <a  *ngIf="CloseButtonHide" style="cursor: pointer;"> <div class="spacer" style="padding-left: 75%;"> <mat-icon style="color: white;"  (click)="onNoClick()" class="material-icons">close</mat-icon></div></a>
+      </mat-toolbar>
+      <div *ngIf="this.currentUser.UserLevel!=4 && this.CloseButtonHide == false">
+        <form novalidate #myForm="ngForm" [formGroup]="classform" autocomplete="off" (submit)="Submit(myForm)">
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select placeholder="Select Scheme" (selectionChange)="onChangeScheme($event.value)" required formControlName="SearchScheme">
+                  <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchScheme" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchScheme.value]" [value]="s.SchemeID">{{ s.SchemeName }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select placeholder="Select TSP" (selectionChange)="onChangeTSP($event.value)" required formControlName="SearchTSP">
+                  <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of TSPs | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{ s.TSPName }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-select placeholder="Select Class" (selectionChange)="onChangeClass($event.value)" required formControlName="SearchClass">
+                  <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchClass" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of Classes | like:['ClassCode',SearchClass.value]" [value]="s.ClassID">{{ s.ClassCode }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" style="margin-top:20px;">
+              <button mat-raised-button color="primary" matTooltip="Click to Search" attr.aria-label="Click to Search" type="submit">
+                <mat-icon>search</mat-icon>Search
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+
+      <mat-tab-group #tabGroup (selectedTabChange)="onSelectedTabChange($event)">
+        <mat-tab label="Status Information">
+          <div id="container" style="width:100%; height: 700px;"></div>
+        </mat-tab>
+        <mat-tab label="Financial Information">
+          <br />
+          <div class="col-sm-12 no-padding">
+            <div class="card shadow custom-managment">
+              <div class="card-header">Class Financial Information</div>
+              <div style="text-align:left;">
+                <div style="text-align:left;" class="col-sm-12 no-padding">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="number-align-center">Sr#</th>
+                        <th>Month</th>
+                        <th>Cheque Dispatched</th>
+                        <th>Stipend Processed</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let r of ClassFinance; let i=index">
+                        <tr>
+                          <td class="number-align-center">{{i+1}}</td>
+                          <td class="number-align-center">{{r.Month}}</td>
+                          <td>{{r.ChequeDispatched}}</td>
+                          <td>{{r.StipendProcessed}}</td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

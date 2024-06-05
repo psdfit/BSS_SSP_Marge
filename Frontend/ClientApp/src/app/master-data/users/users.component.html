@@ -1,0 +1,283 @@
+
+    <div id="Users-page" class="comp-main-div">
+      <mat-card class="mat-primary">
+        <mat-card-content>
+          <div class="col-12">
+            <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+              <mat-icon class="material-icons"> apps</mat-icon>
+              <span class="subheading-1">{{title + EnText}} </span>
+            </mat-toolbar>
+            <form novalidate #nform="ngForm" [formGroup]="usersform" (submit)="usersform.valid && Submit(nform)" autocomplete="off">
+
+              <div class="userpage-custom">
+                <div class="row">
+
+                  <div class="col-4">
+                    <mat-card class="mat-primary">
+                      <mat-card-title>
+                        Login Info
+                      </mat-card-title>
+                      <mat-card-content>
+                        <div class="col-12">
+                          <mat-form-field>
+                            <input type="text" formControlName="UserName" placeholder="UserName"  (ngModelChange)="ChkUserName()" matInput maxlength="60" required AlphaNumeric>
+                            <mat-label>UserName</mat-label>
+                            <mat-error *ngIf="UserName.invalid && UserName.errors.required">UserName is <strong>required</strong></mat-error>
+                            <mat-error *ngIf="UserName.invalid && UserName.errors.duplicate">UserName is already taken</mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-12" *ngIf="UserID.value==0">
+                          <mat-form-field>
+                            <input type="password" formControlName="UserPassword" placeholder="Password" matInput maxlength="15" />
+                            <mat-label>Password</mat-label>
+                            <mat-error *ngIf="UserPassword.invalid && UserPassword.errors.cnfPassword">Password and Confirm Password does not match</mat-error>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-12" *ngIf="UserID.value==0">
+                          <mat-form-field>
+                            <input type="password" placeholder="Confirm Password" formControlName="CPassword" matInput maxlength="15" />
+                            <mat-label>Confirm Password</mat-label>
+                            <mat-error *ngIf="CPassword.invalid && CPassword.errors.cnfPassword">Password and Confirm Password does not match</mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-12">
+                          <label>Profile Picture</label>
+                          <file-upload formControlName="UserImage" [accept]="'image/x-png,image/gif,image/jpeg'" w></file-upload>
+                        </div>
+
+
+
+                      </mat-card-content>
+                    </mat-card>
+                  </div>
+                  <div class="col-8">
+                    <div class="row">
+                      <div class="col-6">
+                        <mat-form-field>
+
+                          <mat-select placeholder="Role" formControlName="RoleID" id="roleid" (ngModelChange)="GetRoleRights()" matInput required>
+                            <mat-option *ngFor="let s of Roles" [value]="s.RoleID">{{s.RoleTitle}}</mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="RoleID.invalid && RoleID.errors.required">RoleID is <strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6">
+                        <mat-form-field>
+
+                      <mat-select placeholder="User Type" formControlName="UserLevel" id="roleid" matInput required>
+                        <mat-option [value]="1">Admin Group</mat-option>
+                        <mat-option [value]="2">Organization Group</mat-option>
+                        <mat-option [value]="3">TPM</mat-option>
+                        <mat-option [value]="4">TSP</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="UserLevel.invalid && UserLevel.errors.required">RoleID is <strong>required</strong></mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-6 col-md-4 col-lg-3" *ngIf="UserLevel.value==2">
+                    <mat-form-field>
+
+                          <mat-select placeholder="Select Organizations" name="UserOrgs" [(ngModel)]="UserOrgs" id="Orgid" [ngModelOptions]="{standalone: true}" multiple matInput required>
+                            <mat-option *ngFor="let s of Orgs" [value]="s.OID">{{s.OName}}</mat-option>
+                          </mat-select>
+                          <!--<mat-error *ngIf=" UserOrgs.errors.required">Organizations is <strong>required</strong></mat-error>-->
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6">
+                        <mat-form-field>
+                          <input type="text" formControlName="Fname" AlphaNumeric placeholder="First Name" matInput maxlength="50" required />
+                          <mat-label>First Name</mat-label>
+                          <mat-error *ngIf="Fname.invalid && Fname.errors.required">First Name is <strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6">
+                        <mat-form-field>
+                          <input type="text" formControlName="lname" AlphaNumeric placeholder="Last Name" matInput maxlength="50" required />
+                          <mat-label>Last Name</mat-label>
+                          <mat-error *ngIf="lname.invalid && lname.errors.required">Last Name is <strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6">
+                        <mat-form-field>
+                          <input type="text" formControlName="Email" placeholder="User Email" matInput maxlength="50" required />
+                          <mat-label>User Email</mat-label>
+                          <mat-error *ngIf="Email.invalid && Email.errors.required">User Email is <strong>required</strong></mat-error>
+                          <mat-error *ngIf="Email.invalid && Email.errors.email">Invalid Email address</mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div class="col-12">
+                <div class="row">
+
+                  <mat-accordion class="col-12">
+
+                    <mat-expansion-panel *ngFor="let r of usersrights | groupBy : 'ModuleTitle'" color="primary">
+                      <mat-expansion-panel-header>
+                        {{r.key}}
+                      </mat-expansion-panel-header>
+                      <mat-list Dense>
+                        <mat-list-item>
+                          <h1 mat-subheader> Select All </h1>
+
+                          <table style="margin-left: 230px;">
+                            <tbody>
+                              <tr>
+                                <div class="Row">
+                                  <div class="col-md-4"></div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary"  (change)="SelAdd(r.CanAdd,r.value,'CanAdd')"  [(ngModel)]="r.CanAdd" [ngModelOptions]="{standalone: true}">Can Add</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary"  (change)="SelAdd(r.CanEdit,r.value,'CanEdit')" [(ngModel)]="r.CanEdit" [ngModelOptions]="{standalone: true}">Can Edit</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary" (change)="SelAdd(r.CanDelete,r.value,'CanDelete')" [(ngModel)]="r.CanDelete" [ngModelOptions]="{standalone: true}">Can Delete</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-2">
+                                <td>
+                                  <mat-checkbox color="primary"  (change)="SelAdd(r.CanView,r.value,'CanView')" [(ngModel)]="r.CanView" [ngModelOptions]="{standalone: true}">Can View</mat-checkbox>
+                                </td>
+                              </div>
+                            </div>
+                              </tr>
+                            </tbody>
+                          </table>
+                         <!--  <mat-checkbox color="primary" (change)="SelAdd(r.CanAdd,r.value,'CanAdd')"  [(ngModel)]="r.CanAdd" [ngModelOptions]="{standalone: true}">{{r.key!='Reports'? 'Can Add' : 'Can View'}}</mat-checkbox>
+                          <mat-checkbox color="primary" *ngIf="r.key!='Reports'" (change)="SelAdd(r.CanEdit,r.value,'CanEdit')" [(ngModel)]="r.CanEdit" [ngModelOptions]="{standalone: true}">Can Edit</mat-checkbox>
+                          <mat-checkbox color="primary" *ngIf="r.key!='Reports'" (change)="SelAdd(r.CanDelete,r.value,'CanDelete')" [(ngModel)]="r.CanDelete" [ngModelOptions]="{standalone: true}">Can Delete</mat-checkbox>
+                          <mat-checkbox color="primary" *ngIf="r.key!='Reports'" (change)="SelAdd(r.CanView,r.value,'CanView')" [(ngModel)]="r.CanView" [ngModelOptions]="{standalone: true}">Can View</mat-checkbox>
+                          -->
+                          <mat-divider></mat-divider>
+                        </mat-list-item>
+                      </mat-list>
+                      <mat-list dense>
+                        <mat-list-item *ngFor="let form of r.value">
+                          <h1 matLine> {{form.FormName}}</h1>
+                          <table>
+                            <tbody>
+                              <tr>
+                                <div class="Row">
+                                <div class="col-md-3">
+                                <td>
+                                  <mat-checkbox name="canadd" *ngIf="form.IsAddible==true"   [(ngModel)]="form.CanAdd" [ngModelOptions]="{standalone: true}">Can Add</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-3">
+                                <td>
+                                  <mat-checkbox name="canEdit"  *ngIf="form.IsEditable==true"  [(ngModel)]="form.CanEdit" [ngModelOptions]="{standalone: true}">Can Edit</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-3">
+                                <td>
+                                  <mat-checkbox name="canDelete" *ngIf="form.IsDeletable==true" [(ngModel)]="form.CanDelete" [ngModelOptions]="{standalone: true}">Can Delete</mat-checkbox>
+                                </td>
+                              </div>
+                                <div class="col-md-3">
+                                <td>
+                                  <mat-checkbox name="CanView"  *ngIf="form.IsViewable==true"  [(ngModel)]="form.CanView" [ngModelOptions]="{standalone: true}">Can View</mat-checkbox>
+                                </td>
+                              </div>
+                            </div>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <mat-divider></mat-divider>
+                        </mat-list-item>
+                      </mat-list>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </div>
+              </div>
+              <br />
+              <div fxLayout="row" fxLayoutGap="20px" [style.marginTop.px]="10">
+                <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                        attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working">
+                  <mat-icon>done</mat-icon>{{savebtn+EnText}}
+                </button>&nbsp;&nbsp;
+                <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                        attr.aria-label="Click to Reset form data" (click)="reset(nform)" [disabled]="working">
+                  <mat-icon>close</mat-icon> Reset
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider></mat-divider>
+      <mat-card>
+        <mat-card-content>
+          <div fxLayoutAlign="space-around space-around">
+            <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <div class="spacer"></div>
+              <select placeholder="Seach in" [formControl]="FltrFld" >
+                <option value="Username">Username</option>
+                <option value="FullName">FullName</option>
+                <option value="Email">Email</option>
+                <!--<mat-option [value]="4">TSP</mat-option>-->
+              </select>
+              <input type="text" placeholder="Search" [formControl]="FltrValue" class="search" />
+            </mat-toolbar>
+            <div fxLayout="column" class="mat-elevation-z8">
+              <mat-table [dataSource]="users" matSort fxFlex>
+
+                <ng-container matColumnDef="UserName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Username</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.UserName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Email">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Email</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Email}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Fname">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> First Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Fname}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="lname">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.lname}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FullName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Full Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.FullName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="RoleID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Role </mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.RoleTitle}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="InActive">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"><mat-slide-toggle #toggle [(ngModel)]="Row.InActive" (ngModelChange)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary">
+                      <mat-icon aria-label="Edit this row" (click)="toggleEdit(Row)">edit</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  
+
+

@@ -1,0 +1,193 @@
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">PRN Detail</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <thead>
+            <tr>
+              <th>Sr#</th>
+              <th>Process Name</th>
+              <th>TSP Name</th>
+              <th>Month</th>
+              <th>Invoice Number</th>
+              <th>Approved</th>
+              <th>CreatedDate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let r of TSPPRN; let i=index">
+              <tr>
+                <td class="sm" [attr.rowspan]="r.HasPRN? 2:null">
+                  {{i+1}}
+                  <a color="primary" matTooltip="PRN Detail"
+                     mat-icon-button (click)="getPRNDetail(r)">
+                    <mat-icon>{{r.HasPRN ?'remove_circle':'control_point' }}</mat-icon>
+                  </a>
+                </td>
+                <td>{{r.ApprovalProcessName}}</td>
+                <td>{{r.TSPName}}</td>
+                <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                <td class="number-align-center">{{r.InvoiceNumber}}</td>
+                <td class="number-align-center">{{r.Approved}}</td>
+                <td class="number-align-center">{{r.CreatedDate | date:environment.DateTimeFormat}}</td>
+              </tr>
+              <!--Nested Grid for PRN Table-->
+              <tr *ngIf="r.HasPRN" [@enterAnimation]>
+                <td colspan="7">
+                  <div class="table-responsive">
+                    <table class="table table-bordered" style="color:lightslategrey">
+                      <thead>
+                        <tr>
+                          <th>Sr#</th>
+                          <th class="sm">Documents</th>
+                          <th>Class Code</th>
+                          <th>Invoice No</th>
+                          <th>Trade</th>
+                          <th>Duration</th>
+                          <th>Class Start Date</th>
+                          <th>Class End Date</th>
+                          <th>Class Status</th>
+                          <th>Contractual Trainees</th>
+                          <th>Claimed Trainees</th>
+                          <th>Enrolled Trainees</th>
+                          <th>Dropouts Verified</th>
+                          <th>Dropouts Unverified</th>
+                          <th>Expelled Verified</th>
+                          <th>Expelled UnVerified</th>
+                          <th>CNIC Verified</th>
+                          <th>CNIC Verified Excesses</th>
+                          <th>CNIC Unverified</th>
+                          <th>CNIC UnVerified Excesses</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Pass Verified</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Pass Unverified</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Failed Verified</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Failed Unverified</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Absent Verified</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Absent Unverified</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 1</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 2</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 3</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 1 Date</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 2 Date</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">NonFunctional Visit 3 Date</th>
+                          <th>Deduction Since Inception Dropout</th>
+                          <th>Max Attendance</th>
+                          <th>Payment Withheld Physical Count</th>
+                          <th>Deduction Marginal</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Deduction Extra Registered For Exam</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Deduction Failed Trainees</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">Deduction Uniform Bag Receiving</th>
+                          <th>Payment Withheld Since Inception UnV CNIC</th>
+                          <th>Penalty TPM Reports</th>
+                          <th>Penalty Imposed By MnE</th>
+                          <th>Reimbursement UnV Trainees</th>
+                          <th>Reimbursement Attandance</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">Employment Commitment Percentage</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">Completed Trainees</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">Graduated Commitment Trainees</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">Employment Reported</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">Verified Trainees</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">Verified To Completed Commitment</th>
+                          <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">Certification Cost Deduction (All Types)</th>
+                          <th>Payment To Be Released Trainees</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let c of r.PRN; let i=index">
+                          <td>{{i+1}}</td>
+                          <td class="sm">
+                            <a color="primary"
+                               mat-icon-button matTooltip="View Previouse Documents" (click)="getClassMonthview(c.ClassID,c.Month,r.ProcessKey)">
+                              <mat-icon>visibility</mat-icon>
+                            </a>
+                          </td>
+                          <td>{{c.ClassCode}}</td>
+                          <td class="number-align-center">{{c.InvoiceNumber}}</td>
+                          <td>{{c.TradeName}}</td>
+                          <td class="number-align-center">{{c.Duration}}</td>
+                          <td class="number-align-center">{{c.ClassStartDate | date:environment.DateFormat}}</td>
+                          <td class="number-align-center">{{c.ClassEndDate | date:environment.DateFormat}}</td>
+                          <td class="number-align-center">{{c.ClassStatus}}</td>
+                          <td class="number-align-center">{{c.ContractualTrainees}}</td>
+                          <td class="number-align-center">{{c.ClaimedTrainees}}</td>
+                          <td class="number-align-center">{{c.EnrolledTrainees}}</td>
+                          <td class="number-align-center">{{c.DropoutsVerified}}</td>
+                          <td class="number-align-center">{{c.DropoutsUnverified}}</td>
+                          <td class="number-align-center">{{c.ExpelledVerified}}</td>
+                          <td class="number-align-center">{{c.ExpelledUnverified}}</td>
+                          <td class="number-align-center">{{c.CNICVerified}}</td>
+                          <td class="number-align-center">{{c.CNICVExcesses}}</td>
+                          <td class="number-align-center">{{c.CNICUnverified}}</td>
+                          <td class="number-align-center">{{c.CNICUnVExcesses}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.PassVerified}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.PassUnverified}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.FailedVerified}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.FailedUnverified}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.AbsentVerified}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.AbsentUnverified}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit1}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit2}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit3}}</td>
+                          <td class="number-align-center" *ngIf="c.NonFunctionalVisit1 == 'Yes' && r.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit1Date | date:environment.DateFormat}}</td>
+                          <td class="number-align-center" *ngIf="c.NonFunctionalVisit1 != 'Yes' && r.ProcessKey == enumApprovalProcess.PRN_R">{{'N/A'}}</td>
+                          <td class="number-align-center" *ngIf="c.NonFunctionalVisit2 == 'Yes' && r.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit2Date | date:environment.DateFormat}}</td>
+                          <td class="number-align-center" *ngIf="c.NonFunctionalVisit2 != 'Yes' && r.ProcessKey == enumApprovalProcess.PRN_R">{{'N/A'}}</td>
+                          <td class="number-align-center" *ngIf="c.NonFunctionalVisit3 == 'Yes' && r.ProcessKey == enumApprovalProcess.PRN_R">{{c.NonFunctionalVisit3Date | date:environment.DateFormat}}</td>
+                          <td class="number-align-center" *ngIf="c.NonFunctionalVisit3 != 'Yes' && r.ProcessKey == enumApprovalProcess.PRN_R">{{'N/A'}}</td>
+                          <td class="number-align-center">{{c.DeductionSinIncepDropout}}</td>
+                          <td class="number-align-center">{{c.MaxAttendance}}</td>
+                          <td class="number-align-center">{{c.PaymentWithheldPhysicalCount}}</td>
+                          <td class="number-align-center">{{c.DeductionMarginal}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.DeductionExtraRegisteredForExam}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.DeductionFailedTrainees}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F || r.ProcessKey == enumApprovalProcess.PRN_C">{{c.DeductionUniformBagReceiving}}</td>
+                          <td class="number-align-center">{{c.PaymentWithheldSinIncepUnVCNIC}}</td>
+                          <td class="number-align-center">{{c.PenaltyTPMReports}}</td>
+                          <td class="number-align-center">{{c.PenaltyImposedByME}}</td>
+                          <td class="number-align-center">{{c.ReimbursementUnVTrainees}}</td>
+                          <td class="number-align-center">{{c.ReimbursementAttandance}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">{{c.EmploymentCommitmentPercentage}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">{{c.CompletedTrainees}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">{{c.GraduatedCommitmentTrainees}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">{{c.EmploymentReported}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">{{c.VerifiedTrainees}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">{{c.VerifiedToCompletedCommitment}}</td>
+                          <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">{{c.ExtraTraineeDeductCompletion + c.UnVDeductCompletion+c.DropOutDeductCompletion}}</td>
+                          <td class="number-align-center">
+                            {{c.PaymentToBeReleasedTrainees }}
+                            <a mat-button color="primary" *ngIf="c.InvoiceNumber > 1" (click)="getPTBRTrainees(c)"
+                               [ngbPopover]="popContent" popoverTitle="Previous History">
+                              Previous
+                            </a>
+                            <ng-template #popContent>
+                              <table>
+                                <thead>
+                                  <tr>
+                                    <th>Month</th>
+                                    <th>Released Trainees</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let t of c.previousPTBRTrainees">
+                                    <td class="number-align-center">{{t.Month | date:environment.MonthFormat}}</td>
+                                    <td class="number-align-center">{{t.PaymentToBeReleasedTrainees}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </ng-template>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              <!--Nested Grid ends here-->
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

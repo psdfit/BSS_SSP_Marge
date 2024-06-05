@@ -1,0 +1,385 @@
+<div id="MasterSheet-page" class="comp-main-div">
+
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <span class="spacer">Master Sheet</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+        <div fxLayout="column">
+
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getDependantFilters()]" id="SchemeId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+              <mat-form-field fxFlex>
+                <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getClassesByTsp(tsp.value)]" id="TspId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of TSPDetail | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl()"  id="ClassId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <br />
+              <button mat-raised-button color="success" style="float:right" *ngIf="mastersheet.data?.length > 0" (click)="getMasterSheet()">Export Excel</button>
+            </div>
+          </div>
+          <div>
+            <div class=" table-responsive">
+              <mat-table [dataSource]="mastersheet" matSort class="table table-bordered custom-width">
+
+
+
+                <ng-container matColumnDef="SchemeCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Code </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.SchemeCode}} </mat-cell>
+                </ng-container>
+
+
+
+                <ng-container matColumnDef="Scheme">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Scheme}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSP">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TSP}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Batch">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Batch</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Batch}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Class">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"><a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.Class}}</strong> </a>  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassStatusName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class Status</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.ClassStatusName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FundingSourceName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Funding Source</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.FundingSourceName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Shift">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Shift</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Shift}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Section">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Section</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Section}} </mat-cell>
+                </ng-container>
+                <!--<ng-container matColumnDef="ClassStatusID">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Class Status</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.ClassStatusName}} </mat-cell>
+  </ng-container>-->
+                <ng-container matColumnDef="TrainingAddressLocation">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Training Location</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TrainingAddressLocation}} </mat-cell>
+                </ng-container>
+                <!--<ng-container matColumnDef="TrainingAddressLocation">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Training Address Location</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.TrainingAddressLocation}} </mat-cell>
+  </ng-container>-->
+                <ng-container matColumnDef="Trade">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trade </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Trade}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Province">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Province of Training Center</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.ProvinceName}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Tehsil">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Tehsil of Training Center</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Tehsil}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="District">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> District of Training Center</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.District}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Certification_Authority">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Testing/Certify Authority</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Certification_Authority}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="RegistrationAuthorityName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Registration Authority</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.RegistrationAuthorityName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ProgramFocusName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Program Focus</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.ProgramFocusName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineesPerClass">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual Trainees</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TraineesPerClass}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Gender">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Class Gender Male/Female/Mix</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Gender}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Duration">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Training Duration (Months)</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Duration}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TotalTrainingHours">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Total Training Hours</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TotalTrainingHours}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="StartDate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.StartDate | date:environment.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EndDate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Completion Date</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.EndDate | date:environment.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassStartTime">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Class Start Time</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.ClassStartTime | date:'shortTime'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassEndTime">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Class End Time</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.ClassEndTime | date:'shortTime'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TotalTraineeProfilesReceived">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Total Trainee Profiles Received</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TotalTraineeProfilesReceived}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EnrolledTrainees">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Enrolled Trainees</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.EnrolledTrainees}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeProfileReceivedDate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Profile Received Date</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TraineeProfileReceivedDate| date:environment.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="RTP">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> RTP Received</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.RTP}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CompletionReportStatus">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Completion Report Status</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.CompletionReportStatus}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Remarks">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Remarks</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.Remarks}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MinHoursPerMonth">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Contractual Class Hours</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.MinHoursPerMonth}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TradeGroup">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Trade Group</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.TradeGroup}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="WhoIsDeliveringTraining">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Who is Delivering Training?</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.WhoIsDeliveringTraining}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="InceptionReportDueOn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Inception Report Due On</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.InceptionReportDueOn | date:environment.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="StudentProfileOverDueOn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Student Profile Overdue on</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.StudentProfileOverDueOn | date:environment.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CompletionReportDue">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Completion Report Due</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.CompletionReportDue | date:environment.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="InceptionReportReceived">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Inception Report Received</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.InceptionReportReceived}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="InceptionReportDeliveredToTPM">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Inception Report Delivered To TPM</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.InceptionReportDeliveredToTPM}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="DateOfDeliveryToTPM">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Date of Delivery To TPM</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.DateOfDeliveryToTPM| date:environment.DateFormat}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeProfilesReceived">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Profiles Received</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.TraineeProfilesReceived}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassID_U">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>ClassID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.ClassID_U}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SchemeID_U">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.SchemeID_U}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPID_U">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>TSP ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.TSPID_U}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SchemeType">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Type</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.SchemeType}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EmploymentInvoiceStatus">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Employment Invoice Status</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.EmploymentInvoiceStatus}} </mat-cell>
+                </ng-container>
+                <!--<ng-container matColumnDef="CompletionReportStatus">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Completion Report Status</mat-header-cell>
+    <mat-cell *matCellDef="let Row"><mat-checkbox [checked]="Row.CompletionReportStatus">CompletionReportStatus</mat-checkbox>  </mat-cell>
+  </ng-container>-->
+                <!--<ng-container matColumnDef="Remarks">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Remarks</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.Remarks}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="SchemeType">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> SchemeType</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.SchemeType}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="ContractualClassHours">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> ContractualClassHours</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.ContractualClassHours}} </mat-cell>
+  </ng-container>-->
+                <!--<ng-container matColumnDef="EmploymentInvoiceStatus">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> EmploymentInvoiceStatus</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.EmploymentInvoiceStatus}} </mat-cell>
+  </ng-container>-->
+                <ng-container matColumnDef="Sector">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Sector </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Sector}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="OverallEmploymentCommitment">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Overall Employment Commitment</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.OverallEmploymentCommitment}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MinimumEducation">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Minimum Education</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.MinimumEducation}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Organization">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Organization</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Organization}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TradeCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Trade Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TradeCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Cluster">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Cluster </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.Cluster}} </mat-cell>
+                </ng-container>
+                <!--<ng-container matColumnDef="KamID">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> KAM</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.KamID}} </mat-cell>
+  </ng-container>-->
+                <ng-container matColumnDef="UserName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> KAM</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.UserName}} </mat-cell>
+                </ng-container>
+                <!--<ng-container matColumnDef="UserLevel">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> UserLevel</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.UserLevel}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="Role">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Role</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.Role}} </mat-cell>
+  </ng-container>-->
+                <ng-container matColumnDef="InstructorName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Name of Trainer</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.InstructorName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="InstructorCNIC">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC of Trainer</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.InstructorCNIC}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPNTN">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP NTN </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TSPNTN}} </mat-cell>
+                </ng-container>
+                
+                <ng-container matColumnDef="FundingCategoryName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Project </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.FundingCategoryName}} </mat-cell>
+                </ng-container>
+                
+                <ng-container matColumnDef="IsDVV">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Is DVV </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.IsDVV}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="TotalClassDays">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Total Class Days </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TotalClassDays}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="DayNames">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Days </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.DayNames}} </mat-cell>
+                </ng-container>
+
+                     <ng-container matColumnDef="SourceOfCurriculum">
+                       <mat-header-cell *matHeaderCellDef mat-sort-header> Source Of Curriculum </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.SourceOfCurriculum}} </mat-cell>
+                </ng-container>
+                     <ng-container matColumnDef="PaymentSchedule">
+                       <mat-header-cell *matHeaderCellDef mat-sort-header> Payment Schedule </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.PaymentSchedule}} </mat-cell>
+                </ng-container>
+               
+
+                <!--<ng-container matColumnDef="InActive">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+    <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+  </ng-container>-->
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">
+                    <button *ngIf="Row.UserID == this.userid" matTooltip="Add Visit Plan" mat-icon-button color="primary" (click)="openDialog(Row.ClassID)">
+
+                      <!--*ngIf="Row.UserLevel != LoggedInUserLevel || Row.UserLevel == 1"-->
+                      <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
+                    </button>
+                    <!--<button *ngIf="Row.UserLevel == LoggedInUserLevel && LoggedInUserLevel == 3 " matTooltip="Visit Plan" mat-icon-button color="primary" (click)="openTPMDialog(Row.UserLevel)">
+        <mat-icon aria-label="Edit this row">description</mat-icon>
+      </button>-->
+                  </mat-cell>
+
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" tabindex="0"></mat-row>
+                <!--<mat-header-row *matHeaderRowDef="displayedTPMColumns"></mat-header-row>
+  <mat-row *ngIf="Row.UserID == 17" *matRowDef="let row; columns: displayedTPMColumns;"></mat-row>-->
+
+              </mat-table>
+              <mat-paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!--*ngIf="Row.RoleId == TpmID || Row.UserID == 2"-->

@@ -1,0 +1,54 @@
+<h1 mat-dialog-title>Verify Your Offered Amount </h1>
+<div mat-dialog-content>
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <mat-card-content>
+          <div>
+            <form #myForm="ngForm" novalidate [formGroup]="benchmarkingverificationform" (submit)="benchmarkingverificationform.valid">
+              <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="OfferedAmount" placeholder="Offered Amount" matInput maxlength="250" />
+                    <mat-label>Offered Amount</mat-label>
+                    <!--<mat-error *ngIf="GenderName.invalid && GenderName.errors.required">Gender Name is <strong>required</strong></mat-error>-->
+                  </mat-form-field>
+                </div>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <!--<div class="row">
+        <div class="col-6">
+          <label>Trainee Code</label>
+          <span>{{data.TraineeCode}}</span>
+        </div>
+        <div class="col-6">
+          <label>Trainee Name</label>
+          <span>{{data.TraineeName}}</span>
+        </div>
+      </div>-->
+      <!--<table class=" table" style="width:100%;">
+        <tr>
+          <th>Offered Amount</th>
+          <td>{{data.OfferedAmount}}</td>
+        </tr>
+        <tr>
+
+          <form>
+            <mat-form-field fxFlex>
+              <input type="text" placeholder="OfferedAmount" [value]="OfferedAmount" matInput maxlength="250" />
+              <mat-label>Offered Amount</mat-label>
+            </mat-form-field>
+          </form>
+        </tr>
+
+      </table>-->
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="CloseDialogueBox()" cdkFocusInitial>No Thanks</button>
+  <button mat-button (click)="[Submit(myForm), CloseDialogueBox()]">Save</button>
+</div>

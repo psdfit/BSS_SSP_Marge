@@ -1,0 +1,1436 @@
+<div id="product-casting-page" class="comp-main-div">
+
+  <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
+
+    <mat-tab label="Examination">
+
+      <div class="row">
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID"  (openedChange)="EmptyCtrl($event)" (selectionChange)="[getPBTEStatsData(),getPBTESelectedSubTabData()]" id="SchemeId" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID"  (openedChange)="EmptyCtrl($event)" (selectionChange)="[getPBTEStatsData(),getPBTESelectedSubTabData()]" id="TspId" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let s of TSPDetail | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Class" [(ngModel)]="filters.ClassID"  (openedChange)="EmptyCtrl($event)" (selectionChange)="[getPBTEStatsData(),getPBTESelectedSubTabData()]" id="ClassId">
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Trade" [(ngModel)]="filters.TradeID"  (openedChange)="EmptyCtrl($event)" (selectionChange)="[getPBTEStatsData(),getPBTESelectedSubTabData()]" id="tradeid">
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTrade" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let item of Trade | like:['TradeName',SearchTrade.value]" [value]="item.TradeID">{{item.TradeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="District" [(ngModel)]="filters.DistrictID"  (openedChange)="EmptyCtrl($event)" (selectionChange)="[getPBTEStatsData(),getPBTESelectedSubTabData()]" id="districtid">
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchDistrict" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let item of District | like:['DistrictName',SearchDistrict.value]" [value]="item.DistrictID">{{item.DistrictName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <button class="btn btn-success" mat-raised-button (click)="ResetFilters()">Clear Filters</button>
+
+        </div>
+      </div>
+      <div>
+        <mat-card class="home-grid">
+          <mat-card-content>
+            <div>
+              <div fxLayout="column">
+                <mat-grid-list cols="4" *ngFor="let tile of pbteStats" rowHeight="100px">
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.ClassesCount}}
+                      </h1>
+                      <span>Total Class(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right green">
+                      <img src="../../assets/images/scheme.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.TSPsCount}}
+                      </h1>
+                      <span> Total TSP(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right pink">
+                      <img src="../../assets/images/vendor.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.TraineesCount}}
+                      </h1>
+                      <span> Total Trainee(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right orange">
+                      <img src="../../assets/images/classes.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.DropOutTraineesCount}}
+                      </h1>
+                      <span>DropOut Trainee(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right blue">
+
+                      <img src="../../assets/images/training.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+
+                </mat-grid-list>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-tab-group  #tabGroupS (selectedTabChange)="[getPBTESelectedSubTabData()]">
+
+        <mat-tab label="Classes">
+          <mat-card>
+            <mat-card-content>
+              <div id="PBTE-page" class="comp-main-div">
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Examination Classes</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="pbteClasses" #SortClass="matSort" #exporter="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="SchemeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">
+                          <a class="myAnchor"(click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TrainingAddressLocation">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Training Location</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TrainingAddressLocation}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TehsilName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Tehsil of Training Center</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DistrictName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> District of Training Center</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CertAuthName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Testing/Certify Authority</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CertAuthName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineesPerClass">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual Trainees per Class</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineesPerClass}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="GenderName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Class Gender Male/Female/Mix</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StartDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StartDate | date:environment.DateFormat}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="EndDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Completion Date</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.EndDate | date:environment.DateFormat}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Duration">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Training Duration (Months)</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassStatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Class Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassStatusName}} </mat-cell>
+                      </ng-container>
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsClasses"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsClasses;"></mat-row>
+                    </mat-table>
+                    <br />
+
+                    <form>
+                      <button class="btn btn-success" mat-raised-button (click)="exporter.exportTable('xlsx', {fileName:'PBTE-Classes', sheet: 'PBTE-Classes', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>
+
+                      <div class="group" style="padding-left:20%">
+                        <label for="name1">Update College/Course/Course_Category/Scheme/Exam IDs &nbsp;&nbsp;</label>
+                        <input placeholder="Upload Excel File to Create Scheme" type="file" (change)="onFileChange($event)" required>
+                      </div>
+                      <a style="padding-left:20%"  download href="../../../assets/PBTETemplates/pbte_import_classes_template.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>
+
+
+                      <!--<button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetSql('Classes')">Generate Sql Script</button>-->
+
+
+                    </form>
+
+                    <mat-paginator #PageClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </mat-card-content>
+          </mat-card>
+
+        </mat-tab>
+        <mat-tab label="TSPs">
+          <div id="PBTE-page" class="comp-main-div">
+
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Examination TSPs</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="pbteTSPs" #SortTSP="matSort" #exportertsp="matTableExporter" matSort>
+
+                      <!--<ng-container matColumnDef="TSPID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSPID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPID}} </mat-cell>
+                </ng-container>-->
+                      <ng-container matColumnDef="TSPID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Name of TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'">TSP Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" [style.display]="'none'">{{Row.TSPCode}}</mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="ClassID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Address">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Head Office Address</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Address}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Name of Head</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadDesignation">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Designation</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadDesignation}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadEmail">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadEmail}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadLandline">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadLandline}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Website">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Website</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Website}} </mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="OrgLandline">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Landline/Mobile(Organization)</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.OrgLandline}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Name of Contact Person</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPDesignation">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Designation</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPDesignation}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPEmail">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPEmail}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPLandline">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile/Landline</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPLandline}} </mat-cell>
+                      </ng-container>
+
+                      <!--<ng-container matColumnDef="ClassID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="StartDate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.StartDate}} </mat-cell>
+                </ng-container>-->
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsTsps"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsTsps;"></mat-row>
+                    </mat-table>
+
+                    <br />
+
+                    <form>
+                      <button style="float:left" class="btn btn-success" mat-raised-button (click)="exportertsp.exportTable('xlsx', {fileName:'PBTE-TSPs', sheet: 'PBTE-TSPs', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>
+
+                      <!--<div class="group" style="padding-left:10%">
+                        <label for="name1">Update PBTE IDs &nbsp;&nbsp;</label>
+                        <input placeholder="Upload Excel File to Create Scheme" type="file" (change)="onTSPFileChange($event)" required>
+                      </div>
+
+                      <a download href="../../../assets/PBTETemplates/pbte_import_tsps.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>-->
+
+                      <!--<button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetSql('TSPs')">Generate Sql Script</button>-->
+
+
+                    </form>
+
+                    <mat-paginator #PageTSP [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>
+        <mat-tab label="Trainees">
+          <div id="PBTE-page" class="comp-main-div">
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Examination Trainees</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="pbteTrainees" #SortTrainee="matSort" #exportertrainee="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> <a class="myAnchor"(click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> <a class="myAnchor" (click)="openTraineeJourneyDialogue(Row.TraineeCode)" style="color: #005b9e;"> {{Row.TraineeCode}} </a></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <!--<ng-container matColumnDef="TraineeID">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee ID</mat-header-cell>
+    <mat-cell *matCellDef="let Row"> {{Row.TraineeID}} </mat-cell>
+  </ng-container>-->
+                      <ng-container matColumnDef="TraineeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'">Trainee Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" [style.display]="'none'">{{Row.TraineeCode}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FatherName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DateOfBirth">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> DOB</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DateOfBirth | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Education">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Qualification</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Education}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeImg">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Image</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"><img [src]="Row.TraineeImg" style="width:40px;height:40px" /></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCNIC">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PBTEID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PBTEID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CollegeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>College ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CollegeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course_CatID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsTrainees"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsTrainees;"></mat-row>
+
+                    </mat-table>
+                    <br />
+                    <form>
+                      <button style="float:left" class="btn btn-success" mat-raised-button (click)="generateTraineeExcel('PBTE-Trainees')">Export to Excel</button>
+
+                      <!--<div class="group" style="margin-left:6%">
+                        <label for="name1">Update PBTE_Results</label>
+                        <input id="name1" name="name1" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onTraineeResultFileChange($event)" required>
+                      </div>-->
+                      <div class="group" style="margin-left:6%">
+                        <label for="name">Update PBTE IDs  &nbsp;&nbsp;</label>
+                        <input id="name" name="name" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onTraineeFileChange($event)" required>
+                      </div>
+
+                      <a download href="../../../assets/PBTETemplates/pbte_import_trainees.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>
+
+                      <button style="float:right" class="btn btn-primary" mat-raised-button (click)="getPBTETraineeExamScriptData()">Examination Sql Script</button>
+                      <button style="float:right;margin-right:20px" class="btn btn-primary" mat-raised-button (click)="GetSql('Trainees')">Students Sql Script</button>
+
+                    </form>
+
+
+                    <mat-paginator #PageTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>
+
+        <mat-tab label="Drop-Out Trainees">
+          <div id="PBTE-page" class="comp-main-div">
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Examination DropOut Trainees</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter id="drop" [dataSource]="pbteDropOutTrainees" #SortDropOutTrainee="matSort" #exporterdropouttrainee="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <!--<ng-container matColumnDef="TraineeID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TraineeID}} </mat-cell>
+                </ng-container>-->
+                      <ng-container matColumnDef="TraineeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FatherName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DateOfBirth">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Date Of Birth</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DateOfBirth | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Education">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Qualification</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Education}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCNIC">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PBTEID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PBTEID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CollegeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>College ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CollegeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StatusName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course_CatID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsDropOutTrainees"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsDropOutTrainees;"></mat-row>
+
+                    </mat-table>
+                    <br />
+                    <form>
+                      <button style="float:left" class="btn btn-success" mat-raised-button (click)="exporterdropouttrainee.exportTable('xlsx', {fileName:'PBTE-DropOut-Trainees', sheet: 'PBTE-DropOut-Trainees', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>
+                      <button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetSql('DropOutTrainees')">Generate Sql Script</button>
+                    </form>
+                    <mat-paginator #PageDropOutTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>
+        <!--<mat-tab label="Trade">
+          <div id="PBTE-page" class="comp-main-div">
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Trades List</span>
+                    <div class="spacer"></div>-->
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  <!--</mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter id="trade" [dataSource]="pbteTrades" #SortTrade="matSort" #exportertrades="matTableExporter" matSort>
+
+
+                      <ng-container matColumnDef="PBTETradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Unique Trade List</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PBTETradeDuration">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Duration</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+                      </ng-container>
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsTrades"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsTrades;"></mat-row>
+
+                    </mat-table>
+                    <br />
+
+                    <form>
+                      <button style="float:left" class="btn btn-success" mat-raised-button (click)="generateExcel()">Export to Excel</button>
+
+                      <div class="group" style="padding-left:10%">
+                        <label for="name1">Update Trade Course IDs &nbsp;&nbsp;</label>
+                        <input placeholder="Upload Excel File to update trade pbte_ids" type="file" (change)="onTradeFileChange($event)" required>
+                      </div>
+                      <a download href="../../../assets/PBTETemplates/pbte_import_trades.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>
+
+                    </form>
+                    <mat-paginator #PageTrade [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>-->
+        <mat-tab label="Exam Result">
+          <div id="PBTE-page" class="comp-main-div">
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer"> Examination Completed Trainees</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="pbteExamResultTrainees" #SortExamResultTrainee="matSort" #exportertrainee="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <!--<ng-container matColumnDef="TraineeID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TraineeID}} </mat-cell>
+                </ng-container>-->
+                      <ng-container matColumnDef="TraineeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StatusName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ResultStatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Result Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ResultStatusName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'">Trainee Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" [style.display]="'none'">{{Row.TraineeCode}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FatherName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DateOfBirth">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> DOB</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DateOfBirth | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Education">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Qualification</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Education}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeImg">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Image</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"><img [src]="Row.TraineeImg" style="width:40px;height:40px" /></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCNIC">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> <a class="myAnchor" (click)="openTraineeJourneyDialogue(Row.TraineeCode)" style="color: #005b9e;"> {{Row.TraineeCode}} </a></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PBTEID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PBTEID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CollegeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>College ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CollegeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course_CatID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsExamResultTrainees"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsExamResultTrainees;"></mat-row>
+
+                    </mat-table>
+                    <br />
+                    <form>
+                      <!--<button style="float:left" class="btn btn-success" mat-raised-button (click)="generateTraineeExcel('PBTE-Trainees')">Export to Excel</button>-->
+
+                      <div class="group" style="margin-left:6%">
+                        <label for="name1">Update PBTE Results &nbsp;&nbsp;</label>
+                        <input id="name1" name="name1" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onTraineeResultFileChange($event)" required>
+                      </div>
+
+                      <a download href="../../../assets/PBTETemplates/pbte_import_trainees - results.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>
+
+                                          <!--<div class="group">
+                        <label for="name">Update PBTE_IDs</label>
+                        <input id="name" name="name" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onTraineeFileChange($event)" required>
+                      </div>
+                      <button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetSql('Trainees')">Generate Sql Script</button>-->
+
+                    </form>
+
+
+                    <mat-paginator #PageExamResultTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>
+
+
+      </mat-tab-group>
+
+
+    </mat-tab>
+    <mat-tab label="NAVTTC">
+
+      <div class="row">
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select #scheme placeholder="Scheme" [(ngModel)]="navttcfilters.SchemeID" (selectionChange)="[getNAVTTCStatsData(),getNAVTTCSelectedSubTabData()]" id="SchemeId" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select #tsp placeholder="TSP" [(ngModel)]="navttcfilters.TSPID" (selectionChange)="[getNAVTTCStatsData(),getNAVTTCSelectedSubTabData()]" id="TspId" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let s of TSPDetail | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Class" [(ngModel)]="navttcfilters.ClassID" (selectionChange)="[getNAVTTCStatsData(),getNAVTTCSelectedSubTabData()]" id="ClassId">
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Trade" [(ngModel)]="navttcfilters.TradeID" (selectionChange)="[getNAVTTCStatsData(),getNAVTTCSelectedSubTabData()]" id="tradeid">
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTrade" autofocus /></mat-optgrp>
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let item of Trade | like:['TradeName',SearchTrade.value]" [value]="item.TradeID">{{item.TradeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="District" [(ngModel)]="navttcfilters.DistrictID" (selectionChange)="[getNAVTTCStatsData(),getNAVTTCSelectedSubTabData()]" id="districtid">
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchDistrict" autofocus /></mat-optgrp>
+
+              <mat-option value="0">--All--</mat-option>
+              <mat-option *ngFor="let item of District | like:['DistrictName',SearchDistrict.value]" [value]="item.DistrictID">{{item.DistrictName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <button class="btn btn-success" mat-raised-button (click)="ResetFilters()">Clear Filters</button>
+
+        </div>
+
+      </div>
+      <div>
+        <mat-card class="home-grid">
+          <mat-card-content>
+            <div>
+              <div fxLayout="column">
+                <mat-grid-list cols="4" *ngFor="let tile of navttcStats" rowHeight="100px">
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.ClassesCount}}
+                      </h1>
+                      <span>Total Class(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right green">
+                      <img src="../../assets/images/scheme.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.TSPsCount}}
+                      </h1>
+                      <span> Total TSP(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right pink">
+                      <img src="../../assets/images/vendor.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.TraineesCount}}
+                      </h1>
+                      <span> Total Trainee(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right orange">
+                      <img src="../../assets/images/classes.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+                  <mat-grid-tile class="row">
+                    <div class="col-sm-8">
+                      <h1>
+                        {{tile.DropOutTraineesCount}}
+                      </h1>
+                      <span>DropOut Trainee(s)</span>
+                    </div>
+                    <div class="col-sm-4 text-right blue">
+
+                      <img src="../../assets/images/training.png" alt="" />
+                    </div>
+                  </mat-grid-tile>
+
+                </mat-grid-list>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-tab-group #tabGroupN (selectedTabChange)="[getNAVTTCSelectedSubTabData()]">
+
+        <mat-tab label="Classes">
+          <mat-card>
+            <mat-card-content>
+              <div id="PBTE-page" class="comp-main-div">
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">NAVTTC Classes</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="navttcClasses" #SortNavttcClass="matSort" #navttcexporter="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="SchemeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row">{{Row.ClassCode}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TrainingAddressLocation">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Training Location</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TrainingAddressLocation}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TehsilName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Tehsil of Training Center</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DistrictName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> District of Training Center</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CertAuthName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Testing/Certify Authority</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CertAuthName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineesPerClass">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual Trainees per Class</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineesPerClass}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="GenderName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Class Gender Male/Female/Mix</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StartDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StartDate | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="EndDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Completion Date</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.EndDate | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Duration">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Training Duration (Months)</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ClassStatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Class Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassStatusName}} </mat-cell>
+                      </ng-container>
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsClasses"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsClasses;"></mat-row>
+                    </mat-table>
+                    <br />
+
+                    <form>
+                      <button class="btn btn-success" mat-raised-button (click)="navttcexporter.exportTable('xlsx', {fileName:'NAVTTC-Classes', sheet: 'NAVTTC-Classes', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>
+
+                      <div class="group" style="padding-left:10%">
+                        <label for="name1">Update NAVTTC IDs &nbsp;&nbsp;</label>
+                        <input placeholder="Upload Excel File to Create Scheme" type="file" (change)="onNAVTTCFileChange($event)" required>
+                      </div>
+
+                      <a download href="../../../assets/PBTETemplates/navttc_import_classes.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>
+
+                      <!--<button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetNAVTTCSql('Classes')">Generate Sql Script</button>-->
+
+
+                    </form>
+
+                    <mat-paginator #PageNavttcClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </mat-card-content>
+          </mat-card>
+
+        </mat-tab>
+        <mat-tab label="TSPs">
+          <div id="PBTE-page" class="comp-main-div">
+
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">NAVTTC TSPs</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="navttcTSPs" #SortNavttcTSP="matSort" #navttcexportertsp="matTableExporter" matSort>
+
+                      <!--<ng-container matColumnDef="TSPID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSPID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPID}} </mat-cell>
+                </ng-container>-->
+                      <ng-container matColumnDef="TSPID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Name of TSP</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TSPCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'">TSP Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" [style.display]="'none'">{{Row.TSPCode}}</mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="ClassID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Address">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Address}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Name of Head</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadDesignation">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Designation</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadDesignation}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadEmail">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadEmail}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="HeadLandline">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.HeadLandline}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Website">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Website</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Website}} </mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="OrgLandline">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Landline/Mobile(Organization)</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.OrgLandline}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Name of Contact Person</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPDesignation">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Designation</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPDesignation}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPEmail">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPEmail}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CPLandline">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile/Landline</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CPLandline}} </mat-cell>
+                      </ng-container>
+
+                      <!--<ng-container matColumnDef="ClassID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="StartDate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.StartDate}} </mat-cell>
+                </ng-container>-->
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsTsps"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsTsps;"></mat-row>
+                    </mat-table>
+
+                    <br />
+
+                    <form>
+                      <button style="float:left" class="btn btn-success" mat-raised-button (click)="navttcexportertsp.exportTable('xlsx', {fileName:'NAVTTC-TSPs', sheet: 'NAVTTC-TSPs', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>
+
+                      <!--<div class="group" style="padding-left:10%">
+                        <label for="name1">Update NAVTTC IDs &nbsp;&nbsp;</label>
+                        <input placeholder="Upload Excel File to Create Scheme" type="file" (change)="onNAVTTCTSPFileChange($event)" required>
+                      </div>
+
+                      <a download href="../../../assets/PBTETemplates/navttc_import_tsps.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>
+
+                      <button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetNAVTTCSql('TSPs')">Generate Sql Script</button>-->
+
+
+                    </form>
+
+                    <mat-paginator #PageNavttcTSP [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>
+        <mat-tab label="Trainees">
+          <div id="PBTE-page" class="comp-main-div">
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">NAVTTC Trainees</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="navttcTrainees" #SortNavttcTrainee="matSort" #navttcexportertrainee="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <!--<ng-container matColumnDef="TraineeID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TraineeID}} </mat-cell>
+                </ng-container>-->
+                      <ng-container matColumnDef="TraineeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'">Trainee Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" [style.display]="'none'">{{Row.TraineeCode}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FatherName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DateOfBirth">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> DOB</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DateOfBirth | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Education">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Qualification</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Education}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeImg">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Image</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"><img [src]="Row.TraineeImg" style="width:40px;height:40px" /></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCNIC">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCode}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PBTEID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PBTEID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CollegeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>College ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CollegeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course_CatID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsTrainees"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsTrainees;"></mat-row>
+
+                    </mat-table>
+                    <br />
+                    <form>
+                      <button style="float:left" class="btn btn-success" mat-raised-button (click)="generateTraineeExcel('NAVTTC-Trainees')">Export to Excel</button>
+
+                                        <!--<div class="group" style="margin-left:6%">
+                      <label for="name1">Update NAVTTC Results</label>
+                      <input id="name1" name="name1" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onNAVTTCTraineeResultFileChange($event)" required>
+                    </div>-->
+                      <div class="group" style="padding-left:10%">
+                        <label for="name">Update Trainees District IDs &nbsp;&nbsp;</label>
+                        <input id="name" name="name" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onNAVTTCTraineeFileChange($event)" required>
+                      </div>
+                      <a download href="../../../assets/PBTETemplates/navttc_import_trainees.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>
+
+                      <button style="float:right" class="btn btn-primary" mat-raised-button (click)="getNAVTTCTraineeSqlScriptData()">Trainee Sql Script</button>
+                      <button style="float:right;margin-right:20px" class="btn btn-primary" mat-raised-button (click)="getNAVTTCTraineeRegisterSqlScriptData()"> Registeration Script</button>
+
+                    </form>
+
+
+                    <mat-paginator #PageNavttcTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>
+
+        <mat-tab label="Drop-Out Trainees">
+          <div id="PBTE-page" class="comp-main-div">
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">NAVTTC DropOut Trainees</span>
+                    <div class="spacer"></div>
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  </mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter id="drop" [dataSource]="navttcDropOutTrainees" #SortNavttcDropOutTrainee="matSort" #navttcexporterdropouttrainee="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>
+                      <!--<ng-container matColumnDef="TraineeID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TraineeID}} </mat-cell>
+                </ng-container>-->
+                      <ng-container matColumnDef="TraineeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FatherName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DateOfBirth">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Date Of Birth</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DateOfBirth | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Education">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Qualification</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Education}} </mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="TraineeCNIC">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PBTEID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PBTEID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CollegeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>College ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CollegeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StatusName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course_CatID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsDropOutTrainees"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsDropOutTrainees;"></mat-row>
+
+                    </mat-table>
+                    <br />
+                    <form>
+                      <button style="float:left" class="btn btn-success" mat-raised-button (click)="navttcexporterdropouttrainee.exportTable('xlsx', {fileName:'NAVTTC-DropOut-Trainees', sheet: 'NAVTTC-DropOut-Trainees', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>
+                      <button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetNAVTTCSql('DropOutTrainees')">Generate Sql Script</button>
+                    </form>
+                    <mat-paginator #PageNavttcDropOutTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>
+
+        <!--<mat-tab label="Exam Result">
+          <div id="PBTE-page" class="comp-main-div">
+
+            <mat-divider></mat-divider>
+
+            <mat-card>
+              <mat-card-content>
+                <div>
+                  <mat-toolbar color="accent" class=" slim slim">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">NAVTTC Completed Trainees</span>
+                    <div class="spacer"></div>-->
+                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                  <!--</mat-toolbar>
+                  <div class="table-responsive">
+                    <mat-table matTableExporter [dataSource]="navttcExamResultTrainees" #SortNavttcTrainee="matSort" #navttcexportertrainee="matTableExporter" matSort>
+
+                      <ng-container matColumnDef="ClassCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Batch">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+                      </ng-container>-->
+                      <!--<ng-container matColumnDef="TraineeID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TraineeID}} </mat-cell>
+                </ng-container>-->
+                      <!--<ng-container matColumnDef="TraineeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="StatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.StatusName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="ResultStatusName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Result Status</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.ResultStatusName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCode">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header [style.display]="'none'">Trainee Code</mat-header-cell>
+                        <mat-cell *matCellDef="let Row" [style.display]="'none'">{{Row.TraineeCode}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="FatherName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Father Name</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="DateOfBirth">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> DOB</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.DateOfBirth | date}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="Education">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Qualification</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.Education}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeImg">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Image</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"><img [src]="Row.TraineeImg" style="width:40px;height:40px" /></mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeCNIC">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TraineeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TraineeCode}}</mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="PBTEID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.PBTEID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="CollegeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>College ID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.CollegeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeID">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course_CatID</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeID}} </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="TradeName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Course</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                      </ng-container>
+
+                      <mat-header-row *matHeaderRowDef="displayedColumnsExamResultTrainees"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumnsExamResultTrainees;"></mat-row>
+
+                    </mat-table>
+                    <br />
+                    <form>-->
+                      <!--<button style="float:left" class="btn btn-success" mat-raised-button (click)="generateTraineeExcel('NAVTTC-Trainees')">Export to Excel</button>-->
+
+                      <!--<div class="group" style="margin-left:6%">
+                        <label for="name1">Update NAVTTC Results &nbsp;&nbsp;</label>
+                        <input id="name1" name="name1" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onNAVTTCTraineeResultFileChange($event)" required>
+                      </div>
+
+                      <a download href="../../../assets/PBTETemplates/navttc_import_trainees - results -for PBTE -.xlsx">
+                        <mat-icon matTooltip="Download Template to upload file">get_app</mat-icon>
+                      </a>-->
+                      <!--<div class="group">
+                        <label for="name">Update NAVTTC_IDs</label>
+                        <input id="name" name="name" placeholder="Upload Excel File to Create Scheme" type="file" (change)="onNAVTTCTraineeFileChange($event)" required>
+                      </div>
+                      <button style="float:right" class="btn btn-primary" mat-raised-button (click)="GetNAVTTCSql('Trainees')">Generate Sql Script</button>-->
+
+                    <!--</form>
+
+
+                    <mat-paginator #PageNAVTTCExamResultTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </mat-tab>-->
+
+
+
+      </mat-tab-group>
+
+
+    </mat-tab>
+
+  </mat-tab-group>
+
+</div>
+
+
+
+

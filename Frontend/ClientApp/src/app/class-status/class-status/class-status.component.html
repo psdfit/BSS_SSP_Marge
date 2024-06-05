@@ -1,0 +1,124 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer"> Class Statuses Update </span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+
+      <div class="row">
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl($event)" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl($event)" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+
+              <mat-option *ngFor="let s of tspDetailArray | where:['SchemeID',schemeFilter.value] | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl($event)" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let item of classesArray | where:['TSPID',tspFilter.value] | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div fxLayout="column" class="table-responsive">
+        <mat-table [dataSource]="Class" matSort class="table table-bordered">
+
+          <!--<ng-container matColumnDef="Action" sticky>
+            <mat-header-cell *matHeaderCellDef>Change Status</mat-header-cell>
+            <mat-cell *matCellDef="let Row; let index=index">
+              <mat-select (selectionChange)="UpdateClassStatus($event, Row.ClassID)">
+                <mat-option *ngFor="let p of ClassStatuses" [value]="p.ClassStatusID">
+                  {{p.ClassStatusName}}
+                </mat-option>
+              </mat-select>
+            </mat-cell>
+          </ng-container>-->
+
+          <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef> Change Status </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              <a mat-button color="primary" *ngIf="formrights.CanEdit" title="Update Status" (click)="openDialog(row)">Update Status</a>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="ClassCode">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> ClassCode</mat-header-cell>
+            <mat-cell *matCellDef="let Row"><a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="Duration">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Duration</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="StartDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> StartDate</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.StartDate | date}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="EndDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> EndDate</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.EndDate | date}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="TrainingAddressLocation">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Address</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.TrainingAddressLocation}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="TradeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="GenderName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Gender</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="TraineesPerClass">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainees Per Class</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.TraineesPerClass}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="TehsilName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Tehsil Name</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="CertAuthName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Certification Authority</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.CertAuthName}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="ClassStatusName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Class Status</mat-header-cell>
+            <mat-cell *matCellDef="let Row"> {{Row.ClassStatusName}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumnsClass"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumnsClass"></mat-row>
+        </mat-table>
+        <mat-paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+
+    </div>
+  </mat-card-content>
+</mat-card>

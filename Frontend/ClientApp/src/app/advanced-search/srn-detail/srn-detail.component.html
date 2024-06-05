@@ -1,0 +1,92 @@
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">SRN Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <thead>
+            <tr>
+              <th class="number-align-center">Sr#</th>
+              <th>Actions</th>
+              <th>TSP Name</th>
+              <th>Class Code</th>
+              <th>Trade</th>
+              <th>Batch</th>
+              <th>Report Date</th>
+              <th>Month</th>
+              <th>District</th>
+              <!--<th>Number Of Months</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let r of SRN; let i=index">
+              <tr>
+                <td class="number-align-center">{{i+1}}</td>
+                <td>
+                  <a mat-button color="primary" (click)="getSRNDetails(r)">
+                    Details<mat-icon>{{r.SRNDetail ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                  </a>
+                </td>
+                <td>{{r.TSPName}}</td>
+                <td>{{r.ClassCode}}</td>
+                <td>{{r.TradeName}}</td>
+                <td class="number-align-center">{{r.Batch}}</td>
+                <td class="number-align-center">{{r.ReportDate | date:environment.MonthFormat}}</td>
+                <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                <td>{{r.TrainingDistrict}}</td>
+                <!--<td class="number-align-center">{{r.NumberOfMonths}}</td>-->
+              </tr>
+              <tr *ngIf="r.SRNDetail">
+                <td colspan="10">
+                  <div>
+                    <table class="table table-bordered" style="color:lightslategrey">
+                      <thead>
+                        <tr>
+                          <th>Sr#</th>
+                          <th>Trainee Code</th>
+                          <th>Trainee Name</th>
+                          <th>Father Name</th>
+                          <th>Trainee CNIC</th>
+                          <th>Contact Number</th>
+                          <!--<th>Report Id</th>-->
+                          <th>Amount</th>
+                          <th>Token Number</th>
+                          <th>Transaction Number</th>
+                          <th>Comments</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <ng-container *ngFor="let c of r.SRNDetail; let i_d=index">
+                          <!--<tr *ngIf="c.Comments != 'Stipend Withheld till Trainee Verification'">-->
+                          <tr>
+                            <td>{{i_d+1}}</td>
+                            <td>{{c.TraineeCode}}</td>
+                            <td>{{c.TraineeName}}</td>
+                            <td>{{c.FatherName}}</td>
+                            <td class="number-align-center">{{c.TraineeCNIC}}</td>
+                            <td class="number-align-center">{{c.ContactNumber1 | phoneNumber:environment.Mobile}}</td>
+                            <!--<td >{{c.ReportId}}</td>-->
+                            <td class="decimal-align-right">{{c.Amount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{c.TokenNumber}}</td>
+                            <td class="number-align-center">{{c.TransactionNumber}}</td>
+                            <td>{{c.Comments}}</td>
+                            <td class="number-align-center">{{c.IsPaid?"Redeemed":"Pending"}}</td>
+                          </tr>
+                        </ng-container>
+
+
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              <!--Nested Grid ends here-->
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

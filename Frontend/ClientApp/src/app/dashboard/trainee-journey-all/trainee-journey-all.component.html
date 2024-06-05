@@ -1,0 +1,92 @@
+<div id="dashboard-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content >
+      <div>
+        <mat-toolbar color="accent" class="slim slim">
+          <span class="spacer">Trainee Journey</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Select Trade" [(ngModel)]="selectedValueTrade" (selectionChange)="onChangeTrade($event)" (openedChange)="EmptyCtrl('Trade')" matInput>
+                    <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTrade" autofocus /></mat-optgrp>
+                    <mat-option value="" selected>--All--</mat-option>
+                    <mat-option *ngFor="let s of Trades | like:['tradeName',SearchTrade.value]" [value]="s.tradeID">{{s.tradeName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Select Cluster" [(ngModel)]="selectedValueCluster" (selectionChange)="onChangeCluster($event)" (openedChange)="EmptyCtrl('Cluster')" matInput>
+                    <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCluster" autofocus /></mat-optgrp>
+                    <mat-option value="" selected>--All--</mat-option>
+                    <mat-option *ngFor="let s of Clusters | like:['ClusterName',SearchCluster.value]" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Select District" [(ngModel)]="selectedValueDistrict" (selectionChange)="onChangeDistrict($event)" (openedChange)="EmptyCtrl('District')" matInput>
+                    <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchDistrict" autofocus /></mat-optgrp>
+                    <mat-option value="0" selected>--All--</mat-option>
+                    <mat-option *ngFor="let s of Districts | like:['DistrictName',SearchDistrict.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Select Program" [(ngModel)]="selectedValueProgram" (selectionChange)="onChangeProgram($event)" (openedChange)="EmptyCtrl('District')" matInput>
+                    <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchProgram" autofocus /></mat-optgrp>
+                    <mat-option value="0" selected>--All--</mat-option>
+                    <mat-option *ngFor="let s of Programs | like:['PTypeName',SearchProgram.value]" [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Select Scheme" [(ngModel)]="selectedValueScheme" (selectionChange)="onChangeScheme($event)" (openedChange)="EmptyCtrl('District')" matInput>
+                    <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchScheme" autofocus /></mat-optgrp>
+                    <mat-option value="0" selected>--All--</mat-option>
+                    <mat-option *ngFor="let s of Schemes | like:['SchemeName',SearchScheme.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Select TSP" [(ngModel)]="selectedValueTSP" (selectionChange)="onChangeTSP($event)" (openedChange)="EmptyCtrl('District')" matInput>
+                    <mat-optgrp disabled> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                    <mat-option value="0" selected>--All--</mat-option>
+                    <mat-option *ngFor="let s of TSPs | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-label>Duration Start</mat-label>
+                  <input matInput [matDatepicker]="pickerStart" [(ngModel)]="selectedValueStart" readonly (dateChange)="onChangeStartDate($event)">
+                  <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStart></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-label>Duration End</mat-label>
+                  <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="selectedValueEnd" readonly (dateChange)="onChangeEndDate($event)">
+                  <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEnd></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+      </div>
+      <div class="journey-chart">
+        <div id="container"></div>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</div>

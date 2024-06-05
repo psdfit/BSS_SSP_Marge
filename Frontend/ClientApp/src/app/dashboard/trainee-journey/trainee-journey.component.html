@@ -1,0 +1,47 @@
+<div id="dashboard-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Trainee Journey</span>
+        <div class="spacer"></div>
+        <a *ngIf="CloseButtonHide" style="cursor: pointer;">
+          <div class="spacer" style="padding-left: 75%;">
+            <mat-icon style="color: white;" (click)="onNoClick()" class="material-icons">close</mat-icon>
+          </div>
+        </a>
+      </mat-toolbar>
+      <div *ngIf="this.currentUser.UserLevel!=4 && CloseButtonHide == false">
+        <form novalidate #myForm="ngForm" [formGroup]="traineeform" autocomplete="off" (submit)="Submit(myForm)">
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="TraineeCode" placeholder="Trainee Code" matInput maxlength="250" />
+                <mat-label>Trainee Code</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field fxFlex><input matInput type="text" formControlName="TraineeCNIC" placeholder="_____-_______-_"[imask]="{mask:'00000-0000000-0'}" [unmask]="false" />
+                <mat-label>CNIC</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" style="margin-top:20px;">
+              <button mat-raised-button color="primary" matTooltip="Click to Search" attr.aria-label="Click to Search" type="submit">
+                <mat-icon>search</mat-icon>Search
+              </button>&nbsp;&nbsp;
+              <!--<button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+            attr.aria-label="Click to Reset form data" type="reset" (click)="reset(myForm)" [disabled]="working">
+      <mat-icon>close</mat-icon> Reset
+    </button>-->
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+
+      <div id="container" style="width:100%;"></div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,57 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Deletion</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+        <div class="table-responsive" *ngIf="ClassData" style="width:100%;">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Actions</th>
+
+                <th>Month </th>
+                <th>Invoice Type   </th>
+                <th>MPR      </th>
+                <th>PRN (Regular/Completion/Final)      </th>
+                <th>Invoice (Regular/Completion/Final)</th>
+
+                <th>SRN</th>
+                <th>PO</th>
+                <th>Invoice (SRN)</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr *ngFor="let Inv of ClassData">
+                <td>
+                  <a mat-button color="primary" (click)="openApprovalDialogue(Inv)">
+                    Decision
+                  </a>
+                </td>
+
+                <td>{{Inv.Month| date:environment.DateFormat}}</td>
+                <td>{{Inv.InvoiceType}}   </td>
+                <td>
+                  {{Inv.MPRID>0?'Yes':'No'}}
+                </td>
+                <td>
+                  {{Inv.PRNID>0?'Yes':'No'}}
+                </td>
+                <td>{{Inv.Invoices>0?'Yes':'No'    }}</td>
+
+                <td>{{Inv.SRNID>0?'Yes':'No'       }} </td>
+                <td>{{Inv.POLineID>0?'Yes':'No'    }}</td>
+                <td>{{Inv.SRNInvoice>0?'Yes':'No'  }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

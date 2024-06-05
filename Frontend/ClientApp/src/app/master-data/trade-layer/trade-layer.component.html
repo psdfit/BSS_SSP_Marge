@@ -1,0 +1,403 @@
+<div id="Trade-page" class="comp-main-div">
+    <mat-card>
+        <mat-card-content>
+            <mat-tab-group #tabGroup mat-align-tabs="start">
+                <mat-tab label="Trade List">
+                    <div>
+                        <mat-toolbar color="accent" class=" slim slim">
+                            <mat-icon class="material-icons">view_comfy</mat-icon>
+                            <span class="spacer">View  Trade All</span>
+                            <div class="spacer"></div>
+                            <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)"
+                                class="search" />
+                                <button mat-raised-button color="success" style="float:right;margin: 0px 5px;"
+                                (click)="TradeLayerExcelExport()">Export Excel</button>
+                                
+                        </mat-toolbar>
+                        <div class="table-responsive">
+                            <mat-table [dataSource]="trade" matSort>
+                                <ng-container matColumnDef="TradeName">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trade Name</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="TradeCode">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> TradeCode</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.TradeCode}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="SAPID">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>SAP Code</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.SAPID}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="SectorID">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Sector </mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.SectorName}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="SubSectorID">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Sub Sector </mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.SubSectorName}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="TradeEducationTypeID">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Entry Level
+                                        Trainee</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.TradeEducationTypeID}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="Duration">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Duration</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="TotalTrainingHours">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Total Training
+                                        Hours</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.TotalTrainingHours}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="DailyTrainingHours">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Daily Training
+                                        Hours</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.DailyTrainingHours}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="WeeklyTrainingHours">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Weekly Training
+                                        Hours</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.WeeklyTrainingHours}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="PracticalPercentage">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Practical
+                                        Percentage</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.PracticalPercentage}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="TheoryPercentage">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Theory
+                                        Percentage</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.TheoryPercentage}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="CertificationCategoryID">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> CertificationCategoryID
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.CertificationCategoryName}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="EquipmentTools">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Tools and
+                                        Equipmentde</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.EquipmentTools}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="ConsumableMaterial">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Consumable
+                                        Material</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.ConsumableMaterial}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="TraineeEducationTypeID">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainer
+                                        Qualification</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.TraineeEducationTypeID}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="SourceOfCurriculum">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Source Of
+                                        Curriculum</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row"> {{Row.SourceOfCurriculum}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="Action">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trade Detail</mat-header-cell>
+                                    <mat-cell *matCellDef="let Row">
+                                        <button mat-icon-button color="primary" matTooltip="View Trade Detail"
+                                             (click)="toggleEdit(Row)">
+                                            <mat-icon _ngcontent-jlq-c384="" role="img"
+                                                class="mat-icon notranslate material-icons mat-icon-no-color"
+                                                aria-hidden="true">control_point</mat-icon>
+                                        </button>
+                                    </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                            </mat-table>
+                            <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Trade Layer Detail"  *ngIf="isEdit">
+                    <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+                        <mat-icon class="material-icons"> add_circle</mat-icon>
+                        <span class="subheading-1">Trade Detail<strong class="text-danger " *ngIf="!isOpenSubmission">
+                                {{isOpenSubmissionMessage}} </strong> </span>
+                    </mat-toolbar>
+                    <form novalidate #NForm="ngForm" [formGroup]="tradeform">
+                        <fieldset class="border">
+                            <legend>Trade Information</legend>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <mat-form-field fxFlex>
+                                        <input type="text" formControlName="TradeName"
+                                            disabled="true" mdInput name="name"
+                                            placeholder="Trade Name" matInput maxlength="250" required />
+                                        <mat-label>Trade Name</mat-label>
+                                        <mat-error *ngIf="TradeName.invalid && TradeName.errors.required">Trade Name is
+                                            <strong>required</strong></mat-error>
+                                        <mat-error *ngIf="TradeName.invalid && TradeName.errors.duplicate">Trade Name is
+                                            already taken</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <mat-form-field fxFlex>
+                                        <input type="text" formControlName="TradeCode" disabled placeholder="Trade  Code"
+                                            matInput maxlength="250" required
+                                            readonly />
+                                        <mat-error *ngIf="TradeCode.invalid && TradeCode.errors.duplicate">Trade Code is
+                                            already taken</mat-error>
+                                        <mat-label>Trade Code</mat-label>
+                                        <mat-error *ngIf="TradeCode.invalid && TradeCode.errors.required">TradeCode is
+                                            <strong>required</strong></mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field fxFlex>
+                                        <mat-select placeholder="Sector"  [disabled]="true" formControlName="SectorID" id="sectorid"
+                                            matInput required>
+                                            <mat-option *ngFor="let s of Sector"
+                                                [value]="s.SectorID">{{s.SectorName}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="SectorID.invalid && SectorID.errors.required">Sector is
+                                            <strong>required</strong></mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <mat-form-field fxFlex>
+                                        <mat-select placeholder="Sub-Sector" [disabled]="true" formControlName="SubSectorID"
+                                            id="subsectorid" matInput required>
+                                            <mat-option
+                                                *ngFor="let s of SubSector | where :['SectorID', SectorID.value]"
+                                                [value]="s.SubSectorID">{{s.SubSectorName}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="SubSectorID.invalid && SubSectorID.errors.required">SubSector
+                                            is <strong>required</strong></mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <br />
+                        <fieldset class="border">
+                            <legend>
+                                Trade Details
+                            </legend>
+                            <!--<div class="row">-->
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><b>Curriculum Attachment</b></th>
+                                            <th><b>Duration (Months)</b></th>
+                                            <th><b>Total Training Hours</b></th>
+                                            <th><b>Daily Training Hours</b></th>
+                                            <th><b>Weekly Training Hours</b></th>
+                                            <th><b>Certificaion Category</b></th>
+                                            <th><b>Certificaion Authority</b></th>
+                                            <th><b>Source of Curriculum</b></th>
+                                            <th><b>Trainee Qualification</b></th>
+                                            <th><b>Trainee Education Specification</b></th>
+                                            <th><b>Practical Percentage</b></th>
+                                            <th><b>Theory Percentage</b></th>
+                                            <th><b>Trainer Qualification</b></th>
+                                            <th><b>Trainee Education Specification</b></th>
+                                            <th><b>Tools and Equipment</b></th>
+                                            <th><b>Consumable Material</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr [style.background]="c.Dirty? '#FCABAB': ''"
+                                            *ngFor="let c of TradeDetails; let i=index">
+                                            <td>
+                                                <div class="col-sm-12">
+                                                    <h6 style="position: relative;  top: 20px;"
+                                                        *ngIf="!curriculaAttachments.at(i).get('CurriculaAttachment').value">
+                                                        Upload Documents <small class="text-danger"> (Pending) </small>
+                                                    </h6>
+                                                    <a style="position: relative;  top: 20px;"
+                                                        *ngIf="tradeLayerAttachment[i] !=''"
+                                                        (click)="downloadDocument(tradeLayerAttachment[i])"
+                                                        target="_blank" _ngcontent-vbf-c422="" class="border-btn"
+                                                        matTooltip="View Curriculum Attachment">
+                                                        <i _ngcontent-vbf-c422="" class="fas fa-download"></i>
+                                                        Curriculum
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Duration (Months)"
+                                                        [(ngModel)]="c.DurationID" id="durations{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" matInput
+                                                        required>
+                                                        <mat-option *ngFor="let s of DurationList"
+                                                            [value]="s.DurationID">{{s.Duration}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <input type="number" id="totaltraininghours{{i}}"
+                                                        [(ngModel)]="c.TotalTrainingHours"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" min="0"
+                                                        max="9999" oninput="validity.valid||(value='');"
+                                                        placeholder="Total Training Hours" NumberOnly matInput required>
+                                                    <!--<mat-error *ngIf="TotalTrainingHours.invalid && TotalTrainingHours.errors.required">Total Training Hours is <strong>required</strong></mat-error>-->
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <input type="number" id="dailytraininghours{{i}}"
+                                                        [(ngModel)]="c.DailyTrainingHours"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" min="0"
+                                                        max="24" oninput="validity.valid||(value='');"
+                                                        placeholder="Daily Training Hours" NumberOnly matInput required>
+                                                    <!--<mat-error *ngIf="DailyTrainingHours.invalid && DailyTrainingHours.errors.required">Daily Training Hours is <strong>required</strong></mat-error>-->
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <input type="number" id="weeklytraininghours{{i}}"
+                                                        [(ngModel)]="c.WeeklyTrainingHours"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" min="0"
+                                                        max="168" oninput="validity.valid||(value='');"
+                                                        placeholder="Weekly Training Hours" NumberOnly matInput
+                                                        required>
+                                                    <!--<mat-error *ngIf="WeeklyTrainingHours.invalid && WeeklyTrainingHours.errors.required">Weekly Training Hours is <strong>required</strong></mat-error>-->
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Certification Category"
+                                                        [(ngModel)]="c.CertificationCategoryID"
+                                                        id="CertificationCategoryID{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" matInput
+                                                        required>
+                                                        <mat-option *ngFor="let s of CertificationCategory"
+                                                            [value]="s.CertificationCategoryID">{{s.CertificationCategoryName}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Examination Agency"
+                                                        [(ngModel)]="c.CertAuthID" id="certauthid{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" matInput
+                                                        required>
+                                                        <mat-option
+                                                            *ngFor="let s of CertificationAuthority| where :['CertificationCategoryID', c.CertificationCategoryID]"
+                                                            [value]="s.CertAuthID">{{s.CertAuthName}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Source of Curriculum"
+                                                        [(ngModel)]="c.SourceOfCurriculumID"
+                                                        id="sourceofcurriculumid{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" matInput
+                                                        required>
+                                                        <mat-option *ngFor="let s of SourceOfCurriculumList"
+                                                            [value]="s.SourceOfCurriculumID">{{s.Name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Trainee Qualification"
+                                                        [(ngModel)]="c.TraineeEducationTypeID"
+                                                        id="TraineeEducationTypeID{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" matInput
+                                                        required>
+                                                        <mat-option *ngFor="let s of TrainerQualificationList "
+                                                            [value]="s.EducationTypeID">{{s.Education}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Trainee Education Specification"
+                                                        [(ngModel)]="c.TraineeAcademicDisciplineID"
+                                                        id="TraineeAcademicDisciplineID{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true"
+                                                        matInput>
+                                                        <mat-option *ngFor="let s of AcademicDisciplineList "
+                                                            [value]="s.AcademicDisciplineID">{{s.AcademicDisciplineName}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <input type="number" id="practicalpercentage{{i}}"
+                                                        [(ngModel)]="c.PracticalPercentage"
+                                                        [ngModelOptions]="{standalone: true}" min="0" max="100"
+                                                        oninput="validity.valid||(value='');"
+                                                        placeholder="Practical Percentage" [disabled]="true" NumberOnly
+                                                        matInput required>
+                                                    <!--<mat-error *ngIf="PracticalPercentage.invalid && PracticalPercentage.errors.required">Practical Percentage is <strong>required</strong></mat-error>-->
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <input type="number" id="theorypercentage{{i}}"
+                                                        [(ngModel)]="c.TheoryPercentage"
+                                                        [ngModelOptions]="{standalone: true}" min="0" max="100"
+                                                        oninput="validity.valid||(value='');"
+                                                        placeholder="Theory Percentage" [disabled]="true" NumberOnly
+                                                        matInput required>
+                                                    <!--<mat-error *ngIf="TheoryPercentage.invalid && TheoryPercentage.errors.required">Theory Percentage is <strong>required</strong></mat-error>-->
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Trainer Qualification"
+                                                        [(ngModel)]="c.TrainerEducationTypeID"
+                                                        id="TrainerEducationTypeID{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" matInput
+                                                        required>
+                                                        <mat-option *ngFor="let s of TrainerQualificationList "
+                                                            [value]="s.EducationTypeID">{{s.Education}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select placeholder="Trainer Education Specification"
+                                                        [(ngModel)]="c.TrainerAcademicDisciplineID"
+                                                        id="TrainerAcademicDisciplineID{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true"
+                                                        matInput>
+                                                        <mat-option *ngFor="let s of AcademicDisciplineList "
+                                                            [value]="s.AcademicDisciplineID">{{s.AcademicDisciplineName}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select multiple placeholder="Tools and Equipment"
+                                                        [(ngModel)]="c.EquipmentToolID" id="equipmenttoolid{{i}}"
+                                                        [ngModelOptions]="{standalone: true}" [disabled]="true" matInput
+                                                        required>
+                                                        <mat-option *ngFor="let s of EquipmentToolsList"
+                                                            [value]="s.EquipmentToolID">{{s.EquipmentName + ' ['
+                                                            +s.EquipmentQuantity+ ']'}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field fxFlex>
+                                                    <mat-select multiple placeholder="Consumable Material"
+                                                        [(ngModel)]="c.ConsumableMaterialID"
+                                                        id="consumablematerialid{{i}}" [disabled]="true"
+                                                        [ngModelOptions]="{standalone: true}" matInput required>
+                                                        <mat-option *ngFor="let s of ConsumableMaterialList"
+                                                            [value]="s.ConsumableMaterialID">{{s.ItemName}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </fieldset>
+                    </form>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -1,0 +1,305 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+          <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Invoice(s) Approval</span>
+              <div class="spacer"></div>
+              <div class="col-sm-2">
+                  <button mat-raised-button color="success" style="float:right" *ngIf="InvoiceHeaders?.length > 0" (click)="exportToExcel()">Export Excel</button>
+              </div>
+
+              <div class="col-sm-2">
+                  <button mat-raised-button color="success" style="float:right;margin-left: 10px;" *ngIf="InvoiceHeaders?.length > 0" (click)="ExportInvoiceDetailsToExcel()">Export Invoice Details</button>
+              </div>
+              <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+          </mat-toolbar>
+        <div class="row">
+          <div class="col-sm-2">
+            <mat-form-field fxFlex>
+              <mat-label>Process</mat-label>
+              <mat-select #process [(ngModel)]="processKey" (selectionChange)="GetInvoicesForApproval()" matInput>
+                <mat-option value="" selected>-- All --</mat-option>
+                <mat-option [value]="enumApprovalProcess.INV_1ST">First</mat-option>
+                <mat-option [value]="enumApprovalProcess.INV_2ND">Second</mat-option>
+                <mat-option [value]="enumApprovalProcess.INV_R">Regular</mat-option>
+                <mat-option [value]="enumApprovalProcess.INV_SRN">SRN</mat-option>
+                <mat-option [value]="enumApprovalProcess.INV_TRN">TRN</mat-option>
+                <mat-option [value]="enumApprovalProcess.INV_C">2nd Last</mat-option>
+                <mat-option [value]="enumApprovalProcess.INV_F">Last</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-2">
+            <mat-form-field fxFlex>
+              <mat-label>Month</mat-label>
+              <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
+              <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
+              <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
+                              (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-2">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="KAM" [(ngModel)]="filters.KAMID" (openedChange)="EmptyCtrl()" (selectionChange)="GetInvoicesForApproval()" id="kamuserid" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchKAM" /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let item of kamusers | like:['UserName',SearchKAM.value]" [value]="item.UserID">{{item.UserName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="GetInvoicesForApproval()" id="SchemeId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!--<div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="GetInvoicesForApproval()" id="TspId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of tsps | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>-->
+                <!--| like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]-->
+              <!--</mat-select>
+            </mat-form-field>
+          </div>-->
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPMasterID" (openedChange)="EmptyCtrl()" (selectionChange)="GetInvoicesForApproval()" id="TspMasterId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of tspMasters | like:['TSPName',SearchTSP.value]" [value]="s.TSPMasterID">{{s.TSPName}}</mat-option>
+                <!--| like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]-->
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+        </div>
+        <div class="text-center" *ngIf="!InvoiceHeaders">
+          <p>No Records</p>
+        </div>
+        <div class="table-responsive" *ngIf="InvoiceHeaders">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Actions</th>
+                <th>AP Approval Status</th>
+                <th>U_IPS</th>
+                <th>TSP</th>
+                <th>TSP Color</th>
+                <th>Invoice Month</th>
+                <th>Doc Num</th>
+                <th>Doc Type</th>
+                <th>Doc Date</th>
+                <th>Doc DueDate</th>
+                <th>Doc Total</th>
+                <th>Printed</th>
+                <th>Card Code</th>
+                <th>Card Name</th>
+                <th>Comments</th>
+                <th>Journal Memo</th>
+                <th>CtlAccount</th>
+                <th>U-SCHEME</th>
+                <th>U-Sch-Code</th>
+                <th>AP SAP Code</th>
+                <th>PO SAP Code</th>
+                <th>PO Approval Status</th>
+                <th>CreatedDate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of InvoiceHeaders">
+                <tr>
+                  <td>
+                    <a color="primary" mat-button (click)="checkTSPColor(r)">
+                      Decision
+                    </a>
+                    <a color="primary"
+                       mat-button (click)="GetInvoiceLines(r)">
+                      Invoices<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                    </a>
+                    <a color="primary"
+                       mat-icon-button matTooltip="Export to Excel" (click)="ExportToExcel(r.InvoiceHeaderID)">
+                      <mat-icon>get_app</mat-icon>
+                    </a>
+                  </td>
+                  <td class="number-align-center">
+                    <span *ngIf="r.SAPCODE !=0" class="text-success"><b>Approved</b></span>
+                    <span *ngIf="r.SAPCODE ==0" class="text-danger"><b>Pending</b></span>
+                  </td>
+                  <td>{{r.InvoiceHeaderID}}</td>
+                  <td>{{r.TSPName}}</td>
+                  <!--<td>
+                    <span   style="margin-left: 10%; border-radius: 5px; min-width: 23px; height: 15px;border:1px solid black; background-color:{{r.TSPColorCode}}"></span>
+                  </td>-->
+                  <!--<td>
+                    <span  [ngStyle]="{'background-color': r.TSPColorCode,'color':r.TSPColorCode}" ></span>
+                  </td>-->
+                  <td ><span class="badge {{r.TSPColorName}}">{{r.TSPColorName}}</span></td>
+                  <td class="number-align-center">{{r.U_Month | date:environment.MonthFormat}}</td>
+                  <td class="number-align-center">{{r.DocNum}}</td>
+                  <td class="number-align-center">{{r.DocType}}</td>
+                  <td class="number-align-center">{{r.DocDate | date:environment.DateFormat}}</td>
+                  <td class="number-align-center">{{r.DocDueDate | date:environment.DateFormat}}</td>
+                  <td class="decimal-align-right">{{r.DocTotal | number: environment.Decimal}}</td>
+                  <td class="number-align-center">{{r.Printed}}</td>
+                  <td>{{r.CardCode}}</td>
+                  <td>{{r.CardName}}</td>
+                  <td>{{r.Comments}}</td>
+                  <td>{{r.JournalMemo}}</td>
+                  <td>{{r.CtlAccount}}</td>
+                  <td>{{r.U_SCHEME}}</td>
+                  <td>{{r.U_SCH_Code}}</td>
+                  <td>{{r.SAPCODE}}</td>
+                  <td>{{r.POSAPCODE}}</td>
+                  <td class="number-align-center">
+                    <span *ngIf="r.POSAPCODE !=0" class="text-success"><b>Approved</b></span>
+                    <span *ngIf="r.POSAPCODE ==0" class="text-danger"><b>Pending</b></span>
+                  </td>
+                  <td class="number-align-center">{{r.CreatedDate | date:environment.DateTimeFormat}}</td>
+                </tr>
+                <tr *ngIf="r.InvoiceLines">
+                  <td colspan="17">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>
+
+                            </th>
+                            <th>Invoice Type</th>
+                            <th>Class Code</th>
+                            <th>Description</th>
+                            <th>G/L Account</th>
+                            <th>GL Name</th>
+                            <th>Scheme</th>
+                            <th>Trade</th>
+                            <th>Department</th>
+                            <th>Tax Code</th>
+                            <th>WTax Liable</th>
+                            <th>Class Start Date</th>
+                            <th>Class End Date</th>
+                            <th>Class Actual Start Date</th>
+                            <th>Class Actual End Date</th>
+                            <th>Batch</th>
+                            <th>Batch Duration</th>
+                            <th>Invoice Number</th>
+                            <th>Trainees Per Class</th>
+                            <th>Class Days</th>
+                            <th>Claim Trainees</th>
+                            <th>Total Monthly Payment</th>
+                            <th>Stipend Per Trainee</th>
+                            <th>Uniform & Bag</th>
+                            <th>Total Cost Per Trainee</th>
+                            <th>No of Trainee Unverified CNIC</th>
+                            <th>CNIC CAT</th>
+                            <th>Unverified CNIC</th>
+                            <th>No of Trainee Dropout</th>
+                            <th>Drop Ded Cat</th>
+                            <th>Dropout</th>
+                            <th>No of Trainee Attend Shortfall</th>
+                            <th>Attendance Shortfall</th>
+                            <th>No of Trainee Misc Deduction</th>
+                            <th>Misc Ded Cat</th>
+                            <th>Misc. Deduction / Others</th>
+                            <th>Percentage Applied</th>
+                            <th>Penalty</th>
+                            <th>Result Deduction</th>
+                            <th>Net Invoice Payable</th>
+                            <th>Gross Payable</th>
+                            <th>Net Training Cost</th>
+                            <th>Total(LC)</th>
+                            <th>LineTotal</th>
+                            <th>Payment To Be Released Trainees</th>
+                            <!--<th>Training Services Sale Tax</th>
+                            <th>FundingSource</th>
+                            <th>Boarding or Lodging</th>
+                            <th>Testing Fee</th>
+                            <th>Functional Date</th>
+                            <th>Deduction Trainee UnV Cnic</th>-->
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let l of r.InvoiceLines">
+                            <td>
+                              <a color="primary"
+                                 mat-icon-button matTooltip="View Previouse Documents" (click)="GetClassMonthview(l.ClassID,r.U_Month,r.ProcessKey);">
+                                <mat-icon>visibility</mat-icon>
+                              </a>
+                            </td>
+                            <td>{{l.InvoiceType}}</td>
+                            <td>{{l.ClassCode}}</td>
+                            <td>{{l.Description}}</td>
+                            <td>{{l.GLCode}}</td>
+                            <td>{{l.GLName}}</td>
+                            <td>{{l.SchemeName}}</td>
+                            <td>{{l.TradeName}}</td>
+                            <td>{{l.PCategoryName}}</td>
+                            <td>{{l.TaxCode}}</td>
+                            <td class="number-align-center">{{l.WTaxLiable}}</td>
+                            <td class="number-align-center">{{l.StartDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.EndDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.ActualStartDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.ActualEndDate  | date:environment.DateFormat}}</td>
+                            <td class="number-align-center">{{l.Batch}}</td>
+                            <td class="number-align-center">{{l.BatchDuration}}</td>
+                            <td class="number-align-center">{{l.InvoiceNumber}}</td>
+                            <td class="number-align-center">{{l.TraineePerClass}}</td>
+                            <td class="number-align-center">{{l.ClassDays}}</td>
+                            <td class="number-align-center">{{l.ClaimTrainees}}</td>
+                            <td class="decimal-align-right">{{l.TotalMonthlyPayment | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.Stipend | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.UniformBag | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.TotalCostPerTrainee | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.UnverifiedCNICDeductions}}</td>
+                            <td>{{l.CnicDeductionType}}</td>
+                            <td class="decimal-align-right">{{l.CnicDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.DeductionTraineeDroput}}</td>
+                            <td>{{l.DropOutDeductionType}}</td>
+                            <td class="decimal-align-right">{{l.DropOutDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.DeductionTraineeAttendance}}</td>
+                            <td class="decimal-align-right">{{l.AttendanceDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.MiscDeductionNo}}</td>
+                            <td>{{l.MiscDeductionType}}</td>
+                            <td class="decimal-align-right">{{l.MiscDeductionAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.PenaltyPercentage}}</td>
+                            <td class="decimal-align-right">{{l.PenaltyAmount | number: environment.Decimal}}</td>
+                            <td class="number-align-center">{{l.ResultDeduction}}</td>
+                            <td class="decimal-align-right">{{l.NetPayableAmount | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.GrossPayable | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.NetTrainingCost | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.TotalLC | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.LineTotal | number: environment.Decimal}}</td>
+                            <td class="decimal-align-right">{{l.PaymentToBeReleasedTrainees | number: environment.Decimal}}</td>
+                            <!--<td>{{l.TrainingServicesSaleTax}}</td>
+                            <td>{{l.FundingSource}}</td>
+                            <td>{{l.BoardingOrLodging}}</td>
+                            <td>{{l.TestingFee}}</td>
+                            <td>{{l.FunctionalDate}}</td>
+                            <td>{{l.DeductionTraineeUnVCnic}}</td>-->
+
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+
+
+                </tr>
+
+ <!--Nested Grid ends here-->
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

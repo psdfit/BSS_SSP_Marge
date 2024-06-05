@@ -1,0 +1,219 @@
+<br />
+<mat-toolbar color="accent" class=" slim slim">
+  <mat-icon class="material-icons">view_comfy</mat-icon>
+  <span class="spacer">Trainee Profile</span>
+  <div class="spacer"></div>
+</mat-toolbar>
+
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Personal Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-8 no-padding">
+        <table>
+          <tr>
+            <th>Name of Service Provider</th>
+            <td>{{TraineeProfile?.TSPName}}</td>
+          </tr>
+          <tr>
+            <th>Trainee ID</th>
+            <td>{{TraineeProfile?.TraineeCode}}</td>
+          </tr>
+          <tr>
+            <th>Name of Trainee</th>
+            <td>{{TraineeProfile?.TraineeName}}</td>
+          </tr>
+          <tr>
+            <th>Trainee Status</th>
+            <td>{{TraineeProfile?.TraineeCurrentStatus}}</td>
+          </tr>
+          <tr>
+            <th>Verification Status</th>
+            <td>{{TraineeProfile?.Verified}}</td>
+          </tr>
+          <tr>
+            <th>Mobile Number</th>
+            <td>{{TraineeProfile?.ContactNumber1}}</td>
+          </tr>
+          <tr>
+            <th>Scheme</th>
+            <td>{{TraineeProfile?.SchemeName}}</td>
+          </tr>
+          <tr>
+            <th>Trade</th>
+            <td>{{TraineeProfile?.TradeName}}</td>
+          </tr>
+          <tr>
+            <th>Certification Agency</th>
+            <td>{{TraineeProfile?.CertAuthName}}</td>
+          </tr>
+        </table>
+      </div>
+      <div style="text-align:center;" class="col-sm-4">
+        <div class=frame>
+          <span class="helper"></span>
+          <div *ngIf="TraineeProfile?.TraineeImg!='';else other_content">
+            <img src="{{TraineeProfile?.TraineeImg}}" />
+          </div>
+          <ng-template #other_content>
+            <img src="../../assets/images/0b8cbcc4-f8b7-419b-ae33-93088bc0c99e.png" />
+          </ng-template>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:left;">
+      <div [ngClass]="TraineeProfile?.CNICImgNADRA!='' ? 'col-sm-8' : 'col-sm-12'" style="padding-right:0px; padding-left:0px;">
+        <hr />
+
+        <div style="text-align:left;">
+          <div style="text-align:left;" class="col-sm-12 no-padding">
+            <table>
+              <tr>
+                <th>Trainee CNIC / B-Form No</th>
+                <td>{{TraineeProfile?.TraineeCNIC}}</td>
+                <th>CNIC Issue Date</th>
+                <td>{{TraineeProfile?.CNICIssueDate | date:'mediumDate'}}</td>
+              </tr>
+              <tr>
+                <th>Gender</th>
+                <td>{{TraineeProfile?.GenderName}}</td>
+                <th>Date of Birth</th>
+                <td>{{TraineeProfile?.DateOfBirth | date:'mediumDate'}}</td>
+              </tr>
+              <tr>
+                <th>Religion</th>
+                <td>{{TraineeProfile?.ReligionName}}</td>
+                <th>Trainee Contact No</th>
+                <td>{{TraineeProfile?.ContactNumber1}}</td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <div style="text-align:left;">
+          <div style="text-align:left;" class="col-sm-12 no-padding">
+            <table>
+              <tr>
+                <th>House No</th>
+                <td>{{TraineeProfile?.TraineeHouseNumber}}</td>
+                <th>Street / Mohalla</th>
+                <td>{{TraineeProfile?.TraineeStreetMohalla}}</td>
+              </tr>
+              <tr>
+                <th>Mouza / Town</th>
+                <td colspan="3">{{TraineeProfile?.TraineeMauzaTown}}</td>
+              </tr>
+              <tr>
+                <th>Tehsil</th>
+                <td>{{TraineeProfile?.TehsilName}}</td>
+                <th>District</th>
+                <td>{{TraineeProfile?.DistrictName}}</td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="TraineeProfile?.CNICImgNADRA!=''" class="col-sm-4">
+        <div class=frame>
+          <span class="helper"></span>
+          <div *ngIf="TraineeProfile?.CNICImgNADRA!='';else other_content">
+            <img src="{{TraineeProfile?.CNICImgNADRA}}" />
+          </div>
+          <ng-template #other_content>
+            <img src="../../assets/images/0b8cbcc4-f8b7-419b-ae33-93088bc0c99e.png" />
+          </ng-template>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Family & Income Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Father / Husband Name</th>
+            <td>{{TraineeProfile?.FatherName}}</td>
+            <th>Trainee Individual Income</th>
+            <td>{{TraineeProfile?.TraineeIndividualIncomeRange}}</td>
+          </tr>
+          <tr>
+            <th>Household Income</th>
+            <td>{{TraineeProfile?.HouseHoldIncomeRange}}</td>
+            <th>Employment Status (Before Training)</th>
+            <td>{{TraineeProfile?.EmploymentStatusBeforeTraining}}</td>
+          </tr>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Class Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Class Code</th>
+            <td>{{TraineeProfile?.ClassCode}}</td>
+            <th>Roll No</th>
+            <td>{{TraineeProfile?.TraineeRollNumber}}</td>
+          </tr>
+          <tr>
+            <th>Class Section</th>
+            <td>{{TraineeProfile?.SectionName}}</td>
+            <th>Class Shift</th>
+            <td>{{TraineeProfile?.Shift}}</td>
+          </tr>
+          <tr>
+            <th>Batch No</th>
+            <td>{{TraineeProfile?.Batch}}</td>
+            <th>Location</th>
+            <td>{{TraineeProfile?.ClassCenterLocation}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">MPR Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Month of MPR</th>
+            <th>Status</th>
+            <th>Stipend Amount</th>
+            <th>Reason</th>
+          </tr>
+          <tr *ngFor="let x of MPRDetail">
+            <td>{{x?.MPRName}}</td>
+            <td>{{x?.StatusName}}</td>
+            <td>{{x?.StipendAmount}}</td>
+            <td>{{x?.Reason}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

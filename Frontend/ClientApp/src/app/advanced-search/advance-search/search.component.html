@@ -1,0 +1,368 @@
+<div class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Advance Search</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+        <div class="row">
+          <div class="col-sm-12">
+            <form novalidate [formGroup]="searchForm">
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="SearchString" placeholder="Type here..." matInput required />
+                    <mat-label>Search</mat-label>
+                    <!--<mat-hint>hint </mat-hint>-->
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <mat-form-field fxFlex>
+                    <mat-select multiple placeholder="Table(s)" formControlName="TableNames" matInput>
+                      <!--<mat-option value="0">--Select--</mat-option>-->
+                      <mat-option *ngFor="let item of tableNamesList " [value]="item.value">{{item.text}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                  <br />
+                  <button mat-raised-button color="primary" (click)="search()">
+                    Search <mat-icon matTooltip="Search">search</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <mat-tab-group #tabGroup (selectedTabChange)="onSelectedTabChange($event)">
+          <mat-tab label="Search's Result(s)">
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('Scheme') || TableNames.value.length == 0">
+              <h3>Scheme(s)</h3>
+              <mat-table [dataSource]="schemeList" #sortScheme="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="schemeListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: schemeListColumn;"></mat-row>
+                <ng-container matColumnDef="SchemeCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.SchemeCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SchemeName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Description">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Description</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Description}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'Scheme', value: Row.SchemeID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorScheme [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('TSPMaster') || TableNames.value.length == 0">
+              <h3>TSP(s)</h3>
+              <mat-table [dataSource]="tspList" #sortTSP="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="tspListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: tspListColumn;"></mat-row>
+                <ng-container matColumnDef="TSPName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Address">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Address</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Address}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'TSP', value: Row.TSPMasterID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorTSP [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('Class') || TableNames.value.length == 0">
+              <h3>Class(s)</h3>
+              <mat-table [dataSource]="classList" #sortClass="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="classListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: classListColumn;"></mat-row>
+                <ng-container matColumnDef="ClassCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">  <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a></mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TrainingAddressLocation">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Training Address Location</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TrainingAddressLocation}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassStatus">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ClassStatus}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'Class', value: Row.ClassID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('TraineeProfile') || TableNames.value.length == 0">
+              <h3>Trainee(s)</h3>
+              <mat-table [dataSource]="traineeList" #sortTrainee="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="traineeListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: traineeListColumn;"></mat-row>
+                <ng-container matColumnDef="TraineeCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"><a class="myAnchor" (click)="openTraineeJourneyDialogue(Row.TraineeCode)" style="color: #005b9e;"> {{Row.TraineeCode}} </a> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TraineeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TraineeCNIC">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TraineeCNIC}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'Trainee', value: Row.TraineeID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorTrainee [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('Instructor') || TableNames.value.length == 0">
+              <h3>Instructor(s)</h3>
+              <mat-table [dataSource]="instructorList" #sortInstructor="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="instructorListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: instructorListColumn;"></mat-row>
+                <ng-container matColumnDef="InstructorName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Instructor Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.InstructorName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CNICofInstructor">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Instructor CNIC</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.CNICofInstructor}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="NameOfOrganization">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Organization</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.NameOfOrganization}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'Instructor', value: Row.InstrID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorInstructor [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('MPR') || TableNames.value.length == 0">
+              <h3>MPR(s)</h3>
+              <mat-table [dataSource]="mprList" #sortInstructor="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="mprListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: mprListColumn;"></mat-row>
+                <ng-container matColumnDef="MPRName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> MPR Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.MPRName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SchemeName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'MPR', value: Row.MPRID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorMPR [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('SRN') || TableNames.value.length == 0">
+              <h3>SRN(s)</h3>
+              <mat-table [dataSource]="srnList" #sortInstructor="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="srnListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: srnListColumn;"></mat-row>
+                <ng-container matColumnDef="SRNID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> ID</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.SRNID}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> ClassCode</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Month">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Month</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Month}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'SRN', value: Row.SRNID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorSRN [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('PRNMaster') || TableNames.value.length == 0">
+              <h3>PRN(s)</h3>
+              <mat-table [dataSource]="prnList" #sortInstructor="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="prnListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: prnListColumn;"></mat-row>
+                <ng-container matColumnDef="ProcessKey">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Type</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ProcessKey}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Month">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Month</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Month}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="InvoiceNumber">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> InvoiceNumber</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.InvoiceNumber}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'PRN', value: Row.PRNMasterID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorPRN [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <div fxLayout="column" class="table-responsive" *ngIf="TableNames.value.includes('Invoice') || TableNames.value.length == 0">
+              <h3>Invoice(s)</h3>
+              <mat-table [dataSource]="invoiceList" #sortInstructor="matSort" matSort class="table table-bordered">
+                <mat-header-row *matHeaderRowDef="invoiceListColumn"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: invoiceListColumn;"></mat-row>
+                <ng-container matColumnDef="ProcessKey">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Process Key</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ProcessKey}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Month">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Month</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Month}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="InvoiceNumber">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Invoice Number</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.InvoiceNumber}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="InvoiceType">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Type of Invoice</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.InvoiceType}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSPName</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TSPCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> TSPCode</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.TSPCode}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Description">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Description</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.Description}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MatchedColumn">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Matched Column</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.ColumnName}} : {{Row.ColumnValue}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row">
+                    <button mat-icon-button color="primary" (click)="onClickDetail({ type: 'Invoice', value: Row.ID })">
+                      <mat-icon matTooltip="Details">launch</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+              </mat-table>
+              <mat-paginator #paginatorInvoice [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </mat-tab>
+          <mat-tab label="Detail View">
+            <trainee-profile *ngIf="selectedType == 'Trainee'" [ID]="selectedValue"></trainee-profile>
+            <instructor-profile *ngIf="selectedType == 'Instructor'" [ID]="selectedValue"></instructor-profile>
+            <class-detail *ngIf="selectedType == 'Class'" [ID]="selectedValue"></class-detail>
+            <tsp-detail *ngIf="selectedType == 'TSP'" [ID]="selectedValue"></tsp-detail>
+            <scheme-detail *ngIf="selectedType == 'Scheme'" [ID]="selectedValue"></scheme-detail>
+            <mpr-detail *ngIf="selectedType == 'MPR'" [ID]="selectedValue"></mpr-detail>
+            <prn-detail *ngIf="selectedType == 'PRN'" [ID]="selectedValue"></prn-detail>
+            <srn-detail *ngIf="selectedType == 'SRN'" [ID]="selectedValue"></srn-detail>
+            <invoice-detail *ngIf="selectedType == 'Invoice'" [ID]="selectedValue"></invoice-detail>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+

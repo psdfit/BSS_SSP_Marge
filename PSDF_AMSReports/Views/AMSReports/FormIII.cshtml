@@ -1,0 +1,842 @@
+﻿@model PSDF_AMSReports.Models.AMSFormThreeViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FormIII Report</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .tg_tsp {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_tsp td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_tsp th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_tsp .tg_tsp-axxb {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-hle0 {
+                background-color: #ffffff;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-0pky {
+                border-color: inherit;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-7btt {
+                border-color: inherit;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_tsp .tg_tsp-lgs3 {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+        .tg_cmr {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_cmr td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_cmr th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_cmr .tg_cmr-axxb {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-zlqz {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-zv36 {
+                background-color: #ffffff;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-6e8n {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_cmr .tg_cmr-0pky {
+                border-color: inherit;
+                text-align: left;
+                vertical-align: top
+            }
+            .tg_pot {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_pot td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_pot th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_pot .tg_pot-kmbl {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+            .tg_pot .tg_pot-jkz3 {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-size: 14px;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_pot .tg_pot-m2fn {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                font-size: 14px;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_pot .tg_pot-q24q {
+                background-color: #c0c0c0;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+        .tg_viot {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_viot td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_viot th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 5px 5px;
+                word-break: normal;
+            }
+
+            .tg_viot .tg_viot-eufz {
+                background-color: #C0C0C0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_viot .tg_viot-kmbl {
+                background-color: #c0c0c0;
+                border-color: inherit;
+                color: #000000;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle
+            }
+
+            .tg_viot .tg_viot-uked {
+                background-color: #C0C0C0;
+                border-color: inherit;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_viot .tg_viot-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+        .tg_rem {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_rem td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_rem th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_rem .tg_rem-1wig {
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_rem .tg_rem-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+        .tg_sign {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+            .tg_sign td {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_sign th {
+                border-color: black;
+                border-style: solid;
+                border-width: 1px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                overflow: hidden;
+                padding: 10px 5px;
+                word-break: normal;
+            }
+
+            .tg_sign .tg_sign-abx8 {
+                background-color: #c0c0c0;
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg_sign .tg_sign-u1yq {
+                background-color: #c0c0c0;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_sign .tg_sign-ziz6 {
+                background-color: #C0C0C0;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg_sign .tg_sign-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+    </style>
+</head>
+<body>
+    <p><strong>Punjab Skills Development Fund</strong></p>
+    <p><strong>Form III - Monitoring Visit Report of Class</strong></p>
+    
+    <table class="tg_tsp" style="width:100%">
+        <tbody>
+            <tr>
+                <td class="tg_tsp-axxb">Service Provider Name</td>
+                <td class="tg_tsp-hle0">@Model.TSPDetails?.TSPName</td>
+                <td class="tg_tsp-axxb">Training Centre (Name/Title)</td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Visit in Month</td>
+                <td class="tg_tsp-0pky">@Model.VisitCount</td>
+                <td class="tg_tsp-0pky">@Model.TSPDetails?.CentreName</td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Training Scheme</td>
+                <td class="tg_tsp-0pky">@Model.TSPDetails?.SchemeName</td>
+                <td class="tg_tsp-0pky"></td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Class Code</td>
+                <td class="tg_tsp-0pky">@Model.TSPDetails?.ClassCode</td>
+                <td class="tg_tsp-0pky"></td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Trade</td>
+                <td class="tg_tsp-0pky">@Model.TSPDetails?.TradeName</td>
+                <td class="tg_tsp-0pky"></td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Instructor/Trainer Name</td>
+                <td class="tg_tsp-0pky">@Model.TSPDetails?.InstructorsInfo</td>
+                <td class="tg_tsp-0pky"></td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Reporting Month</td>
+                <td class="tg_tsp-0pky">@Model.TSPDetails?.ReportingMonth</td>
+                <td class="tg_tsp-0pky"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br /><br />
+    <table class="tg_tsp" style="width:100%">
+        <tbody>
+            <tr>
+                <td class="tg_tsp-axxb">Centre Related Information</td>
+                <td class="tg_tsp-axxb">Visit-1</td>
+                <td class="tg_tsp-axxb">Visit-2</td>
+                <td class="tg_tsp-axxb">Visit-3</td>
+                <td class="tg_tsp-axxb">Visit-4</td>
+                <td class="tg_tsp-axxb">Remarks</td>
+            </tr>
+            @*@foreach (var item in Model.VisitsList)
+            {
+                <tr>
+                    <td class="tg_tsp-0pky">Is the centre locked/non-functional?</td>
+                    <td class="tg_tsp-0pky">@item.IsLock</td>
+                </tr>
+            }
+            @foreach (var item in Model.VisitsList)
+            {
+                <tr>
+                    <td class="tg_tsp-0pky">Has the centre been relocated unannounced?</td>
+                    <td class="tg_tsp-0pky">@item.IsRelocated</td>
+                </tr>
+            }
+            @foreach (var item in Model.VisitsList)
+            {
+                <tr>
+                    <td class="tg_tsp-0pky">Is the lab equipment/consumables required for the training are available?</td>
+                    <td class="tg_tsp-0pky">@item.EquipmentAvailable</td>
+                </tr>
+            }
+            @foreach (var item in Model.VisitsList)
+            {
+                <tr>
+                    <td class="tg_tsp-0pky">
+                        Is the trainer/instructor delivering the lecture is the same person as
+                        mentioned in the profile provided by the TSP to PSDF?
+                    </td>
+                    <td class="tg_tsp-0pky">@item.SameInstructor</td>
+                </tr>
+            }*@
+            <tr>
+                <td class="tg_tsp-0pky">Is the centre locked/non-functional?</td>
+                <td class="tg_tsp-0pky">@Model.Visit1?.IsLock</td>
+                <td class="tg_tsp-0pky">@Model.Visit2?.IsLock</td>
+                <td class="tg_tsp-0pky">@Model.Visit3?.IsLock</td>
+                <td class="tg_tsp-0pky">@Model.Visit4?.IsLock</td>
+                <td class="tg_tsp-0pky">
+                    <span>@Model.Visit1?.IsLockRemarks</span>
+                    <span>@Model.Visit2?.IsLockRemarks</span>
+                    <span>@Model.Visit3?.IsLockRemarks</span>
+                    <span>@Model.Visit4?.IsLockRemarks</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Has the centre been relocated unannounced?</td>
+                <td class="tg_tsp-0pky">@Model.Visit1?.IsRelocated</td>
+                <td class="tg_tsp-0pky">@Model.Visit2?.IsRelocated</td>
+                <td class="tg_tsp-0pky">@Model.Visit3?.IsRelocated</td>
+                <td class="tg_tsp-0pky">@Model.Visit4?.IsRelocated</td>
+                <td class="tg_tsp-0pky">
+                    <span>@Model.Visit1?.IsLockRemarks</span>
+                    <span>@Model.Visit2?.IsLockRemarks</span>
+                    <span>@Model.Visit3?.IsLockRemarks</span>
+                    <span>@Model.Visit4?.IsLockRemarks</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">Is the lab equipment/consumables required for the training are available?</td>
+                <td class="tg_tsp-0pky">@Model.Visit1?.EquipmentAvailable</td>
+                <td class="tg_tsp-0pky">@Model.Visit2?.EquipmentAvailable</td>
+                <td class="tg_tsp-0pky">@Model.Visit3?.EquipmentAvailable</td>
+                <td class="tg_tsp-0pky">@Model.Visit4?.EquipmentAvailable</td>
+                <td class="tg_tsp-0pky">
+                    <p>@Model.Visit1?.IsRelocatedRemarks</p>
+                    <p>@Model.Visit2?.IsRelocatedRemarks</p>
+                    <p>@Model.Visit3?.IsRelocatedRemarks</p>
+                    <p>@Model.Visit4?.IsRelocatedRemarks</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-0pky">
+                    Is the trainer/instructor delivering the lecture is the same person as
+                    mentioned in the profile provided by the TSP to PSDF?
+                </td>
+
+                <td class="tg_tsp-0pky">@Model.Visit1?.SameInstructor</td>
+                <td class="tg_tsp-0pky">@Model.Visit2?.SameInstructor</td>
+                <td class="tg_tsp-0pky">@Model.Visit3?.SameInstructor</td>
+                <td class="tg_tsp-0pky">@Model.Visit4?.SameInstructor</td>
+                <td class="tg_tsp-0pky">
+                    <p>@Model.Visit1?.IsRelocatedRemarks</p>
+                    <p>@Model.Visit2?.IsRelocatedRemarks</p>
+                    <p>@Model.Visit3?.IsRelocatedRemarks</p>
+                    <p>@Model.Visit4?.IsRelocatedRemarks</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br /><br />
+    <table class="tg_tsp" style="width:100%">
+        <tbody>
+            <tr>
+                <td class="tg_tsp-lgs3" colspan="5">Fake/Ghost Trainees</td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-7btt">Sr No.</td>
+                <td class="tg_tsp-7btt">Trainee Name</td>
+                <td class="tg_tsp-7btt">Father's/Husband's Name</td>
+                <td class="tg_tsp-7btt">CNIC #</td>
+                <td class="tg_tsp-7btt">Remarks</td>
+            </tr>
+            @if (Model.FakeGhostTrainees != null)
+            {
+                @foreach (var item in Model.FakeGhostTrainees)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@item.SrNo</td>
+                        <td class="tg_tsp-0pky">@item.DisplayName</td>
+                        <td class="tg_tsp-0pky">@item.FatherName</td>
+                        <td class="tg_tsp-0pky">@item.TraineeCNIC</td>
+                        <td class="tg_tsp-0pky">@item.Remarks</td>
+                    </tr>
+                }
+            }
+
+
+        </tbody>
+    </table>
+    <br /><br /><br /><br />
+    <table class="tg_tsp" style="width:100%">
+        <tbody>
+            <tr>
+                <td class="tg_tsp-lgs3" colspan="5">Marginal Trainees</td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-7btt">Sr No.</td>
+                <td class="tg_tsp-7btt">Trainee Name</td>
+                <td class="tg_tsp-7btt">Father's/Husband's Name</td>
+                <td class="tg_tsp-7btt">CNIC #</td>
+                <td class="tg_tsp-7btt">Remarks</td>
+            </tr>
+            @if (Model.MarginalTrainees != null)
+            {
+                @foreach (var item in Model.MarginalTrainees)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@item.SrNo</td>
+                        <td class="tg_tsp-0pky">@item.TraineeName</td>
+                        <td class="tg_tsp-0pky">@item.FatherName</td>
+                        <td class="tg_tsp-0pky">@item.Cnic</td>
+                        <td class="tg_tsp-0pky">@item.Remarks</td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+    <br /><br />
+    <table class="tg_cmr" style="width:100%;">
+        <tbody>
+            <tr>
+                <td class="tg_cmr-axxb" colspan="5">CLASS MONITORING REPORT</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-6e8n" colspan="5">Total Violations in the Month</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-6e8n">Minor Violations</td>
+                <td class="tg_cmr-zv36">@Model.ClassViolations?.minor_count</td>
+                <td class="tg_cmr-6e8n" colspan="2">Major Violations</td>
+                <td class="tg_cmr-zv36">@Model.ClassViolations?.major_count</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-6e8n">Serious Violations</td>
+                <td class="tg_cmr-zv36">@Model.ClassViolations?.minor_count</td>
+                <td class="tg_cmr-6e8n" colspan="2">Observations</td>
+                <td class="tg_cmr-zv36">@Model.ClassViolations?.observation_count</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-zlqz" colspan="5">Visit Detail</td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-7btt">Visit</td>
+                <td class="tg_tsp-7btt">Visit-1</td>
+                <td class="tg_tsp-7btt">Visit-2</td>
+                <td class="tg_tsp-7btt">Visit-3</td>
+                <td class="tg_tsp-7btt">Visit-4</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-0pky">Visit Date</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit1?.VDate</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit2?.VDate</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit3?.VDate</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit4?.VDate</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-0pky">Visit Time</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit1?.VTime</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit2?.VTime</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit3?.VTime</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit4?.VTime</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-0pky">Number of trainees present at time of visit</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit1?.TraineesPresentCount</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit2?.TraineesPresentCount</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit3?.TraineesPresentCount</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit4?.TraineesPresentCount</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-0pky">
+                    Number of trainees marked present in the attendance register:
+                    One day before the visit
+                </td>
+                <td class="tg_cmr-0pky">@Model.CMVisit1?.TraineesCountOne</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit2?.TraineesCountOne</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit3?.TraineesCountOne</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit4?.TraineesCountOne</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-0pky">
+                    Number of trainees marked present in the attendance register:
+                    Two days before the visit
+                </td>
+                <td class="tg_cmr-0pky">@Model.CMVisit1?.TraineesCountTwo</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit2?.TraineesCountTwo</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit3?.TraineesCountTwo</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit4?.TraineesCountTwo</td>
+            </tr>
+            <tr>
+                <td class="tg_cmr-0pky">
+                    Number of trainees marked present in the attendance register:
+                    Three days before the visit
+                </td>
+                <td class="tg_cmr-0pky">@Model.CMVisit1?.TraineesCountThree</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit2?.TraineesCountThree</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit3?.TraineesCountThree</td>
+                <td class="tg_cmr-0pky">@Model.CMVisit4?.TraineesCountThree</td>
+            </tr>
+        </tbody>
+    </table>
+    <br /><br />
+    <table class="tg_pot" style="width:100%">
+        <tbody>
+            <tr>
+                <td class="tg_pot-jkz3" colspan="6">Perception of Trainees</td>
+            </tr>
+            <tr>
+                <td class="tg_pot-m2fn" colspan="6">Visit Detail</td>
+            </tr>
+            <tr>
+                <td class="tg_pot-kmbl">Sr No</td>
+                <td class="tg_pot-kmbl">Description</td>
+                @for (int i = 1; i < Model.VisitCount + 1; i++)
+                {
+                    <td class="tg_pot-kmbl">Visit-@i</td>
+                }
+            </tr>
+            <tr>
+                <td class="tg_pot-kmbl"></td>
+                <td class="tg_pot-kmbl"></td>
+                @for (int i = 1; i < Model.VisitCount + 1; i++)
+                {
+                    <td class="tg_pot-kmbl">% Satisified</td>
+                }
+            </tr>
+            @if (Model.TraineesPreceptions != null)
+            {
+                var tpcount = 1;
+                @foreach (var item in Model.TraineesPreceptions?.GroupBy(x => x.VioID))
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@tpcount</td>
+                        <td class="tg_tsp-0pky">@item.First().VioDesc</td>
+                        @foreach (var rec in item)
+                        {
+                            <td class="tg_tsp-0pky">@rec.PercentageSatisfied</td>
+                        }
+                    </tr>
+                    tpcount++;
+                }
+            }
+
+        </tbody>
+    </table>
+    <br /><br />
+    <table class="tg_viot" style="width:100%;">
+        <tbody>
+            <tr>
+                <td class="tg_viot-kmbl">Sr No</td>
+                <td class="tg_viot-kmbl">Parameters</td>
+                <td class="tg_viot-kmbl">Violation Type</td>
+                <td class="tg_viot-kmbl" colspan="4">Violation</td>
+            </tr>
+            <tr>
+                <td class="tg_viot-kmbl"></td>
+                <td class="tg_viot-kmbl"></td>
+                <td class="tg_viot-kmbl"></td>
+                @for (int i = 1; i < Model.VisitCount + 1; i++)
+                {
+                    <td class="tg_viot-kmbl">Visit-@i</td>
+                }
+            </tr>
+            <tr>
+                <td class="tg_viot-kmbl"></td>
+                <td class="tg_viot-kmbl"></td>
+                <td class="tg_viot-kmbl"></td>
+                @for (int i = 1; i < Model.VisitCount + 1; i++)
+                {
+                    <td class="tg_viot-kmbl">Yes/No</td>
+                }
+            </tr>
+
+            
+            @if (Model.ViolationTypeList != null)
+            {
+                var count = 1;
+                @foreach (var item in Model.ViolationTypeList.GroupBy(x => x.VioID))
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@count</td>
+                        <td class="tg_tsp-0pky">@item.First().VioDesc</td>
+                        <td class="tg_tsp-0pky">@item.First().ViolationType</td>
+                        @foreach (var rec in item)
+                        {
+                            <td class="tg_tsp-0pky">@rec.IsViolation</td>
+                        }
+                    </tr>
+                    count++;
+                }
+            }
+
+        </tbody>
+    </table>
+    <br /><br />
+    <table class="tg_rem" style="width:100%;">
+        <tbody>
+            <tr>
+                <td class="tg_rem-1wig" colspan="2">20. Any other observation by the Monitoring Officer or feedback from the trainees ?</td>
+            </tr>
+            <tr>
+                <td class="tg_rem-0lax">I.</td>
+                <td class="tg_rem-0lax">FM Remarks: @Model.Visit1?.FMSignOffRemarks<br>FM Remarks on Trainees Feedback: @Model.Visit1?.TspSignOffRemarks</td>
+            </tr>
+            <tr>
+                <td class="tg_rem-0lax">II.</td>
+                <td class="tg_rem-0lax">FM Remarks: @Model.Visit2?.FMSignOffRemarks<br>FM Remarks on Trainees Feedback: @Model.Visit2?.TspSignOffRemarks</td>
+            </tr>
+            <tr>
+                <td class="tg_rem-0lax">III.</td>
+                <td class="tg_rem-0lax">FM Remarks: @Model.Visit3?.FMSignOffRemarks<br>FM Remarks on Trainees Feedback: @Model.Visit3?.TspSignOffRemarks</td>
+            </tr>
+            <tr>
+                <td class="tg_rem-0lax">IV.</td>
+                <td class="tg_rem-0lax">FM Remarks: @Model.Visit4?.FMSignOffRemarks<br>FM Remarks on Trainees Feedback: @Model.Visit4?.TspSignOffRemarks</td>
+            </tr>
+        </tbody>
+    </table>
+    <br /><br /><br /><br />
+    <table class="tg_tsp" style="width:100%">
+        <tbody>
+            <tr>
+                <td class="tg_tsp-lgs3" colspan="5">V. Details of Added/Deleted/Dropout trainees in attendance register</td>
+            </tr>
+            <tr>
+                <td class="tg_tsp-7btt">Sr No.</td>
+                <td class="tg_tsp-7btt">Trainee Name</td>
+                <td class="tg_tsp-7btt">Father's/Husband's Name</td>
+                <td class="tg_tsp-7btt">CNIC #</td>
+                <td class="tg_tsp-7btt">Remarks</td>
+            </tr>
+            @if (Model.DeleteDropOutTrainees != null)
+            {
+                @foreach (var item in Model.DeleteDropOutTrainees)
+                {
+                    <tr>
+                        <td class="tg_tsp-0pky">@item.SrNo</td>
+                        <td class="tg_tsp-0pky">@item.DisplayName</td>
+                        <td class="tg_tsp-0pky">@item.FatherName</td>
+                        <td class="tg_tsp-0pky">@item.TraineeCNIC</td>
+                        <td class="tg_tsp-0pky">@item.Remarks</td>
+                    </tr>
+                }
+            }
+
+
+        </tbody>
+    </table>
+    <br /><br />
+    <table class="tg_sign" style="width:100%">
+        <tbody>
+            <tr>
+                <td class="tg_sign-u1yq">Signature By</td>
+                <td class="tg_sign-ziz6">Visit-1</td>
+                <td class="tg_sign-ziz6">Visit-2</td>
+                <td class="tg_sign-ziz6">Visit-2</td>
+                <td class="tg_sign-ziz6">Visit-4</td>
+            </tr>
+            <tr>
+                <td class="tg_sign-abx8">Field Monitor</td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit1?.FMSignImage" /></td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit2?.FMSignImage" /></td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit3?.FMSignImage" /></td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit4?.FMSignImage" /></td>
+            </tr>
+            <tr>
+                <td class="tg_sign-abx8">
+                    TSP Representative
+                </td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit1?.TSPSignImage" /></td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit2?.TSPSignImage" /></td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit3?.TSPSignImage" /></td>
+                <td class="tg_sign-0lax"><img style="width:100px;" src="@Model.Visit4?.TSPSignImage" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>

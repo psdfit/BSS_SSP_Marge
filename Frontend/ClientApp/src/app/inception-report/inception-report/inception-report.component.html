@@ -1,0 +1,366 @@
+<div id="InceptionReport-page" class="comp-main-div">
+  <mat-card class="mat-primary">
+    <mat-card-content>
+      <div class="col-12">
+
+        <br />
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}}</span>
+          <div class="spacer"></div>
+          <button class="btn btn-primary" type="button" *ngIf="isOpenRegistration" (click)="routeToRegistration()">Proceed to next Step</button>
+        </mat-toolbar>
+        <span class="subheading-1"><strong class="text-danger " *ngIf="!isOpenSubmission"> {{isOpenInceptionMessage}} </strong></span>
+        <form novalidate [formGroup]="inceptionreportform" (submit)="inceptionreportform.valid && Submit()">
+          <fieldset class="border">
+            <legend>Class Information</legend>
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <input type="text" formControlName="SchemeName" placeholder="Scheme Name" matInput maxlength="250" required readonly />
+                  <mat-label>Scheme</mat-label>
+
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <input type="text" formControlName="TradeName" placeholder="Trade Name" id="tradeid" matInput maxlength="250" required readonly />
+                  <mat-label>Trade</mat-label>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <input type="text" formControlName="ClassCode" placeholder="Trainees Count" id="classid" matInput maxlength="250" required readonly />
+                  <mat-label>Class</mat-label>
+                </mat-form-field>
+
+              </div>
+
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <input type="text" formControlName="MinHoursPerMonth" placeholder="Minimum Hours Per Month" id="minhours" matInput required readonly />
+                  <mat-label>Minimum Hours Per Month</mat-label>
+
+                </mat-form-field>
+
+              </div>
+
+              <div class="col-sm-4 col-md-4">
+                <mat-form-field>
+                  <ngx-material-timepicker #picker1></ngx-material-timepicker>
+                  <input matInput [ngxTimepicker]="picker1" placeholder="Choose Start time" [format]="24" (ngModelChange)="[GenerateHours(),GenerateShift()]" formControlName="ClassStartTime" required />
+                  <mat-label>Start Time</mat-label>
+                  <mat-error *ngIf="ClassStartTime.invalid && ClassStartTime.errors.required">Class Start Time is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-4 col-md-4">
+                <mat-form-field>
+                  <ngx-material-timepicker #picker2></ngx-material-timepicker>
+                  <input matInput [ngxTimepicker]="picker2" placeholder="Choose End time" [format]="24" (ngModelChange)="[GenerateHours(),GenerateShift()]" formControlName="ClassEndTime" required />
+                  <mat-label>End Time</mat-label>
+                  <mat-error *ngIf="ClassEndTime.invalid && ClassEndTime.errors.required">Class End Time is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <!--<h6><strong>Contractual Trainees</strong></h6>-->
+                  <input type="text" id="enrolledtrainees" placeholder="Contractual Trainees" formControlName="EnrolledTrainees" matInput readonly required>
+                  <mat-label>Contractual Trainees</mat-label>
+
+                  <!--<mat-error *ngIf="EnrolledTrainees.invalid && EnrolledTrainees.errors.required">Enrolled Trainees value is <strong>required</strong></mat-error>-->
+                  <!--<mat-label> Contractual Trainees</mat-label>-->
+                </mat-form-field>
+              </div>
+
+              <!--<mat-form-field fxFlex>
+          <input matInput [matDatepicker]="classendtime" placeholder="Choose a date" formControlName="ClassEndTime">
+          <mat-datepicker-toggle matSuffix [for]="classendtime"></mat-datepicker-toggle>
+          <mat-datepicker #classendtime></mat-datepicker>
+          <mat-label>ClassEndTime</mat-label>
+
+        </mat-form-field>-->
+
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <input matInput [matDatepicker]="visitdate" placeholder="Choose a date" [min]="classStartDate" [disabled]="startDateworking" formControlName="ActualStartDate" required>
+                  <mat-datepicker-toggle matSuffix [for]="visitdate"></mat-datepicker-toggle>
+                  <mat-datepicker #visitdate></mat-datepicker>
+                  <mat-label> Actual Start Date</mat-label>
+                  <!--<mat-error *ngIf="ActualStartDate.invalid && ActualStartDate.errors.required">Actual Start Date is <strong>required</strong>(ngModelChange)="GenerateDateDifference()"</mat-error>-->
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <input matInput [matDatepicker]="enddate" placeholder="Choose a date" formControlName="ActualEndDate" [disabled]="endDateworking" required>
+                  <mat-datepicker-toggle matSuffix [for]="enddate"></mat-datepicker-toggle>
+                  <mat-datepicker #enddate></mat-datepicker>
+                  <mat-label> Actual End Date</mat-label>
+                  <!--<mat-error *ngIf="ActualEndDate.invalid && ActualEndDate.errors.required">Actual End Date is <strong>required</strong></mat-error>-->
+                </mat-form-field>
+              </div>
+
+
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <input type="text" id="classtotalhours" placeholder="Daily Class Time (HH:mm)" formControlName="ClassTotalHours" matInput required readonly>
+                  <!--<mat-error *ngIf="ClassTotalHours.invalid && ClassTotalHours.errors.required">Daily Class Hours is <strong>required</strong></mat-error>-->
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <mat-select multiple placeholder="Instructor" formControlName="InstrIDs" id="instrid" matInput required>
+                    <mat-option *ngFor="let s of Instructors" [value]="s.InstrID">{{s.InstructorName}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="InstrIDs.invalid && InstrIDs.errors.required">Instructor is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <input type="text" formControlName="Shift" placeholder="Shift" matInput readonly maxlength="100" required />
+                  <mat-label>Shift</mat-label>
+                </mat-form-field>
+              </div>
+              <!--<div class="col-sm-6">
+          <mat-form-field fxFlex>
+            <input type="text" formControlName="CenterLocation" placeholder="Center Location" matInput maxlength="100" />
+            <mat-label>CenterLocation</mat-label>
+            <mat-error *ngIf="CenterLocation.invalid && CenterLocation.errors.required">Center Location is <strong>required</strong></mat-error>
+
+          </mat-form-field>
+        </div>-->
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+
+                  <mat-select placeholder="Section" formControlName="SectionID" id="sectionid" matInput required>
+                    <mat-option *ngFor="let s of ClassSections" [value]="s.SectionID">{{s.SectionName}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="SectionID.invalid && SectionID.errors.required">Section is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </fieldset>
+
+          <!--<div class="row">
+          <div class="col-12">
+            <mat-toolbar color="primary" class="mat-elevation-z2 slim">
+      <mat-icon class="material-icons"> add_circle</mat-icon>
+      <span class="subheading-1"> Class Days </span>
+    </mat-toolbar>
+            <h3> Class Days</h3>
+          </div>
+        </div>-->
+          <fieldset class="border">
+            <legend>Class Days</legend>
+
+            <div class="row">
+              <div class="col-sm-2">
+                <mat-checkbox formControlName="Monday">Monday</mat-checkbox>
+              </div>
+              <div class="col-sm-2">
+                <mat-checkbox formControlName="Tuesday">Tuesday</mat-checkbox>
+              </div>
+              <div class="col-sm-2">
+                <mat-checkbox formControlName="Wednesday">Wednesday</mat-checkbox>
+              </div>
+              <div class="col-sm-2">
+                <mat-checkbox formControlName="Thursday">Thursday</mat-checkbox>
+              </div>
+              <div class="col-sm-2">
+                <mat-checkbox formControlName="Friday">Friday</mat-checkbox>
+              </div>
+              <div class="col-sm-2">
+                <mat-checkbox formControlName="Saturday">Saturday</mat-checkbox>
+              </div>
+              <div class="col-sm-2">
+                <mat-checkbox formControlName="Sunday">Sunday</mat-checkbox>
+              </div>
+              <!--<div class="col-sm-6">
+          <mat-checkbox formControlName="FinalSubmitted">FinalSubmitted</mat-checkbox>
+        </div>-->
+            </div>
+          </fieldset>
+
+          <!--<div class="row">
+          <div class="col-4">
+            <mat-toolbar color="primary" class="mat-elevation-z2 slim">
+      <mat-icon class="material-icons"> add_circle</mat-icon>
+      <span class="subheading-1"> Contact Persons </span>
+    </mat-toolbar>
+            <h3> Contact Persons</h3>
+
+          </div>
+        </div>-->
+
+          <fieldset class="border">
+            <legend>Contact Persons</legend>
+
+            <div class="row">
+              <div class="col-sm-12">
+                <table>
+                  <thead>
+                    <tr>
+                      <th><b>Mobile No</b></th>
+                      <th><b>Contact Person Type</b></th>
+                      <th><b>Name</b></th>
+                      <th><b>Landline No</b></th>
+                      <th><b>Email</b></th>
+                      <th><button class="btn btn-success" type="button" [disabled]="inceptionreportform.disabled" (click)="AddContactPerson()">Add Contact Person</button></th>
+                    </tr>
+
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of ContactPerson">
+
+                      <td>
+                        <mat-form-field fxFlex>
+                          <input type="text" [(ngModel)]="c.ContactPersonMobile" [ngModelOptions]="{standalone: true}" (change)="ChkContactPerson($event.target.value)" placeholder="Mobile" minlength="11" maxlength="11" matInput NumberOnly required>
+                          <mat-label>Contact Person Mobile</mat-label>
+                          <mat-error *ngIf="c.ContactPersonMobile==''">Mobile No. is required</mat-error>
+
+
+                        </mat-form-field>
+                      </td>
+                      <td>
+                        <mat-form-field fxFlex>
+                          <mat-select [(ngModel)]="c.ContactPersonType" [ngModelOptions]="{standalone: true}" placeholder="Type" id="contactpersontype" matInput required>
+                            <mat-option value="Admissions">{{'Admissions'}}</mat-option>
+                            <mat-option value="Accounts">{{'Accounts'}}</mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="c.ContactPersonType==''">Type is required</mat-error>
+
+                        </mat-form-field>
+                      </td>
+                      <td>
+                        <mat-form-field fxFlex>
+                          <input type="text" [(ngModel)]="c.ContactPersonName" [ngModelOptions]="{standalone: true}" placeholder="Name" matInput required>
+                          <mat-label>Contact Person Name</mat-label>
+                          <mat-error *ngIf="c.ContactPersonName.invalid && c.ContactPersonName.errors.required">Name is <strong>required</strong></mat-error>
+                          <mat-error *ngIf="c.ContactPersonName==''">Name is required</mat-error>
+
+                        </mat-form-field>
+                      </td>
+
+                      <td>
+                        <mat-form-field fxFlex>
+                          <input type="text" [(ngModel)]="c.ContactPersonLandline" [ngModelOptions]="{standalone: true}" placeholder="Landline" matInput minlength="11" maxlength="11" NumberOnly required>
+                          <mat-label>Contact Person Landline</mat-label>
+                          <mat-error *ngIf="c.ContactPersonLandline==''">Landline is required</mat-error>
+
+                        </mat-form-field>
+                      </td>
+                      <td>
+                        <mat-form-field fxFlex>
+                          <input type="text" [(ngModel)]="c.ContactPersonEmail" [ngModelOptions]="{standalone: true}" placeholder="Email" matInput maxlength="100" required>
+                          <mat-label>Contact Person Email</mat-label>
+                          <mat-error *ngIf="c.ContactPersonEmail==''">Email is required</mat-error>
+
+                        </mat-form-field>
+                      </td>
+                      <td><button class="btn btn-warning" type="button" [disabled]="inceptionreportform.disabled" (click)="RemovePerson(c)">Remove</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </fieldset>
+
+
+          <br />
+          <div fxLayout="row" fxLayoutGap="20px" [style.marginTop.px]="10" *ngIf="!FinalSubmitted.value">
+
+
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit"  (click)="FinalSubmit();" [disabled]="inceptionreportform.disabled || inceptionreportform.invalid">
+              <mat-icon>done</mat-icon>{{savebtn}}
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" (click)="FinalSubmit();" [disabled]="inceptionreportform.disabled || inceptionreportform.invalid">
+              <mat-icon>done</mat-icon>Save and Submit
+            </button>
+            &nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="button" (click)="reset()" [disabled]="inceptionreportform.disabled || inceptionreportform.invalid">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+
+  <!--<mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column">
+          <mat-table [dataSource]="inceptionreport" matSort>
+
+            <ng-container matColumnDef="ClassID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ClassID</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClassStartTime">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ClassStartTime</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassStartTime | date: 'HH:mm'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClassEndTime">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ClassEndTime</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassEndTime | date:'HH:mm'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClassTotalHours">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ClassTotalHours</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassTotalHours}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="EnrolledTrainees">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> EnrolledTrainees</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.EnrolledTrainees}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Shift">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Shift</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Shift}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="CenterLocation">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> CenterLocation</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.CenterLocation}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="FinalSubmitted">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> FinalSubmitted</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-checkbox [checked]="Row.FinalSubmitted">FinalSubmitted</mat-checkbox>  </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>-->
+</div>

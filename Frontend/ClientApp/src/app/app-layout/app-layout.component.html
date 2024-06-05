@@ -1,0 +1,168 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+</script>
+<div class="main_wrapper">
+  <header *ngIf="isLoggedIn$ | async" class>
+    <div class="logo_area">
+      <a [routerLink]=" IsPbteUser?'/pbte/pbte':IsKamUser?'/dashboard/kam-dashboard':IsDeoUser?'/placement/self-employment-verification':''"
+        title>
+        <img alt src="assets/images/logo.png" width="45px" />
+      </a>
+      <strong>
+        Business Support
+        <span>System (BSS)</span>
+      </strong>
+      <a (click)="sopen= !sopen" class="menu_btn" href="javascript:void(0);" title>
+        <i *ngIf="sopen" class="fas fa-bars"></i>
+        <i *ngIf="!sopen" class="fas fa-times"></i>
+      </a>
+    </div>
+    <!-- logo Area -->
+    <div class="header_links">
+      <ul class="breadcrump">
+        <li>{{pTitle}}</li>
+      </ul>
+      <div class="user_profile">
+        <a href="javascript:void(0);" title>
+          <img [src]="img" alt />
+        </a>
+        <span class="username">{{user.FullName}}</span>
+      </div>
+      <ng-template #popContent style="margin: unset !important">
+        <div class="table-responsive">
+          <table class="table table-bordered d-md-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact No</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of KAMInfo" class="kamtr">
+                <td class="number-align-center">{{t.FullName}}</td>
+                <td class="number-align-center">{{t.Email}}</td>
+                <td class="number-align-center">{{t.ContactNo}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+      <a (click)="NotificationCountHideAndShowFunction()" [matMenuTriggerFor]="bell" href="javascript:void(0);" title>
+        <mat-icon>notifications</mat-icon>
+        <span *ngIf="NotificationCountHideAndShow" class="style">
+          {{NotificationCount}}
+        </span>
+      </a>
+      <mat-menu #bell="matMenu" class="noti-panel" style="margin:0;">
+        <div (scrolled)="onScroll()" [infiniteScrollDistance]="5" [infiniteScrollThrottle]="1000" [scrollWindow]="false"
+          class="drop-content" infiniteScroll style="cursor: pointer;">
+          <div class="card-header">Notification</div>
+          <div *ngFor="let s of NotificationslIST">
+            <div (click)="CurrentopenNotification(s)" *ngIf="s.IsRead==true;else loggedOut" class="list-noti">
+              <h5>{{s.Subject}}</h5>
+              <p>{{s?.Body}}</p>
+              <p class="time">{{s.DateDiff}}</p>
+            </div>
+            <ng-template #loggedOut>
+              <div (click)="CurrentopenNotification(s)" class="list-noti tick">
+                <h5>{{s.Subject}}</h5>
+                <p>{{s?.Body}}</p>
+                <p class="time">{{s.DateDiff}}</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+        <div *ngIf="ViewAllButtonHideAndShow" class="notify-drop-footer text-center">
+          <a routerLink="/notification/viewallnotification">
+            <i class="fa fa-eye"></i> View All
+          </a>
+        </div>
+      </mat-menu>
+      <a [matMenuTriggerFor]="menu" href="javascript:void(0);" title>
+        <i class="ion-android-settings"></i>
+      </a>
+      <mat-menu #menu="matMenu" style="margin:0;">
+        <button (click)="openDialog()" mat-menu-item>Change Password</button>
+        <button (click)="openKAMInfoDialog()" *ngIf="IsTspUser" mat-menu-item>
+          KAM Information
+        </button>
+      </mat-menu>
+      <a [matMenuTriggerFor]="org" *ngIf="user.UserLevel==2" href="javascript:void(0);" title>
+        <i class="fas fa-city"></i>
+        <span class="small">{{this.OName}}</span>
+        <i class="fas fa-angle-down"></i>
+      </a>
+      <mat-menu #org="matMenu" style="margin:0;">
+        <div style="text-align: center;background-color: #fdb813;">
+          <span>Organizations</span>
+        </div>
+        <button (click)="setOrg(org);" *ngFor="let org of userOrgsArray" mat-menu-item>
+          <div style="text-align: center;">
+            <span>{{org.OName}}</span>
+          </div>
+        </button>
+      </mat-menu>
+      <a (click)="logout()" href="javascript:void(0);" title>
+        <i class="ion-log-out"></i>
+      </a>
+    </div>
+  </header>
+  <div id="target"></div>
+  <div class>
+    <div class="col-12">
+      <div class="row">
+        <div autosize class="app_body">
+          <div [ngClass]="!sopen ?'':'collapsed'" class="sidemenu_container">
+            <div class="sidemenu">
+              <!-- <a *ngIf="mainMenuItems[0].parent != 'Profile Management' " [routerLink]="SSPTSP?'/dashboard/ssp-tsp':  IsPbteUser?'/pbte/pbte':IsKamUser?'/dashboard/kam-dashboard':IsDeoUser?'/placement/self-employment-verification':''" -->
+              <a *ngIf="mainMenuItems[0].parent != 'Profile Management' "
+                [routerLink]="IsPbteUser?'/pbte/pbte':IsKamUser?'/dashboard/kam-dashboard':IsDeoUser?'/placement/self-employment-verification':''"
+                [style.position]="'relative'" mat-ripple matTooltip="Dashboard" routerLinkActive="selected">
+                <h2>Dashboard</h2>
+              </a>
+              <!-- start nav item  -->
+              <ul *ngFor="let navItems of mainMenuItems  | groupBy:'parent' ;let i= index" class="collapsible">
+                <!-- module start -->
+                <li (click)="open[i]=!open[i]" class="mt-4 showdrop">
+                  {{navItems.key}}
+                  <i class="{{ open[i] ? 'ion-arrow-down-c' : 'ion-arrow-right-c'}}">
+                  </i>
+                </li>
+                <!-- module end -->
+                <!-- module form start -->
+                <ng-container
+                  *ngIf=" navItems.key == 'Profile Management' || navItems.key == 'Annual Plan' || navItems.key == 'Association Management'; else elseTemplate">
+                  <li *ngFor="let navItem of navItems.value" class="hidedrop">
+                    <a [routerLink]="navItem.path" [style.position]="'relative'" *ngIf="open[i]" mat-list-item
+                      mat-ripple matTooltip="{{navItem.title}}" routerLinkActive="selected">
+                      <i class="fas fa-chevron-right"></i>
+                      <span *ngIf="isExpanded">{{navItem.title}}</span>
+                    </a>
+                  </li>
+                </ng-container>
+
+                <ng-template #elseTemplate>
+                  <li *ngFor="let navItem of navItems.value | orderBy :'title'" class="hidedrop">
+                    <a [routerLink]="navItem.path" [style.position]="'relative'" *ngIf="open[i]" mat-list-item
+                      mat-ripple matTooltip="{{navItem.title}}" routerLinkActive="selected">
+                      <i class="fas fa-chevron-right"></i>
+                      <span *ngIf="isExpanded">{{navItem.title}}</span>
+                    </a>
+                  </li>
+                </ng-template>
+                
+                <!-- module form start -->
+              </ul>
+              <!-- end nav item  -->
+            </div>
+          </div>
+          <div [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''" class="main-div">
+            <router-outlet (deactivate)="onDeactivate()" #o="outlet">
+            </router-outlet>
+          </div>
+          <footer>© 2021 Punjab Skills Development Fund</footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

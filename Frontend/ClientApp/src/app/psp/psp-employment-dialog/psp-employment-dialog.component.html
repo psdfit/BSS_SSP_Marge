@@ -1,0 +1,230 @@
+<h2 mat-dialog-title>PSP Employment Data</h2>
+<form #nform="ngForm" focusInvalidInput [formGroup]="traineeEmploymentForm" (submit)="Submit(nform)">
+  <mat-dialog-content>
+    <div class="" formArrayName="Detail">
+      <table class="table-sm">
+        <thead>
+          <tr>
+            <th>
+              Trainee Name
+            </th>
+            <!--<th>
+              Class Code
+            </th>-->
+            <th>
+              Employment Status
+            </th>
+            <th>
+              Designation
+            </th>
+            <th>
+              Department
+            </th>
+            <th>
+              Employment Duration
+            </th>
+            <th>
+              Salary
+            </th>
+            <th>
+              Supervisor Name
+            </th>
+            <th>
+              Supervisor Contact
+            </th>
+            <th>
+              Employment Start Date
+            </th>
+
+            <!--<th>
+             Employment Type>
+            </th>-->
+            <th>
+              Employer Name
+            </th>
+            <th>
+              Employer Business Type
+            </th>
+            <th>
+              Employment Address
+            </th>
+            <th>
+              District
+            </th>
+            <th>
+              Tehsil
+            </th>
+            <th>
+              Employment Timing From
+            </th>
+            <th>
+              Employment Timing To
+            </th>
+            <th>
+              Office Contact No
+            </th>
+            <th>
+              Placement Type
+            </th>
+            <th>
+              Verification Method
+            </th>
+            <th>
+              Employment Letter | Salary Slip
+            </th>
+            <th>
+              EOBI
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let control of Detail.controls; let i= index" [formGroupName]="i">
+            <td>
+              <input type="text" formControlName="TraineeName" placeholder="Trainee Name" matInput maxlength="250" />
+            </td>
+            <!--<td>
+              <mat-form-field>
+                <mat-select placeholder="Class Code" formControlName="ClassID" id="classid" matInput>
+                  <mat-option *ngFor="let s of ClassDrp" [value]="s.ClassID">{{s.ClassCode}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>-->
+            <td>
+              <mat-form-field class="example-full-width">
+                <mat-select placeholder="Employment Status" formControlName="EmploymentStatus" id="employmentstatus" matInput required>
+                  <!--<mat-option *ngFor="let s of PlacementStatusDrp" [value]="s.EmploymentStatusID">{{s.EmploymentStatusName}}</mat-option>-->
+                  <mat-option value="Employed"> Employed      </mat-option>
+                  <mat-option value="Unemployed"> Unemployed    </mat-option>
+                  <mat-option value="Not Submitted"> Not Submitted </mat-option>
+                  <mat-option value="Not Interested"> Not Interested</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" formControlName="Designation" placeholder="Designation" matInput maxlength="250" required />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" formControlName="Department" placeholder="Department" matInput maxlength="250" required />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" inputmode="numeric" id="employmentduration" placeholder="Employment Duration" required NumberOnly formControlName="EmploymentDuration" matInput>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="number" id="salary" placeholder="Salary" NumberOnly formControlName="Salary" matInput required>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" formControlName="SupervisorName" placeholder="Supervisor Name" Alpha matInput maxlength="250" required />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" formControlName="SupervisorContact" [imask]="{mask:'0000 0000000'}" [unmask]="true" required placeholder="Supervisor Contact" matInput maxlength="250" />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput [matDatepicker]="employmentstartdate" placeholder="Choose a date" formControlName="EmploymentStartDate" required>
+                <mat-datepicker-toggle matSuffix [for]="employmentstartdate"></mat-datepicker-toggle>
+                <mat-datepicker #employmentstartdate></mat-datepicker>
+              </mat-form-field>
+            </td>
+
+
+            <td>
+              <mat-form-field>
+                <input type="text" formControlName="EmployerName" placeholder="Employer Name" matInput maxlength="250" required />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" formControlName="EmployerBusinessType" placeholder="Employer Business Type" matInput maxlength="250" required />
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <textarea type="text" formControlName="EmploymentAddress" placeholder="Employment Address" matInput maxlength="2000" required></textarea>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field class="example-full-width">
+                <mat-select placeholder="District" formControlName="District" [disabled]="false" matInput>
+                  <mat-option *ngFor="let s of DistrictDrp" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field class="example-full-width">
+                <mat-select placeholder="Tehsil" formControlName="EmploymentTehsil" [disabled]="false" matInput>
+                  <mat-option *ngFor="let s of TehsilDrp | where:['DistrictID',control.get('District').value]" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <ngx-material-timepicker #pickerPSP1></ngx-material-timepicker>
+                <input matInput [ngxTimepicker]="pickerPSP1" placeholder="Choose a time" formControlName="TimeFrom">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <ngx-material-timepicker #pickerPSP2></ngx-material-timepicker>
+                <input matInput [ngxTimepicker]="pickerPSP2" placeholder="Choose a time" formControlName="TimeTo">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" formControlName="OfficeContactNo" [imask]="{mask:'00000000000'}" [unmask]="true" placeholder="Office Contact No" matInput maxlength="12" />
+              </mat-form-field>
+            </td>
+            <td>
+
+              <mat-radio-group aria-label="Select an option" formControlName="PlacementTypeID" matInput>
+                <mat-radio-button *ngFor="let s of PlacementTypeDrp" [value]="s.PlacementTypeID"
+                                  (change)="onVerificarionMethodChange($event,control)"
+                                  style="margin-left:5px;">{{s.PlacementType}}</mat-radio-button>
+              </mat-radio-group>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="Verification Method" formControlName="VerificationMethodId" matInput (ngModelChange)="onVerificarionMethodChange($event,control)">
+                  <mat-option *ngFor="let s of VerificationMethodsDrp | where:['PlacementTypeID',control.get('PlacementTypeID').value]" [value]="s.VerificationMethodID">{{s.VerificationMethodType}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+
+              <file-upload [nopreview]="true" matInput [accept]="" formControlName="FilePath" [disabled]="control.get('EmploymentStatus').value != 'Employed'"></file-upload>
+              <mat-error *ngIf="control.errors?.fileoeobi">File or EOBI is Required</mat-error>
+              <mat-error *ngIf="control.errors?.file">Required</mat-error>
+            </td>
+            <td>
+              <mat-form-field>
+                <input type="text" placeholder="EOBI" matInput maxlength="250" formControlName="EOBI" />
+                <mat-error *ngIf="control.errors?.fileoeobi">File or EOBI is Required</mat-error>
+              </mat-form-field>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" matTooltip="Click to {{savebtn}}"
+            attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working">
+      <mat-icon>done</mat-icon>{{savebtn+EnText}}
+    </button>&nbsp;&nbsp;
+    <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+            attr.aria-label="Click to Reset form data" type="button" [mat-dialog-close]>
+      <mat-icon>close</mat-icon> Reset
+    </button>
+  </mat-dialog-actions>
+</form>

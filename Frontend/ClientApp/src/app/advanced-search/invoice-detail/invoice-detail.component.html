@@ -1,0 +1,121 @@
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Invoices Detail</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding table-responsive ng-star-inserted">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>
+                Sr#
+              </th>
+              <th>Invoice Type</th>
+              <th>Class Code</th>
+              <th>TSPCode</th>
+              <th>TSPName</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>G/L Account</th>
+              <th>GL Name</th>
+              <th>Scheme</th>
+              <th>Trade</th>
+              <th>Department</th>
+              <th>Tax Code</th>
+              <th>WTax Liable</th>
+              <th>Class Start Date</th>
+              <th>Class End Date</th>
+              <th>Class Actual Start Date</th>
+              <th>Class Actual End Date</th>
+              <th>Batch</th>
+              <th>Batch Duration</th>
+              <th>Invoice Number</th>
+              <th>Trainees Per Class</th>
+              <th>Class Days</th>
+              <th>Claim Trainees</th>
+              <th>Total Monthly Payment</th>
+              <th>Stipend Per Trainee</th>
+              <th>Uniform & Bag</th>
+              <th>Total Cost Per Trainee</th>
+              <th>No of Trainee Unverified CNIC</th>
+              <th>CNIC CAT</th>
+              <th>Unverified CNIC</th>
+              <th>No of Trainee Dropout</th>
+              <th>Drop Ded Cat</th>
+              <th>Dropout</th>
+              <th>No of Trainee Attend Shortfall</th>
+              <th>Attendance Shortfall</th>
+              <th>No of Trainee Misc Deduction</th>
+              <th>Misc Ded Cat</th>
+              <th>Misc. Deduction / Others</th>
+              <th>Percentage Applied</th>
+              <th>Penalty</th>
+              <th>Result Deduction</th>
+              <th>Net Invoice Payable</th>
+              <th>Gross Payable</th>
+              <th>Net Training Cost</th>
+              <th>Total(LC)</th>
+              <th>LineTotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let l of INVOICE; let i=index">
+              <td class="number-align-center">{{i+1}}</td>
+              <!--<td>
+                <a color="primary"
+                   mat-icon-button matTooltip="View Previouse Documents" (click)="GetClassMonthview(l.ClassID,r.U_Month,r.ProcessKey);">
+                  <mat-icon>visibility</mat-icon>
+                </a>
+              </td>-->
+              <td>{{l.InvoiceType}}</td>
+              <td>{{l.ClassCode}}</td>
+              <td>{{l.TSPCode}}</td>
+              <td>{{l.TSPName}}</td>
+              <td>{{l.Description}}</td>
+              <td [ngClass]="(l.Status=='Approved')?'text-success':'text-danger'">{{l.Status}}</td>
+              <td>{{l.GLCode}}</td>
+              <td>{{l.GLName}}</td>
+              <td>{{l.SchemeName}}</td>
+              <td>{{l.TradeName}}</td>
+              <td>{{l.PCategoryName}}</td>
+              <td>{{l.TaxCode}}</td>
+              <td class="number-align-center">{{l.WTaxLiable}}</td>
+              <td class="number-align-center">{{l.StartDate  | date:environment.DateFormat}}</td>
+              <td class="number-align-center">{{l.EndDate  | date:environment.DateFormat}}</td>
+              <td class="number-align-center">{{l.ActualStartDate  | date:environment.DateFormat}}</td>
+              <td class="number-align-center">{{l.ActualEndDate  | date:environment.DateFormat}}</td>
+              <td class="number-align-center">{{l.Batch}}</td>
+              <td class="number-align-center">{{l.BatchDuration}}</td>
+              <td class="number-align-center">{{l.InvoiceNumber}}</td>
+              <td class="number-align-center">{{l.TraineePerClass}}</td>
+              <td class="number-align-center">{{l.ClassDays}}</td>
+              <td class="number-align-center">{{l.ClaimTrainees}}</td>
+              <td class="decimal-align-right">{{l.TotalMonthlyPayment | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{l.Stipend | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{l.UniformBag | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{l.TotalCostPerTrainee | number: environment.Decimal}}</td>
+              <td class="number-align-center">{{l.UnverifiedCNICDeductions}}</td>
+              <td>{{l.CnicDeductionType}}</td>
+              <td class="decimal-align-right">{{l.CnicDeductionAmount | number: environment.Decimal}}</td>
+              <td class="number-align-center">{{l.DeductionTraineeDroput}}</td>
+              <td>{{l.DropOutDeductionType}}</td>
+              <td class="decimal-align-right">{{l.DropOutDeductionAmount | number: environment.Decimal}}</td>
+              <td class="number-align-center">{{l.DeductionTraineeAttendance}}</td>
+              <td class="decimal-align-right">{{l.AttendanceDeductionAmount | number: environment.Decimal}}</td>
+              <td class="number-align-center">{{l.MiscDeductionNo}}</td>
+              <td>{{l.MiscDeductionType}}</td>
+              <td class="decimal-align-right">{{l.MiscDeductionAmount | number: environment.Decimal}}</td>
+              <td class="number-align-center">{{l.PenaltyPercentage}}</td>
+              <td class="decimal-align-right">{{l.PenaltyAmount | number: environment.Decimal}}</td>
+              <td class="number-align-center">{{l.ResultDeduction}}</td>
+              <td class="decimal-align-right">{{l.NetPayableAmount | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{l.GrossPayable | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{l.NetTrainingCost | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{l.TotalLC | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{l.LineTotal | number: environment.Decimal}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

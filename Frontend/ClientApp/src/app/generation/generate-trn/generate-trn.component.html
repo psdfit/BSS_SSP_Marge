@@ -1,0 +1,175 @@
+<div class="comp-main-div">
+
+  <div class="row">
+    <div class="col-sm-4">
+      <mat-form-field fxFlex>
+        <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month" [formControl]="DateMonth" required readonly/>
+        <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #customDatePicker
+                        startView="multi-year"
+                        (yearSelected)="chosenYearHandler($event)"
+                        (monthSelected)="chosenMonthHandler($event, customDatePicker)"
+                        panelClass="example-month-picker">
+        </mat-datepicker>
+        <mat-label>Month</mat-label>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-4">
+      <mat-form-field fxFlex>
+        <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" id="SchemeID" matInput required>
+          <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+          <mat-option [value] = 0>--Select--</mat-option>
+          <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-4">
+      <mat-form-field fxFlex>
+        <mat-select #certAuth placeholder="Certification Authority" [formControl]="certAuthFilter" (openedChange)="EmptyCtrl()" (selectionChange)="getCertAuthClassesForTrn(certAuth.value)" id="CertAuthID" matInput required>
+          <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCertAuth" autofocus /></mat-optgrp>
+          <mat-option>--Select--</mat-option>
+          <mat-option *ngFor="let s of CertAuthDetail | like:['CertAuthName',SearchCertAuth.value]" [value]="s.CertAuthID">{{s.CertAuthName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-toolbar color="accent" class=" slim slim">
+        <mat-icon class="material-icons">view_comfy</mat-icon>
+        <span class="spacer">Generate TRN</span>
+        <mat-icon style="cursor:pointer" matTooltip="Business Rules for TRN" (click)="displayHideAlert()">info</mat-icon>
+
+      </mat-toolbar>
+    </mat-card-content>
+
+    <div *ngIf="infoAlert">
+      <ngb-alert type="primary" (click)="displayHideAlert()">
+        <ul class="pl-3">
+          <li>The classes should end in that month and class status should be completed.</li>
+          <li>All regular PRNs of that class should be approved.</li>
+          <li>Result Status of each trainee should not be None.</li>
+        </ul>
+
+      </ngb-alert>
+    </div>
+
+
+    <div class="row" *ngIf="!IsGenerated">
+      <div class="col-lg-10" *ngIf="TotalCompletedClasses != 0">
+        <strong>
+          {{CompletedClassesWithResult}} / {{TotalCompletedClasses}}
+        </strong>
+        <br>
+        <span>Completed Classes With Result / Total Completed Classes</span>
+      </div>
+      <div class="col-lg-2" *ngIf="isValid">
+        <button class="float-right" mat-raised-button color="success" style="float:right" *ngIf="TrnClasses != null && TrnClasses.length != 0 " (click)="generateTrn()">
+          Generate
+        </button>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="IsGenerated">
+      <div class="col">
+        <h1 class="text-center">{{message}}</h1>
+      </div>
+    </div>
+    <div *ngIf="!IsGenerated">
+      <mat-card-content>
+        <div class="main-content">
+          <div fxLayout="column" class="table-responsive">
+            <mat-table [dataSource]="TrnClasses" #SortClass="matSort" matSort class="custom-width">
+              \
+
+              <ng-container matColumnDef="Sr">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Sr#</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;"><strong>{{ i + 1 || ""}}</strong></mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Scheme" style="width: 300px;">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;"><strong>{{Row.SchemeName}}</strong></mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Tsp" style="width: 300px;">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TSP</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;"><strong>{{Row.TSPName}}</strong></mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="ClassCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Class Code</mat-header-cell>
+                <mat-cell *matCellDef="let Row" style="color: #005b9e;"> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="ClassStatusName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Class Status</mat-header-cell>
+                <mat-cell *matCellDef="let Row"><strong>{{Row.ClassStatusName}}</strong> </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Duration">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Duration</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="StartDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.StartDate | date}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="EndDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.EndDate | date}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="TrainingAddressLocation">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TrainingAddressLocation}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="TradeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Trade</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TradeName}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="GenderName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Gender</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.GenderName}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="TraineesPerClass">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual Trainees</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TraineesPerClass}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="CertAuthName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Certification Authority</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.CertAuthName}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Batch">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Batch</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.Batch}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="DistrictName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>District</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.DistrictName}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="TehsilName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Tehsil Name</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TehsilName}} </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumnsClass"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumnsClass;" tabindex="0"></mat-row>
+            </mat-table>
+          </div>
+        </div>
+      </mat-card-content>
+    </div>
+  </mat-card>
+
+</div>

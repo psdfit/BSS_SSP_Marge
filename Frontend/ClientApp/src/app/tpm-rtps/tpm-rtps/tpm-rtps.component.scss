@@ -1,0 +1,95 @@
+.group {
+  display: inline-block;
+}
+
+
+
+
+
+.mat-cell, .mat-footer-cell {
+  border: 0;
+  /*padding: 7px;*/
+}
+
+body mat-table mat-header-row mat-header-cell {
+  border: 0;
+}
+
+
+.mat-column-ClassID {
+  flex: 0 0 100px;
+}
+
+.mat-column-ClassCode {
+  flex: 0 0 200px;
+}
+
+
+.mat-column-SchemeName {
+  flex: 0 0 150px;
+}
+
+.mat-column-TSPName {
+  flex: 0 0 150px;
+}
+
+.mat-column-ClassCode {
+  flex: 0 0 150px;
+}
+
+.mat-column-CreatedDate {
+  justify-content: center;
+  flex: 0 0 150px;
+}
+
+.mat-column-TSPName {
+  flex: 0 0 150px;
+}
+
+.mat-column-TraineesPerClass {
+  justify-content: center;
+  flex: 0 0 150px;
+}
+
+.mat-column-DistrictName {
+  flex: 0 0 150px;
+}
+
+.mat-column-TehsilName {
+  flex: 0 0 150px;
+}
+
+.mat-column-StartDate {
+  justify-content: center;
+  flex: 0 0 150px;
+}
+
+.mat-column-Curriculum {
+  flex: 0 0 180px;
+}
+
+.mat-column-AddressOfTrainingLocation {
+  flex: 0 0 150px;
+}
+
+.mat-column-CPName {
+  flex: 0 0 150px;
+}
+
+.mat-column-CPLandline {
+  justify-content: center;
+  flex: 0 0 150px;
+}
+
+.mat-column-Comments {
+  flex: 0 0 150px;
+}
+
+
+.mat-column-Duration {
+  flex: 0 0 150px;
+}
+
+.mat-column-TradeName {
+  flex: 0 0 100px;
+}

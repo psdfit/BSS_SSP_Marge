@@ -1,0 +1,44 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+        <mat-icon class="material-icons"> add_circle</mat-icon>
+        <span class="subheading-1">Infrastructure</span>
+      </mat-toolbar>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th rowspan="2">Stream</th>
+            <th rowspan="2">Scheme</th>
+            <th rowspan="2">Training Service Provider</th>
+            <th rowspan="2">Trade</th>
+            <th>As Per Appendix</th>
+            <th>Total Completed Trainees of Completed Classes</th>
+            <th>C/B*100</th>
+            <th>Key Given Below</th>
+          </tr>
+          <tr>
+            <td>Contractual Number of Trainees</td>
+            <td>Completed Trainees</td>
+            <td>Percentage Completed</td>
+            <td>Score</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of report">
+            <td>{{ r.Stream }}</td>
+            <td>{{ r.SchemeName }}</td>
+            <td>{{ r.TSPName }}</td>
+            <td>{{ r.TradeName }}</td>
+            <td>{{ r.TraineesPerClass }}</td>
+            <td>{{ r.CompletedTrainees }}</td>
+            <td>{{ r.CompletedPercentage }}</td>
+            <td>{{ r.Score }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

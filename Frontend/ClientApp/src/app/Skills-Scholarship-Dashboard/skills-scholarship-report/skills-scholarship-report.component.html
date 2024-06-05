@@ -1,0 +1,92 @@
+<div id="MasterSheet-page" class="comp-main-div">
+
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <span class="spacer">Skills Scholarship Initiative Report </span>
+          <div class="spacer"></div>
+          <button mat-button color="White" title="View Session Control"></button>
+
+        </mat-toolbar>
+        <div fxLayout="column">
+
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getSkillsScholarshipData()]" id="SchemeId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of Scheme" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="currentUser.UserLevel!=4">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Locality" [(ngModel)]="filters.Locality" [formControl]="LocalityFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getClusterDropdown()]" id="Locality" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option value="1">Cluster</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="currentUser.UserLevel!=4">
+              <mat-form-field fxFlex>
+                <mat-select #scheme placeholder="Cluster" [(ngModel)]="filters.Cluster" [formControl]="ClusterFilter" (openedChange)="EmptyCtrl()" (selectionChange)="[getSkillsScholarshipData(),selectedClusterName = getSelectedClusterName()]" id="Cluster" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of Cluster" [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3" *ngIf="currentUser.UserLevel!=4">
+              <br />
+              <button mat-raised-button color="success" style="float:right"  (click)="getReport()">Export Excel</button>
+            </div>
+          </div>
+          <div>
+            <div class=" table-responsive">
+              <mat-table [dataSource]="SkillsScholarshipArray" matSort class="table table-bordered custom-width">
+
+                <ng-container matColumnDef="Trade">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Trade</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TradeName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="NoOfAssociate">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> No. of Associates </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.NoOfAssociate}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Target">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Target </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TradeTarget}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Enrollments">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Enrollments </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.EnrolmentsCompleted}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Remaining">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Remaining </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.RemainingSeats}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Completed">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> %age Completed </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{Row.ageCompleted}}%</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="RaceStatus">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Race Status </mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index">{{ Row.RaceStopped==1 && Row.HasRaceStarted ==1 ? 'FCFS enrollment completed' : (Row.HasRaceStarted == 1 && Row.RaceStopped==0 ? 'FCFS Enrollment in progress' : 'FCFS Enrollment not started') }}</mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" tabindex="0"></mat-row>
+
+              </mat-table>
+              <mat-paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

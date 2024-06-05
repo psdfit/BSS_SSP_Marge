@@ -1,0 +1,173 @@
+<div id="Notifications-page" class="comp-main-div">
+   
+  <mat-tab-group #tabGroup>
+    <mat-tab label="Notification Mapping">
+     
+      <mat-card>
+        <mat-card-content>
+          <div>
+            <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+              <mat-icon class="material-icons"> add_circle</mat-icon>
+              <span class="subheading-1">{{title + EnText}} </span>
+            </mat-toolbar>
+            <form novalidate [formGroup]="notificationsMappingform" (submit)="notificationsMappingform.valid && Submit()">
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <mat-select placeholder="Process" (selectionChange)="GetProcessInfoByProcessKey($event.value)"  formControlName="ProcessKey" id="processkey" matInput required>
+                      <mat-option *ngFor="let s of ApprovalProcess" [value]="s.ProcessKey">{{s.ApprovalProcessName}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="ProcessKey.invalid && ProcessKey.errors.required">Process is <strong>required</strong></mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex >
+                    <mat-select multiple  (openedChange)="EmptyCtrl()" placeholder="Users" [(ngModel)]="Steps"  id="UserIDs"  formControlName="UserIDs" matInput>
+                      <mat-optgrp disabled class="ddlsrchheader">
+                        <input type="text"
+                               (keydown)="$event.stopPropagation()"
+                               [formControl]="SearchCls" />
+                      </mat-optgrp>
+                      <mat-option *ngFor="let s of Users  | like :['FullName', SearchCls.value] " [value]="s.UserID">{{s.FullName}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <mat-select placeholder="Notification" (selectionChange)="GetNotificationsInfo($event.value)" formControlName="NotificationID" id="NotificationID" matInput required>
+                      <mat-option *ngFor="let s of GetNotifications" [value]="s.NotificationID">{{s.NotificationName}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="NotificationID.invalid && NotificationID.errors.required">Notification is <strong>required</strong></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+             <!--  <div  *ngIf="isShownProcess">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <fieldset class="border" >
+                      <legend>Notification Info</legend>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <mat-form-field fxFlex>
+                            <input type="text" formControlName="NotificationName" readonly placeholder="Notification Name" matInput  />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-3">
+                          <mat-form-field fxFlex>
+                            <input type="text" formControlName="EventAction" readonly placeholder="Event Action" matInput  />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-3">
+                          <mat-form-field fxFlex>
+                            <input type="text"  formControlName="Subject" readonly placeholder="Subject" matInput />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-5">
+                          <mat-form-field fxFlex>
+                            <textarea type="text"  formControlName="Body" readonly placeholder="Body" matInput ></textarea>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </fieldset>
+                </div>
+                </div>
+                
+              </div> -->
+              <div  *ngIf="isShownNotification">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <fieldset class="border" style="background-color: aliceblue;" >
+                      <legend>Notification Info</legend>
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <mat-form-field fxFlex>
+                            <input type="text" formControlName="NotificationName" readonly placeholder="Notification Name" matInput  />
+                          </mat-form-field>
+                        </div>
+                       <!--  <div class="col-sm-4">
+                          <mat-form-field fxFlex>
+                            <input type="text" formControlName="EventAction" readonly placeholder="Event Action" matInput  />
+                          </mat-form-field>
+                        </div> -->
+                        <div class="col-sm-6">
+                          <mat-form-field fxFlex>
+                            <input type="text"  formControlName="Subject" readonly placeholder="Subject" matInput />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-sm-12">
+                          <mat-form-field fxFlex>
+                            <textarea type="text"  formControlName="Body" readonly placeholder="Body" matInput ></textarea>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </fieldset>
+                </div>
+                </div>
+                
+              </div>
+              <div class="row col-12">
+                <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                  attr.aria-label="Click to {{savebtn+EnText}}" type="submit"
+                  [disabled]="working  || (NotificationMapID.value<1 && !formrights.CanAdd)">
+                  <mat-icon>done</mat-icon>{{savebtn+EnText}}
+                </button>&nbsp;&nbsp;
+                <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                  attr.aria-label="Click to Reset form data" type="reset" (click)="reset()" [disabled]="working">
+                  <mat-icon>close</mat-icon> Reset
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider></mat-divider>
+    </mat-tab>
+    <mat-tab label="Mapping List">
+      <mat-card>
+        <mat-card-content>
+          <div>
+            <mat-toolbar color="accent" class=" slim slim">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Manage and View All</span>
+              <div class="spacer"></div>
+              <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+            </mat-toolbar>
+            <div class="table-responsive">
+              <mat-table [dataSource]="notificationsHandling" matSort class="table table-bordered custom-width">
+    
+                <ng-container matColumnDef="NotificationName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Notification Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row"> {{Row.NotificationName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ProcessKey">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Process Key</mat-header-cell>
+                  <mat-cell *matCellDef="let Row "> {{Row.ProcessKey}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FullName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> User Name</mat-header-cell>
+                  <mat-cell *matCellDef="let Row "> {{Row.FullName}} </mat-cell>
+                </ng-container>
+               
+                <ng-container matColumnDef="Action">
+                  <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ">
+                    <button mat-icon-button color="primary"  (click)="toggleEdit(Row)"[disabled]="!formrights.CanEdit">
+                      <mat-icon aria-label="Edit this row">edit</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+   
+  </div>
+

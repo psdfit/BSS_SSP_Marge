@@ -1,0 +1,319 @@
+
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class=" slim slim">
+        <span class="spacer">Trainee Completion Report</span>
+        <div class="spacer"></div>
+        <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+      </mat-toolbar>
+      <div fxLayout="column">
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[getDependantFilters()]" id="SchemeId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+                <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+            <mat-form-field fxFlex>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl($event)" (selectionChange)="[getFilteredTSRLiveData(),getClassesByTsp(tsp.value)]" id="TspId" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                <mat-option value="0" selected>--All--</mat-option>
+
+                <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl($event)" (selectionChange)="getFilteredTSRLiveData()" id="ClassId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+                <!--mat-option value="0" selected>--All--</mat-option>-->
+                <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!--<div class="col-sm-3">
+            <br />
+            <button mat-raised-button color="success" style="float:right" *ngIf="tsrDatasource.data?.length > 0" (click)="exportToExcel()">Export Excel</button>
+          </div>-->
+        </div>
+        <div class="row" *ngIf="filters.ClassID > 0 && isTSPUser">
+          <div class="col-sm-6 ">
+            <a mat-button href="assets/sample-files/TSRUploading.xlsx" matTooltip="Download sample file for bulk upload Trainee's result status.">
+              <mat-icon aria-hidden="false">cloud_download</mat-icon>
+              Sample.xlxs
+            </a>
+            <input [disabled]="tsrDatasource.data?.length == 0" matTooltip="Upload Excel File" type="file" (change)="onFileChange($event)">
+          </div>
+        </div>
+        <br />
+        <div>
+          <form class="table-responsive" [formGroup]="tsrTableForm">
+            <ng-container formArrayName="tsrFormArray">
+              <!--<button style="float:left" class="btn btn-success" mat-raised-button (click)="exporter.exportTable('xlsx', {fileName:'TSR', sheet: 'TSR', Props: {Author: 'PSDF-BSS'}})">Export to Excel</button>-->
+              <div class="table-responsive">
+                <mat-table [dataSource]="tsrDatasource" matSort class="table table-bordered">
+                  <mat-header-row *matHeaderRowDef="displayedColumns" tabindex="0"></mat-header-row>
+                  <mat-row *matRowDef="let rows; columns: displayedColumns;" tabindex="0"></mat-row>
+                  <ng-container matColumnDef="Sr">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Sr#</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index">
+                      {{row.Sr}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="SchemeName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.SchemeName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="SchemeCode">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Code </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.SchemeCode}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TSPName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> TSP </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TSPName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ClassCode">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.ClassCode}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TraineeCode">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+
+                    <a class="myAnchor" (click)="openTraineeJourneyDialogue(row.TraineeCode)" style="color: #005b9e;"> {{row.TraineeCode}} </a>
+                      <!--<mat-form-field>
+        <input matInput placeholder="TraineeCode" formControlName="TraineeCode">
+      </mat-form-field>-->
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TraineeName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TraineeName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="FatherName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.FatherName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TraineeCNIC">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TraineeCNIC}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="CNICIssueDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> CNIC Issue Date </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.CNICIssueDate | date:environment.DateFormat}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="GenderName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Gender</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.GenderName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="DateOfBirth">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Date Of Birth</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.DateOfBirth | date:environment.DateFormat}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TraineeRollNumber">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Roll Number</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TraineeRollNumber}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Batch">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Batch</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.Batch}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="SectionName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Section</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.SectionName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="CNICVerified">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> CNIC Verified</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.CNICVerified==true? 'Yes':'No'}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Education">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Education</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.Education}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ContactNumber1">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's Contact Number</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.ContactNumber1 | phoneNumber:environment.Mobile }}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TradeName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trade </mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TradeName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="VoucherHolder">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Voucher Holder</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.VoucherHolder==true? 'Yes':'No'}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TraineeImg">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Image</mat-header-cell>
+                    <mat-cell *matCellDef="let Row"> <img [src]="Row.TraineeImg" style="width:40px;height:40px" /> </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TraineeAge">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Age</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TraineeAge}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ClassStartDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Class StartDate</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.ClassStartDate | date:environment.DateFormat}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ClassEndDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Class EndDate</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.ClassEndDate | date:environment.DateFormat}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ClassStatusName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Class Status</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.ClassStatusName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="CertAuthName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Cert AuthName</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.CertAuthName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="TraineeStatusName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Status</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TraineeStatusName}}
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="TraineeEmploymentStatus">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Employment Status</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TraineeEmploymentStatus}}
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="TraineeEmploymentVerificationStatus">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Employment Verification Status</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.TraineeEmploymentVerificationStatus}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="IsExtra">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Is Extra</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.IsExtra==true? 'Yes':'No'}}
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ClusterName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Cluster</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.ClusterName}}
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="SectorName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Sector</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.SectorName}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="KAM">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>KAM</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      {{row.KAM}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ResultStatusID">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Result Status</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      <mat-form-field *ngIf="isTSPUser && row.IsDocumentGenerated == false">
+                        <mat-select formControlName="ResultStatusID" placeholder="ResultStatusID" required>
+                          <mat-option *ngFor="let opt  of traineeResultStatusTypeArray" [value]="opt.ResultStatusID">{{opt.ResultStatusName}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<ng-container *ngIf="isTSPUser && row.ControlDisabled">{{row.ControlDisabled}}</ng-container>-->
+                      <ng-container *ngIf="isInternalUser || row.IsDocumentGenerated">{{row.ResultStatusName}}</ng-container>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ResultStatusChangeReason">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> R.S Change Reason</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      <mat-form-field *ngIf="isTSPUser && row.IsDocumentGenerated == false">
+                        <textarea matInput placeholder="Comments" formControlName="ResultStatusChangeReason"></textarea>
+                      </mat-form-field>
+                      <ng-container *ngIf="isInternalUser || row.IsDocumentGenerated">{{row.ResultStatusChangeReason}}</ng-container>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ResultDocument">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Result Document</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      <!--<mat-error *ngIf="resultDocument.invalid && resultDocument.errors.required"><strong>required</strong></mat-error>-->
+                      <file-upload *ngIf="isTSPUser && row.IsDocumentGenerated == false" formControlName="ResultDocument" [pattren]="'image.*'" maxSize="1024‬‬"></file-upload>
+                      <ng-container *ngIf="(isInternalUser || row.IsDocumentGenerated) && row.ResultDocument !=''"><img src="{{row.ResultDocument}}" width="50" height="50" /></ng-container>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+                    <mat-cell *matCellDef="let row ; let index=index" [formGroupName]="index">
+                      <a color="primary" mat-button (click)="openHistoryDialogue(row)">
+                        <!--<a mat-button color="primary" title="Trainee Status History" (click)="openHistoryDialogue(row)">-->
+                        History
+                      </a>
+                      <!--<a mat-button color="primary" title="Update Trainee's Status" *ngIf="isTSPUser || (isInternalUser && kamAssignmentTSPs.includes(row.TSPID))" (click)="openDialog(row)">Update Status</a>-->
+                    </mat-cell>
+                  </ng-container>
+                </mat-table>
+              </div>
+              <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </ng-container>
+          </form>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <button mat-raised-button color="primary" style="float:right" [disabled]="!tsrTableForm.valid" *ngIf="tsrDatasource.data?.length > 0 && isTSPUser" (click)="updateTraineeResult()">Save All </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

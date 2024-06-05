@@ -1,0 +1,53 @@
+<div id="RTP-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <span class="spacer">Approve / Reject RTP</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+      </div>
+      <div>
+        <form novalidate [formGroup]="rtpapprovalform">
+          <div class="row">
+
+            <div class="col-sm-6">
+              <mat-form-field fxFlex>
+                <input type="text" formControlName="ClassCode" placeholder="ClassCode" matInput maxlength="250" readonly />
+                <mat-label>Class</mat-label>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-12">
+              <mat-form-field>
+                <mat-label>Comments</mat-label>
+                <textarea matInput formControlName="Comments" required></textarea>
+                <mat-error *ngIf="Comments.invalid && Comments.errors.required">Comments are required</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <div class="row">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}" *ngIf="ApprovalFlag && !RejectRTPDialogue" [disabled]="RejectRTPDialogue"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" (click)="[ApproveRTP(),dialogRef.close(rtpapprovalform)]">
+              <mat-icon>done</mat-icon>Approve
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}" *ngIf="NTPFlag"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="button">
+              <mat-icon>done</mat-icon>NTP
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reject form data" *ngIf="ApprovalFlag"
+                    attr.aria-label="Click to Reject form data" type="submit" (click)="[RejectRTP(),dialogRef.close(rtpapprovalform)]" [disabled]="working">
+              <mat-icon>close</mat-icon> Reject
+            </button>
+            <!--<button mat-button type="button" (click)="onNoClick()" cdkFocusInitial>Cancel</button>-->
+          </div>
+        </form>
+      </div>
+      <div mat-dialog-actions>
+        <!--<button mat-button (click)="onNoClick()" cdkFocusInitial>No Thanks</button>-->
+        <!--<button mat-button (click)="Submit()">Save</button>-->
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+</div>

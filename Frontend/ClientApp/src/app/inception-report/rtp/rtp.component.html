@@ -1,0 +1,239 @@
+<!--<span mat-dialog-title> <strong class="text-danger " *ngIf="isOpenChange"> {{isOpenChangeMessage}} </strong></span>-->
+
+<div id="RTP-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <span class="spacer">Request To Proceed</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+        </div>
+          <div>
+            <form novalidate [formGroup]="rtpform" (submit)="Submit()">
+              <div class="row">
+
+
+                <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="Scheme" placeholder="Scheme" matInput required />
+      <mat-label>Scheme</mat-label>
+    </mat-form-field>
+  </div>
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="TSP" placeholder="TSP" matInput maxlength="250" />
+      <mat-label>TSP</mat-label>
+    </mat-form-field>
+  </div>-->
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="SchemeName" placeholder="ClassCode" matInput maxlength="250" readonly />
+                    <mat-label>Training Scheme</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="TSPName" placeholder="ClassCode" matInput maxlength="250" readonly />
+                    <mat-label>Name of Service Provider</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="ClassCode" placeholder="ClassCode" matInput maxlength="250" readonly />
+                    <mat-label>Class</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="TradeName" placeholder="ClassCode" matInput maxlength="250" readonly />
+                    <mat-label>Trade</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="TraineesPerClass" placeholder="ClassCode" matInput maxlength="250" readonly />
+                    <mat-label>No. of Trainees</mat-label>
+                  </mat-form-field>
+                </div>                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="Duration" placeholder="ClassCode" matInput maxlength="250" readonly />
+                    <mat-label>Duration(Months)</mat-label>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="DistrictName" placeholder="District" matInput maxlength="250" readonly />
+                    <mat-label>District</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="TehsilName" placeholder="Tehsil" matInput maxlength="250" readonly />
+                    <mat-label>Tehsil</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="Name" placeholder="Curriculum Name" matInput maxlength="250" readonly />
+                    <mat-label>Curriculum Followed</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="CPName" placeholder="Contact Perosn name" matInput maxlength="250" readonly />
+                    <mat-label>Contact Person Name</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="CPLandline" placeholder="Contact Person Landline" matInput maxlength="250" readonly />
+                    <mat-label>Contact Person Landline</mat-label>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input matInput [matDatepicker]="visitdate" placeholder="Choose a date" formControlName="StartDate">
+                    <mat-datepicker-toggle matSuffix [for]="visitdate"></mat-datepicker-toggle>
+                    <mat-datepicker #visitdate></mat-datepicker>
+                    <mat-label> Expected Start Date</mat-label>
+                  </mat-form-field>
+                </div>
+                <!--<div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input matInput [matDatepicker]="dateofrequest" placeholder="Choose a date" formControlName="DateOfRequest" [disabled]="false" required>
+      <mat-datepicker-toggle matSuffix [for]="dateofrequest"></mat-datepicker-toggle>
+      <mat-datepicker #dateofrequest></mat-datepicker>
+      <mat-label>Date Of Request</mat-label>
+      <mat-error *ngIf="VisitEndDate.invalid && VisitEndDate.errors.required">Visit End Date is <strong>required</strong></mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="Trade" placeholder="Trade" matInput maxlength="250" />
+      <mat-label>Trade</mat-label>
+    </mat-form-field>
+  </div>
+
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="text" formControlName="Trainees" placeholder="Trainees" matInput maxlength="250" />
+      <mat-label>Trainees</mat-label>
+    </mat-form-field>
+  </div>
+
+
+  <div class="col-sm-6">
+    <mat-form-field fxFlex>
+      <input type="number" id="duration" placeholder="Duration" NumberOnly formControlName="Duration" matInput>
+
+    </mat-form-field>
+  </div>-->
+                <div class="col-sm-6">
+                  <mat-form-field fxFlex>
+                    <input type="text" formControlName="AddressOfTrainingLocation" placeholder="Address Of Training Location" matInput maxlength="250" requried />
+                    <mat-label>Address Of Training Location</mat-label>
+                    <mat-error *ngIf="AddressOfTrainingLocation.invalid && AddressOfTrainingLocation.errors.required">Address is <strong>required</strong></mat-error>
+
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <br />
+              <br />
+
+
+              <div class="row">
+                <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                        attr.aria-label="Click to {{savebtn+EnText}}" type="submit">
+                  <mat-icon>done</mat-icon>{{savebtn+EnText}}
+                </button>&nbsp;&nbsp;
+                <button mat-button type="button" (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+
+                <!--<button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+            attr.aria-label="Click to Reset form data" type="button" (click)="reset()" [disabled]="working">
+      <mat-icon>close</mat-icon> Reset
+    </button>-->
+              </div>
+            </form>
+          </div>
+          <div mat-dialog-actions>
+            <!--<button mat-button (click)="onNoClick()" cdkFocusInitial>No Thanks</button>-->
+            <!--<button mat-button (click)="Submit()">Save</button>-->
+          </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+</div>
+
+<!--<div>
+
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Already Planned Visits</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column">
+          <mat-table [dataSource]="visitplan" matSort>
+
+            <ng-container matColumnDef="VisitType">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Event Type</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitType}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="UserID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> User </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.UserName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClassID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Class</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassID}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitStartDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitStartDate | date:'dd/MM/yyyy'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitEndDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitEndDate | date:'dd/MM/yyyy'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="VisitTime">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Time</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.VisitTime | date: 'HH:mm'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Attachment">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Attachment</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Attachment}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Comments">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Comments</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Comments}} </mat-cell>
+            </ng-container
+            >
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [(ngModel)]="Row.InActive" [disabled]="!formrights.CanDelete" (change)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary" [disabled]="!formrights.CanEdit" (click)="toggleEdit(Row)">
+                  <mat-icon aria-label="Edit this row">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>-->

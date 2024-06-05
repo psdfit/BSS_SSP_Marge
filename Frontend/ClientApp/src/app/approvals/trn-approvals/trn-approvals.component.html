@@ -1,0 +1,160 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class=" slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Testing Recommendation Note</span>
+          <div class="spacer"></div>
+          <div class="col-sm-2">
+            <button mat-raised-button color="success" style="float:right" *ngIf="trn?.length > 0" (click)="GetByTRNMasterIDs()">Export Excel</button>
+          </div>
+        </mat-toolbar>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-label>Month</mat-label>
+              <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
+              <button mat-icon-button matSuffix (click)="clearMonth();">
+                <mat-icon>close</mat-icon>
+              </button>
+              <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"(monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" id="SchemeID" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                <mat-option [value]=0>--Select--</mat-option>
+                <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">
+                  {{s.SchemeName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field fxFlex>
+              <mat-select #certAuth placeholder="Certification Authority" [formControl]="certAuthFilter" (openedChange)="EmptyCtrl()" id="CertAuthID" matInput>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCertAuth" autofocus /></mat-optgrp>
+                <mat-option>--Select--</mat-option>
+                <mat-option *ngFor="let s of CertAuthDetail | like:['CertAuthName',SearchCertAuth.value]"[value]="s.CertAuthID">
+                  {{s.CertAuthName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+
+
+        </div>
+
+
+        <div class="text-center" *ngIf="!trn">
+          <p>No Pending Approval</p>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive" *ngIf="trn" #TABLE>
+              <table class="table table-bordered d-md-table">
+                <thead>
+                  <tr>
+                    <th>Sr#</th>
+                    <th>Actions</th>
+                    <th>Approved</th>
+                    <th>Process Name</th>
+                    <th>Certification Authority</th>
+                    <th>Scheme Name</th>
+                    <th>Scheme Code</th>
+                    <th>Month</th>
+                    <th>Created Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let r of trn; let i=index">
+                    <tr>
+                      <td class="sm" [attr.rowspan]="r.HasTRN? 2:null">
+                        {{i+1}}<a color="primary" matTooltip="TRN Detail" mat-icon-button (click)="GetTrnDetails(r)">
+                          <!--<mat-icon>details</mat-icon>-->
+                          <mat-icon>{{r.HasTRN ?'remove_circle':'control_point' }}</mat-icon>
+                        </a>
+                      </td>
+                      <td class="sm">
+                        <a color="primary" matTooltip="Decision" mat-icon-button (click)="openApprovalDialogue(r)">
+                          <mat-icon>grading</mat-icon>
+                        </a>
+
+                        <a color="primary"
+                           mat-icon-button matTooltip="Export to Excel" (click)="ExportToExcel(r.TRNMasterID, r.ProcessKey, r.Month)">
+                          <mat-icon>get_app</mat-icon>
+                        </a>
+                      </td>
+                      <td>
+                        <!--(Step {{r.ApprovalStepID}})-->
+                        <span *ngIf="r.IsApproved !=0" class="text-success"><b>Approved</b></span>
+                        <span *ngIf="r.IsApproved ==0" class="text-danger"><b>Pending (Step {{r.ApprovalStepID}})</b></span>
+                      </td>
+                      <td>{{r.ProcessKey}}</td>
+                      <td>{{r.CertAuthName}}</td>
+                      <td>{{r.SchemeName}}</td>
+                      <td>{{r.SchemeCode}}</td>
+                      <th class="number-align-center">{{r.Month | date:environment.DateFormat}}</th>
+                      <td class="number-align-center">{{r.CreatedDate | date:environment.DateFormat}}</td>
+                    </tr>
+                    <tr *ngIf="r.HasTRN" [@enterAnimation]>
+                      <td colspan="13">
+                        <div class="table-responsive">
+                          <table class="table table-bordered" style="color:lightslategrey">
+                            <thead>
+                              <tr>
+                                <th>Sr#</th>
+                                <th>Class Code</th>
+                                <th>Class Duration</th>
+                                <th>Trade Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Contractual Trainees</th>
+                                <th>Enrolled Trainees</th>
+                                <th>Trainees Registered for Exam</th>
+                                <th>Pass</th>
+                                <th>Fail</th>
+                                <th>Absent</th>
+                                <th>Payment Released</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let c of r.trnDetails; let i=index">
+                                <td>{{i + 1}}</td>
+                                <td><a class="myAnchor" (click)="openClassJourneyDialogue(c.ClassID)"style="color: #005b9e;"> <strong>{{c.ClassCode}}</strong> </a></td>
+                                <td class="number-align-center">{{c.Duration}}</td>
+                                <td>{{c.TradeName}}</td>
+                                <td class="number-align-center">{{c.ClassStartDate | date:environment.DateFormat}}</td>
+                                <td class="number-align-center">{{c.ClassEndDate | date:environment.DateFormat}}</td>
+                                <td class="number-align-center">{{c.ContractualTrainees}}</td>
+                                <td class="number-align-center">{{c.EnrolledTrainees}}</td>
+                                <td class="number-align-center">{{c.TraineesRegisteredForExam}}</td>
+                                <td class="number-align-center">{{c.PassVerified + c.PassUnverified}}</td>
+                                <td class="number-align-center">{{c.FailedVerified + c.FailedUnverified}}</td>
+                                <td class="number-align-center">{{c.AbsentVerified + c.AbsentUnverified}}</td>
+                                <td class="number-align-center">{{c.PaymentToBeReleased}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                    <!--Nested Grid ends here-->
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

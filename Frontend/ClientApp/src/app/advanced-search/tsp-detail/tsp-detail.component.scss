@@ -1,0 +1,95 @@
+.no-padding{
+    padding:0px!important;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #000;
+}
+
+tr:nth-child(even) {
+  background-color: #FDFCF4
+}
+
+th {
+  background-color: #c3d9ff;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+
+.frame {
+  height: 100%; /* equals max image height */
+  width: 100%;
+  white-space: nowrap;
+  text-align: center;
+  margin: 1em 0;
+}
+
+.helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+img {
+  background: #3A6F9A;
+  vertical-align: middle;
+  max-height: 300px;
+  max-width: 90%;
+}
+
+.card-header {
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: none;
+}
+
+
+.completed {
+  color: green;
+}
+
+.active {
+  color: #005b9e;
+}
+
+.ready {
+  color: #005b9e;
+}
+
+.table {
+  background-color: white;
+}
+
+.mat-column-Action {
+  flex: 0 0 200px;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}

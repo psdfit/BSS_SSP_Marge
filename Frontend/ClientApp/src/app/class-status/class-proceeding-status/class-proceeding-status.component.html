@@ -1,0 +1,123 @@
+<div class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div class="main-content">
+        <mat-toolbar color="accent" class=" slim slim">
+          <span class="spacer">Class Proceeding Status</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <mat-tab-group #tabGroup>
+          <mat-tab label="MPR to AP">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="emptyCtrl()" (selectionChange)="[getTSPDetailByScheme(scheme.value),getfilteredData()]" id="SchemeId" matInput required>
+                    <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                    <mat-option value="0">--Select--</mat-option>
+                    <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="emptyCtrl()" (selectionChange)="[filters.TSPID=0,getClassesByTsp(tsp.value),getfilteredData()]" id="TspId" matInput required>
+                    <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                    <mat-option value="0">--Select--</mat-option>
+                    <mat-option *ngFor="let s of tspArray | like:['TSPName',SearchTSP.value] | where : ['SchemeID',filters.SchemeID]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="emptyCtrl()" (selectionChange)="[filters.ClassID=0,getfilteredData()]" id="ClassId" matInput required>
+                    <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" /></mat-optgrp>
+                    <mat-option value="0">--Select--</mat-option>
+                    <mat-option *ngFor="let item of classesArray  | like:['ClassCode',SearchCls.value] | where : ['TSPID',filters.TSPID]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <!--<div class="col-sm-3">
+                <br />
+                <button mat-raised-button color="success" style="float:right" *ngIf="mastersheet.data?.length > 0" (click)="exportToExcel('MasterSheet')">Export Excel</button>
+              </div>-->
+            </div>
+            <div fxLayout="column" class="mat-elevation-z8">
+              <mat-table [dataSource]="tableDataSource" matSort class="table">
+                <ng-container matColumnDef="ClassCode">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code </mat-header-cell>
+                  <mat-cell *matCellDef="let Row "> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)" style="color: #005b9e;"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MonthOfMPR">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> MPR Month</mat-header-cell>
+                  <mat-cell *matCellDef="let Row "> {{Row.MonthOfMPR | date:'MMM/yyyy'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsGeneratedMPR">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>MPR</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ">
+                    <i class="text-success" *ngIf="Row.IsGeneratedMPR"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsGeneratedMPR"> No </i>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsDataInsertedInAMS">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>AMS Data Inserted</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ">
+                    <i class="text-success" *ngIf="Row.IsDataInsertedInAMS"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsDataInsertedInAMS"> No </i>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsGeneratedPRNRegular">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>PRN Regular</mat-header-cell>
+                  <mat-cell *matCellDef="let Row  ">
+                    <i class="text-success" *ngIf="Row.IsGeneratedPRNRegular"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsGeneratedPRNRegular"> No </i>
+                  </mat-cell>
+                </ng-container>
+                <!--<ng-container matColumnDef="IsGeneratedPRNRegularPO">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Regular PO</mat-header-cell>
+                  <mat-cell *matCellDef="let Row  ">
+                    <i class="text-success" *ngIf="Row.IsGeneratedPRNRegular"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsGeneratedPRNRegular"> No </i>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsGeneratedPRNRegularInvoice">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Regular AP</mat-header-cell>
+                  <mat-cell *matCellDef="let Row  ">
+                    <i class="text-success" *ngIf="Row.IsGeneratedPRNRegularInvoice"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsGeneratedPRNRegularInvoice"> No </i>
+                  </mat-cell>
+                </ng-container>-->
+                <ng-container matColumnDef="IsGeneratedSRN">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>SRN</mat-header-cell>
+                  <mat-cell *matCellDef="let Row  ">
+                    <i class="text-success" *ngIf="Row.IsGeneratedSRN"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsGeneratedSRN"> No </i>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsGeneratedSRNPO">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>SRN PO</mat-header-cell>
+                  <mat-cell *matCellDef="let Row  ">
+                    <i class="text-success" *ngIf="Row.IsGeneratedSRNPO"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsGeneratedSRNPO"> No </i>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsGeneratedSRNInvoice">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>SRN AP</mat-header-cell>
+                  <mat-cell *matCellDef="let Row  ">
+                    <i class="text-success" *ngIf="Row.IsGeneratedSRNInvoice"> Yes </i>
+                    <i class="text-danger" *ngIf="!Row.IsGeneratedSRNInvoice"> No </i>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+          </mat-tab>
+          <mat-tab label="After Completion"></mat-tab>
+        </mat-tab-group>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

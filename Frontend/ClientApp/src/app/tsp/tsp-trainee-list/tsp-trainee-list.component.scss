@@ -1,0 +1,53 @@
+.example-month-picker .mat-calendar-period-button {
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}
+.file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.file-lable {
+ 
+  width:30px;
+  height:30px;
+  cursor:pointer;
+}
+.file-input {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 33333;
+  position: absolute;
+  left: 0;
+  overflow: hidden !important;
+  top: 0;
+  opacity: 0;
+}
+
+/*.file-input::before {
+  content: '<mat-icon>publish</mat-icon>';
+  cursor: pointer;
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}*/
+
+.file-input:hover::before {
+  border-color: black;
+}
+
+.file-input:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}

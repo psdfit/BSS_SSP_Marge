@@ -1,0 +1,119 @@
+<div id="MasterSheet-page" class="comp-main-div">
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <mat-toolbar color="accent" class="slim slim">
+          <span class="spacer">AMS Reports</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+        <div class="row">
+          <div class="col-sm-12">
+            <form novalidate #noForm="ngForm" [formGroup]="genForm" (ngSubmit)="generateReport()">
+              <div class="row">
+                <div class="col-4">
+                  <mat-form-field fxFlex>
+                    <mat-select #reportddl placeholder="Select Report" formControlName="ReportName"
+                                (openedChange)="EmptyCtrl()" id="reportddlId" matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader">
+                        <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchRpt" />
+                      </mat-optgrp>
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let s of ReportArray | like :['value',SearchRpt.value]" [value]="s.value">
+                        {{s.value}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="ReportName.invalid && ReportName.errors.required">required</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-4">
+                  <mat-form-field fxFlex>
+                    <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month" formControlName="DateMonth" required readonly />
+                    <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #customDatePicker startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+                    <mat-label>Month</mat-label>
+                    <mat-error *ngIf="DateMonth.invalid && DateMonth.errors.required">required</mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <mat-form-field fxFlex>
+                    <mat-select #scheme placeholder="Scheme" formControlName="SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="getDependantFilters()" id="SchemeId" matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader">
+                        <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" />
+                      </mat-optgrp>
+                      <mat-option value="0">----Select All----</mat-option>
+                      <mat-option *ngFor="let s of Scheme | like: ['SchemeName', SearchSch.value]" [value]="s.SchemeID">
+                        {{ s.SchemeName }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="SchemeID.invalid && SchemeID.errors.required">required</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-4" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+                  <mat-form-field fxFlex>
+                    <mat-select #tsp placeholder="TSP" formControlName="TSPID" (openedChange)="EmptyCtrl()"
+                                (selectionChange)="getClassesByTsp(tsp.value)" id="TspId" matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader">
+                        <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus />
+                      </mat-optgrp>
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let s of TSPDetail | like :['TSPName', SearchTSP.value]" [value]="s.TSPID">
+                        {{s.TSPName}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="TSPID.invalid && TSPID.errors.required">required</mat-error>
+                  </mat-form-field>
+
+                </div>
+                <div class="col-4">
+                  <mat-form-field fxFlex>
+                    <mat-select placeholder="Class" formControlName="ClassID" (openedChange)="EmptyCtrl()" id="ClassID"
+                                matInput required>
+                      <mat-optgrp disabled class="ddlsrchheader">
+                        <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" />
+                      </mat-optgrp>
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let item of classesArray | like :['ClassCode', SearchCls.value]"
+                                  [value]="item.ClassID">{{ item.ClassCode }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="ClassID.invalid && ClassID.errors.required">required</mat-error>
+                  </mat-form-field>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <button mat-raised-button color="success" type="submit" [disabled]="genForm.invalid">
+                    Generate Report
+                  </button>
+                  <button class="m-3" mat-raised-button color="warn" type="submit" *ngIf="genForm.dirty"
+                          (click)="genForm.reset(); error=''">
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <br />
+                  <div *ngIf="error !='' " class="alert alert-danger alert-dismissible show" role="alert">
+                    <strong>Error !</strong>
+                    {{error}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div>
+
+</div>

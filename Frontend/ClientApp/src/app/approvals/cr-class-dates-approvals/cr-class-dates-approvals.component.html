@@ -1,0 +1,96 @@
+
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Pending Approvals</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <!--<button (click)="OK()">click</button>-->
+
+        <div class="text-center" *ngIf="!classes">
+          <p>No Pending Approval</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <!--<th>Class Code</th>-->
+                <th>Class Code</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Duration(Months)</th>
+                <th></th>
+
+
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of classes">
+
+                <tr>
+                  <td>
+                    <button mat-raised-button color="primary" type="button" mat-button (click)="openApprovalDialogue(r)">
+                      Decision
+                    </button>
+                    <span class="p-4 text-dark" *ngIf="r.IsApproved">Approved</span>
+                    <a color="primary" matTooltip="Check current Class Dates" *ngIf="!r.IsApproved"
+                       mat-icon-button (click)="GetCurrentClassDatesByID(r)">
+                      <mat-icon>{{r.currentClassDates ?'remove_circle':'control_point' }}</mat-icon>
+                    </a>
+                  </td>
+                  <td class="myAnchor" > <a style="color: #005b9e;" (click)="openClassJourneyDialogue(r.ClassID)"> <strong>{{r.ClassCode}}</strong> </a></td>
+                  <td>{{r.StartDate | date:environment.DateFormat}}</td>
+                  <td>{{r.EndDate | date:environment.DateFormat}}</td>
+                  <td>{{r.Duration}}</td>
+                  <td style="color:orangered">Requested</td>
+
+
+                </tr>
+                <tr *ngIf="r.currentClassDates">
+                  <td colspan="6">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+
+                            <th>Class Code</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration(Months)</th>
+                            <th>
+
+                            </th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let l of r.currentClassDates">
+                            <td class="myAnchor"> <a style="color: #005b9e;" (click)="openClassJourneyDialogue(l.ClassID)"> <strong>{{l.ClassCode}}</strong> </a></td>
+                            <td>{{l.StartDate | date:environment.DateFormat}}</td>
+                            <td>{{l.EndDate | date:environment.DateFormat}}</td>
+                            <td>{{l.Duration}}</td>
+                            <td style="color:green">Existing</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+
+            </tbody>
+          </table>
+        </div>
+        <!--</mat-step>-->
+
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

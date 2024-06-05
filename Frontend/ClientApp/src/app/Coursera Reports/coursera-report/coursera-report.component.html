@@ -1,0 +1,93 @@
+
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Trainee Status Report </span>
+        <div class="spacer"></div>
+        <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+      </mat-toolbar>
+      <div class="row">
+        <div class="col-sm-3">
+          <mat-form-field fxFlex>
+            <mat-select #scheme placeholder="Businees Rules" [formControl]="schemeFilter" (openedChange)="EmptyCtrl($event)" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+              <mat-option>Select Rule</mat-option>
+              <mat-option value="1">Invitation Not Accepted</mat-option>
+              <mat-option value="2">Inactive for 14 days below 70%</mat-option>
+              <mat-option value="3">Inactive for 28 days above 70%</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <br />
+          <button mat-raised-button color="success" style="float:right" (click)="onSubmit()"  id="btnSubmit"  *ngIf="tsrDatasource?.length > 0">Submit Decesion</button>
+        </div>
+      </div>
+      <div fxLayout="column" class="table-responsive">
+        <mat-table [dataSource]="tsrDatasource" matSort class="table table-bordered">
+          <mat-header-row *matHeaderRowDef="displayedColumns" tabindex="0"></mat-header-row>
+          <mat-row *matRowDef="let rows; columns: displayedColumns;" tabindex="0"></mat-row>
+          <ng-container matColumnDef="Sr">
+            <mat-header-cell *matHeaderCellDef> Sr#</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let i=index">{{ (paginator.pageIndex * paginator.pageSize) + i+1}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeCode">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's ID </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              <a class="myAnchor" (click)="openTraineeJourneyDialogue(row.TraineeCode)" style="color: #005b9e;"> {{row.TraineeCode}} </a>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's Name </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">{{row.TraineeName}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="FatherName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index"> {{row.FatherName}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeCNIC">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">{{row.TraineeCNIC}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="GenderName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Gender</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index"> {{row.GenderName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="ContactNumber1">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile Number</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.ContactNumber1 | phoneNumber:environment.Mobile }}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeAge">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Age</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.TraineeAge}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeEmail">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Email </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index"> {{row.TraineeEmail}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="InvitationDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Invitation Date </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index"> {{row.InvitationDate}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+              <mat-checkbox [(ngModel)]="selectAll" (change)="onSelectAllChange()"></mat-checkbox>Select
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row; let index=index">
+              <mat-checkbox [(ngModel)]="row.isChecked" [checked]="selection.isSelected(row)" (change)="onCheckboxChange(row)"></mat-checkbox>
+            </mat-cell>
+          </ng-container>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+
+    </div>
+  </mat-card-content>
+</mat-card>
+

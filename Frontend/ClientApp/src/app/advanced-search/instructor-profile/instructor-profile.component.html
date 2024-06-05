@@ -1,0 +1,116 @@
+<br />
+<mat-toolbar color="accent" class=" slim slim">
+  <mat-icon class="material-icons">view_comfy</mat-icon>
+  <span class="spacer">Instructor Profile</span>
+  <div class="spacer"></div>
+</mat-toolbar>
+
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Personal Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-8 no-padding">
+        <table>
+          <tr>
+            <th>Name of Service Provider</th>
+            <td>{{InstructorProfile?.TSPName}}</td>
+          </tr>
+          <tr>
+            <th>Instructor ID</th>
+            <td>{{InstructorProfile?.InstrID}}</td>
+          </tr>
+          <tr>
+            <th>Name of Instructor</th>
+            <td>{{InstructorProfile?.InstructorName}}</td>
+          </tr>
+          <tr>
+            <th>Scheme</th>
+            <td>{{InstructorProfile?.SchemeName}}</td>
+          </tr>
+          <tr>
+            <th>Trade</th>
+            <td>{{InstructorProfile?.TradeName}}</td>
+          </tr>
+          <tr>
+            <th>Sector</th>
+            <td>{{InstructorProfile?.SectorName}}</td>
+          </tr>
+          <tr>
+            <th>Gender</th>
+            <td>{{InstructorProfile?.GenderName}}</td>
+          </tr>
+        </table>
+      </div>
+      <div style="text-align:center;" class="col-sm-4">
+        <div class=frame>
+          <span class="helper"></span>
+          <div *ngIf="InstructorProfile?.PicturePath!='';else other_content">
+            <img src="{{InstructorProfile?.PicturePath}}" />
+          </div>
+          <ng-template #other_content>
+            <img src="../../assets/images/0b8cbcc4-f8b7-419b-ae33-93088bc0c99e.png" />
+         </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Location Address</th>
+            <td colspan="3">{{InstructorProfile?.LocationAddress}}</td>
+          </tr>
+          <tr>
+            <th>Instructor CNIC</th>
+            <td>{{InstructorProfile?.CNICofInstructor}}</td>
+            <th>Qualification</th>
+            <td>{{InstructorProfile?.QualificationHighest}}</td>
+          </tr>
+          <tr>
+            <th>Total Experiende</th>
+            <td>{{InstructorProfile?.TotalExperience}}</td>
+            <th>Name of Organization</th>
+            <td>{{InstructorProfile?.NameOfOrganization}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="col-sm-12 no-padding">
+  <div class="card shadow custom-managment">
+    <div class="card-header">Classes Information</div>
+    <div style="text-align:left;">
+      <div style="text-align:left;" class="col-sm-12 no-padding">
+        <table>
+          <tr>
+            <th>Scheme</th>
+            <th>Class Code</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Shift</th>
+            <th>Trainees</th>
+            <th>Class Time</th>
+            <th>Status</th>
+          </tr>
+          <tr *ngFor="let x of ClassesDetail">
+            <td>{{x?.SchemeName}}</td>
+            <td>{{x?.ClassCode}}</td>
+            <td>{{x?.StartDate | date:'mediumDate'}}</td>
+            <td>{{x?.EndDate | date:'mediumDate'}}</td>
+            <td>{{x?.Shift}}</td>
+            <td>{{x?.EnrolledTrainees}}</td>
+            <td>{{x?.ClassStartTime | date:'shortTime'}} - {{x?.ClassEndTime | date:'shortTime'}}</td>
+            <td>{{x?.ClassStatusName}}</td>
+          </tr>          
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+

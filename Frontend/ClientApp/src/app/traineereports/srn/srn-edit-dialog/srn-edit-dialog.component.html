@@ -1,0 +1,76 @@
+<h1 mat-dialog-title>Add Transaction Information</h1>
+<div mat-dialog-content>
+  <form novalidate [formGroup]="srnForm">
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Trainee Code</mat-label>
+          <input matInput [value]="data.TraineeCode" disabled>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Full Name</mat-label>
+          <input matInput [value]="data.TraineeName + ' ' + data.FatherName" disabled>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>CNIC</mat-label>
+          <input matInput [value]="data.TraineeCNIC" disabled>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Contact Number</mat-label>
+          <input matInput [value]="data.ContactNumber1" disabled>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>District </mat-label>
+          <input matInput [value]="data.DistrictName" disabled>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Report Id</mat-label>
+          <input matInput formControlName="ReportId" disabled>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Amount</mat-label>
+          <input matInput [value]="data.Amount" disabled>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Token Number</mat-label>
+          <input matInput formControlName="TokenNumber">
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Transaction Number</mat-label>
+          <input matInput formControlName="TransactionNumber">
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <br />
+        <mat-slide-toggle formControlName="IsPaid">Is Paid</mat-slide-toggle>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+  <button mat-button (click)="onSaveClick()">Save</button>
+</div>
+

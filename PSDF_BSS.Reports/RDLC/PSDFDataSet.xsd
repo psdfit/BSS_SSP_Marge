@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="PSDFDataSet" targetNamespace="http://tempuri.org/PSDFDataSet.xsd" xmlns:mstns="http://tempuri.org/PSDFDataSet.xsd" xmlns="http://tempuri.org/PSDFDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection ConnectionStringObject="Data Source=PK-LHR-ITS-143;Initial Catalog=PSDF_DB;Persist Security Info=True;User ID=sa;Password=Abacus123" IsAppSettingsProperty="false" Modifier="Assembly" Name="PSDF_DBConnectionString" ParameterPrefix="@" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="PSDFDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="PSDFDataSet" msprop:Generator_UserDSName="PSDFDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="TraineeProfile" msprop:Generator_TableClassName="TraineeProfileDataTable" msprop:Generator_TableVarName="tableTraineeProfile" msprop:Generator_TablePropName="TraineeProfile" msprop:Generator_RowDeletingName="TraineeProfileRowDeleting" msprop:Generator_RowChangingName="TraineeProfileRowChanging" msprop:Generator_RowEvHandlerName="TraineeProfileRowChangeEventHandler" msprop:Generator_RowDeletedName="TraineeProfileRowDeleted" msprop:Generator_UserTableName="TraineeProfile" msprop:Generator_RowChangedName="TraineeProfileRowChanged" msprop:Generator_RowEvArgName="TraineeProfileRowChangeEvent" msprop:Generator_RowClassName="TraineeProfileRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TraineeID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnTraineeID" msprop:Generator_ColumnPropNameInRow="TraineeID" msprop:Generator_ColumnPropNameInTable="TraineeIDColumn" msprop:Generator_UserColumnName="TraineeID" type="xs:int" />
+              <xs:element name="TraineeCode" msprop:Generator_ColumnVarNameInTable="columnTraineeCode" msprop:Generator_ColumnPropNameInRow="TraineeCode" msprop:Generator_ColumnPropNameInTable="TraineeCodeColumn" msprop:Generator_UserColumnName="TraineeCode">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeName" msprop:Generator_ColumnVarNameInTable="columnTraineeName" msprop:Generator_ColumnPropNameInRow="TraineeName" msprop:Generator_ColumnPropNameInTable="TraineeNameColumn" msprop:Generator_UserColumnName="TraineeName">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeCNIC" msprop:Generator_ColumnVarNameInTable="columnTraineeCNIC" msprop:Generator_ColumnPropNameInRow="TraineeCNIC" msprop:Generator_ColumnPropNameInTable="TraineeCNICColumn" msprop:Generator_UserColumnName="TraineeCNIC">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="FatherName" msprop:Generator_ColumnVarNameInTable="columnFatherName" msprop:Generator_ColumnPropNameInRow="FatherName" msprop:Generator_ColumnPropNameInTable="FatherNameColumn" msprop:Generator_UserColumnName="FatherName">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="GenderID" msprop:Generator_ColumnVarNameInTable="columnGenderID" msprop:Generator_ColumnPropNameInRow="GenderID" msprop:Generator_ColumnPropNameInTable="GenderIDColumn" msprop:Generator_UserColumnName="GenderID" type="xs:int" />
+              <xs:element name="Batch" msprop:Generator_ColumnVarNameInTable="columnBatch" msprop:Generator_ColumnPropNameInRow="Batch" msprop:Generator_ColumnPropNameInTable="BatchColumn" msprop:Generator_UserColumnName="Batch" type="xs:int" minOccurs="0" />
+              <xs:element name="TradeID" msprop:Generator_ColumnVarNameInTable="columnTradeID" msprop:Generator_ColumnPropNameInRow="TradeID" msprop:Generator_ColumnPropNameInTable="TradeIDColumn" msprop:Generator_UserColumnName="TradeID" type="xs:int" />
+              <xs:element name="SectionID" msprop:Generator_ColumnVarNameInTable="columnSectionID" msprop:Generator_ColumnPropNameInRow="SectionID" msprop:Generator_ColumnPropNameInTable="SectionIDColumn" msprop:Generator_UserColumnName="SectionID" type="xs:int" />
+              <xs:element name="Shift" msprop:Generator_ColumnVarNameInTable="columnShift" msprop:Generator_ColumnPropNameInRow="Shift" msprop:Generator_ColumnPropNameInTable="ShiftColumn" msprop:Generator_UserColumnName="Shift" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="DateOfBirth" msprop:Generator_ColumnVarNameInTable="columnDateOfBirth" msprop:Generator_ColumnPropNameInRow="DateOfBirth" msprop:Generator_ColumnPropNameInTable="DateOfBirthColumn" msprop:Generator_UserColumnName="DateOfBirth" type="xs:dateTime" />
+              <xs:element name="CNICIssueDate" msprop:Generator_ColumnVarNameInTable="columnCNICIssueDate" msprop:Generator_ColumnPropNameInRow="CNICIssueDate" msprop:Generator_ColumnPropNameInTable="CNICIssueDateColumn" msprop:Generator_UserColumnName="CNICIssueDate" type="xs:dateTime" />
+              <xs:element name="IsDual" msprop:Generator_ColumnVarNameInTable="columnIsDual" msprop:Generator_ColumnPropNameInRow="IsDual" msprop:Generator_ColumnPropNameInTable="IsDualColumn" msprop:Generator_UserColumnName="IsDual" type="xs:boolean" />
+              <xs:element name="UpdatedDate" msprop:Generator_ColumnVarNameInTable="columnUpdatedDate" msprop:Generator_ColumnPropNameInRow="UpdatedDate" msprop:Generator_ColumnPropNameInTable="UpdatedDateColumn" msprop:Generator_UserColumnName="UpdatedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="SchemeID" msprop:Generator_ColumnVarNameInTable="columnSchemeID" msprop:Generator_ColumnPropNameInRow="SchemeID" msprop:Generator_ColumnPropNameInTable="SchemeIDColumn" msprop:Generator_UserColumnName="SchemeID" type="xs:int" minOccurs="0" />
+              <xs:element name="TspID" msprop:Generator_ColumnVarNameInTable="columnTspID" msprop:Generator_ColumnPropNameInRow="TspID" msprop:Generator_ColumnPropNameInTable="TspIDColumn" msprop:Generator_UserColumnName="TspID" type="xs:int" />
+              <xs:element name="ClassID" msprop:Generator_ColumnVarNameInTable="columnClassID" msprop:Generator_ColumnPropNameInRow="ClassID" msprop:Generator_ColumnPropNameInTable="ClassIDColumn" msprop:Generator_UserColumnName="ClassID" type="xs:int" minOccurs="0" />
+              <xs:element name="ClassCode" msprop:Generator_ColumnVarNameInTable="columnClassCode" msprop:Generator_ColumnPropNameInRow="ClassCode" msprop:Generator_ColumnPropNameInTable="ClassCodeColumn" msprop:Generator_UserColumnName="ClassCode" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="EducationID" msprop:Generator_ColumnVarNameInTable="columnEducationID" msprop:Generator_ColumnPropNameInRow="EducationID" msprop:Generator_ColumnPropNameInTable="EducationIDColumn" msprop:Generator_UserColumnName="EducationID" type="xs:int" />
+              <xs:element name="ContactNumber1" msprop:Generator_ColumnVarNameInTable="columnContactNumber1" msprop:Generator_ColumnPropNameInRow="ContactNumber1" msprop:Generator_ColumnPropNameInTable="ContactNumber1Column" msprop:Generator_UserColumnName="ContactNumber1">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="CNICVerified" msprop:Generator_ColumnVarNameInTable="columnCNICVerified" msprop:Generator_ColumnPropNameInRow="CNICVerified" msprop:Generator_ColumnPropNameInTable="CNICVerifiedColumn" msprop:Generator_UserColumnName="CNICVerified" type="xs:boolean" />
+              <xs:element name="TraineeImg" msprop:Generator_ColumnVarNameInTable="columnTraineeImg" msprop:Generator_ColumnPropNameInRow="TraineeImg" msprop:Generator_ColumnPropNameInTable="TraineeImgColumn" msprop:Generator_UserColumnName="TraineeImg">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="CNICImg" msprop:Generator_ColumnVarNameInTable="columnCNICImg" msprop:Generator_ColumnPropNameInRow="CNICImg" msprop:Generator_ColumnPropNameInTable="CNICImgColumn" msprop:Generator_UserColumnName="CNICImg">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeAge" msprop:Generator_ColumnVarNameInTable="columnTraineeAge" msprop:Generator_ColumnPropNameInRow="TraineeAge" msprop:Generator_ColumnPropNameInTable="TraineeAgeColumn" msprop:Generator_UserColumnName="TraineeAge" type="xs:int" />
+              <xs:element name="ClassStartDate" msprop:Generator_ColumnVarNameInTable="columnClassStartDate" msprop:Generator_ColumnPropNameInRow="ClassStartDate" msprop:Generator_ColumnPropNameInTable="ClassStartDateColumn" msprop:Generator_UserColumnName="ClassStartDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ClassEndDate" msprop:Generator_ColumnVarNameInTable="columnClassEndDate" msprop:Generator_ColumnPropNameInRow="ClassEndDate" msprop:Generator_ColumnPropNameInTable="ClassEndDateColumn" msprop:Generator_UserColumnName="ClassEndDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ClassStatus" msprop:Generator_ColumnVarNameInTable="columnClassStatus" msprop:Generator_ColumnPropNameInRow="ClassStatus" msprop:Generator_ColumnPropNameInTable="ClassStatusColumn" msprop:Generator_UserColumnName="ClassStatus" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="CertificationBodyID" msprop:Generator_ColumnVarNameInTable="columnCertificationBodyID" msprop:Generator_ColumnPropNameInRow="CertificationBodyID" msprop:Generator_ColumnPropNameInTable="CertificationBodyIDColumn" msprop:Generator_UserColumnName="CertificationBodyID" type="xs:int" minOccurs="0" />
+              <xs:element name="ClusterCode" msprop:Generator_ColumnVarNameInTable="columnClusterCode" msprop:Generator_ColumnPropNameInRow="ClusterCode" msprop:Generator_ColumnPropNameInTable="ClusterCodeColumn" msprop:Generator_UserColumnName="ClusterCode" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="KAM" msprop:Generator_ColumnVarNameInTable="columnKAM" msprop:Generator_ColumnPropNameInRow="KAM" msprop:Generator_ColumnPropNameInTable="KAMColumn" msprop:Generator_UserColumnName="KAM" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ReligionID" msprop:Generator_ColumnVarNameInTable="columnReligionID" msprop:Generator_ColumnPropNameInRow="ReligionID" msprop:Generator_ColumnPropNameInTable="ReligionIDColumn" msprop:Generator_UserColumnName="ReligionID" type="xs:int" />
+              <xs:element name="VoucherHolder" msprop:Generator_ColumnVarNameInTable="columnVoucherHolder" msprop:Generator_ColumnPropNameInRow="VoucherHolder" msprop:Generator_ColumnPropNameInTable="VoucherHolderColumn" msprop:Generator_UserColumnName="VoucherHolder" type="xs:boolean" minOccurs="0" />
+              <xs:element name="VoucherNumber" msprop:Generator_ColumnVarNameInTable="columnVoucherNumber" msprop:Generator_ColumnPropNameInRow="VoucherNumber" msprop:Generator_ColumnPropNameInTable="VoucherNumberColumn" msprop:Generator_UserColumnName="VoucherNumber" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="VoucherOrganization" msprop:Generator_ColumnVarNameInTable="columnVoucherOrganization" msprop:Generator_ColumnPropNameInRow="VoucherOrganization" msprop:Generator_ColumnPropNameInTable="VoucherOrganizationColumn" msprop:Generator_UserColumnName="VoucherOrganization" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="WheredidYouHearAboutUs" msprop:Generator_ColumnVarNameInTable="columnWheredidYouHearAboutUs" msprop:Generator_ColumnPropNameInRow="WheredidYouHearAboutUs" msprop:Generator_ColumnPropNameInTable="WheredidYouHearAboutUsColumn" msprop:Generator_UserColumnName="WheredidYouHearAboutUs">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeIndividualIncomeID" msprop:Generator_ColumnVarNameInTable="columnTraineeIndividualIncomeID" msprop:Generator_ColumnPropNameInRow="TraineeIndividualIncomeID" msprop:Generator_ColumnPropNameInTable="TraineeIndividualIncomeIDColumn" msprop:Generator_UserColumnName="TraineeIndividualIncomeID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="HouseHoldIncomeID" msprop:Generator_ColumnVarNameInTable="columnHouseHoldIncomeID" msprop:Generator_ColumnPropNameInRow="HouseHoldIncomeID" msprop:Generator_ColumnPropNameInTable="HouseHoldIncomeIDColumn" msprop:Generator_UserColumnName="HouseHoldIncomeID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="EmploymentStatusBeforeTrainingID" msprop:Generator_ColumnVarNameInTable="columnEmploymentStatusBeforeTrainingID" msprop:Generator_ColumnPropNameInRow="EmploymentStatusBeforeTrainingID" msprop:Generator_ColumnPropNameInTable="EmploymentStatusBeforeTrainingIDColumn" msprop:Generator_UserColumnName="EmploymentStatusBeforeTrainingID" type="xs:int" />
+              <xs:element name="Undertaking" msprop:Generator_ColumnVarNameInTable="columnUndertaking" msprop:Generator_ColumnPropNameInRow="Undertaking" msprop:Generator_ColumnPropNameInTable="UndertakingColumn" msprop:Generator_UserColumnName="Undertaking" type="xs:boolean" />
+              <xs:element name="GuardianNextToKinName" msprop:Generator_ColumnVarNameInTable="columnGuardianNextToKinName" msprop:Generator_ColumnPropNameInRow="GuardianNextToKinName" msprop:Generator_ColumnPropNameInTable="GuardianNextToKinNameColumn" msprop:Generator_UserColumnName="GuardianNextToKinName">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="GuardianNextToKinContactNo" msprop:Generator_ColumnVarNameInTable="columnGuardianNextToKinContactNo" msprop:Generator_ColumnPropNameInRow="GuardianNextToKinContactNo" msprop:Generator_ColumnPropNameInTable="GuardianNextToKinContactNoColumn" msprop:Generator_UserColumnName="GuardianNextToKinContactNo">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeHouseNumber" msprop:Generator_ColumnVarNameInTable="columnTraineeHouseNumber" msprop:Generator_ColumnPropNameInRow="TraineeHouseNumber" msprop:Generator_ColumnPropNameInTable="TraineeHouseNumberColumn" msprop:Generator_UserColumnName="TraineeHouseNumber">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeStreetMohalla" msprop:Generator_ColumnVarNameInTable="columnTraineeStreetMohalla" msprop:Generator_ColumnPropNameInRow="TraineeStreetMohalla" msprop:Generator_ColumnPropNameInTable="TraineeStreetMohallaColumn" msprop:Generator_UserColumnName="TraineeStreetMohalla">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeMauzaTown" msprop:Generator_ColumnVarNameInTable="columnTraineeMauzaTown" msprop:Generator_ColumnPropNameInRow="TraineeMauzaTown" msprop:Generator_ColumnPropNameInTable="TraineeMauzaTownColumn" msprop:Generator_UserColumnName="TraineeMauzaTown">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TraineeDistrictID" msprop:Generator_ColumnVarNameInTable="columnTraineeDistrictID" msprop:Generator_ColumnPropNameInRow="TraineeDistrictID" msprop:Generator_ColumnPropNameInTable="TraineeDistrictIDColumn" msprop:Generator_UserColumnName="TraineeDistrictID" type="xs:int" />
+              <xs:element name="TraineeTehsilID" msprop:Generator_ColumnVarNameInTable="columnTraineeTehsilID" msprop:Generator_ColumnPropNameInRow="TraineeTehsilID" msprop:Generator_ColumnPropNameInTable="TraineeTehsilIDColumn" msprop:Generator_UserColumnName="TraineeTehsilID" type="xs:int" />
+              <xs:element name="AgeVerified" msprop:Generator_ColumnVarNameInTable="columnAgeVerified" msprop:Generator_ColumnPropNameInRow="AgeVerified" msprop:Generator_ColumnPropNameInTable="AgeVerifiedColumn" msprop:Generator_UserColumnName="AgeVerified" type="xs:boolean" />
+              <xs:element name="DistrictVerified" msprop:Generator_ColumnVarNameInTable="columnDistrictVerified" msprop:Generator_ColumnPropNameInRow="DistrictVerified" msprop:Generator_ColumnPropNameInTable="DistrictVerifiedColumn" msprop:Generator_UserColumnName="DistrictVerified" type="xs:boolean" />
+              <xs:element name="TraineeVerified" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTraineeVerified" msprop:Generator_ColumnPropNameInRow="TraineeVerified" msprop:Generator_ColumnPropNameInTable="TraineeVerifiedColumn" msprop:Generator_UserColumnName="TraineeVerified" type="xs:int" minOccurs="0" />
+              <xs:element name="CreatedDate" msprop:Generator_ColumnVarNameInTable="columnCreatedDate" msprop:Generator_ColumnPropNameInRow="CreatedDate" msprop:Generator_ColumnPropNameInTable="CreatedDateColumn" msprop:Generator_UserColumnName="CreatedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="CreatedUserID" msprop:Generator_ColumnVarNameInTable="columnCreatedUserID" msprop:Generator_ColumnPropNameInRow="CreatedUserID" msprop:Generator_ColumnPropNameInTable="CreatedUserIDColumn" msprop:Generator_UserColumnName="CreatedUserID" type="xs:int" minOccurs="0" />
+              <xs:element name="ModifiedUserID" msprop:Generator_ColumnVarNameInTable="columnModifiedUserID" msprop:Generator_ColumnPropNameInRow="ModifiedUserID" msprop:Generator_ColumnPropNameInTable="ModifiedUserIDColumn" msprop:Generator_UserColumnName="ModifiedUserID" type="xs:int" minOccurs="0" />
+              <xs:element name="ModifiedDate" msprop:Generator_ColumnVarNameInTable="columnModifiedDate" msprop:Generator_ColumnPropNameInRow="ModifiedDate" msprop:Generator_ColumnPropNameInTable="ModifiedDateColumn" msprop:Generator_UserColumnName="ModifiedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="InActive" msprop:Generator_ColumnVarNameInTable="columnInActive" msprop:Generator_ColumnPropNameInRow="InActive" msprop:Generator_ColumnPropNameInTable="InActiveColumn" msprop:Generator_UserColumnName="InActive" type="xs:boolean" />
+              <xs:element name="IsManual" msprop:Generator_ColumnVarNameInTable="columnIsManual" msprop:Generator_ColumnPropNameInRow="IsManual" msprop:Generator_ColumnPropNameInTable="IsManualColumn" msprop:Generator_UserColumnName="IsManual" type="xs:boolean" />
+              <xs:element name="IsExtra" msprop:Generator_ColumnVarNameInTable="columnIsExtra" msprop:Generator_ColumnPropNameInRow="IsExtra" msprop:Generator_ColumnPropNameInTable="IsExtraColumn" msprop:Generator_UserColumnName="IsExtra" type="xs:boolean" minOccurs="0" />
+              <xs:element name="Stipend" msprop:Generator_ColumnVarNameInTable="columnStipend" msprop:Generator_ColumnPropNameInRow="Stipend" msprop:Generator_ColumnPropNameInTable="StipendColumn" msprop:Generator_UserColumnName="Stipend" type="xs:boolean" minOccurs="0" />
+              <xs:element name="ResultStatus" msprop:Generator_ColumnVarNameInTable="columnResultStatus" msprop:Generator_ColumnPropNameInRow="ResultStatus" msprop:Generator_ColumnPropNameInTable="ResultStatusColumn" msprop:Generator_UserColumnName="ResultStatus" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="IsSubmitted" msprop:Generator_ColumnVarNameInTable="columnIsSubmitted" msprop:Generator_ColumnPropNameInRow="IsSubmitted" msprop:Generator_ColumnPropNameInTable="IsSubmittedColumn" msprop:Generator_UserColumnName="IsSubmitted" type="xs:boolean" minOccurs="0" />
+              <xs:element name="CNICImgNADRA" msprop:Generator_ColumnVarNameInTable="columnCNICImgNADRA" msprop:Generator_ColumnPropNameInRow="CNICImgNADRA" msprop:Generator_ColumnPropNameInTable="CNICImgNADRAColumn" msprop:Generator_UserColumnName="CNICImgNADRA" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="250" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="GenderName" msprop:Generator_ColumnVarNameInTable="columnGenderName" msprop:Generator_ColumnPropNameInRow="GenderName" msprop:Generator_ColumnPropNameInTable="GenderNameColumn" msprop:Generator_UserColumnName="GenderName" type="xs:string" minOccurs="0" />
+              <xs:element name="TradeName" msprop:Generator_ColumnVarNameInTable="columnTradeName" msprop:Generator_ColumnPropNameInRow="TradeName" msprop:Generator_ColumnPropNameInTable="TradeNameColumn" msprop:Generator_UserColumnName="TradeName" type="xs:string" minOccurs="0" />
+              <xs:element name="SectionName" msprop:Generator_ColumnVarNameInTable="columnSectionName" msprop:Generator_ColumnPropNameInRow="SectionName" msprop:Generator_ColumnPropNameInTable="SectionNameColumn" msprop:Generator_UserColumnName="SectionName" type="xs:string" minOccurs="0" />
+              <xs:element name="TSPName" msprop:Generator_ColumnVarNameInTable="columnTSPName" msprop:Generator_ColumnPropNameInRow="TSPName" msprop:Generator_ColumnPropNameInTable="TSPNameColumn" msprop:Generator_UserColumnName="TSPName" type="xs:string" minOccurs="0" />
+              <xs:element name="TSP_CPName" msprop:Generator_ColumnVarNameInTable="columnTSP_CPName" msprop:Generator_ColumnPropNameInRow="TSP_CPName" msprop:Generator_ColumnPropNameInTable="TSP_CPNameColumn" msprop:Generator_UserColumnName="TSP_CPName" type="xs:string" minOccurs="0" />
+              <xs:element name="TraineeMaxEducation" msprop:Generator_ColumnVarNameInTable="columnTraineeMaxEducation" msprop:Generator_ColumnPropNameInRow="TraineeMaxEducation" msprop:Generator_ColumnPropNameInTable="TraineeMaxEducationColumn" msprop:Generator_UserColumnName="TraineeMaxEducation" type="xs:string" minOccurs="0" />
+              <xs:element name="SchemeCode" msprop:Generator_ColumnVarNameInTable="columnSchemeCode" msprop:Generator_ColumnPropNameInRow="SchemeCode" msprop:Generator_ColumnPropNameInTable="SchemeCodeColumn" msprop:Generator_UserColumnName="SchemeCode" type="xs:string" minOccurs="0" />
+              <xs:element name="SchemeName" msprop:Generator_ColumnVarNameInTable="columnSchemeName" msprop:Generator_ColumnPropNameInRow="SchemeName" msprop:Generator_ColumnPropNameInTable="SchemeNameColumn" msprop:Generator_UserColumnName="SchemeName" type="xs:string" minOccurs="0" />
+              <xs:element name="ReligionName" msprop:Generator_ColumnVarNameInTable="columnReligionName" msprop:Generator_ColumnPropNameInRow="ReligionName" msprop:Generator_ColumnPropNameInTable="ReligionNameColumn" msprop:Generator_UserColumnName="ReligionName" type="xs:string" minOccurs="0" />
+              <xs:element name="ClassCenterLocation" msprop:Generator_ColumnVarNameInTable="columnClassCenterLocation" msprop:Generator_ColumnPropNameInRow="ClassCenterLocation" msprop:Generator_ColumnPropNameInTable="ClassCenterLocationColumn" msprop:Generator_UserColumnName="ClassCenterLocation" type="xs:string" minOccurs="0" />
+              <xs:element name="DistrictName" msprop:Generator_ColumnVarNameInTable="columnDistrictName" msprop:Generator_ColumnPropNameInRow="DistrictName" msprop:Generator_ColumnPropNameInTable="DistrictNameColumn" msprop:Generator_UserColumnName="DistrictName" type="xs:string" minOccurs="0" />
+              <xs:element name="DistrictNameUrdu" msprop:Generator_ColumnVarNameInTable="columnDistrictNameUrdu" msprop:Generator_ColumnPropNameInRow="DistrictNameUrdu" msprop:Generator_ColumnPropNameInTable="DistrictNameUrduColumn" msprop:Generator_UserColumnName="DistrictNameUrdu" type="xs:string" minOccurs="0" />
+              <xs:element name="TehsilName" msprop:Generator_ColumnVarNameInTable="columnTehsilName" msprop:Generator_ColumnPropNameInRow="TehsilName" msprop:Generator_ColumnPropNameInTable="TehsilNameColumn" msprop:Generator_UserColumnName="TehsilName" type="xs:string" minOccurs="0" />
+              <xs:element name="EmploymentStatusBeforeTraining" msprop:Generator_ColumnVarNameInTable="columnEmploymentStatusBeforeTraining" msprop:Generator_ColumnPropNameInRow="EmploymentStatusBeforeTraining" msprop:Generator_ColumnPropNameInTable="EmploymentStatusBeforeTrainingColumn" msprop:Generator_UserColumnName="EmploymentStatusBeforeTraining" type="xs:string" minOccurs="0" />
+              <xs:element name="TraineeCurrentStatus" msprop:Generator_ColumnVarNameInTable="columnTraineeCurrentStatus" msprop:Generator_ColumnPropNameInRow="TraineeCurrentStatus" msprop:Generator_ColumnPropNameInTable="TraineeCurrentStatusColumn" msprop:Generator_UserColumnName="TraineeCurrentStatus" type="xs:string" minOccurs="0" />
+              <xs:element name="CertAuthName" msprop:Generator_ColumnVarNameInTable="columnCertAuthName" msprop:Generator_ColumnPropNameInRow="CertAuthName" msprop:Generator_ColumnPropNameInTable="CertAuthNameColumn" msprop:Generator_UserColumnName="CertAuthName" type="xs:string" minOccurs="0" />
+              <xs:element name="AgeUnVerifiedReason" msprop:Generator_ColumnVarNameInTable="columnAgeUnVerifiedReason" msprop:Generator_ColumnPropNameInRow="AgeUnVerifiedReason" msprop:Generator_ColumnPropNameInTable="AgeUnVerifiedReasonColumn" msprop:Generator_UserColumnName="AgeUnVerifiedReason" type="xs:string" minOccurs="0" />
+              <xs:element name="ResidenceUnVerifiedReason" msprop:Generator_ColumnVarNameInTable="columnResidenceUnVerifiedReason" msprop:Generator_ColumnPropNameInRow="ResidenceUnVerifiedReason" msprop:Generator_ColumnPropNameInTable="ResidenceUnVerifiedReasonColumn" msprop:Generator_UserColumnName="ResidenceUnVerifiedReason" type="xs:string" minOccurs="0" />
+              <xs:element name="CNICVerificationDate" msprop:Generator_ColumnVarNameInTable="columnCNICVerificationDate" msprop:Generator_ColumnPropNameInRow="CNICVerificationDate" msprop:Generator_ColumnPropNameInTable="CNICVerificationDateColumn" msprop:Generator_UserColumnName="CNICVerificationDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ResultStatusID" msprop:Generator_ColumnVarNameInTable="columnResultStatusID" msprop:Generator_ColumnPropNameInRow="ResultStatusID" msprop:Generator_ColumnPropNameInTable="ResultStatusIDColumn" msprop:Generator_UserColumnName="ResultStatusID" type="xs:string" minOccurs="0" />
+              <xs:element name="UID" msprop:Generator_ColumnVarNameInTable="columnUID" msprop:Generator_ColumnPropNameInRow="UID" msprop:Generator_ColumnPropNameInTable="UIDColumn" msprop:Generator_UserColumnName="UID" type="xs:string" minOccurs="0" />
+              <xs:element name="IsMigrated" msprop:Generator_ColumnVarNameInTable="columnIsMigrated" msprop:Generator_ColumnPropNameInRow="IsMigrated" msprop:Generator_ColumnPropNameInTable="IsMigratedColumn" msprop:Generator_UserColumnName="IsMigrated" type="xs:string" minOccurs="0" />
+              <xs:element name="TraineeStatusChangeDate" msprop:Generator_ColumnVarNameInTable="columnTraineeStatusChangeDate" msprop:Generator_ColumnPropNameInRow="TraineeStatusChangeDate" msprop:Generator_ColumnPropNameInTable="TraineeStatusChangeDateColumn" msprop:Generator_UserColumnName="TraineeStatusChangeDate" type="xs:string" minOccurs="0" />
+              <xs:element name="TraineeStatusTypeID" msprop:Generator_ColumnVarNameInTable="columnTraineeStatusTypeID" msprop:Generator_ColumnPropNameInRow="TraineeStatusTypeID" msprop:Generator_ColumnPropNameInTable="TraineeStatusTypeIDColumn" msprop:Generator_UserColumnName="TraineeStatusTypeID" type="xs:string" minOccurs="0" />
+              <xs:element name="TraineeStatusChangeReason" msprop:Generator_ColumnVarNameInTable="columnTraineeStatusChangeReason" msprop:Generator_ColumnPropNameInRow="TraineeStatusChangeReason" msprop:Generator_ColumnPropNameInTable="TraineeStatusChangeReasonColumn" msprop:Generator_UserColumnName="TraineeStatusChangeReason" type="xs:string" minOccurs="0" />
+              <xs:element name="ResultStatusChangeDate" msprop:Generator_ColumnVarNameInTable="columnResultStatusChangeDate" msprop:Generator_ColumnPropNameInRow="ResultStatusChangeDate" msprop:Generator_ColumnPropNameInTable="ResultStatusChangeDateColumn" msprop:Generator_UserColumnName="ResultStatusChangeDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ResultStatusChangeReason" msprop:Generator_ColumnVarNameInTable="columnResultStatusChangeReason" msprop:Generator_ColumnPropNameInRow="ResultStatusChangeReason" msprop:Generator_ColumnPropNameInTable="ResultStatusChangeReasonColumn" msprop:Generator_UserColumnName="ResultStatusChangeReason" type="xs:string" minOccurs="0" />
+              <xs:element name="TraineeRollNumber" msprop:Generator_ColumnVarNameInTable="columnTraineeRollNumber" msprop:Generator_ColumnPropNameInRow="TraineeRollNumber" msprop:Generator_ColumnPropNameInTable="TraineeRollNumberColumn" msprop:Generator_UserColumnName="TraineeRollNumber" type="xs:string" minOccurs="0" />
+              <xs:element name="CNICUnVerifiedReason" msprop:Generator_ColumnVarNameInTable="columnCNICUnVerifiedReason" msprop:Generator_ColumnPropNameInRow="CNICUnVerifiedReason" msprop:Generator_ColumnPropNameInTable="CNICUnVerifiedReasonColumn" msprop:Generator_UserColumnName="CNICUnVerifiedReason" type="xs:string" minOccurs="0" />
+              <xs:element name="Disability" msprop:Generator_ColumnVarNameInTable="columnDisability" msprop:Generator_ColumnPropNameInRow="Disability" msprop:Generator_ColumnPropNameInTable="DisabilityColumn" msprop:Generator_UserColumnName="Disability" type="xs:string" minOccurs="0" />
+              <xs:element name="TraineeIndividualIncomeRange" msprop:Generator_ColumnVarNameInTable="columnTraineeIndividualIncomeRange" msprop:Generator_ColumnPropNameInRow="TraineeIndividualIncomeRange" msprop:Generator_ColumnPropNameInTable="TraineeIndividualIncomeRangeColumn" msprop:Generator_UserColumnName="TraineeIndividualIncomeRange" type="xs:string" minOccurs="0" />
+              <xs:element name="HouseHoldIncomeRange" msprop:Generator_ColumnVarNameInTable="columnHouseHoldIncomeRange" msprop:Generator_ColumnPropNameInRow="HouseHoldIncomeRange" msprop:Generator_ColumnPropNameInTable="HouseHoldIncomeRangeColumn" msprop:Generator_UserColumnName="HouseHoldIncomeRange" type="xs:string" minOccurs="0" />
+              <xs:element name="PermanentDistrictName" msprop:Generator_ColumnVarNameInTable="columnPermanentDistrictName" msprop:Generator_ColumnPropNameInRow="PermanentDistrictName" msprop:Generator_ColumnPropNameInTable="PermanentDistrictNameColumn" msprop:Generator_UserColumnName="PermanentDistrictName" type="xs:string" minOccurs="0" />
+              <xs:element name="PermanentTehsilName" msprop:Generator_ColumnVarNameInTable="columnPermanentTehsilName" msprop:Generator_ColumnPropNameInRow="PermanentTehsilName" msprop:Generator_ColumnPropNameInTable="PermanentTehsilNameColumn" msprop:Generator_UserColumnName="PermanentTehsilName" type="xs:string" minOccurs="0" />
+              <xs:element name="PermanentResidence" msprop:Generator_ColumnVarNameInTable="columnPermanentResidence" msprop:Generator_ColumnPropNameInRow="PermanentResidence" msprop:Generator_ColumnPropNameInTable="PermanentResidenceColumn" msprop:Generator_UserColumnName="PermanentResidence" type="xs:string" minOccurs="0" />
+              <xs:element name="TemporaryDistrictName" msprop:Generator_ColumnVarNameInTable="columnTemporaryDistrictName" msprop:Generator_ColumnPropNameInRow="TemporaryDistrictName" msprop:Generator_ColumnPropNameInTable="TemporaryDistrictNameColumn" msprop:Generator_UserColumnName="TemporaryDistrictName" type="xs:string" minOccurs="0" />
+              <xs:element name="TemporaryTehsilName" msprop:Generator_ColumnVarNameInTable="columnTemporaryTehsilName" msprop:Generator_ColumnPropNameInRow="TemporaryTehsilName" msprop:Generator_ColumnPropNameInTable="TemporaryTehsilNameColumn" msprop:Generator_UserColumnName="TemporaryTehsilName" type="xs:string" minOccurs="0" />
+              <xs:element name="TemporaryResidence" msprop:Generator_ColumnVarNameInTable="columnTemporaryResidence" msprop:Generator_ColumnPropNameInRow="TemporaryResidence" msprop:Generator_ColumnPropNameInTable="TemporaryResidenceColumn" msprop:Generator_UserColumnName="TemporaryResidence" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:TraineeProfile" />
+      <xs:field xpath="mstns:TraineeID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

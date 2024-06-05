@@ -1,0 +1,121 @@
+<div class="comp-main-div" id="AcademicDiscipline-page">
+    <mat-card>
+       <mat-card-content>
+          <div>
+             <mat-toolbar class="mat-elevation-z2 slim" color="accent">
+                <mat-icon class="material-icons">add_circle</mat-icon>
+                <span class="subheading-1">Create Module</span>
+             </mat-toolbar>
+
+             <button mat-raised-button (click)="isLinear = !isLinear" id="toggle-linear">
+             {{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
+             </button>
+
+             <mat-vertical-stepper [linear]="isLinear" #stepper>
+             <mat-step [stepControl]="firstFormGroup">
+                <form [formGroup]="firstFormGroup">
+                   <ng-template matStepLabel>Create module by B/M query</ng-template>
+                   <div>
+                      <pre>
+ INSERT INTO Modules (ModuleTitle, modpath, Sortorder, UserLevel, InActive, CreatedUserID, ModifiedUserID, CreatedDate, ModifiedDate)
+ VALUES (N'TSP Registration', N'TspRegistration', 0, DEFAULT, 0, 0, Null, GETDATE(), Null);
+ DECLARE @RecentSaveModuleId INT;
+ SELECT TOP 1 @RecentSaveModuleId=ModuleID FROM Modules m ORDER BY m.CreatedDate DESC
+ SELECT @RecentSaveModuleId
+ INSERT INTO AppForms (FormName, Path, Icon, Controller, ModuleID, Sortorder, InActive, CreatedUserID, ModifiedUserID, CreatedDate, ModifiedDate, IsAddible, IsEditable, IsDeletable, IsViewable)
+ VALUES (N'TSP Registration', N'TspRegistration', N'', N'TSPRegistration', @RecentSaveModuleId, 0, DEFAULT, Null, DEFAULT, GETDATE(), Null, 1, 1, 1, 1);
+ </pre>
+                   </div>
+                   <div class="m-1">
+                      <button mat-raised-button color="primary" matStepperNext>Next</button>
+                   </div>
+                </form>
+             </mat-step>
+             <mat-step [stepControl]="secondFormGroup">
+                <form [formGroup]="secondFormGroup">
+                   <ng-template matStepLabel>Newly created form assign </ng-template>
+                   <div class="m-1">
+                      •	Master data>Manage Roles <br>
+                      •	Assign form to required users.
+                   </div>
+                   <div>
+                      <button mat-raised-button  matStepperPrevious class="m-1">Back</button>
+                      <button mat-raised-button color="primary" matStepperNext class="m-1">Next</button>
+                   </div>
+                </form>
+             </mat-step>
+             <mat-step [stepControl]="thirdFormGroup">
+                <form [formGroup]="thirdFormGroup">
+                   <ng-template matStepLabel>Component Creation</ng-template>
+                   <div class="m-1">
+                      <ol>
+                         <li> ng g m component-docu --routing (module and routing ts file create)</li>
+                         <li>ng generate component component-docu/mat-buttons --module=component-docu (component file generate and register in module file)<br></li>
+                      </ol>
+                   </div>
+                   <div>
+                      <button mat-raised-button  matStepperPrevious class="m-1">Back</button> 
+                      <button mat-raised-button color="primary" matStepperNext class="m-1">Next</button>
+                   </div>
+                </form>
+             </mat-step>
+             <mat-step [stepControl]="forthFormGroup">
+                <form [formGroup]="forthFormGroup">
+                   <ng-template matStepLabel>Generate file links</ng-template>
+                   <div class="m-1">
+                      <ol>
+                         <li>ensure each newly generated component is decalred in module file </li>
+                         <li>route of each form  would be create  in routing file  with appform table path </li>
+                         <li>newly generated module would be link with app-routing</li>
+                      </ol>
+                   </div>
+                   <div>
+                      <button mat-raised-button  matStepperPrevious class="m-1">Back</button> 
+                      <button mat-raised-button color="primary" matStepperNext class="m-1">Next</button>
+                   </div>
+                </form>
+             </mat-step>
+             <mat-step [stepControl]="fifthFormGroup">
+                <form [formGroup]="fifthFormGroup">
+                   <ng-template matStepLabel>import shared module</ng-template>
+                   <div class="m-1">
+                      <ol>
+                         <li>import shared module in newly generated module</li>
+                         <li>import required extention in newly generated componet</li>
+                      </ol>
+                   </div>
+                   <div>
+                      <button mat-raised-button  matStepperPrevious class="m-1">Back</button> 
+                      <button mat-raised-button color="primary" matStepperNext class="m-1">Next</button>
+                   </div>
+                </form>
+             </mat-step>
+             <mat-step>
+                <ng-template matStepLabel>Component Basic Template for  Mat-Ui and TS File</ng-template>
+                <mat-tab-group>
+                    <mat-tab label="HTML"> 
+                        <pre>
+                            {{HtmlCodeBasicTempl}}
+                        </pre>
+                     </mat-tab>
+                     <mat-tab label="TS"> 
+                        <pre>
+                            {{TSCodeBasicTempl}}
+                        </pre>
+                     </mat-tab>
+                  </mat-tab-group>
+
+                    
+                <div>
+                   <button mat-button matStepperPrevious>Back</button>
+                   <button mat-button (click)="stepper.reset()">Reset</button>
+                </div>
+             </mat-step>
+             </mat-vertical-stepper>
+          </div>
+       </mat-card-content>
+    </mat-card>
+    <!-- <mat-divider></mat-divider> -->
+    
+ </div>
+ 

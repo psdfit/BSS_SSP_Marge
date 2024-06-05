@@ -1,0 +1,149 @@
+/*:host {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.list {
+  max-width: 550px;
+  margin: auto;
+}
+
+li {
+  margin-bottom: 5px;
+}*/
+.search {
+  padding: 0px;
+}
+
+.mat-cell {
+  border: 1px solid black;
+}
+
+.mat-header-cell {
+  border: 1px solid black;
+}
+
+mat-row, mat-footer-row {
+  min-height: 19px !important;
+}
+
+mat-header-row {
+  min-height: 23px !important;
+}
+
+.table-responsive {
+  white-space: nowrap !important;
+}
+.mat-button.mat-button-base.mat-primary {
+  padding: 0;
+  line-height: 1;
+  background: none !important;
+  font-size: 11px;
+  color: orange;
+}
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+
+
+.mat-header-cell, .mat-cell {
+  flex: 0 0 220px;
+}
+
+/*mat-cell {
+  min-width: 200px !important;
+}*/
+
+.mat-column-TraineeEmploymentStatus {
+  flex: 0 0 250px;
+}
+
+.mat-column-TraineeEmploymentVerificationStatus {
+  flex: 0 0 285px;
+}
+
+.mat-column-CNICIssueDate, .mat-column-TraineeCNIC, .mat-column-GenderName, .mat-column-DateOfBirth, .mat-column-TraineeRollNumber, .mat-column-Batch, .mat-column-SectionName, .mat-column-CNICVerified, .mat-column-ContactNumber1, .mat-column-VoucherHolder, .mat-column-TraineeImg, .mat-column-TraineeAge, .mat-column-ClassStartDate, .mat-column-ClassEndDate, .mat-column-ClassStatusName, .mat-column-TraineeStatusName, .mat-column-TraineeEmploymentStatus, .mat-column-TraineeEmploymentVerificationStatus, .mat-column-IsExtra {
+  justify-content: center;
+}
+/*.mat-column-TSPID {
+  flex: 0 0 200px;
+}
+
+.mat-column-Batch {
+  flex: 0 0 200px;
+}
+
+.mat-column-ClassID {
+  flex: 0 0 200px;
+}
+
+.mat-column-SchemeCode {
+  flex: 0 0 200px;
+}
+
+.mat-column-TrainingAddressLocation {
+  flex: 0 0 200px;
+}
+
+.mat-column-TradeID {
+  flex: 0 0 200px;
+}
+
+.mat-column-TehsilID {
+  flex: 0 0 200px;
+}
+
+.mat-column-DistrictID {
+  flex: 0 0 200px;
+}
+
+.mat-column-CertAuthID {
+  flex: 0 0 200px;
+}
+
+.mat-column-GenderID {
+  flex: 0 0 200px;
+}
+
+.mat-column-Duration {
+  flex: 0 0 200px;
+}
+
+.mat-column-StartDate {
+  flex: 0 0 200px;
+}
+
+.mat-column-EndDate {
+  flex: 0 0 200px;
+}
+
+.mat-column-RTP {
+  flex: 0 0 200px;
+}
+
+.mat-column-SectorID {
+  flex: 0 0 200px;
+}
+
+.mat-column-OverallEmploymentCommitment {
+  flex: 0 0 200px;
+}
+
+.mat-column-MinimumEducation {
+  flex: 0 0 200px;
+}
+
+.mat-column-OID {
+  flex: 0 0 200px;
+}
+
+.mat-column-ClusterID {
+  flex: 0 0 200px;
+}*/

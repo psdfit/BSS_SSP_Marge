@@ -1,0 +1,106 @@
+<div id="AppForms-page" class="comp-main-div">
+  <mat-card>
+    <mat-card-content>
+      <div fxFlex fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z2 slim">
+          <mat-icon class="material-icons mat-primary"> add_circle</mat-icon>
+          <span class="subheading-1">{{title + EnText}} </span>
+        </mat-toolbar>
+        <form novalidate [formGroup]="appformsform" (submit)="appformsform.valid && Submit()">
+
+          <div fxLayout="column" fxLayout.gt-xs="row">
+            <div class="row">
+              <div class="col-sm-6 col-md-4 col-lg-3">
+                <mat-form-field>
+                  <input type="text" formControlName="FormName" placeholder="FormName" matInput maxlength="50" required />
+                  <mat-label>FormName</mat-label>
+                  <mat-error *ngIf="FormName.invalid && FormName.errors.required">FormName is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div><div class="col-sm-6 col-md-4 col-lg-3">
+                <mat-form-field>
+                  <input type="text" formControlName="Path" placeholder="Path" matInput maxlength="50" required />
+                  <mat-label>Path</mat-label>
+                  <mat-error *ngIf="Path.invalid && Path.errors.required">Path is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div><div class="col-sm-6 col-md-4 col-lg-3">
+                <mat-form-field>
+                  <input type="text" formControlName="Controller" placeholder="Controller" matInput maxlength="50" required />
+                  <mat-label>Controller</mat-label>
+                  <mat-error *ngIf="Controller.invalid && Controller.errors.required">Controller is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div> <div class="col-sm-6 col-md-4 col-lg-3">
+                <mat-form-field>
+
+                  <mat-select placeholder="ModuleID" formControlName="ModuleID" id="moduleid" matInput required>
+                    <mat-option *ngFor="let s of modules" [value]="s.ModuleID">{{s.ModuleTitle}}</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="ModuleID.invalid && ModuleID.errors.required">ModuleID is <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="20px">
+            <button mat-raised-button color="primary" matTooltip="Click to {{title}}"
+                    attr.aria-label="Click to {{savebtn+EnText}}" type="submit" [disabled]="working">
+              <mat-icon>done</mat-icon>{{savebtn+EnText}}
+            </button>
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                    attr.aria-label="Click to Reset form data" type="reset" (click)="reset()" [disabled]="working">
+              <mat-icon>close</mat-icon> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons mat-primary">view_comfy</mat-icon>
+          <span class="spacer">Manage and View All</span>
+          <div class="spacer"></div>
+          <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
+        </mat-toolbar>
+        <div fxLayout="column" class="mat-elevation-z8">
+          <mat-table [dataSource]="appforms" matSort fxFlex>
+
+            <ng-container matColumnDef="FormName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> FormName</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.FormName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Path">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Path</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Path}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Controller">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Controller</mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Controller}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ModuleID">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Module </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ModuleTitle}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="InActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> InActive</mat-header-cell>
+              <mat-cell *matCellDef="let Row"><mat-slide-toggle [checked]="Row.InActive" (ngModelChange)="toggleActive(Row)"></mat-slide-toggle> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button mat-icon-button color="primary">
+                  <mat-icon aria-label="Edit this row" (click)="toggleEdit(Row)">edit</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

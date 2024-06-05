@@ -1,0 +1,100 @@
+<!--<h1>Trade Benchmarking </h1>-->
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Pending Approvals</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <!--<button (click)="OK()">click</button>-->
+
+        <div class="text-center" *ngIf="!classes">
+          <p>No Pending Approval</p>
+        </div>
+        <div class="table-responsive">
+
+          <mat-table [dataSource]="classes" matSort multiTemplateDataRows class="mat-elevation-z8">
+
+            <ng-container matColumnDef="Action">
+              <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+              <mat-cell *matCellDef="let Row">
+                <button class="button" mat-raised-button color="primary" type="button" mat-button (click)="openApprovalDialogue(Row)">
+                  Decision
+                </button>
+                <span class="p-4 text-dark" *ngIf="Row.IsApproved">Approved</span>
+                <a color="primary" matTooltip="Check current Class Dates" *ngIf="!Row.IsApproved"
+                   mat-icon-button (click)="GetCurrentClassDatesByID(Row)">
+                  <mat-icon class="uk-icon-small">{{Row.currentClassDates?'remove_circle':'control_point' }}</mat-icon>
+                </a>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="ClassCode">
+              <mat-header-cell *matHeaderCellDef> Class Code </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.ClassCode}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="StartDate">
+              <mat-header-cell *matHeaderCellDef> Start Date </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.StartDate | date:environment.DateFormat}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="EndDate">
+              <mat-header-cell *matHeaderCellDef> End Date </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.EndDate | date:environment.DateFormat}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Duration">
+              <mat-header-cell *matHeaderCellDef> Duration(Months) </mat-header-cell>
+              <mat-cell *matCellDef="let Row"> {{Row.Duration}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Requested">
+              <mat-header-cell *matHeaderCellDef></mat-header-cell>
+              <mat-cell *matCellDef="let Row" style="color:orangered"> Requested </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="expandedDetail">
+              <mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
+                <div class="example-element-detail" style="width:100%" [@detailExpand]="(row.currentClassDates) ? 'expanded' : 'collapsed'">
+                  <div class="table-responsive">
+                    <table class="table-bordered" style="color:lightslategrey">
+                      <thead>
+                        <tr>
+                          <th>Class Code</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Duration</th>
+                          <th>Requested</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let c of currentClassDates">
+                          <td>{{c.ClassCode}}</td>
+                          <td>{{c.StartDate}}</td>
+                          <td>{{c.EndDate}}</td>
+                          <td>{{c.Duration}}</td>
+                          <td style="color:green">Existing</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === row"
+            (click)="expandedElement = expandedElement === row ? null : row"></mat-row>
+           <mat-row *matRowDef="let rows; columns: ['expandedDetail']" class="example-detail-row" style="min-height:0px;"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

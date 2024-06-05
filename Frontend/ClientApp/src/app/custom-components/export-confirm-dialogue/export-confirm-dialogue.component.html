@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Export to excel (.xlsx)</h1>
+<div mat-dialog-content style="overflow:unset;">
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <span>
+          <mat-checkbox (change)="toggleAll($event.checked)" [(ngModel)]="checkAll"></mat-checkbox>
+          <strong>Select Column(s)</strong>
+        </span>
+        <form [formGroup]="exportColumnForm">
+          <div class="row">
+            <div class="col-4" *ngFor="let c of columns.controls; let i=index">
+              <mat-checkbox [formControl]="c">{{columns.controls.indexOf(c)+1}}) {{columnList[i]}}</mat-checkbox>
+            </div>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <ng-container>
+      <button mat-raised-button color="primary"  [disabled]="!btnActive" (click)="generateExcel()"><i class="fas fa-file-export"></i> Export</button>
+
+    </ng-container>
+    <button mat-raised-button c (click)="onNoClick()" cdkFocusInitial><i class="fas fa-times"></i> Cancel</button>
+  </div>
+</div>
+
+
