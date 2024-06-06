@@ -19,7 +19,7 @@ import { DatePipe } from '@angular/common';
 import { merge } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';
-import { forkJoin,Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { TspDialogueComponent } from './tsp-dialogue/tsp-dialogue.component';
@@ -35,7 +35,7 @@ export class TspTraineePortalComponent implements OnInit {
   environment = environment;
 
   TraineeDatasource: MatTableDataSource<any>;
-  displayedColumns = ['Sr', 'Select', 'TraineeName', 'FatherName', 'TraineeCNIC','GenderName', 'ReligionName', 'DateOfBirth','TraineeEmail','ContactNumber1', 'DistrictName','TrainingAddressLocation', 'Disability'  ];
+  displayedColumns = ['Sr', 'Select', 'TraineeName', 'FatherName', 'TraineeCNIC', 'GenderName', 'ReligionName', 'DateOfBirth', 'TraineeEmail', 'ContactNumber1', 'Shift', 'DistrictName', 'TrainingAddressLocation', 'Disability'];
 
   filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.commonService.OID.value, SelectedColumns: [] };
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
@@ -56,7 +56,7 @@ export class TspTraineePortalComponent implements OnInit {
   isTSPUser = false;
   programArray = [];
   districtArray = [];
-  tradeArray= [];
+  tradeArray = [];
   genderArray = [];
   submitInProgress: boolean = false;
   programFilter = new FormControl(0);
@@ -68,10 +68,10 @@ export class TspTraineePortalComponent implements OnInit {
   SearchSch = new FormControl('');
   SearchDis = new FormControl('');
   SearchTRD = new FormControl('');
-  SearchGen= new FormControl('');
+  SearchGen = new FormControl('');
   selectAll: boolean = false;
   selection = new SelectionModel<any>(true, []);
-  constructor(private httpClient: HttpClient,private fb: FormBuilder, private commonService: CommonSrvService, public dialog: MatDialog, public dialogueService: DialogueService, private groupByPipe: GroupByPipe, private datePipe: DatePipe) {
+  constructor(private httpClient: HttpClient, private fb: FormBuilder, private commonService: CommonSrvService, public dialog: MatDialog, public dialogueService: DialogueService, private groupByPipe: GroupByPipe, private datePipe: DatePipe) {
   }
 
   ngOnInit(): void {
@@ -137,8 +137,8 @@ export class TspTraineePortalComponent implements OnInit {
       .subscribe(data => {
         console.log(data);
         this.programArray = (data as any[]).map(program => {
-        // Set isLocked based on the IsLocked value from the database
-        program.isLocked = program.IsLocked === 'Closed';
+          // Set isLocked based on the IsLocked value from the database
+          program.isLocked = program.IsLocked === 'Closed';
           return program;
         });
       }, error => {
@@ -162,7 +162,7 @@ export class TspTraineePortalComponent implements OnInit {
   getTradebyTSP() {
     const programid = this.programFilter.value;
     const districtid = this.districtFilter.value;
-    this.commonService.getJSON(`api/Trade/SSPRD_TradebyTSP/` + programid + '/' + districtid )
+    this.commonService.getJSON(`api/Trade/SSPRD_TradebyTSP/` + programid + '/' + districtid)
       .subscribe(data => {
         this.tradeArray = (data as any[]);
       }, error => {
@@ -178,44 +178,40 @@ export class TspTraineePortalComponent implements OnInit {
       })
   }
   getTraineeProfileTSP() {
-      const programid = this.programFilter.value;
-      const districtid = this.districtFilter.value;
-      const tradeid = this.tradeFilter.value;
-      const submitButton = document.getElementById('btnSubmit') as HTMLButtonElement;
-    
-      if (this.traineelistFilter.value == 1)
-      {
-        this.buttonText = 'Submit for Interview';
-        this.showButtons = false;
-        submitButton.hidden = false;
-      }
-      else if (this.traineelistFilter.value ==2)
-      {
-        this.buttonText = 'Accept';
-        this.showButtons = false;
-        submitButton.hidden = true;
-      }
-      else if (this.traineelistFilter.value == 3)
-      {
-        this.buttonText = 'Final Submission of Trainees';
-        this.showButtons = false;
-        submitButton.hidden = true;
-       
+    const programid = this.programFilter.value;
+    const districtid = this.districtFilter.value;
+    const tradeid = this.tradeFilter.value;
+    const submitButton = document.getElementById('btnSubmit') as HTMLButtonElement;
+
+    if (this.traineelistFilter.value == 1) {
+      this.buttonText = 'Submit for Interview';
+      this.showButtons = false;
+      submitButton.hidden = false;
+    }
+    else if (this.traineelistFilter.value == 2) {
+      this.buttonText = 'Accept';
+      this.showButtons = false;
+      submitButton.hidden = true;
+    }
+    else if (this.traineelistFilter.value == 3) {
+      this.buttonText = 'Final Submission of Trainees';
+      this.showButtons = false;
+      submitButton.hidden = true;
+
     }
     debugger;
-    this.commonService.getJSON(`api/TraineeProfile/GetSubmittedTraineesByTsp/` + this.traineelistFilter.value + '/' + this.programFilter.value + '/' + this.districtFilter.value + '/' + this.selectedTradeID + '/' + this.selectedTrainingLocationID  )
-        .subscribe((data: any[]) =>{
-      if (data && data.length > 0) {
-        this.TraineeDatasource.data = (data as any[]);
-      } else {
-        this.TraineeDatasource.data = []; // Set the datasource to an empty array
-      }
-    }, error => {
-      this.commonService.ShowError(error.error + '\n' + error.message);
-    })
+    this.commonService.getJSON(`api/TraineeProfile/GetSubmittedTraineesByTsp/` + this.traineelistFilter.value + '/' + this.programFilter.value + '/' + this.districtFilter.value + '/' + this.selectedTradeID + '/' + this.selectedTrainingLocationID)
+      .subscribe((data: any[]) => {
+        if (data && data.length > 0) {
+          this.TraineeDatasource.data = (data as any[]);
+        } else {
+          this.TraineeDatasource.data = []; // Set the datasource to an empty array
+        }
+      }, error => {
+        this.commonService.ShowError(error.error + '\n' + error.message);
+      })
   }
-  initPagedData()
-  {
+  initPagedData() {
     this.getTraineeProfileTSP();
   }
 
@@ -228,7 +224,7 @@ export class TspTraineePortalComponent implements OnInit {
   }
   selectionChanged(): void {
     // Check if TraineeDatasource is not null and has length greater than 0
-    if (this.TraineeDatasource.data && this.TraineeDatasource.data &&  this.TraineeDatasource.data.length > 0) {
+    if (this.TraineeDatasource.data && this.TraineeDatasource.data && this.TraineeDatasource.data.length > 0) {
       // Update selectAll based on whether all rows are selected
       this.selectAll = this.TraineeDatasource.data.every(row => this.selection.isSelected(row));
     } else {
@@ -252,9 +248,9 @@ export class TspTraineePortalComponent implements OnInit {
     this.selectionChanged();
   }
 
- 
+
   onSubmit(traineeStatus: string) {
-   
+
     switch (traineeStatus) {
       case 'Submit':
         const submitButton = document.getElementById('btnSubmit') as HTMLButtonElement;
@@ -312,13 +308,13 @@ export class TspTraineePortalComponent implements OnInit {
           }
         }
         // Repopulate the TraineeDatasource
-       
+
         this.clearSelection(); // Call clearSelection to update selectAll state
       } else {
         // Enable the buttons if user cancels the confirmation
         this.enableButtons(traineeStatus);
       }
-    } 
+    }
 
     // Reset the submitInProgress flag after all operations are completed
     this.submitInProgress = false;
@@ -352,6 +348,8 @@ export class TspTraineePortalComponent implements OnInit {
     }
   }
   DataExcelExport(data: any, title) {
+    debugger;
+    console.log(data)
     this.commonService.ExcelExporWithForm(data, title);
   }
   ExcelExporWithForm(ExportDataObject, ReportName) {
@@ -360,7 +358,7 @@ export class TspTraineePortalComponent implements OnInit {
     const Data = ExportDataObject.map(obj => {
       const newObj = {};
       for (const key in obj) {
-        if (!key.toLowerCase().includes('id')) {
+        if (!key.toLowerCase().includes('id') || !key.toLowerCase().includes('TraineeAge')) {
           newObj[key] = obj[key];
         }
       }
@@ -386,5 +384,5 @@ export class TspTraineePortalComponent implements OnInit {
 
 }
 export interface TraineeProfile {
-  TraineeID : number;
-  }
+  TraineeID: number;
+}

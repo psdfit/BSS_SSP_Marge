@@ -1914,6 +1914,7 @@ namespace DataLayer.Services
             TraineeProfile.DateOfBirth = row.Field<DateTime?>("DateOfBirth");
             TraineeProfile.TraineeEmail = row.Field<string>("Email");
             TraineeProfile.ContactNumber1 = row.Field<string>("MobileNumber");
+            TraineeProfile.Shift = row.Field<string>("Shift");
             //TraineeProfile.IsSubmitted = row.Field<bool>("IsSubmitted");
             TraineeProfile.DistrictName = row.Field<string>("TraineeDistrict");
             TraineeProfile.TrainingAddressLocation = row.Field<string>("CurrentAddress");

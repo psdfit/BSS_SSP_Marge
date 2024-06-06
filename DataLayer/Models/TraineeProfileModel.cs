@@ -110,4 +110,5 @@ namespace DataLayer.Models
         public string ReligionName { get; set; }
         public string Disability { get; set; }
         public string TraineeIntrestStatus { get; set; }
+        public string Shift { get; set; }
     }}

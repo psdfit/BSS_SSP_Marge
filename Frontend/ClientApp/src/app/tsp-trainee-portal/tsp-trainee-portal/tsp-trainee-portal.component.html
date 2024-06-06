@@ -27,17 +27,17 @@
           </mat-form-field>
         </div>
         <div class="col-sm-4">
-            <mat-form-field fxFlex>
-              <mat-select #tsp placeholder="Trade" [formControl]="tradeFilter" (selectionChange)="onTradeSelectionChange($event.value)" matInput>
-                <mat-optgrp disabled class="ddlsrchheader">
-                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTRD" autofocus />
-                </mat-optgrp>
-                <mat-option value="0" selected>--All--</mat-option>
-                <mat-option *ngFor="let s of tradeArray | like:['TradeName', SearchTRD.value]" [value]="s.TradeID + '-' + s.TrainingLocationID">
-                  {{ s.TradeName }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <mat-form-field fxFlex>
+            <mat-select #tsp placeholder="Trade" [formControl]="tradeFilter" (selectionChange)="onTradeSelectionChange($event.value)" matInput>
+              <mat-optgrp disabled class="ddlsrchheader">
+                <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTRD" autofocus />
+              </mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of tradeArray | like:['TradeName', SearchTRD.value]" [value]="s.TradeID + '-' + s.TrainingLocationID">
+                {{ s.TradeName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
         </div>
         <div class="col-sm-3" hidden>
@@ -65,7 +65,7 @@
       <div class="row">
         <div class="col-sm-3">
           <div mat-dialog-actions>
-            <button mat-flat-button color="primary" (click)="onSubmit('Submit')"  [disabled]="isSubmitButtonDisabled" id="btnSubmit">{{ buttonText }}</button>
+            <button mat-flat-button color="primary" (click)="onSubmit('Submit')" [disabled]="isSubmitButtonDisabled" id="btnSubmit">{{ buttonText }}</button>
           </div>
         </div>
         <div class="col-sm-6" *ngIf="selectedProgram">
@@ -77,118 +77,124 @@
             </span>
           </p>
         </div>
-        </div>
-        <br />
-        <mat-toolbar color="accent" class=" slim slim">
-          <mat-icon class="material-icons"> view_comfy </mat-icon>
-          <span class="spacer">Manage and View All</span>
-          <input placeholder="Search" (keyup)="applyFilter(TraineeDatasource,$event)" class="search" />
-          <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
-                  (click)="DataExcelExport(this.TraineeDatasource,'Intrested Trainees Data')">
-            <i class="fas fa-file-export"></i> Export Excel
-          </button>
-        </mat-toolbar>
-        <div fxLayout="column" class="table-responsive">
-          <mat-table [dataSource]="TraineeDatasource" #DSort="matSort" matSort>
-            <mat-header-row *matHeaderRowDef="displayedColumns" tabindex="0"></mat-header-row>
-            <mat-row *matRowDef="let rows; columns: displayedColumns;" tabindex="0"></mat-row>
-            <ng-container matColumnDef="Sr">
-              <mat-header-cell *matHeaderCellDef>Sr#</mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">{{ (paginator.pageIndex * paginator.pageSize) + index+1}}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="TraineeName">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's Name </mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.TraineeName}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="FatherName">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.FatherName}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="TraineeCNIC">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC </mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.TraineeCNIC}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="GenderName">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Gender </mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.GenderName}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="ReligionName">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Religion </mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.ReligionName}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="DateOfBirth">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>DOB</mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.DateOfBirth | date: 'dd/MM/yyyy'}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="TraineeEmail">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.TraineeEmail}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="ContactNumber1">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile No.</mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.ContactNumber1}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="DistrictName">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>District</mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.DistrictName}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="TrainingAddressLocation">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.TrainingAddressLocation}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="Disability">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Disability</mat-header-cell>
-              <mat-cell *matCellDef="let row ; let index=index">
-                {{row.Disability}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="Select">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>
-                <ng-container *ngIf="traineelistFilter.value === '1'">
-                  <mat-checkbox [(ngModel)]="selectAll" (change)="onSelectAllChange()"></mat-checkbox>Select
-                </ng-container>
-                <ng-container *ngIf="traineelistFilter.value === '2'">Actions</ng-container>
-                <ng-container *ngIf="traineelistFilter.value === '3'"></ng-container>
-              </mat-header-cell>
-
-              <mat-cell *matCellDef="let row; let index=index">
-                <ng-container *ngIf="traineelistFilter.value === '1'">
-                  <mat-checkbox [(ngModel)]="row.isChecked" [checked]="selection.isSelected(row)" (change)="onCheckboxChange(row)"></mat-checkbox>
-                </ng-container>
-                <ng-container *ngIf="traineelistFilter.value === '2'">
-                  <a mat-button color="primary" title="Update Status" *ngIf="isTSPUser || (isInternalUser)" [disabled]="isSubmitButtonDisabled" (click)="openDialog(row)">Update Status</a>
-                </ng-container>
-                <ng-container *ngIf="traineelistFilter.value === '3'">
-                </ng-container>
-              </mat-cell>
-            </ng-container>
-
-
-
-          </mat-table>
-          <mat-paginator #DPaginator="matPaginator" [pageSize]="5" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-        </div>
       </div>
+      <br />
+      <mat-toolbar color="accent" class=" slim slim">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">Manage and View All</span>
+        <input placeholder="Search" (keyup)="applyFilter(TraineeDatasource,$event)" class="search" />
+        <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+                (click)="DataExcelExport(TraineeDatasource.filteredData,'Intrested Trainees Data')">
+          <i class="fas fa-file-export"></i> Export Excel
+        </button>
+      </mat-toolbar>
+      <div fxLayout="column" class="table-responsive">
+        <mat-table [dataSource]="TraineeDatasource" #DSort="matSort" matSort>
+          <mat-header-row *matHeaderRowDef="displayedColumns" tabindex="0"></mat-header-row>
+          <mat-row *matRowDef="let rows; columns: displayedColumns;" tabindex="0"></mat-row>
+          <ng-container matColumnDef="Sr">
+            <mat-header-cell *matHeaderCellDef>Sr#</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">{{ (paginator.pageIndex * paginator.pageSize) + index+1}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's Name </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.TraineeName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="FatherName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.FatherName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeCNIC">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>CNIC </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.TraineeCNIC}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="GenderName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Gender </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.GenderName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="ReligionName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Religion </mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.ReligionName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="DateOfBirth">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>DOB</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.DateOfBirth | date: 'dd/MM/yyyy'}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TraineeEmail">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.TraineeEmail}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="ContactNumber1">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile No.</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.ContactNumber1}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="Shift">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Shift</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.Shift}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="DistrictName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>District</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.DistrictName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="TrainingAddressLocation">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.TrainingAddressLocation}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="Disability">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Disability</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.Disability}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="Select">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+              <ng-container *ngIf="traineelistFilter.value === '1'">
+                <mat-checkbox [(ngModel)]="selectAll" (change)="onSelectAllChange()"></mat-checkbox>Select
+              </ng-container>
+              <ng-container *ngIf="traineelistFilter.value === '2'">Actions</ng-container>
+              <ng-container *ngIf="traineelistFilter.value === '3'"></ng-container>
+            </mat-header-cell>
+
+            <mat-cell *matCellDef="let row; let index=index">
+              <ng-container *ngIf="traineelistFilter.value === '1'">
+                <mat-checkbox [(ngModel)]="row.isChecked" [checked]="selection.isSelected(row)" (change)="onCheckboxChange(row)"></mat-checkbox>
+              </ng-container>
+              <ng-container *ngIf="traineelistFilter.value === '2'">
+                <a mat-button color="primary" title="Update Status" *ngIf="isTSPUser || (isInternalUser)" [disabled]="isSubmitButtonDisabled" (click)="openDialog(row)">Update Status</a>
+              </ng-container>
+              <ng-container *ngIf="traineelistFilter.value === '3'">
+              </ng-container>
+            </mat-cell>
+          </ng-container>
+
+
+
+        </mat-table>
+        <mat-paginator #DPaginator="matPaginator" [pageSize]="5" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
   </mat-card-content>
 </mat-card>
 

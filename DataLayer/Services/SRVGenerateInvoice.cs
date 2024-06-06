@@ -104,7 +104,19 @@ namespace DataLayer.Services
                     {
                         ClassInvoiceMapModel m = new ClassInvoiceMapModel();
                         m.ClassID = c.ClassID;
-                        m.InvoiceNo = ++InvoiceNo;
+                        //int paymentValue;
+                        //if (int.TryParse(PaymentStructure[2], out paymentValue))
+                        //{
+                        //    if (paymentValue == 0)
+                        //    {
+                        //        m.InvoiceNo = InvoiceNo;
+                        //    }
+                        //    else
+                        //    {
+                        //        m.InvoiceNo = ++InvoiceNo;
+                        //    }
+                        //}
+                        m.InvoiceNo = InvoiceNo;
                         m.InvoiceType = "2nd Last";
                         m.Amount = GetCostPercentage(PaymentStructure[1], (c.TotalPerTraineeCostInTax / (1 + c.SalesTaxRate)), "2nd Last");
                         m.Month = EndDate.AddDays(org.TSROpeningDays);
@@ -117,20 +129,30 @@ namespace DataLayer.Services
 
                         ls.Add(m);
 
-                        m = new ClassInvoiceMapModel();
-                        m.ClassID = c.ClassID;
-                        m.InvoiceNo = ++InvoiceNo;
-                        m.InvoiceType = "Final";
-                        m.Amount = GetCostPercentage(PaymentStructure[2], (c.TotalPerTraineeCostInTax / (1 + c.SalesTaxRate)), "Final");
-                        m.Month = EndDate.AddDays(org.EmploymentDeadline);
+                        if (PaymentStructure.Length == 3)
+                        {
+                            int paymentValue1;
+                            if (int.TryParse(PaymentStructure[2], out paymentValue1))
+                            {
+                                if (paymentValue1 != 0)
+                                {
+                                    m = new ClassInvoiceMapModel();
+                                    m.ClassID = c.ClassID;
+                                    m.InvoiceNo = ++InvoiceNo;
+                                    m.InvoiceType = "Final";
+                                    m.Amount = GetCostPercentage(PaymentStructure[2], (c.TotalPerTraineeCostInTax / (1 + c.SalesTaxRate)), "Final");
+                                    m.Month = EndDate.AddDays(org.EmploymentDeadline);
 
-                        m.InvoiceDays = 30;
-                        m.InvoiceStartDate = m.Month;
-                        m.InvoiceEndDate = GetMonthEndDate(m.Month);
-                        m.POStartDate = m.InvoiceStartDate;
-                        m.POEndDate = m.InvoiceEndDate;
+                                    m.InvoiceDays = 30;
+                                    m.InvoiceStartDate = m.Month;
+                                    m.InvoiceEndDate = GetMonthEndDate(m.Month);
+                                    m.POStartDate = m.InvoiceStartDate;
+                                    m.POEndDate = m.InvoiceEndDate;
 
-                        ls.Add(m);
+                                    ls.Add(m);
+                                }
+                            }
+                        }
                     }
 
                     srvClassInvoiceMap.BatchInsert(ls, transaction);
