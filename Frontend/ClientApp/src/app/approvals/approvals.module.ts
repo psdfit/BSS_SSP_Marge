@@ -26,6 +26,7 @@ import { ClassDatesChangeRequestApprovalsComponent } from './cr-class-dates-appr
 import { TestComponent } from './test/test.component';
 import { RegistrationApprovalComponent } from './registration-approval/registration-approval.component';
 import { AnnualPlanApprovalComponent } from './annual-plan-approval/annual-plan-approval.component';
+import { CriteriaTemplateApprovalComponent } from './criteria-template-approval/criteria-template-approval.component';
 
 @NgModule({
   declarations: [ApprovalsComponent, SrnApprovalsComponent, DeletionApprovalsComponent, InvoiceApprovalsComponent,
@@ -34,7 +35,7 @@ import { AnnualPlanApprovalComponent } from './annual-plan-approval/annual-plan-
     ClassChangeRequestApprovalsComponent, TraineeChangeRequestApprovalsComponent, InstructorChangeRequestApprovalsComponent,
     InceptionReportChangeRequestApprovalsComponent, NewInstructorRequestApprovalsComponent,
     ReplaceInstructorChangeRequestApprovalsComponent, VerifiedTraineeChangeRequestApprovalsComponent,
-    ClassDatesChangeRequestApprovalsComponent, TestComponent,RegistrationApprovalComponent,AnnualPlanApprovalComponent],
+    ClassDatesChangeRequestApprovalsComponent, TestComponent, RegistrationApprovalComponent, AnnualPlanApprovalComponent, CriteriaTemplateApprovalComponent],
   imports: [
     CommonModule,
     SharedModule,

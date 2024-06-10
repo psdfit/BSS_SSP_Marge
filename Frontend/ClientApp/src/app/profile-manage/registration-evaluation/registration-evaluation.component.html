@@ -32,54 +32,52 @@
           <span class="spacer">Manage and View All</span>
           <input placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
           <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
-            (click)="DataExcelExport(TablesData.filteredData,'Tsp Registration')">
-            <i class="fas fa-file-export"></i> Export Excel</button>
+                  (click)="DataExcelExport(TablesData.filteredData,'Tsp Registration')">
+            <i class="fas fa-file-export"></i> Export Excel
+          </button>
         </mat-toolbar>
-
         <ng-container *ngIf="TablesData.filteredData.length==0;">
           <div class="alert alert-success" role="alert">
             No record found.
           </div>
         </ng-container>
-
         <!-- <ng-template #elseBlock> -->
         <div class="table-responsive" [hidden]="TablesData.filteredData.length==0">
-            <mat-table [dataSource]="TablesData" #Sort="matSort" matSort>
-              <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                  <ng-container *ngIf="column !='Action' && column !='RegistrationDate' && column !='TspName' ">
-                    &nbsp;{{row[column]}}
-                  </ng-container>
-
-                  <ng-container *ngIf="column === 'Action' ">
-                    <a color="primary"   (click)="ShowDetail(row, row['TspName'],0)"  mat-button  > Detail <mat-icon>keyboard_arrow_down</mat-icon></a>
-                    <a color="primary" mat-button  (click)="ShowDetail(row, row['TspName'],1)" > Decision</a>
-                  </ng-container>
-
-                  <ng-container *ngIf="column == 'TspName'">
-                    <!-- <button *ngIf="column === 'TspName' && row['PendingTrade'] > 0; else elseBlock1" mat-button color="primary" matTooltip="View Detail" (click)="ShowDetail(row, row[column],1)"> -->
-                    <!-- <button *ngIf="column === 'TspName'; else elseBlock1" mat-button color="primary" matTooltip="View Detail" (click)="ShowDetail(row, row[column],0)"> -->
-                    <!-- <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true">control_point</mat-icon> -->
-                    <!-- </button> -->
-                    {{ row[column] | titlecase }}
-                    <!-- <ng-template #elseBlock1>
+          <mat-table [dataSource]="TablesData" #Sort="matSort" matSort>
+            <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <ng-container *ngIf="column !='Action' && column !='RegistrationDate' && column !='TspName' ">
+                  &nbsp;{{row[column]}}
+                </ng-container>
+                <ng-container *ngIf="column === 'Action' ">
+                  <a color="primary" (click)="ShowDetail(row, row['TspName'],0)" mat-button>
+                    Detail
+                    <mat-icon>keyboard_arrow_down</mat-icon>
+                  </a>
+                  <a color="primary" mat-button (click)="ShowDetail(row, row['TspName'],1)"> Decision</a>
+                </ng-container>
+                <ng-container *ngIf="column == 'TspName'">
+                  <!-- <button *ngIf="column === 'TspName' && row['PendingTrade'] > 0; else elseBlock1" mat-button color="primary" matTooltip="View Detail" (click)="ShowDetail(row, row[column],1)"> -->
+                  <!-- <button *ngIf="column === 'TspName'; else elseBlock1" mat-button color="primary" matTooltip="View Detail" (click)="ShowDetail(row, row[column],0)"> -->
+                  <!-- <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true">control_point</mat-icon> -->
+                  <!-- </button> -->
+                  {{ row[column] | titlecase }}
+                  <!-- <ng-template #elseBlock1>
                       {{ row[column] | titlecase }}
                     </ng-template> -->
-                  </ng-container>
-                  <ng-container *ngIf="column =='RegistrationDate'">
-                    &nbsp; {{ row[column] | date:environment.DateFormat }}
-                  </ng-container>
-                </mat-cell>
-              </ng-container>
-              <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
-              
-            </mat-table>
-            <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
-          </div>
-
-      <!-- </ng-template> -->
+                </ng-container>
+                <ng-container *ngIf="column =='RegistrationDate'">
+                  &nbsp; {{ row[column] | date:environment.DateFormat }}
+                </ng-container>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+        </div>
+        <!-- </ng-template> -->
         <!-- record list end -->
       </mat-tab>
       <mat-tab [label]="TspName" *ngIf="isChecked">
@@ -88,10 +86,13 @@
           <span class="spacer">Manage and View All</span>
           <input placeholder="Search" (keyup)="applyFilter(this.DTablesData,$event)" class="search" />
           <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
-            (click)="DataExcelExport(DTablesData.filteredData,'Tsp Registration Detail')">
-            <i class="fas fa-file-export"></i> Export Excel</button>
+                  (click)="DataExcelExport(DTablesData.filteredData,'Tsp Registration Detail')">
+            <i class="fas fa-file-export"></i> Export Excel
+          </button>
           <button *ngIf="isEdit !=3" mat-raised-button color="accent" style="float:right;margin: 0px 7px;"
-            (click)="Decision()">Decision</button>
+                  (click)="Decision()">
+            Decision
+          </button>
         </mat-toolbar>
         <div class="table-responsive">
           <mat-table [dataSource]="DTablesData" #DSort="matSort" matSort>
@@ -99,31 +100,26 @@
               <ng-container *ngIf="column == 'TradeManageID'; else elseBlock">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>
                   <mat-checkbox (change)="$event ? masterToggle() : null"
-                    [checked]="selection.hasValue() && isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()">
                   </mat-checkbox>
                 </mat-header-cell>
-
                 <mat-cell *matCellDef="let row">
-
-                  <mat-checkbox  (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-                    [checked]="selection.isSelected(row)">
+                  <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                                [checked]="selection.isSelected(row)">
                   </mat-checkbox>
-
-                <span></span>
-
+                  <span></span>
                 </mat-cell>
-
               </ng-container>
               <ng-template #elseBlock>
                 <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                 <mat-cell *matCellDef="let row">
-                  <ng-container
-                    *ngIf="column !='Status' && column !='UserID' && column !='RegistrationCertificateEvidence' &&  column !='ExpiryDate' && column !='IssuanceDate' ">
-                    &nbsp;{{row[column]}}</ng-container>
+                  <ng-container *ngIf="column !='Status' && column !='UserID' && column !='RegistrationCertificateEvidence' &&  column !='ExpiryDate' && column !='IssuanceDate' ">
+                    &nbsp;{{row[column]}}
+                  </ng-container>
                   <ng-container *ngIf="column =='RegistrationCertificateEvidence'">
                     &nbsp; <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
-                      matTooltip="Preview document" class="file-lable">
+                              matTooltip="Preview document" class="file-lable">
                       <mat-icon>get_app</mat-icon>
                     </a>
                   </ng-container>

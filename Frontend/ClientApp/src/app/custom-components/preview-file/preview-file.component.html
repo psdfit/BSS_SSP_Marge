@@ -1,33 +1,26 @@
-
-
 <div class="row" style="height: 90%;">
-    <div class="col-12">
-        <div class="card" style="height:100%;">
-            <div class="card-body map-body" style="padding: 0px;">
-                <mat-toolbar class="mat-elevation-z2 slim"
-                             color="accent"
-                             matDialogTitle>
-                    <mat-icon class="material-icons"
-                              style="position: relative; top: 5px; right: 5px;">
-                              attachment
-                    </mat-icon>
-                    <span class="subheading-1">
-                       Uploaded File
-                    </span>
-                </mat-toolbar>
-                <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                    <iframe [src]="DataSource" style="width: 100%; height: 100%;"></iframe>
-                </div>
-            </div>
+  <div class="col-12">
+    <div class="card" style="height:100%;">
+      <div class="card-body map-body" style="padding: 0px;">
+        <mat-toolbar style="margin-bottom:1px;" class="mat-elevation-z2 slim" color="accent" matDialogTitle>
+          <mat-icon class="material-icons" style="position: relative; top: 5px; right: 5px;">
+            attachment
+          </mat-icon>
+          <span class="subheading-1">
+            Uploaded File
+          </span>
+        </mat-toolbar>
+        <div style="align-items: center; justify-content: center; height: 105%;">
+          <iframe [src]="DataSource" id="myIframe" style="border:none;width: 100%;height: 90%;"></iframe>
+
         </div>
-            
-            <div align="end">
-                <button color="accent"
-                mat-dialog-close
-                mat-raised-button
-                style="margin:2px 0px ;text-align: right;">
-                Close
-            </button>
-       </div>
+      </div>
     </div>
+
+    <div align="end" class="mt-2">
+      <button color="accent" mat-dialog-close mat-raised-button>
+        Close
+      </button>
+    </div>
+  </div>
 </div>

@@ -34,8 +34,9 @@ export enum EnumApprovalProcess {
   , CR_INSTRUCTOR_REPLACE = 'CR_INSTRUCTOR_REPLACE'
   , SRN = 'SRN'
   , CANCELATION = 'Cancel'
-  , REG_EVAL= 'REG_EVAL'
-  , PROG_APP= 'PROG_APP'
+  , REG_EVAL = 'REG_EVAL'
+  , PROG_APP = 'PROG_APP'
+  , CRTEM_APP = 'CRTEM_APP'
 }
 export enum EnumCertificationAuthority {
   PBTE = 1
@@ -73,7 +74,7 @@ export enum EnumTraineeResultStatusTypes {
   , AttendedbutnotTested = 6
 }
 export enum EnumUserLevel {
-    AdminGroup = 1
+  AdminGroup = 1
   , OrganizationGroup = 2
   , TPM = 3
   , TSP = 4
@@ -271,7 +272,7 @@ export enum EnumReports {
   'Trainer change Logs' = 36,
   'Bulk Trainees Status Report' = 37,
   'TSP Details Report' = 38,
-  'AMS Missing Classes Data Report' =39
+  'AMS Missing Classes Data Report' = 39
 }
 export enum EnumSubReports {
   'Master Data of TSPs – Trainee Wise' = 'TraineeWise'

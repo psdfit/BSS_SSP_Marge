@@ -3,6 +3,7 @@
 using DataLayer.Dapper;
 using DataLayer.Interfaces;
 using DataLayer.Models;
+using DataLayer.Models.SSP;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace DataLayer.Services
     {
         private readonly ISRVScheme srvScheme;
         private readonly ISRVProgramDesign srvProgramDesign;
+        private readonly ISRVCriteriaTemplate srvCriteria;
         private readonly ISRVPurchaseOrder srvPurchaseOrder;
         private readonly ISRVGenerateInvoice generateInvoice;
         private readonly ISRVSRN srvSRN;
@@ -46,7 +48,7 @@ namespace DataLayer.Services
         private readonly ISRVApprovalProcess _srvApprovalProcess;
         private readonly ISRVTSPDetail srvTSPDetail;
         //private readonly ISRVClassInvoiceMap srvInvMap;
-        public SRVApprovalHistory(ISRVTSPDetail srv, ISRVProgramDesign srvProgramDesign, ISRVApprovalProcess srvApprovalProcess, ISRVTSPMaster srvTSPMaster, ISRVScheme srvScheme, ISRVPurchaseOrder srvPurchaseOrder, ISRVGenerateInvoice generateInvoice,
+        public SRVApprovalHistory(ISRVTSPDetail srv, ISRVProgramDesign srvProgramDesign, ISRVCriteriaTemplate srvCriteria, ISRVApprovalProcess srvApprovalProcess, ISRVTSPMaster srvTSPMaster, ISRVScheme srvScheme, ISRVPurchaseOrder srvPurchaseOrder, ISRVGenerateInvoice generateInvoice,
             ISRVSRN srvSRN, ISRVTrade srvTrade, ISRVPRN srvPRN, ISRVSAPApi srvSAPApi, ISRVTrn srvTRN, ISRVPRNMaster srvPRNMaster,
             ISRVApproval srvApproval, ISRVInvoiceMaster srvInvoiceMaster, ISRVInvoice srvInvoice, ISRVUsers srvUsers,
             ISRVPOHeader srvPOHeader, ISRVPOLines srvPOLines, ISRVSendEmail srvSendEmail, ISRVClassInvoiceExtMap srvcancel, ISRVClassInvoiceMap srvInvMap,
@@ -55,6 +57,7 @@ namespace DataLayer.Services
         {
             this.srvTSPDetail = srv;
             this.srvProgramDesign = srvProgramDesign;
+            this.srvCriteria = srvCriteria;
             this._srvApprovalProcess = srvApprovalProcess;
             this._srvTSPMaster = srvTSPMaster;
             this.srvScheme = srvScheme;
@@ -418,7 +421,7 @@ namespace DataLayer.Services
                                                 result = true;
                                                 break;
 
-                                         
+
 
                                             case EnumApprovalProcess.PROG_APP:
                                                 srvProgramDesign.ProgramApproveReject(new ProgramDesignModel()
@@ -429,11 +432,21 @@ namespace DataLayer.Services
                                                     CurUserID = model.CurUserID
                                                 }, _transaction);
 
-
-                                                //Fetch Trade details and enter Trade in SAP
                                                 srvProgramDesign.ProgramDesignFinalApproval(model.FormID, _transaction);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
 
-                                             
+                                            case EnumApprovalProcess.CRTEM_APP:
+                                                srvCriteria.CriteriaApproveReject(new CriteriaTemplateModel()
+                                                {
+                                                    CriteriaTemplateID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    CurUserID = model.CurUserID
+                                                }, _transaction);
+
+                                                srvCriteria.CriteriaFinalApproval(model.FormID, _transaction);
                                                 _transaction.Commit();
                                                 result = true;
                                                 break;
@@ -451,7 +464,7 @@ namespace DataLayer.Services
                                                 result = true;
                                                 break;
 
-                                        
+
 
 
                                             case EnumApprovalProcess.CR_TSP:
@@ -846,6 +859,19 @@ namespace DataLayer.Services
                                             srvProgramDesign.ProgramApproveReject(new ProgramDesignModel()
                                             {
                                                 ProgramID = model.FormID,
+                                                IsApproved = false,
+                                                IsRejected = true,
+                                                CurUserID = model.CurUserID
+                                            }, _transaction);
+                                            _transaction.Commit();
+                                            result = true;
+                                            break;
+
+                                        case EnumApprovalProcess.CRTEM_APP:
+                                            //SchemeModel ProgramDesign = srvScheme.GetBySchemeID_Notification(model.FormID, _transaction);
+                                            srvCriteria.CriteriaApproveReject(new CriteriaTemplateModel()
+                                            {
+                                                CriteriaTemplateID = model.FormID,
                                                 IsApproved = false,
                                                 IsRejected = true,
                                                 CurUserID = model.CurUserID

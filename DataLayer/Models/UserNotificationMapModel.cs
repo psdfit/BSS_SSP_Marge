@@ -19,6 +19,7 @@ namespace DataLayer.Models
         public string RouteUrl { get; set; }
         public bool? IsSelected { get; set; }
         public string CustomComments { get; set; }
+        public string Subject { get; set; }
         public bool IsSent { get; set; }
         public int NotificationTypeId { get; set; }
 

@@ -43,7 +43,7 @@ namespace DataLayer.Services
                 SqlParameter param = new SqlParameter("@InstrID", InstrID);
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Instructor", param).Tables[0];
                 return LoopinData(dt);
-                
+
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
@@ -276,7 +276,7 @@ namespace DataLayer.Services
             Instructor.ModifiedDate = r["ModifiedDate"].ToString().GetDate();
 
             Instructor.GenderID = Convert.ToInt32(r["GenderID"]);
-            
+
             if (r.Table.Columns.Contains("GenderName"))
             {
                 Instructor.GenderName = r["GenderName"].ToString();
@@ -313,7 +313,7 @@ namespace DataLayer.Services
             Instructor.InActive = Convert.ToBoolean(r["InActive"]);
             Instructor.InstrMasterID = Convert.ToInt32(r["InstrMasterID"]);
             Instructor.SchemeID = Convert.ToInt32(r["SchemeID"]);
-            //Instructor.ClassID = Convert.ToInt32(r["ClassID"]);
+            Instructor.ClassID = Convert.ToInt32(r["ClassID"]);
             Instructor.BiometricData1 = r.Field<string>("BiometricData1");
             Instructor.BiometricData2 = r.Field<string>("BiometricData2");
             Instructor.BiometricData3 = r.Field<string>("BiometricData3");
@@ -341,9 +341,10 @@ namespace DataLayer.Services
             {
                 Instructor.InstructorCRComments = r.Field<string>("InstructorCRComments");
             }
-           
+
             return Instructor;
-        }private CheckInstructorCNICModel RowOfInstructorCNIC(DataRow r)
+        }
+        private CheckInstructorCNICModel RowOfInstructorCNIC(DataRow r)
         {
             CheckInstructorCNICModel Instructor = new CheckInstructorCNICModel();
 

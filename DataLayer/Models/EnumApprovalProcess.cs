@@ -45,10 +45,11 @@ namespace DataLayer.Models
         public const string NADRA_VERIFICATION = "NADRA_VERIFICATION";
         public const string CONFIG_OF_BUSINES_RULE = "CONFIG_OF_BUSINES_RULE";
         public const string KAM_ASSIGNMENT = "KAM_ASSIGNMENT";
-        public const string Inception_report_submit  = "Inception_report_submit";
+        public const string Inception_report_submit = "Inception_report_submit";
         public const string Employment_Report = "Employment_Report ";
         public const string Class_Status_change = "Class_Status_change ";
         public const string Class_Status_Active = "Class_Status_Active ";
         public const string PROG_APP = "PROG_APP";
+        public const string CRTEM_APP = "CRTEM_APP";
     }
 }

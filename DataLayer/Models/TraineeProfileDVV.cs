@@ -22,6 +22,7 @@ namespace DataLayer.Models
         public string BiometricData3 { get; set; }
         public string BiometricData4 { get; set; }
         public int ClassID { get; set; }
+        public int TSPID { get; set; }
         public int GenderID { get; set; }
         public int EducationID { get; set; }
         public int ReligionID { get; set; }

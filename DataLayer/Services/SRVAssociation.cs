@@ -10,6 +10,8 @@ using System.Transactions;
 using DataLayer.Models;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
+using Microsoft.AspNetCore.Components.Routing;
 
 
 namespace DataLayer.Services
@@ -153,7 +155,23 @@ namespace DataLayer.Services
         {
             try
             {
-                string EvaluationAttachment = SaveAttachment("EvaluationAttachment", data.Attachment, "", "ComputerLabPhoto");
+
+                string searchString = @"\Documents";
+
+                bool containsPath = data.Attachment.Contains(searchString);
+                string EvaluationAttachment = "";
+                if (!containsPath)
+                {
+                    EvaluationAttachment = SaveAttachment("EvaluationAttachment", data.Attachment, "", "EvaluationAttachment");
+                }
+                else
+                {
+                    EvaluationAttachment = data.Attachment;
+                }
+
+
+
+
 
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@UserID", data.UserID));
@@ -169,6 +187,7 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@Attachment", EvaluationAttachment));
 
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTSPAssociationEvaluation", param.ToArray()).Tables[0];
+                SendNotification(data);
                 return dt;
             }
             catch (Exception ex)
@@ -178,6 +197,33 @@ namespace DataLayer.Services
 
 
         }
+
+        static void SendNotification(AssociationEvaluationModel data)
+        {
+            string subject = "Association Evaluation Notification";
+            string body = $@"<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <p>Dear {data.TspName},</p>
+    <p>Trade Lot ({data.TradeLot}) has been {data.StatusName}.</p>
+    <p><strong>Remarks:</strong> {data.Remarks}</p>
+    <p>Best regards,<br />Punjab Skills Development Fund</p>
+  </body>
+</html>
+";
+
+            var emailNotifiction = new UserNotificationMapModel
+            {
+                Subject = subject,
+                CustomComments = body,
+                UserID = data.TSPID,
+                CurUserID = data.CurUserID
+            };
+
+            int NotificationId = SRVNotificationDetail.saveSSPSendNotification(emailNotifiction, data.CurUserID);
+        }
+
 
         private static string SaveAttachment(string fileType, string attachment, string instituteName, string instituteNTN)
         {

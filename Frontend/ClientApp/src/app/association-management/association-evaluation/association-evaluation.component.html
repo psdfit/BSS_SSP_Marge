@@ -67,17 +67,25 @@
                 <ng-container *ngFor="let column of hTableColumns" [matColumnDef]="column">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
-                    <ng-container *ngIf=" column !='Action' && column !='EvaluationStatus'">
+
+                    <ng-container *ngIf=" column !='Action' && column !='EvaluationStatus' && column !='Attachment' ">
                       &nbsp;{{ row[column] }}
                     </ng-container>
+
                     <ng-container *ngIf="column =='Action'">
                       <a *ngIf="CheckAssociation==false" mat-button
                          matTooltip="TSP evaluation is blocked due to an ongoing program association">Evaluation Blocked </a>
-
                       <a *ngIf="CheckAssociation==true" color="primary" (click)="OpenDialogue(row)" mat-button
                          matTooltip="Click to start TSP Evaluation ">Proceed Evaluation </a>
-
                     </ng-container>
+
+                    <ng-container *ngIf="column =='Attachment'">
+                      &nbsp; <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
+                                matTooltip="Preview document" class="file-lable">
+                        <mat-icon>get_app</mat-icon>
+                      </a>
+                    </ng-container>
+
                     <ng-container *ngIf="column =='EvaluationStatus'">
                       <span *ngIf="row[column]=='On-Hold'" class="label label-default">{{row[column]}}</span>
                       <span *ngIf="row[column]=='In-Progress'" class="label label-info">{{row[column]}}</span>

@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -55,6 +56,13 @@ export class TspStatusUpdateComponent implements OnInit {
   }
   UpdateStatus() {
     this.StatusForm.value["tradeManageIds"] = this.tradeManageIds
+
+    const Status = this.Status.filter(d => d.TspTradeStatusID == this.StatusForm.get("Status").value)
+    this.StatusForm.value["TSPID"] = this.data[2].UserID
+    this.StatusForm.value["TSPName"] = this.data[2].TspName
+    this.StatusForm.value["TradeName"] = this.data[0][0].TradeName
+    this.StatusForm.value["StatusName"] = Status[0].Status
+
     if (this.StatusForm.valid) {
       if (this.StatusForm.get("Status").value == 4 || this.StatusForm.get("Status").value == 5) {
         this.StatusForm.value["ApprovalLevel"] = this.data[1][0]
@@ -64,7 +72,7 @@ export class TspStatusUpdateComponent implements OnInit {
       console.log(this.StatusForm.value)
       this.ComSrv.postJSON("api/BusinessProfile/UpdateTradeStatus", this.StatusForm.value).subscribe(
         (response) => {
-          console.log(response[0])
+
           this.check = true
           this.dialogRef.close(true);
           this.ComSrv.openSnackBar("Record update successfully.");

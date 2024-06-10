@@ -3,6 +3,7 @@ using DataLayer.Interfaces;
 using DataLayer.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,6 +52,7 @@ namespace DataLayer.JobScheduler.Jobs
 
                 // Update the verification status
             }
+
             var list = iSRVNotificationDetail.FetchNotificationDetailsForEmail();
             List<Task> emailTasks = new List<Task>(); // Declare the list here
 
@@ -68,6 +70,27 @@ namespace DataLayer.JobScheduler.Jobs
                 iSRVNotificationDetail.UpdateNotificationDetails(item);
             }
             await Task.WhenAll(emailTasks);
+
+
+            DataTable dt = iSRVNotificationDetail.FetchSSPNotificationDetailsForEmail();
+            List<Task> SSPNotificationemailTasks = new List<Task>();
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string subject = item["Subject"].ToString();
+                string userEmail = item["Email"].ToString();
+                string customComments = item["CustomComments"].ToString();
+
+                StringBuilder body = new StringBuilder();
+                body.Append(customComments);
+
+                var emailTask = Common.SendEmailAsync(userEmail, subject, body.ToString(), stoppingToken);
+                SSPNotificationemailTasks.Add(emailTask);
+
+                iSRVNotificationDetail.UpdateSSPNotificationDetails(Convert.ToUInt16(item["NotificationDetailID"]));
+            }
+
+            await Task.WhenAll(SSPNotificationemailTasks);
         }
     }
 }

@@ -40,10 +40,10 @@
                 <ng-container *ngFor="let column of tTableColumns" [matColumnDef]="column">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
-                    <ng-container *ngIf=" column !='Action' &&  column!='Evidence'">
+                    <ng-container *ngIf="column!='Attachment'">
                       &nbsp;{{ row[column] }}
                     </ng-container>
-                    <ng-container *ngIf="column =='Evidence'">
+                    <ng-container *ngIf="column =='Attachment'">
                       &nbsp; <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
                                 matTooltip="Preview document" class="file-lable">
                         <mat-icon>get_app</mat-icon>

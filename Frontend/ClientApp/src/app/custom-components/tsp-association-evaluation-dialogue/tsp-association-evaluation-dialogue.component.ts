@@ -50,6 +50,7 @@ export class TspAssociationEvaluationDialogueComponent implements OnInit {
     this.AssociationEvaluationForm = this.fb.group({
       ID: [0],
       UserID: [this.currentUser.UserID],
+      TSPID: [],
       ProgramID: [""],
       TspAssociationEvaluationID: [""],
       TspAssociationMasterID: [""],
@@ -82,6 +83,8 @@ export class TspAssociationEvaluationDialogueComponent implements OnInit {
   }
   Save() {
     this.AssociationEvaluationForm.value["tradeManageIds"] = this.tradeManageIds
+    const Status = this.Status.filter(d => d.TspTradeStatusID == this.AssociationEvaluationForm.get("Status").value)
+    this.AssociationEvaluationForm.value["StatusName"] = Status[0].Status
     if (this.AssociationEvaluationForm.valid) {
       this.ComSrv.postJSON("api/Association/SaveAssociationEvaluation", this.AssociationEvaluationForm.value).subscribe(
         (response) => {

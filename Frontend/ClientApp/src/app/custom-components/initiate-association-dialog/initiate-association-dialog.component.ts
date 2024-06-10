@@ -88,7 +88,9 @@ export class InitiateAssociationDialogComponent implements OnInit {
   GetData() {
     this.ComSrv.postJSON("api/CriteriaTemplate/LoadCriteria", { UserID: this.currentUser.UserID }).subscribe(
       (response) => {
-        this.Criteria = response;
+        debugger;
+        const criteriaList: any = response
+        this.Criteria = criteriaList.filter(d => d.ApprovalStatus == 'Approved')
       },
       (error) => {
         this.ComSrv.ShowError(`${error.message}`, "Close", 500000);

@@ -18,6 +18,13 @@ namespace DataLayer.Services
         public SRVScheme()
         { }
 
+        public DataTable FetchReport(int UserID, string SpName)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@UserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
+            return dt;
+        }
         public SRVScheme(ISRVSendEmail srvSendEmail)
         {
             this.srvSendEmail = srvSendEmail;
@@ -776,7 +783,7 @@ namespace DataLayer.Services
             Scheme.SchemeCode = r["ProgramCode"].ToString();
             Scheme.Description = r["ProgramDescription"].ToString();
             Scheme.PaymentSchedule = r["PaymentStructure"].ToString();
-            Scheme.ProcessStartDate =Convert.ToDateTime(r["ProcessStartDate"]);
+            Scheme.ProcessStartDate = Convert.ToDateTime(r["ProcessStartDate"]);
             Scheme.ProcessEndDate = Convert.ToDateTime(r["ProcessEndDate"]);
             Scheme.IsLocked = r["IsLocked"].ToString();
 

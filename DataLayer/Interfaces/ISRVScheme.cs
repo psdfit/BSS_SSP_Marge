@@ -1,12 +1,15 @@
 ﻿using DataLayer.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Data;
 
 namespace DataLayer.Interfaces
 {
     public interface ISRVScheme
     {
         SchemeModel GetLastScheme(int UserID);
+
+        public DataTable FetchReport(int UserID, string SpName);
 
         SchemeModel GetBySchemeID(int SchemeID, SqlTransaction transaction = null);
 

@@ -8,7 +8,11 @@ namespace DataLayer.Models.SSP
     {
 
         public TradeMapModel() { }
+
         public int UserID { get; set; }
+        public int TSPID { get; set; }
+        public string TSPName { get; set; }
+        public string TradeName { get; set; }
         public int TradeManageID { get; set; }
         public string TrainingDuration { get; set; }
         public string tradeManageIds { get; set; }
@@ -19,6 +23,7 @@ namespace DataLayer.Models.SSP
         public string ProcurementRemarks { get; set; }
         public int ApprovalLevel { get; set; }
         public int Status { get; set; }
+        public string StatusName { get; set; }
         public string Remarks { get; set; }
         public int NoOfClassMor { get; set; }
         public int ClassCapacityMor { get; set; }

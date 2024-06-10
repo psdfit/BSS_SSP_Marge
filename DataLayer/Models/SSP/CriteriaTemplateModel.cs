@@ -8,13 +8,17 @@ namespace DataLayer.Models.SSP
 
 
 
-    public class CriteriaTemplateModel:ModelBase
+    public class CriteriaTemplateModel : ModelBase
     {
         public int CriteriaTemplateID { get; set; }
         public string CriteriaTemplateTitle { get; set; }
         public string Description { get; set; }
         public string MarkingRequired { get; set; }
         public string MaximumMarks { get; set; }
+
+        public bool? IsApproved { get; set; }
+        public bool? IsSubmitted { get; set; } = false;
+        public bool? IsRejected { get; set; }
         public int UserID { get; set; }
 
         public List<CriteriaMainCategory> mainCategory { get; set; } = new List<CriteriaMainCategory>();

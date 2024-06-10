@@ -27,7 +27,8 @@ export class RegistrationEvaluationComponent implements OnInit {
   tspName: string;
   ResponseData: any = []
   isEdit: number;
-  ResponsD: any=[]
+  ResponsD: any = []
+  SelectedRow: any;
   constructor(
     private ComSrv: CommonSrvService,
     private AcitveRoute: ActivatedRoute,
@@ -88,7 +89,9 @@ export class RegistrationEvaluationComponent implements OnInit {
       EndDate: [this.CurrentDate, Validators.required],
     });
   }
-  ShowDetail(row: any, tspName: string, isEdit:number=0) {
+  ShowDetail(row: any, tspName: string, isEdit: number = 0) {
+    debugger;
+    this.SelectedRow = row
     this.selection.clear()
     this.rowData = []
     this.tspName = ""
@@ -118,7 +121,6 @@ export class RegistrationEvaluationComponent implements OnInit {
     }
   }
   Decision() {
-
     if (this.selection.selected.length > 0) {
       this.OpenDialogue(this.selection.selected)
     } else {
@@ -126,7 +128,7 @@ export class RegistrationEvaluationComponent implements OnInit {
     }
   }
   OpenDialogue(row) {
-    const data = [row, [1]];
+    const data = [row, [1], this.SelectedRow];
     const dialogRef = this.Dialog.open(TspStatusUpdateComponent, {
       // height: '45%',
       width: '35%',
@@ -147,10 +149,8 @@ export class RegistrationEvaluationComponent implements OnInit {
   FetchRecord() {
     this.ComSrv.postJSON("api/BusinessProfile/FetchTspRegistration", { UserID: this.currentUser.UserID }).subscribe(
       (response) => {
-        this.ResponsD=response
-        console.log(this.ResponsD)
-        if(this.ResponsD.length>0){
-          
+        this.ResponsD = response
+        if (this.ResponsD.length > 0) {
           this.LoadMatTable(response, "TspMaster");
         }
       },

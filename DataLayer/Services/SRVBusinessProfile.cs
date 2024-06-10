@@ -65,9 +65,36 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@StatusID", data.Status));
                 param.Add(new SqlParameter("@ApprovalLevel", data.ApprovalLevel));
                 SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTSPTradeValidationStatus", param.ToArray());
+                SendNotification(data);
             }
             return FetchTspRegistrationDetail(new BusinessProfileModel { UserID = 0, ApprovalLevel = data.ApprovalLevel });
         }
+
+        static void SendNotification(TradeMapModel data)
+        {
+            string subject = "Trade Evaluation Notification";
+            string body = $@"<!DOCTYPE html>
+<html>
+    <head> </head>
+    <body>
+    <p>Dear{data.TSPName},</p>
+    <p>Trade ({data.TradeName}) has been {data.StatusName}.</p>
+    <p><strong>Remarks:</strong> {data.Remarks}</p>
+    <p>Best regards,<br />Punjab Skills Development Fund</p>
+    </body>
+</html>";
+
+            var emailNotifiction = new UserNotificationMapModel
+            {
+                Subject = subject,
+                CustomComments = body,
+                UserID = data.TSPID,
+                CurUserID = data.CurUserID
+            };
+
+            int NotificationId = SRVNotificationDetail.saveSSPSendNotification(emailNotifiction, data.CurUserID);
+        }
+
         public DataTable ProfileLoopinData(DataTable dt)
         {
             DataTable modifiedDataTable = dt.Clone();

@@ -47,7 +47,7 @@ export class CommonSrvService {
   activeMenuItem$: Observable<MenuItem>;
   pageTitle = new BehaviorSubject<string>('');
   OID = new BehaviorSubject<number>(0);
-  constructor(private dialogue:DialogueService, private titleService: Title, private http: HttpClient, private snackBar: MatSnackBar, private dialog: MatDialog, private route: Router, private domSanitizer: DomSanitizer, private router: Router, private appConfigService: AppConfigService) {
+  constructor(private dialogue: DialogueService, private titleService: Title, private http: HttpClient, private snackBar: MatSnackBar, private dialog: MatDialog, private route: Router, private domSanitizer: DomSanitizer, private router: Router, private appConfigService: AppConfigService) {
     this.activeMenuItem$ = this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd)
@@ -64,14 +64,14 @@ export class CommonSrvService {
   }
 
 
-  sharedDataObj:any={}
+  sharedDataObj: any = {}
 
-  setMessage(sharedData:any){
-    this.sharedDataObj={}
-    this.sharedDataObj=sharedData
+  setMessage(sharedData: any) {
+    this.sharedDataObj = {}
+    this.sharedDataObj = sharedData
   }
 
-  getMessage(){
+  getMessage() {
     return this.sharedDataObj
   }
 
@@ -87,8 +87,8 @@ export class CommonSrvService {
       (blob: Blob) => {
         const dialogRef = this.dialog.open(PreviewFileComponent, {
           data: { blobData: blob },
-          height: "90%",
-          width: "70%",
+          height: "92%",
+          width: "60%",
           disableClose: true,
           autoFocus: true
         });
@@ -102,7 +102,7 @@ export class CommonSrvService {
   downloadDocument(fileName: string): Observable<Blob> {
     const URL = fileName;
 
-    return this.http.get(this.appConfig.UsersAPIURL+fileName, { responseType: 'blob' }).pipe(
+    return this.http.get(this.appConfig.UsersAPIURL + fileName, { responseType: 'blob' }).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError('Something went wrong while downloading the document.');
       })
@@ -468,7 +468,7 @@ export class CommonSrvService {
 
 
 
-}
+  }
 
 
   ExcelExporWithForm(ExportDataObject, ReportName) {

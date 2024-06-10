@@ -34,6 +34,23 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); return 0; }
         }
+        public static int saveSSPSendNotification(UserNotificationMapModel model, int? CurUserID)
+        {
+            try
+            {
+
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@UserID", model.UserID));
+                param.Add(new SqlParameter("@Subject", model.Subject));
+                param.Add(new SqlParameter("@CustomComments", model.CustomComments));
+                param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPNotificationDetail", param.ToArray()).Tables[0];
+                return Convert.ToInt16(dt.Rows[0]["id"]);
+
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); return 0; }
+        }
 
         public int BatchInsert(List<UserNotificationMapModel> ls, int CurUserID)
         {
@@ -51,6 +68,13 @@ namespace DataLayer.Services
             _ = SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.Text, query);
             return true;
         }
+        public bool UpdateSSPNotificationDetails(int NotificationDetailID)
+        {
+            string query = $"Update dbo.SSPNotificationDetail SET IsSent = 1 , ModifiedUserID={(int)EnumUsers.System} , ModifiedDate = '{DateTime.Now}'  WHERE NotificationDetailID={NotificationDetailID}";
+
+            _ = SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.Text, query);
+            return true;
+        }
 
         public List<NotificationDetailModel> FetchNotificationDetailsForEmail()
         {
@@ -58,6 +82,15 @@ namespace DataLayer.Services
             {
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_NotificationsForEmail").Tables[0];
                 return LoopinDataForEmail(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public DataTable FetchSSPNotificationDetailsForEmail()
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SSPNotificationsForEmail").Tables[0];
+                return dt;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
@@ -97,7 +130,7 @@ namespace DataLayer.Services
         {
             try
             {
-              DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_UnverifiedTraineeEmail").Tables[0];
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_UnverifiedTraineeEmail").Tables[0];
                 return LoopinUnverifiedTraineeEmail(dt);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }

@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { CommonSrvService } from "../../common-srv.service";
 import { ActivatedRoute } from "@angular/router";
@@ -7,12 +8,14 @@ import { MatSort } from "@angular/material/sort";
 import { MatTabGroup } from "@angular/material/tabs";
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, } from "@angular/forms";
 import { environment } from "../../../environments/environment";
+import { EnumApprovalProcess } from "src/app/shared/Enumerations";
+import { DialogueService } from "src/app/shared/dialogue.service";
 @Component({
-  selector: "app-criteria-template",
-  templateUrl: "./criteria-template.component.html",
-  styleUrls: ["./criteria-template.component.scss"],
+  selector: 'app-criteria-template-approval',
+  templateUrl: './criteria-template-approval.component.html',
+  styleUrls: ['./criteria-template-approval.component.scss']
 })
-export class CriteriaTemplateComponent implements OnInit {
+export class CriteriaTemplateApprovalComponent implements OnInit {
   environment = environment;
   readonly = false
   fileArray: any = []
@@ -32,14 +35,16 @@ export class CriteriaTemplateComponent implements OnInit {
   subCategoryMark: any;
   CategoryFlag: boolean = false
   Isread: boolean = false
-  criteriaHeader: any;
+  criteriaHeader: any=[]
   criteriaMainCategory: any;
   criteriaSubCategory: any;
-  AttachedProgramCount: any = 0
+  AttachedProgramCount: any=0
+  isChecked: boolean = false
   constructor(
     private ComSrv: CommonSrvService,
     private AcitveRoute: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialogue:DialogueService
   ) { }
   SpacerTitle: string;
   SearchCtr = new FormControl("");
@@ -64,17 +69,19 @@ export class CriteriaTemplateComponent implements OnInit {
     this.ComSrv.setTitle(this.AcitveRoute.snapshot.data.title);
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
-  IsSubmitted: boolean = false
+  IsSubmitted:boolean=false
   Edit(CriteriaTemplateID, EditFlag) {
+    debugger;
+    this.isChecked = true
     const row = this.TablesData.filteredData.filter(d => d.CriteriaTemplateID == CriteriaTemplateID)[0]
-    this.IsSubmitted = row.IsSubmitted
-    this.AttachedProgramCount = row.AttachedProgramCount
+    this.IsSubmitted=row.IsSubmitted
+    this.AttachedProgramCount=row.AttachedProgramCount
     this.readonly = true
     this.fileArray = []
     this.savebtn = 'Update'
     this.initCriteriaTemplateForm()
     this.removeMainCategory(0)
-    this.tabGroup.selectedIndex = 0
+    this.tabGroup.selectedIndex = 1
     const mainCategory = this.GetDataObject.criteriaMainCategory.filter(d => d.CriteriaTemplateID == row.CriteriaTemplateID)
     const mainCategoryArray = []
     const formData = { ...row, mainCategory: mainCategoryArray }
@@ -134,6 +141,7 @@ export class CriteriaTemplateComponent implements OnInit {
     });
   }
   async MainCategoryListener() {
+    debugger;
     if (this.CriteriaTemplateForm.get("MarkingRequired").value == 'No') {
       this.CategoryFlag = true
     } else {
@@ -144,7 +152,7 @@ export class CriteriaTemplateComponent implements OnInit {
         this.mainCategoryMark = Number(mainCategories[i].TotalMarks);
         this.subCategoryMark = mainCategories[i].subCategory.map((subCategory) => Number(subCategory.MaxMarks)).reduce((a, b) => a + b, 0);
         if (this.mainCategoryMark === this.subCategoryMark && this.mainCategoryMark != 0) {
-          // this.ComSrv.openSnackBar(`Main Category ${i + 1} is equal to Sub Category`)
+          this.ComSrv.openSnackBar(`Main Category ${i + 1} is equal to Sub Category`)
           this.CategoryFlag = true
         } else {
           this.ComSrv.ShowError(`Main Category ${i + 1} is  not equal to Sub Category`)
@@ -155,7 +163,7 @@ export class CriteriaTemplateComponent implements OnInit {
     }
   }
   ResetTemplate() {
-    this.IsSubmitted = false;
+    this.IsSubmitted=false;
     this.savebtn = 'Save'
     this.initCriteriaTemplateForm()
   }
@@ -243,19 +251,22 @@ export class CriteriaTemplateComponent implements OnInit {
       return;
     }
   }
-  Submit() {
-    if (this.CriteriaTemplateForm.valid) {
-      if (confirm('Data cannot be modified after submission. Are you sure you want to proceed?') == true) {
-        this.CriteriaTemplateForm.get('IsSubmitted').setValue(1)
+  Submit(){
+    debugger;
+    if (this.CriteriaTemplateForm.valid)
+      {
+        if (confirm('Data cannot be modified after submission. Are you sure you want to proceed?') == true) {
+          this.CriteriaTemplateForm.get('IsSubmitted').setValue(1)
         this.CreateTemplate()
-      }
+      } 
     }
   }
   async CreateTemplate() {
+    debugger
     await this.MainCategoryListener();
     if (this.CriteriaTemplateForm.valid) {
       if (this.CriteriaTemplateForm.get("MarkingRequired").value != 'No') {
-        if (!this.CriteriaTemplateForm.touched && this.CriteriaTemplateForm.get('IsSubmitted').value != 1) {
+        if (!this.CriteriaTemplateForm.touched && this.CriteriaTemplateForm.get('IsSubmitted').value !=1) {
           this.ComSrv.ShowError("At least one change in the main category section is required.")
           return;
         }
@@ -270,9 +281,7 @@ export class CriteriaTemplateComponent implements OnInit {
       }
       this.ComSrv.postJSON("api/CriteriaTemplate/Save", this.CriteriaTemplateForm.value).subscribe(
         (response) => {
-          this.ComSrv.openSnackBar(`Record saved successfully.`);
-
-          this.IsSubmitted = false;
+          this.IsSubmitted=false;
           for (let m = 0; m < this.removedMainCategoryIds.length; m++) {
             this.RemovedMainCategory(this.removedMainCategoryIds[m])
           }
@@ -337,10 +346,11 @@ export class CriteriaTemplateComponent implements OnInit {
     }).subscribe(
       (response) => {
         this.GetDataObject = response
-        this.criteriaHeader = this.GetDataObject.criteriaHeader
+
+        this.criteriaHeader = this.GetDataObject.criteriaHeader.filter(d=>d.IsSubmitted==true && d.IsRejected!=true)
         this.criteriaMainCategory = this.GetDataObject.criteriaMainCategory
         this.criteriaSubCategory = this.GetDataObject.criteriaSubCategory
-        this.LoadMatTable(this.GetDataObject.criteriaHeader, "TemplateHeader");
+        this.LoadMatTable(this.criteriaHeader, "TemplateHeader");
       },
       (error) => {
         this.ComSrv.ShowError(`${error.message}`, "Close", 500000);
@@ -348,8 +358,10 @@ export class CriteriaTemplateComponent implements OnInit {
     );
   }
   LoadMatTable(tableData: any[], tableName: string) {
-    if (tableData.length > 0) {
-      this.TableColumns = Object.keys(tableData[0]).filter((key) => !key.includes("ID"));
+    if(tableData.length>0){
+
+      const excludeColumnArray=["AttachedProgramCount","IsSubmitted"]
+        this.TableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID') && ! excludeColumnArray.includes(key));
       this.TableColumns.unshift("Action")
       this.TablesData = new MatTableDataSource(tableData);
       this.TablesData.paginator = this.Paginator;
@@ -365,15 +377,23 @@ export class CriteriaTemplateComponent implements OnInit {
   DataExcelExport(data: any, title) {
     this.ComSrv.ExcelExporWithForm(data, title);
   }
+  openApprovalDialogue(CriteriaHeaderID: any): void {
+    let processKey = EnumApprovalProcess.CRTEM_APP;
+    this.dialogue.openApprovalDialogue(processKey,CriteriaHeaderID).subscribe(result => {
+      console.log(result);
+      this.FetchRecord();
+    });
+  }
   ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.ComSrv.getMessage().CriteriaID != undefined) {
-        this.Edit(this.ComSrv.getMessage().CriteriaID, 0)
-      }
-    }, 1000);
     if (this.tabGroup) {
       this.tabGroup.selectedTabChange.subscribe((event) => {
         this.TapIndex = event.index
+        if (this.TapIndex == 0) {
+          this.isChecked = false
+        }
+        if (this.TapIndex == 1) {
+          this.isChecked = true
+        }
       });
     }
   }

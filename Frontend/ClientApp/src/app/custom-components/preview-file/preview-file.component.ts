@@ -6,7 +6,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   templateUrl: './preview-file.component.html',
   styleUrls: ['./preview-file.component.scss']
 })
-export class PreviewFileComponent implements OnInit {
+export class PreviewFileComponent implements OnInit, AfterViewInit {
   public content: any;
   public content1: any;
   DataSource: SafeResourceUrl;
@@ -18,15 +18,37 @@ export class PreviewFileComponent implements OnInit {
   ngOnInit(): void {
     this.getBlobUrl()
   }
- 
+
 
   getBlobUrl() {
     const blob = this.data.blobData;
     const blobUrl = URL.createObjectURL(blob);
-    this.DataSource= this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
+    this.DataSource = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
   }
 
   onCloseClick(): void {
     this.dialogRef.close();
   }
+
+  ngAfterViewInit(): void {
+    const iframe = document.getElementById('myIframe') as HTMLIFrameElement;
+
+    iframe.onload = () => {
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+
+      if (iframeDocument) {
+        // Create a <style> element
+        const style = iframeDocument.createElement('style');
+        style.textContent = `
+          img {
+            width: 100%;
+           height: 100%
+          }
+        `;
+        // Append the <style> element to the <head> of the iframe document
+        iframeDocument.head.appendChild(style);
+      }
+    };
+  }
+
 }

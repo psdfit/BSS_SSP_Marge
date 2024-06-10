@@ -17,10 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using DataLayer.JobScheduler.Scheduler;
 using DataLayer.Models.SSP;
 using System.IO;
-using System.Net.Mail;
-using System.Transactions;
-using System.Xml.Linq;
-using System.Data.Common;
+
 
 namespace DataLayer.Services
 {
@@ -47,14 +44,15 @@ namespace DataLayer.Services
                             new SqlParameter("@HeaderTitle", data.CriteriaTemplateTitle),
                             new SqlParameter("@HeaderDesc", data.Description),
                             new SqlParameter("@IsMarking", data.MarkingRequired),
-                            new SqlParameter("@MaxMarks", data.MaximumMarks)
+                            new SqlParameter("@MaxMarks", data.MaximumMarks),
+                            new SqlParameter("@IsSubmitted", data.IsSubmitted)
                         };
 
 
                     DataTable dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "AU_SSPCriteriaHeader", parameters.ToArray()).Tables[0];
 
                     int criteriaHeaderID = (data.CriteriaTemplateID > 0)
-                        ?data.CriteriaTemplateID
+                        ? data.CriteriaTemplateID
                         : Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["CriteriaHeaderID"]);
 
                     MainCategoryBatchInsert(data.mainCategory, criteriaHeaderID, data.CurUserID, transaction);
@@ -116,7 +114,7 @@ namespace DataLayer.Services
                         new SqlParameter("@Attachment", CriteriaAttachment)
                     };
 
-                 SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "AU_SSPCriteriaSubCategory", parameters.ToArray());
+                SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "AU_SSPCriteriaSubCategory", parameters.ToArray());
             }
         }
 
@@ -202,7 +200,7 @@ namespace DataLayer.Services
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@CriteriaMaincategoryID", mainCategory.CriteriaMainCategoryID));
-            
+
             SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "SSPRemove_MainCategory", parameters.ToArray());
             return true;
         }
@@ -217,6 +215,51 @@ namespace DataLayer.Services
             SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "SSPRemove_SubCategory", parameters.ToArray());
             return true;
 
+        }
+
+
+
+        public bool CriteriaApproveReject(CriteriaTemplateModel model, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@CriteriaTemplateID", model.CriteriaTemplateID));
+                param.Add(new SqlParameter("@IsApproved", model.IsApproved));
+                param.Add(new SqlParameter("@IsRejected", model.IsRejected));
+                param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, "[AU_SSPCriteriaApproveReject]", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_SSPCriteriaApproveReject]", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public bool CriteriaFinalApproval(int FormId, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@CriteriaTemplateID", FormId));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, "AU_SSPCriteriaFinalApproval", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPCriteriaFinalApproval", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
     }
 }
