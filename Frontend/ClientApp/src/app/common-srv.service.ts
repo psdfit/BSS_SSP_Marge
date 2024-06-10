@@ -80,18 +80,35 @@ export class CommonSrvService {
       this.ShowError('There is no Attachment');
       return
     }
+    
+    
     const filePath = fileName;
     const updatedPath = filePath.slice(1);
     const updatedDocPath = updatedPath.replace(/[\/\\]/g, '||');
     this.downloadDocument('api/Users/Document/' + updatedDocPath).subscribe(
       (blob: Blob) => {
-        const dialogRef = this.dialog.open(PreviewFileComponent, {
-          data: { blobData: blob },
-          height: "92%",
-          width: "60%",
-          disableClose: true,
-          autoFocus: true
-        });
+        if (['pdf', 'jpeg', 'png'].some(ext => fileName.includes(ext))) {
+          const dialogRef = this.dialog.open(PreviewFileComponent, {
+            data: { blobData: blob },
+            height: "92%",
+            width: "60%",
+            disableClose: true,
+            autoFocus: true
+          });
+        } else {
+          const lastIndex = fileName.lastIndexOf('\\');
+          const sanitizedFileName = lastIndex !== -1 ? fileName.slice(lastIndex + 1) : fileName;
+          const filePath = sanitizedFileName.slice(1).replace(/[\/\\]/g, '||');
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = filePath;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        
+      
+
       },
       (error: string) => {
         this.ShowError(`${error}`, "Close", 500000);
