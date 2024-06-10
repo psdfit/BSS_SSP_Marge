@@ -15,4 +15,5 @@ namespace DataLayer.Models
 
         public int CertificationCategoryID { get; set; }
         public string CertificationCategoryName { get; set; }
-    }}
+    }
+}

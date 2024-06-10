@@ -33,7 +33,6 @@ import { ProcessApprovedPlanDialogComponent } from './custom-components/process-
 import { ProcessStatusUpdateDialogComponent } from './custom-components/process-status-update-dialog/process-status-update-dialog.component';
 import { InitiateAssociationDialogComponent } from './custom-components/initiate-association-dialog/initiate-association-dialog.component';
 import { TspAssociationEvaluationDialogueComponent } from './custom-components/tsp-association-evaluation-dialogue/tsp-association-evaluation-dialogue.component';
-import { TspAssociationSubmissionDialogueComponent } from './custom-components/tsp-association-submission-dialogue/tsp-association-submission-dialogue.component';
 import { ErrorLogTableComponent } from './custom-components/error-log-table/error-log-table.component';
 import { ConfirmDailogComponent } from "./custom-components/confirm-dailog/confirm-dailog.component";
 
@@ -63,7 +62,6 @@ const app_initializerFn = (appConfig: AppConfigService) => {
     ProcessStatusUpdateDialogComponent,
     InitiateAssociationDialogComponent,
     TspAssociationEvaluationDialogueComponent,
-    TspAssociationSubmissionDialogueComponent,
     ErrorLogTableComponent,
   ],
   imports: [

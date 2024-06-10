@@ -17,7 +17,7 @@ body {
   font-family: 'Oswald', sans-serif;
 }
 
-.mat-tab-body-wrapper{
+.mat-tab-body-wrapper {
   flex-grow: 1;
 }
 
@@ -227,10 +227,11 @@ mat-toolbar.mat-toolbar.slim:after {
   border-radius: 0 0 8px 0px;
 }
 
-body .mat-tab-header{
+body .mat-tab-header {
   margin-left: 10px !important;
   margin-bottom: 2px !important;
 }
+
 body mat-table mat-header-row mat-header-cell {
   padding-top: 0;
   padding-bottom: 0;
@@ -272,21 +273,26 @@ mat-toolbar.mat-toolbar.slim {
   font-weight: 400;
   font-size: 16px;
 }
+
 table.table-bordered td, table.table-bordered th {
   border: 1px solid #000 !important;
   padding: 4px 10px;
 }
+
 table.table-bordered th {
-  font-size: 11px!important;
-  font-weight:bold;
+  font-size: 11px !important;
+  font-weight: bold;
 }
+
 .spacemin .table-responsive {
   overflow-y: scroll;
   max-height: 400px;
 }
+
 table.table-bordered td {
-    font-size:10px !important;
+  font-size: 10px !important;
 }
+
 .card h3 {
   color: #fff;
   font-size: 11px !important;
@@ -299,6 +305,7 @@ table.table-bordered td {
   -webkit-overflow-scrolling: touch;
   display: grid !important;
 }
+
 mat-cell:first-of-type, mat-header-cell:first-of-type, mat-footer-cell:first-of-type {
   padding-left: 11px !important;
 }
@@ -925,13 +932,16 @@ body footer {
   margin-top: 4px;
   margin-right: 20px;
 }
+
 .comp-main-div .form-group {
   margin-bottom: 5px;
 }
+
 body .sidemenu ul li.mt-4:hover {
   background: #c3d9ff;
   color: #000;
 }
+
 mat-table mat-row:focus {
   background-color: orange !important;
 }
@@ -983,19 +993,26 @@ mat-table mat-row:focus {
   }
 }
 
-.decimal-align-right{
-    text-align:right;
+.decimal-align-right {
+  text-align: right;
 }
+
 .number-align-center {
   text-align: center;
 }
+
 .myAnchor {
   color: #005b9e;
   font-weight: bold;
   cursor: pointer;
 }
+
 .myAnchor:hover {
   color: #fbb417;
   font-weight: bold;
   cursor: pointer;
+}
+
+.mat-dialog-container {
+  height: auto !important;
 }

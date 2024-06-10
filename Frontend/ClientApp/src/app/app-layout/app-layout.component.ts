@@ -13,7 +13,7 @@ import { DialogueService } from '../shared/dialogue.service';
 import { HubConnection } from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
 import { AppConfigService } from '../app-config.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { EnumUserRoles } from '../shared/Enumerations';
 //import $ from "jquery";
 import * as $ from 'jquery';
@@ -70,7 +70,7 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
   pTitle = '';
   public messages: string[];
   private _hubConnection: HubConnection;
-  constructor(private http: CommonSrvService, private router: Router, private appConfigService: AppConfigService, private ComSrv: CommonSrvService, public dialogueService: DialogueService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public dialog: MatDialog, private auth: AuthService, private common: CommonSrvService) {
+  constructor(private http: CommonSrvService, private router: Router, private ActiveRoute: ActivatedRoute, private appConfigService: AppConfigService, private ComSrv: CommonSrvService, public dialogueService: DialogueService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public dialog: MatDialog, private auth: AuthService, private common: CommonSrvService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -128,15 +128,17 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
   documentClick(event: MouseEvent) {
     //Checking session is logout or not
     if (this.IsTspUser) {
-      this.common.getJSON('api/Users/GetSession?SessionID=' + sessionStorage.getItem("SessionID") + '&UserID=' + sessionStorage.getItem("UserID")).subscribe((d: any) => {
-        this.userSessionDetail = d;
-        if (this.userSessionDetail === null) { //Controll session logout when session is removed from dashboard
-          if (this.IsTspUser) {
-            this.logout();
+      if (this.router.url !== "/profile-manage/profile" && this.router.url !== "/profile-manage/base-data") {
+        this.common.getJSON('api/Users/GetSession?SessionID=' + sessionStorage.getItem("SessionID") + '&UserID=' + sessionStorage.getItem("UserID")).subscribe((d: any) => {
+          this.userSessionDetail = d;
+          if (this.userSessionDetail === null) {
+            if (this.IsTspUser) {
+              this.logout();
+            }
           }
-        }
-      }, error => this.error = error // error path
-      );
+        }, error => this.error = error);
+      }
+
     }
   }
   ngOnInit(): void {

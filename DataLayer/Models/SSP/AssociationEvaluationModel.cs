@@ -13,12 +13,14 @@ namespace DataLayer.Models.SSP
         public int ProgramID { get; set; }
         public int TspAssociationMasterID { get; set; }
         public int TspAssociationEvaluationID { get; set; }
-        
+
         public int Status { get; set; }
         public string VerifiedCapacityMorning { get; set; }
+        public string Remarks { get; set; }
         public string VerifiedCapacityEvening { get; set; }
         public string MarksBasedOnEvaluation { get; set; }
         public string CategoryBasedOnEvaluation { get; set; }
+        public string Attachment { get; set; }
 
 
     }

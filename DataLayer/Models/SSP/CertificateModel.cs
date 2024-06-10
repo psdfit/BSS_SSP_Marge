@@ -16,7 +16,7 @@ namespace DataLayer.Models.SSP
         public string RegistrationStatus { get; set; }
         public string RegistrationCerNum { get; set; }
         public DateTime IssuanceDate { get; set; }
-        public DateTime ExpiryDate { get; set; }
+        public string ExpiryDate { get; set; }
         public string RegistrationCerEvidence { get; set; }
 
 

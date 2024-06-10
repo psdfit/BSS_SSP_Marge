@@ -64,11 +64,11 @@ namespace DataLayer.Services
             }
         }
 
-        private static string SaveAttachment(string TSPName,string fileType, string attachment)
+        private static string SaveAttachment(string TSPName, string fileType, string attachment)
         {
             if (!string.IsNullOrEmpty(attachment))
             {
-                string path = FilePaths.DOCUMENTS_FILE_DIR +TSPName + "\\"+ fileType ;
+                string path = FilePaths.DOCUMENTS_FILE_DIR + TSPName + "\\" + fileType;
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -82,58 +82,59 @@ namespace DataLayer.Services
         public DataTable SaveAssociationSubmission(AssociationSubmissionModel data)
         {
 
-                SqlConnection connection = new SqlConnection(SqlHelper.GetCon());
-                connection.Open();
-                var transaction = connection.BeginTransaction();
+            SqlConnection connection = new SqlConnection(SqlHelper.GetCon());
+            connection.Open();
+            var transaction = connection.BeginTransaction();
 
-                try{
-                    List<SqlParameter> param = new List<SqlParameter>();
-
-
-                    param.Add(new SqlParameter("@UserID", data.UserID));
-                    param.Add(new SqlParameter("@TspAssociationMasterID", data.TspAssociationMasterID));
-                    param.Add(new SqlParameter("@ProgramDesignID", data.ProgramID));
-                    param.Add(new SqlParameter("@TrainingLocationID", data.TrainingLocation));
-                    param.Add(new SqlParameter("@TradeLotID", data.TradeLot));
-                    param.Add(new SqlParameter("@TrainerDetailID", data.TrainerDetailID));
-                    param.Add(new SqlParameter("@TradeLotTitle", data.TradeLotTitle));
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
 
 
-                    DataTable dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "AU_SSPTSPAssociationMaster", param.ToArray()).Tables[0];
-                  
-                    var TspAssociationMasterID = 0;
+                param.Add(new SqlParameter("@UserID", data.UserID));
+                param.Add(new SqlParameter("@TspAssociationMasterID", data.TspAssociationMasterID));
+                param.Add(new SqlParameter("@ProgramDesignID", data.ProgramID));
+                param.Add(new SqlParameter("@TrainingLocationID", data.TrainingLocation));
+                param.Add(new SqlParameter("@TradeLotID", data.TradeLot));
+                param.Add(new SqlParameter("@TrainerDetailID", data.TrainerDetailID));
+                param.Add(new SqlParameter("@TradeLotTitle", data.TradeLotTitle));
 
-                    if (data.TspAssociationMasterID > 0)
-                    {
-                        TspAssociationMasterID = data.TspAssociationMasterID;
-                    }
-                    else
-                    {
-                        TspAssociationMasterID = Convert.ToInt32(dt.Rows[0]["TspAssociationMasterID"]);
-                    }
 
-                    BatchInsert(data.associationDetail, TspAssociationMasterID, data.UserID,data.TSPName, transaction);
+                DataTable dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "AU_SSPTSPAssociationMaster", param.ToArray()).Tables[0];
 
-                    transaction.Commit();
+                var TspAssociationMasterID = 0;
 
-                     return dt;
-                }
-                catch(Exception ex)
+                if (data.TspAssociationMasterID > 0)
                 {
-                    transaction.Rollback();
-                    throw ex;
+                    TspAssociationMasterID = data.TspAssociationMasterID;
+                }
+                else
+                {
+                    TspAssociationMasterID = Convert.ToInt32(dt.Rows[0]["TspAssociationMasterID"]);
                 }
 
-            
+                BatchInsert(data.associationDetail, TspAssociationMasterID, data.UserID, data.TSPName, transaction);
+
+                transaction.Commit();
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw ex;
+            }
+
+
         }
 
 
-        public int BatchInsert(List<AssociationDetail> ls, int BatchFkey, int CurUserID,string TSPName, SqlTransaction transaction =null)
+        public int BatchInsert(List<AssociationDetail> ls, int BatchFkey, int CurUserID, string TSPName, SqlTransaction transaction = null)
         {
             int rowsAffected = 0;
             foreach (var item in ls)
             {
-                string AssociationEvidence = SaveAttachment("TSPName","AssociationEvidence", item.Evidence);
+                string AssociationEvidence = SaveAttachment("TSPName", "AssociationEvidence", item.Evidence);
 
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@UserID", CurUserID));
@@ -152,16 +153,20 @@ namespace DataLayer.Services
         {
             try
             {
+                string EvaluationAttachment = SaveAttachment("EvaluationAttachment", data.Attachment, "", "ComputerLabPhoto");
+
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@UserID", data.UserID));
                 param.Add(new SqlParameter("@TspAssociationEvaluationID", data.TspAssociationEvaluationID));
                 param.Add(new SqlParameter("@TspAssociationMasterID", data.TspAssociationMasterID));
                 param.Add(new SqlParameter("@VerifiedCapacityMorning", data.VerifiedCapacityMorning));
                 param.Add(new SqlParameter("@VerifiedCapacityEvening", data.VerifiedCapacityEvening));
-                param.Add(new SqlParameter("@TotalCapacity",Convert.ToInt16(data.VerifiedCapacityMorning)+ Convert.ToInt16(data.VerifiedCapacityEvening)));
+                param.Add(new SqlParameter("@TotalCapacity", Convert.ToInt16(data.VerifiedCapacityMorning) + Convert.ToInt16(data.VerifiedCapacityEvening)));
                 param.Add(new SqlParameter("@MarksBasedOnEvaluation", data.MarksBasedOnEvaluation));
                 param.Add(new SqlParameter("@CategoryBasedOnEvaluation", data.CategoryBasedOnEvaluation));
                 param.Add(new SqlParameter("@EvaluationStatus", data.Status));
+                param.Add(new SqlParameter("@Remarks", data.Remarks));
+                param.Add(new SqlParameter("@Attachment", EvaluationAttachment));
 
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTSPAssociationEvaluation", param.ToArray()).Tables[0];
                 return dt;
@@ -172,8 +177,25 @@ namespace DataLayer.Services
             }
 
 
-        } 
-        public void  SaveTSPAssignment(TSPAssignmentModel data)
+        }
+
+        private static string SaveAttachment(string fileType, string attachment, string instituteName, string instituteNTN)
+        {
+            if (!string.IsNullOrEmpty(attachment))
+            {
+                string path = FilePaths.TSP_FILE_DIR + fileType + "\\" + instituteName + "_" + instituteNTN;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                string paths = path + "\\";
+                return Common.AddFile(attachment, paths);
+                //return path+Common.AddFile(attachment, Path.Combine(path, "\\"));
+            }
+            return "";
+        }
+
+        public void SaveTSPAssignment(TSPAssignmentModel data)
         {
 
             try
@@ -189,7 +211,7 @@ namespace DataLayer.Services
                     param.Add(new SqlParameter("@TrainingLocationID", data.TspTrainingLocationID[i]));
                     param.Add(new SqlParameter("@TspAssociationEvaluationID", data.TspAssociationEvaluationID[i]));
                     param.Add(new SqlParameter("@TSPID", data.TSP[i]));
-                   SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTSPAssignment", param.ToArray());
+                    SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTSPAssignment", param.ToArray());
                 }
 
             }

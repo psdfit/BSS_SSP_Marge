@@ -25,11 +25,11 @@ export class InitiateAssociationDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
     dialogRef.disableClose = true;
   }
- async ngOnInit() {
+  async ngOnInit() {
     this.currentUser = this.ComSrv.getUserDetails()
     this.InitCriteriaForm();
-   await this.GetData();
-   await this.GetProgramAttachedCriteria()
+    await this.GetData();
+    await this.GetProgramAttachedCriteria()
   }
   CriteriaForm: FormGroup;
   InitCriteriaForm() {
@@ -43,27 +43,22 @@ export class InitiateAssociationDialogComponent implements OnInit {
       Remarks: ['', [Validators.required]],
     });
   }
-
-
   async GetProgramAttachedCriteria() {
     this.SPName = "RD_SSPActiveProgram"
     this.paramObject = {}
-    this.attachedCriteria=[]
+    this.attachedCriteria = []
     this.attachedCriteria = await this.FetchData(this.SPName, this.paramObject)
-    if(this.attachedCriteria){
-      this.attachedCriteria= this.attachedCriteria.filter(d=>d.ProgramID==this.data[0].ProgramID)
+    if (this.attachedCriteria) {
+      this.attachedCriteria = this.attachedCriteria.filter(d => d.ProgramID == this.data[0].ProgramID)
     }
-    if(this.attachedCriteria.length >0){
+    if (this.attachedCriteria != undefined) {
       this.CriteriaForm.get("CriteriaID").setValue(this.attachedCriteria[0].CriteriaID)
       this.CriteriaForm.get("StartDate").setValue(this.attachedCriteria[0].AssociationStartDate)
       this.CriteriaForm.get("EndDate").setValue(this.attachedCriteria[0].AssociationEndDate)
       this.CriteriaForm.get("Remarks").setValue(this.attachedCriteria[0].Detail)
-      const CriteriaData=this.Criteria.filter(d=>d.CriteriaTemplateID==this.attachedCriteria[0].CriteriaID)
-        this.Criteria=CriteriaData
-      
+      const CriteriaData = this.Criteria.filter(d => d.CriteriaTemplateID == this.attachedCriteria[0].CriteriaID)
+      this.Criteria = CriteriaData
     }
-
-
   }
   GetParamString(SPName: string, paramObject: any) {
     let ParamString = SPName;
@@ -77,11 +72,10 @@ export class InitiateAssociationDialogComponent implements OnInit {
   paramObject: any = {}
   ExportReportName: string = ""
   SPName: string = ""
-
   async FetchData(SPName: string, paramObject: any) {
     try {
       const Param = this.GetParamString(SPName, paramObject);
-      const data:any = await this.ComSrv.getJSON(`api/BSSReports/FetchReportData?Param=${Param}`).toPromise();
+      const data: any = await this.ComSrv.getJSON(`api/BSSReports/FetchReportData?Param=${Param}`).toPromise();
       if (data.length > 0) {
         return data;
       } else {
@@ -91,7 +85,6 @@ export class InitiateAssociationDialogComponent implements OnInit {
       this.error = error;
     }
   }
-
   GetData() {
     this.ComSrv.postJSON("api/CriteriaTemplate/LoadCriteria", { UserID: this.currentUser.UserID }).subscribe(
       (response) => {
@@ -102,17 +95,15 @@ export class InitiateAssociationDialogComponent implements OnInit {
       }
     );
   }
-
   Save() {
-  debugger;
-  const StartDate = new Date(this.CriteriaForm.value.StartDate);
-  const EndDate = new Date(this.CriteriaForm.value.EndDate);
-    if(EndDate>=StartDate){
+    debugger;
+    const StartDate = new Date(this.CriteriaForm.value.StartDate);
+    const EndDate = new Date(this.CriteriaForm.value.EndDate);
+    if (EndDate >= StartDate) {
       this.CriteriaForm.value["tradeManageIds"] = this.tradeManageIds
       if (this.CriteriaForm.valid) {
         this.ComSrv.postJSON("api/ProgramDesign/SaveProgramCriteriaHistory", this.CriteriaForm.value).subscribe(
           (response) => {
-            console.log(response[0])
             this.check = true
             this.dialogRef.close(true);
             this.ComSrv.openSnackBar("Record update successfully.");
@@ -125,11 +116,10 @@ export class InitiateAssociationDialogComponent implements OnInit {
       } else {
         this.ComSrv.ShowError("Required form fields are missing");
       }
-    }else{
+    } else {
       this.ComSrv.ShowError("End Date must be greater than from  Start Date.");
       return
     }
-    
   }
   getErrorMessage(errorKey: string, errorValue: any): string {
     const error = errorValue.requiredLength == 15 ? errorValue.requiredLength - 2 : errorValue.requiredLength - 1

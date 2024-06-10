@@ -140,7 +140,6 @@ export class AssociationEvaluationComponent implements OnInit {
     this.hTablesData = new MatTableDataSource([])
     this.SelectedRow = row;
     this.CheckAssociation = new Date(row.AssociationEndDate) < new Date()
-    console.log(this.CheckAssociation)
     this.rowData = []
     this.tspName = ""
     this.rowData = row
@@ -164,6 +163,7 @@ export class AssociationEvaluationComponent implements OnInit {
     this.TspAssociationDetail = await this.FetchData(this.SPName, this.paramObject)
   }
   AssociationEvaluationData: any = []
+  AssociationEvaluationTrailData: any = []
   async GetTspAssociationEvaluation() {
     this.SPName = "RD_SSPTspAssociationEvaluation"
     this.paramObject = {
@@ -171,12 +171,12 @@ export class AssociationEvaluationComponent implements OnInit {
       TradeID: 0
     }
     this.AssociationEvaluationData = await this.FetchData(this.SPName, this.paramObject)
-    console.log(this.AssociationEvaluationData)
     if (this.AssociationEvaluationData == undefined) {
       this.ComSrv.ShowError("No Record Found ")
       return;
     }
-    this.AssociationEvaluationData = this.AssociationEvaluationData.filter(d => d.ProgramID == this.ProgramID)
+    this.AssociationEvaluationTrailData = this.AssociationEvaluationData.filter(d => d.ProgramID == this.ProgramID)
+    this.AssociationEvaluationData = this.AssociationEvaluationData.filter(d => d.ProgramID == this.ProgramID && d.InActive == false)
     if (this.AssociationEvaluationData.length > 0) {
       this.LoadMatTable(this.AssociationEvaluationData, 'AssociationEvaluation')
     } else {
@@ -214,7 +214,6 @@ export class AssociationEvaluationComponent implements OnInit {
     }
     this.TradeLot = []
     this.TradeLot = await this.FetchData(this.SPName, this.paramObject)
-    console.log(this.TradeLot)
   }
   GetParamString(SPName: string, paramObject: any) {
     let ParamString = SPName;
@@ -279,11 +278,12 @@ export class AssociationEvaluationComponent implements OnInit {
     }
   }
   async OpenDialogue(row) {
+
     await this.GetTspAssociationDetail(row.TspAssociationMasterID)
-    console.log(this.TspAssociationDetail)
-    const data = [row, this.TspAssociationDetail];
+    const EvaluationTrail = this.AssociationEvaluationTrailData.filter(d => d.TspAssociationMasterID == row.TspAssociationMasterID)
+    const data = [row, this.TspAssociationDetail, EvaluationTrail];
     const dialogRef = this.Dialog.open(TspAssociationEvaluationDialogueComponent, {
-      width: '90%',
+      width: '85%',
       // height: '90%',
       data: data,
       disableClose: true,

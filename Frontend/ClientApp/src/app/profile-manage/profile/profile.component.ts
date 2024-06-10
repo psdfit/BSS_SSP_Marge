@@ -203,7 +203,6 @@ export class ProfileComponent implements OnInit {
     this.GetTSPProfileScore()
     this.ComSrv.postJSON("api/BusinessProfile/GetData", { UserID: this.currentUser.UserID }).subscribe(
       (response) => {
-        this.calculateScore();
         this.GetDataObject = response
         this.TehsilData = this.GetDataObject.tehsil
         this.DistrictData = this.GetDataObject.district
@@ -262,20 +261,32 @@ export class ProfileComponent implements OnInit {
     }
   }
   SaveProfile() {
+    debugger;
     this.ProfileForm.get("TspID").setValue(this.currentUser.UserID)
-    this.ProfileForm.controls.InstituteName.setValue(this.GetDataObject.profile[0].InstituteName);
-    this.ProfileForm.controls.InstituteNTN.setValue(this.GetDataObject.profile[0].InstituteNTN);
+
+
+    if (this.GetDataObject.profile[0]) {
+      this.ProfileForm.controls.InstituteName.setValue(this.GetDataObject.profile[0].InstituteName);
+      this.ProfileForm.controls.InstituteNTN.setValue(this.GetDataObject.profile[0].InstituteNTN);
+    } else {
+      const control = this.ProfileForm.controls
+      control.InstituteNTN.setValue(this.GetDataObject.masterDetail[0].NTN)
+      control.InstituteName.setValue(this.GetDataObject.masterDetail[0].TSPName)
+    }
+
     const salesTax = this.ProfileForm.get("TaxType").value;
     if (salesTax && Array.isArray(salesTax)) {
       this.ProfileForm.get("TaxTypeID").setValue(salesTax.join(","));
     }
+
     if (this.ProfileForm.valid) {
       this.ComSrv.postJSON("api/BusinessProfile/Save", this.ProfileForm.value).subscribe(
         (response) => {
           if (response[0] > 0) {
             this.readonly = false
           }
-          this.ComSrv.openSnackBar("Profile data has been modified.");
+          this.GetTSPProfileScore()
+          this.ComSrv.openSnackBar("Profile has been updated.");
           this.ProfileEdit(response[0])
         },
         (error) => {
@@ -322,6 +333,7 @@ export class ProfileComponent implements OnInit {
           if (response[0] > 0) {
             this.COPreadonly = false
           }
+          this.GetTSPProfileScore()
           this.ComSrv.openSnackBar("Profile data has been modified.");
           this.POCEdit(response[0])
         },
@@ -385,6 +397,7 @@ export class ProfileComponent implements OnInit {
     }
     this.TSPProfileScore = []
     this.TSPProfileScore = await this.FetchData(this.SPName, this.paramObject)
+    this.calculateScore();
   }
   GetParamString(SPName: string, paramObject: any) {
     let ParamString = SPName;

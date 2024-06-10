@@ -46,9 +46,8 @@ export class BaseDataComponent implements OnInit {
   TrainerEditCheck: boolean = false
   TspTrades: any[] = []
   TspMappedTrades = []
-  PendingForm: any[]=[]
+  PendingForm: any[] = []
   fieldSetDisabled: boolean;
-
   constructor(
     private ComSrv: CommonSrvService,
     private ActivateRoute: ActivatedRoute,
@@ -278,15 +277,28 @@ export class BaseDataComponent implements OnInit {
       ExpiryDate: ['', [Validators.required]],
       RegistrationCerEvidence: ['', [Validators.required]],
     });
-    this.Certificate.get("TrainingLocationID").valueChanges.subscribe((TrainingLocationID) => {
-      // if (TrainingLocationID != null && TrainingLocationID != "") {
-      //   const selectedTraining = this.TrainingLocation.filter(t => t.TrainingLocationID == TrainingLocationID)[0].RegistrationAuthority
-      //   // this.Certificate.controls.RegistrationAuthority.setValue(selectedTraining)
-      // }
-    })
+    this.Certificate.get('RegistrationStatus').valueChanges.subscribe((s) => {
+      if (s) {
+        const FormControl = this.Certificate.controls
+        if (s == 3) {
+          FormControl.RegistrationCerNum.clearValidators();
+          FormControl.ExpiryDate.clearValidators();
+        } else {
+          FormControl.RegistrationCerNum.setValidators(Validators.required);
+          FormControl.ExpiryDate.setValidators(Validators.required);
+        }
+        FormControl.RegistrationCerNum.updateValueAndValidity();
+        FormControl.ExpiryDate.updateValueAndValidity();
+      }
+    });
   }
   SaveCertificateInfo() {
     if (this.Certificate.valid) {
+      const RegistrationStatus = this.Certificate.controls.RegistrationStatus.value
+      if (RegistrationStatus == 3) {
+        this.Certificate.controls.ExpiryDate.setValue("")
+        this.Certificate.controls.RegistrationCerNum.setValue("")
+      }
       this.ComSrv.postJSON("api/BaseData/SaveCertification", this.Certificate.value).subscribe(
         (response) => {
           this.LoadMatTable(response, "Certification")
@@ -466,10 +478,8 @@ export class BaseDataComponent implements OnInit {
   // GetTehsil(DistrictId) {
   //   this.TehsilData = this.GetDataObject.tehsil.filter(t => t.DistrictID === DistrictId);
   // }
-
   GetTehsil(tehsilID) {
-    
-    if(tehsilID>0){
+    if (tehsilID > 0) {
       const tehsilData = this.GetDataObject.tehsil.find(t => t.TehsilID == tehsilID);
       const districtData = this.GetDataObject.district.find(t => t.DistrictID == tehsilData.DistrictID);
       this.DistrictData = this.GetDataObject.district.filter(d => d.DistrictID == districtData.DistrictID)
@@ -479,9 +489,7 @@ export class BaseDataComponent implements OnInit {
       this.TrainingForm.get("Cluster").setValue(districtData.ClusterID)
       this.TrainingForm.get("Province").setValue(districtData.ProvinceID)
     }
-   
   }
-
   GetData() {
     this.GetTSPProfileScore()
     this.ComSrv.postJSON("api/BaseData/GetData", { UserID: this.currentUser.UserID }).subscribe(
@@ -499,9 +507,7 @@ export class BaseDataComponent implements OnInit {
         this.TrainingLocation = this.GetDataObject.TrainingLocation
         this.TradeMapping = this.GetDataObject.TradeMapping
         this.TrainerProfile = this.GetDataObject.TrainerProfile
-
         this.TehsilData = this.GetDataObject.tehsil
-        
         if (this.BankDetail.length > 0) {
           this.LoadMatTable(this.BankDetail, "BankDetail");
         }
@@ -568,12 +574,11 @@ export class BaseDataComponent implements OnInit {
           break;
         case "TrainingLocation":
           this.TrainingTableColumns = Object.keys(tableData[0])
-          .filter(key => 
+            .filter(key =>
               !key.toLowerCase().includes('id') &&
               !key.toLowerCase().includes('photo') &&
               !["Province", "Cluster", "District", "Tehsil", "RegistrationAuthorityName", "RegistrationAuthority"].includes(key)
-          );
-      
+            );
           this.TrainingTablesData = new MatTableDataSource(tableData);
           this.TrainingTablesData.paginator = this.TrainingPaginator;
           this.TrainingTablesData.sort = this.TrainingSort;
@@ -653,13 +658,11 @@ export class BaseDataComponent implements OnInit {
     this.ComSrv.PreviewDocument(fileName)
   }
   async proceedRegistrationPayment() {
-    
     const bankDetail = this.TSPProfileScore.some(score => score.FormName === 'BankDetail' && score.Score === 0);
-    if(bankDetail){
+    if (bankDetail) {
       this.ComSrv.ShowError('Minimum One Bank is required to proceedPayment.')
       return;
     }
-    
     const check = await this.checkTradeTrainerMapped();
     if (check === 1) {
       this.router.navigateByUrl('/payment/registration-payment');
@@ -704,18 +707,14 @@ export class BaseDataComponent implements OnInit {
   }
   getTspTrade(TradeMapData: any) {
     this.TspMappedTrades = [];
-
     const TspTradeMap = new Map();
-
     TradeMapData.forEach(trade => {
       TspTradeMap.set(trade.TradeName, trade.TradeID);
     });
-    
     TspTradeMap.forEach((tradeID, tradeName) => {
       this.TspMappedTrades.push({ TradeName: tradeName, TradeID: tradeID });
     });
   }
-
   TrainerDetailByUserID: any[] = []
   async getTrainerDetail() {
     this.SPName = "RD_SSPTrainerProfileDetail"
@@ -726,16 +725,13 @@ export class BaseDataComponent implements OnInit {
     this.TrainerDetailByUserID = []
     this.TrainerDetailByUserID = await this.FetchData(this.SPName, this.paramObject)
   }
-
   async checkTradeTrainerMapped() {
     await this.getTrainerDetail();
     if (this.TspMappedTrades.length != 0) {
       const trainerTradeIDs = this.TrainerDetailByUserID.map(item => item.TrainerTradeID);
-      
       const tradeNotMappedTrainer: any[] = this.TspMappedTrades
         .filter(item => !trainerTradeIDs.includes(item.TradeID))
         .map(item => item.TradeName);
-      
       if (tradeNotMappedTrainer.length === 0) {
         return 1;
       } else {
@@ -747,28 +743,21 @@ export class BaseDataComponent implements OnInit {
       this.ComSrv.ShowError("Trade mapping with training location is necessary to set up the trainer profile.", 'Close', 10000)
     }
   }
-
   NextTap(): void {
-   
-    this.tabGroup.selectedIndex = this.TapIndex+1;
+    this.tabGroup.selectedIndex = this.TapIndex + 1;
   }
   PreviousTap(): void {
-    this.tabGroup.selectedIndex =this.TapIndex-1;
+    this.tabGroup.selectedIndex = this.TapIndex - 1;
   }
-
-  totalScore: number = 100; 
-
-  currentScore: number = 0; 
-
+  totalScore: number = 100;
+  currentScore: number = 0;
   calculateScore() {
-    this.currentScore = this.TSPProfileScore.map(d=>d.Score).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    this.PendingForm=this.TSPProfileScore.filter(d=>d.Score==0).map(d=>d.FormName)
+    this.currentScore = this.TSPProfileScore.map(d => d.Score).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    this.PendingForm = this.TSPProfileScore.filter(d => d.Score == 0).map(d => d.FormName)
   }
-
   get progressPercentage(): number {
     return (this.currentScore / this.totalScore) * 100;
   }
-  
   TSPProfileScore = []
   async GetTSPProfileScore() {
     this.SPName = "RD_SSPProfileScore"
@@ -778,15 +767,11 @@ export class BaseDataComponent implements OnInit {
     this.TSPProfileScore = []
     this.TSPProfileScore = await this.FetchReport(this.SPName, this.paramObject)
     this.calculateScore();
-
- this.checkProfileScores()
-
+    this.checkProfileScores()
   }
-
   checkProfileScores() {
     const businessProfileIncomplete = this.TSPProfileScore.some(score => score.FormName === 'BusinessProfile' && score.Score === 0);
     const contactPersonIncomplete = this.TSPProfileScore.some(score => score.FormName === 'ContactPerson' && score.Score === 0);
-    
     if (businessProfileIncomplete || contactPersonIncomplete) {
       this.fieldSetDisabled = true;
       this.ComSrv.ShowError('Please complete the Business Profile and Contact Person Information before completing the Base Data.');
@@ -802,11 +787,10 @@ export class BaseDataComponent implements OnInit {
       this.TrainerForm.enable();
     }
   }
-  
   async FetchReport(SPName: string, paramObject: any) {
     try {
       const Param = this.GetParamString(SPName, paramObject);
-      const data: any  = await this.ComSrv.postJSON('api/BSSReports/FetchReport',Param).toPromise();
+      const data: any = await this.ComSrv.postJSON('api/BSSReports/FetchReport', Param).toPromise();
       if (data != undefined) {
         return data;
       } else {
@@ -819,7 +803,6 @@ export class BaseDataComponent implements OnInit {
       this.ComSrv.ShowError(error.error)
     }
   }
-
   ngAfterViewInit() {
     if (this.tabGroup) {
       this.tabGroup.selectedTabChange.subscribe((event) => {

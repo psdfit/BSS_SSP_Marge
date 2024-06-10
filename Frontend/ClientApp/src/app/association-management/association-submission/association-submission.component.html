@@ -15,7 +15,8 @@
           <fieldset class="border">
             <legend>
               <span *ngIf="item.ProgramStatus=='Active'" class="label label-success"> Active | {{item.Program}}</span>
-              <span *ngIf="item.ProgramStatus=='InActive'" class="label label-warning"> InActive | {{item.Program}}
+              <span *ngIf="item.ProgramStatus=='InActive'" class="label label-warning">
+                InActive | {{item.Program}}
               </span>
             </legend>
             <div class="row">
@@ -60,8 +61,10 @@
               <div class="col-sm-12">
                 <!-- <button mat-raised-button color="primary" [disabled]="item.ProgramStatus!='Active'" (click)="AssociationDetail(item)" matTooltip="Click To Proceed"><mat-icon>skip_next</mat-icon> Proceed Next </button> -->
                 <button mat-raised-button [color]="item.ProgramStatus=='InActive'?'accent':'primary'"
-                  (click)="AssociationDetail(item)" matTooltip="Click To Proceed"><mat-icon>skip_next</mat-icon> Proceed
-                  Next </button>
+                        (click)="AssociationDetail(item)" matTooltip="Click To Proceed">
+                  <mat-icon>skip_next</mat-icon> Proceed
+                  Next
+                </button>
               </div>
             </div>
           </fieldset>
@@ -81,9 +84,9 @@
                   <div class="col-sm-4">
                     <mat-form-field>
                       <mat-select placeholder="Select Training Location" formControlName="TrainingLocation" matInput
-                        required>
+                                  required>
                         <mat-option *ngFor="let item of trainingLocation" [value]="item.TrainingLocationID"
-                          [disabled]="isOptionDisabled(item)">
+                                    [disabled]="isOptionDisabled(item)">
                           {{ item.TrainingLocationName }}
                         </mat-option>
                       </mat-select>
@@ -95,10 +98,11 @@
                   <div class="col-sm-8">
                     <mat-form-field>
                       <mat-select placeholder="Select Trade Lot" id="TradeLot" formControlName="TradeLot" matInput
-                        required>
+                                  required>
                         <mat-option *ngFor="let item of TradeLot" [disabled]="item.tradeLotDisabled"
-                          [matTooltip]="item.LotNo" [value]="item.TradeLotID">
-                          {{ item.LotNo }}</mat-option>
+                                    [matTooltip]="item.LotNo" [value]="item.TradeLotID">
+                          {{ item.LotNo }}
+                        </mat-option>
                       </mat-select>
                       <mat-error *ngFor="let error of AssociationForm.get('TradeLot').errors | keyvalue">
                         {{ getErrorMessage(error.key, error.value) }}
@@ -109,8 +113,9 @@
                     <mat-form-field>
                       <mat-select placeholder="Select Trainer" formControlName="TrainerDetailID" matInput required>
                         <mat-option *ngFor="let item of TrainerProfile" [matTooltip]="item.TrainerName"
-                          [value]="item.TrainerDetailID">
-                          {{ item.TrainerName }}</mat-option>
+                                    [value]="item.TrainerDetailID">
+                          {{ item.TrainerName }}
+                        </mat-option>
                       </mat-select>
                       <mat-error *ngFor="let error of AssociationForm.get('TrainerDetailID').errors | keyvalue">
                         {{ getErrorMessage(error.key, error.value) }}
@@ -126,7 +131,7 @@
                         <div class="col-sm-4">
                           <mat-label>Attachment for Evidence</mat-label>
                           <file-upload formControlName="Evidence" accept="application/pdf,image/jpeg,image/png" required
-                            maxSize="1024" [nopreview]="true" matInput></file-upload>
+                                       maxSize="1024" [nopreview]="true" matInput></file-upload>
                         </div>
                         <div class="col-sm-8">
                           <mat-form-field>
@@ -136,13 +141,13 @@
                         </div>
                       </div>
                       <ng-container *ngFor="let item of CriteriaSubCategory">
-                        <div class="row border-bottom" 
-                          *ngIf="item.CriteriaMainCategoryID == CriteriaMainCategory[i].CriteriaMainCategoryID">
+                        <div class="row border-bottom"
+                             *ngIf="item.CriteriaMainCategoryID == CriteriaMainCategory[i].CriteriaMainCategoryID">
                           <div class="col-sm-4">
                             <mat-form-field>
                               <mat-label>Title</mat-label>
                               <input type="text" matInput readonly [matTooltip]="item.SubCategoryTitle"
-                                [value]="item.SubCategoryTitle">
+                                     [value]="item.SubCategoryTitle">
                             </mat-form-field>
                           </div>
 
@@ -164,18 +169,18 @@
                             <mat-form-field>
                               <mat-label>Description</mat-label>
                               <input type="text" matInput readonly [matTooltip]="item.SubCategoryDesc"
-                                [value]="item.SubCategoryDesc">
+                                     [value]="item.SubCategoryDesc">
                             </mat-form-field>
                           </div>
-                          
+
                           <div class="col-sm-1" *ngIf="item.Attachment">
                             <a style="cursor: pointer; background: #eceae7 !important; font-size: 1.3rem; position: relative;top: 26px; border-radius: 6px;"
-                              (click)="ShowPreview(item.Attachment)" color="primary"
-                              matTooltip="Preview uploaded document" class="file-lable">
+                               (click)="ShowPreview(item.Attachment)" color="primary"
+                               matTooltip="Preview uploaded document" class="file-lable">
                               <mat-icon style="position: relative; top: 4px; cursor: pointer;">get_app</mat-icon>
                             </a>
                           </div>
-                      
+
                         </div>
                       </ng-container>
                     </form>
@@ -188,7 +193,7 @@
                       Reset
                     </a> |
                     <button color="primary" mat-raised-button
-                      [disabled]="AssociationForm.invalid || ProgramStatus!='Active'">
+                            [disabled]="AssociationForm.invalid || ProgramStatus!='Active'">
                       <i class="fas fa-check"></i> {{ savebtn }} Record
                     </button>
                   </div>
@@ -204,7 +209,9 @@
               <span class="spacer">Manage and View All</span>
               <input placeholder="Search" (keyup)="applyFilter(AssociationTablesData,$event)" class="search" />
               <button *ngIf="AssociationTablesData.filteredData.length > 0" mat-raised-button color="accent"
-                style="float:right;margin: 0px 7px;" (click)="proceedAssociationPayment()">Proceed To Pay</button>
+                      style="float:right;margin: 0px 7px;" (click)="proceedAssociationPayment()">
+                Proceed To Pay
+              </button>
               <!-- <button mat-raised-button  style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport(BankTablesData.filteredData,'Bank Detail')">
                        <i class="fas fa-file-export"></i> Export Excel</button> -->
             </mat-toolbar>
@@ -214,14 +221,16 @@
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
                     <ng-container *ngIf="column !='TradeLotTitle' && column !='EvaluationStatus'"> &nbsp; {{ row[column] }}</ng-container>
-                    
-                    <ng-container *ngIf="column == 'TradeLotTitle' &&   (row['PaymentStatus'] =='PAID' &&  row['EvaluationStatus'] =='Rejected') || (row['PaymentStatus'] !='PAID' &&  row['EvaluationStatus'] =='Rejected')  "> &nbsp;
+
+                    <ng-container *ngIf="column == 'TradeLotTitle' &&  ((row['PaymentStatus'] !='PAID' &&  row['EvaluationStatus'] =='Pending') ||  (row['PaymentStatus'] =='PAID' &&  row['EvaluationStatus'] =='Rejected') ||  (row['PaymentStatus'] =='PAID' &&  row['EvaluationStatus'] =='Pending'))">
+                      &nbsp;
                       <span (click)="Edit(row)" style="color: #005b9e;cursor: pointer;">
                         <strong>{{ row[column] }}</strong>
                       </span>
                     </ng-container>
 
-                    <ng-container *ngIf="column =='TradeLotTitle' && (row['PaymentStatus'] =='PAID'  &&  row['EvaluationStatus'] =='Accepted') "> &nbsp;
+                    <ng-container *ngIf="column =='TradeLotTitle' && (row['PaymentStatus'] =='PAID'  &&  row['EvaluationStatus'] =='Accepted') ">
+                      &nbsp;
                       <span>
                         <strong>{{ row[column] }}</strong>
                       </span>
@@ -240,7 +249,7 @@
                 <mat-row *matRowDef="let row; columns: AssociationTableColumns;"></mat-row>
               </mat-table>
               <mat-paginator #AssociationPaginator="matPaginator" [pageSize]="10"
-                [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+                             [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
             </div>
             <!-- record list end -->
           </mat-card-content>

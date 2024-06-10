@@ -35,7 +35,7 @@ export class CriteriaTemplateComponent implements OnInit {
   criteriaHeader: any;
   criteriaMainCategory: any;
   criteriaSubCategory: any;
-  AttachedProgramCount: any=0
+  AttachedProgramCount: any = 0
   constructor(
     private ComSrv: CommonSrvService,
     private AcitveRoute: ActivatedRoute,
@@ -67,7 +67,7 @@ export class CriteriaTemplateComponent implements OnInit {
   Edit(CriteriaTemplateID, EditFlag) {
     debugger
     const row = this.TablesData.filteredData.filter(d => d.CriteriaTemplateID == CriteriaTemplateID)[0]
-    this.AttachedProgramCount=row.AttachedProgramCount
+    this.AttachedProgramCount = row.AttachedProgramCount
     this.readonly = true
     this.fileArray = []
     this.savebtn = 'Update'
@@ -75,11 +75,9 @@ export class CriteriaTemplateComponent implements OnInit {
     this.removeMainCategory(0)
     this.tabGroup.selectedIndex = 0
     const mainCategory = this.GetDataObject.criteriaMainCategory.filter(d => d.CriteriaTemplateID == row.CriteriaTemplateID)
-    console.log(mainCategory)
     const mainCategoryArray = []
     const formData = { ...row, mainCategory: mainCategoryArray }
     let i = 0
-    console.log(formData)
     mainCategory.forEach(item => {
       this.addMainCategory();
       mainCategoryArray.push({ ...item })
@@ -107,8 +105,6 @@ export class CriteriaTemplateComponent implements OnInit {
         }
       });
     });
-    // console.log(formData)
-    console.log(this.fileArray)
   }
   CriteriaTemplateForm: FormGroup;
   initCriteriaTemplateForm() {
@@ -278,7 +274,6 @@ export class CriteriaTemplateComponent implements OnInit {
           this.ComSrv.ShowError(`${error.message}`, "Close", 500000);
         }
       );
-      console.log(this.CriteriaTemplateForm.value);
     } else {
       this.ComSrv.ShowError(`All * filed is mandatory.`);
     }
@@ -340,12 +335,15 @@ export class CriteriaTemplateComponent implements OnInit {
       }
     );
   }
-  LoadMatTable(tableData: any, tableName: string) {
-    this.TableColumns = Object.keys(tableData[0]).filter((key) => !key.includes("ID"));
-    this.TableColumns.unshift("Action")
-    this.TablesData = new MatTableDataSource(tableData);
-    this.TablesData.paginator = this.Paginator;
-    this.TablesData.sort = this.Sort;
+  LoadMatTable(tableData: any[], tableName: string) {
+    if (tableData.length > 0) {
+
+      this.TableColumns = Object.keys(tableData[0]).filter((key) => !key.includes("ID"));
+      this.TableColumns.unshift("Action")
+      this.TablesData = new MatTableDataSource(tableData);
+      this.TablesData.paginator = this.Paginator;
+      this.TablesData.sort = this.Sort;
+    }
   }
   applyFilter(data: MatTableDataSource<any>, event: any) {
     data.filter = event.target.value.trim().toLowerCase();
