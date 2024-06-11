@@ -76,7 +76,7 @@ export class CommonSrvService {
   }
 
   PreviewDocument(fileName: string) {
-    if (fileName == '') {
+    if (fileName == '' || fileName ==undefined) {
       this.ShowError('There is no Attachment');
       return
     }
