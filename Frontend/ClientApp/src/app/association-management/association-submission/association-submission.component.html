@@ -122,6 +122,9 @@
                       </mat-error>
                     </mat-form-field>
                   </div>
+                  <div class="col-sm-8">
+                    <a routerLink="/profile-manage/base-data" class="mt-3" matTooltip=" If no trainer is found in the Trainer drop-down, add a new trainer from BaseData Trainer Tab " color="primary" mat-raised-button>Add Trainer</a>
+                  </div>
                 </div>
                 <ng-container *ngFor="let item of associationDetail.controls; let i = index">
                   <fieldset class="border" formArrayName="associationDetail">

@@ -158,6 +158,12 @@ export class BaseDataComponent implements OnInit {
     this.TrainingForm.patchValue(data)
   }
   EditCertificationDetail(data: any) {
+    debugger;
+   const CheckCertificateMapped= this.TradeMapping.filter(d=>d.TrainingCertificationID==data.TrainingCertificationID)
+    if(CheckCertificateMapped.length>0){
+      this.ComSrv.ShowError('This certificate is associated with an accepted trade and cannot be edited.')
+      return
+    }
     this.savebtn = "Update "
     this.Certificate.get("TrainingCertificationID").setValue(data.TrainingCertificationID)
     this.Certificate.patchValue(data)
@@ -301,6 +307,7 @@ export class BaseDataComponent implements OnInit {
       }
       this.ComSrv.postJSON("api/BaseData/SaveCertification", this.Certificate.value).subscribe(
         (response) => {
+          
           this.LoadMatTable(response, "Certification")
           this.ComSrv.openSnackBar("Record saved successfully.");
           this.savebtn = "Add";
@@ -588,6 +595,7 @@ export class BaseDataComponent implements OnInit {
             !key.includes('ID') &&
             !["RegistrationCerEvidence", "RegistrationStatus", "RegistrationAuthority"].includes(key)
           );
+          
           this.CertificateTablesData = new MatTableDataSource(tableData);
           this.CertificateTablesData.paginator = this.CertificatePaginator;
           this.CertificateTablesData.sort = this.CertificateSort;
