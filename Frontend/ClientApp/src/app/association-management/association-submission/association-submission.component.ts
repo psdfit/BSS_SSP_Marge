@@ -60,6 +60,7 @@ export class AssociationSubmissionComponent implements OnInit {
     this.GetTspTrade()
     this.InitAssociationForm()
   }
+  
   PageTitle(): void {
     this.ComSrv.setTitle(this.ActiveRoute.snapshot.data.title);
     this.SpacerTitle = this.ActiveRoute.snapshot.data.title;

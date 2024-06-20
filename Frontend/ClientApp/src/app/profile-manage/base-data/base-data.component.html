@@ -3,7 +3,7 @@
     <mat-icon class="material-icons"> add_circle </mat-icon>
     <span class="spacer">{{SpacerTitle}}</span>
     <button *ngIf="TapIndex==4" mat-raised-button color="accent" style="float:right;margin: 0px 7px;"
-            (click)="proceedRegistrationPayment()">
+      (click)="proceedRegistrationPayment()">
       Registration Payments
     </button>
   </mat-toolbar>
@@ -11,7 +11,7 @@
     <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight (selectedTabChange)="[getSelectedTabData()]">
       <mat-tab label="Training Location">
         <fieldset *ngIf="totalScore!=currentScore" class="border"
-                  style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+          style="padding: 3px 10px !important;margin-bottom: 5px !important;">
           <legend>Profile Completion </legend>
           <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
           <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
@@ -29,11 +29,10 @@
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Training Location</mat-label>
-                  <input formControlName="TrainingLocationName" matInput placeholder="Training Location"
-                         required />
+                  <input formControlName="TrainingLocationName" matInput placeholder="Training Location" required />
                   <mat-error *ngFor="let error of TrainingForm.get('TrainingLocationName').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -41,11 +40,10 @@
               <div class="col-sm-6">
                 <mat-form-field>
                   <mat-label>Training Address</mat-label>
-                  <input formControlName="TrainingLocationAddress" matInput placeholder="Training Address"
-                         required />
+                  <input formControlName="TrainingLocationAddress" matInput placeholder="Training Address" required />
                   <mat-error *ngFor="let error of TrainingForm.get('TrainingLocationAddress').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -53,12 +51,12 @@
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Latitude & Longitude</mat-label>
-                  <input [readOnly]="readOnly" formControlName="GeoTagging" matInput
-                         placeholder="Latitude & Longitude" required />
+                  <input [readOnly]="readOnly" formControlName="GeoTagging" matInput placeholder="Latitude & Longitude"
+                    required />
                   <mat-error *ngFor="let error of TrainingForm.get('GeoTagging').errors | keyvalue">
                     {{
-getErrorMessage(error.key,
-                              error.value)
+                    getErrorMessage(error.key,
+                    error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -74,39 +72,34 @@ getErrorMessage(error.key,
               <div class="col-sm-3" hidden>
                 <mat-form-field>
                   <mat-label>Select Registration Authority</mat-label>
-                  <mat-select placeholder="Select Registration Authority"
-                              formControlName="RegistrationAuthority" matInput required>
+                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority"
+                    matInput required>
                     <mat-option *ngFor="let s of registrationAuthority"
-                                [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
+                      [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TrainingForm.get('RegistrationAuthority').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
               </div>
-
-
-
-
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Tehsil</mat-label>
                   <mat-select (openedChange)="EmptyCtrl($event)" (ngModelChange)="GetTehsil($event)"
-                              placeholder="Select Tehsil" formControlName="Tehsil" matInput required>
+                    placeholder="Select Tehsil" formControlName="Tehsil" matInput required>
                     <mat-optgrp class="ddlsrchheader">
-                      <input placeholder="Search"
-                             (keydown)="$event.stopPropagation()" [formControl]="TSearchCtr" />
+                      <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="TSearchCtr" />
                     </mat-optgrp>
                     <mat-option *ngFor="let s of TehsilData | like:['TehsilName',TSearchCtr.value]"
-                                [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+                      [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
                   </mat-select>
                   <mat-error style="font-size: 11px;"
-                             *ngFor="let error of TrainingForm.get('Tehsil').errors | keyvalue">
+                    *ngFor="let error of TrainingForm.get('Tehsil').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key,
-                              error.value)
+                    getErrorMessage(error.key,
+                    error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -115,17 +108,16 @@ getErrorMessage(error.key,
                 <mat-form-field>
                   <mat-label>Select District</mat-label>
                   <mat-select (openedChange)="EmptyCtrl($event)" placeholder="Select District"
-                              formControlName="District" matInput required>
+                    formControlName="District" matInput required>
                     <mat-optgrp class="ddlsrchheader">
-                      <input placeholder="Search"
-                             (keydown)="$event.stopPropagation()" [formControl]="DSearchCtr" />
+                      <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="DSearchCtr" />
                     </mat-optgrp>
                     <mat-option *ngFor="let s of DistrictData | like:['DistrictName',DSearchCtr.value]"
-                                [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                      [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TrainingForm.get('District').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -133,18 +125,17 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Cluster</mat-label>
-                  <mat-select (openedChange)="EmptyCtrl($event)" placeholder="Select Cluster"
-                              formControlName="Cluster" matInput required>
+                  <mat-select (openedChange)="EmptyCtrl($event)" placeholder="Select Cluster" formControlName="Cluster"
+                    matInput required>
                     <mat-optgrp class="ddlsrchheader">
-                      <input placeholder="Search"
-                             (keydown)="$event.stopPropagation()" [formControl]="CSearchCtr" />
+                      <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="CSearchCtr" />
                     </mat-optgrp>
                     <mat-option *ngFor="let s of ClusterData | like:['ClusterName',CSearchCtr.value]"
-                                [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
+                      [value]="s.ClusterID">{{s.ClusterName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TrainingForm.get('Cluster').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -153,79 +144,90 @@ getErrorMessage(error.key,
                 <mat-form-field>
                   <mat-label>Select Province</mat-label>
                   <mat-select (openedChange)="EmptyCtrl($event)" placeholder="Select Province"
-                              formControlName="Province" matInput required>
+                    formControlName="Province" matInput required>
                     <mat-optgrp class="ddlsrchheader">
-                      <input placeholder="Search"
-                             (keydown)="$event.stopPropagation()" [formControl]="PSearchCtr" />
+                      <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="PSearchCtr" />
                     </mat-optgrp>
                     <mat-option *ngFor="let s of ProvinceData | like:['ProvinceName',PSearchCtr.value]"
-                                [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                      [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TrainingForm.get('Province').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
               </div>
             </div>
-
             <fieldset class="border">
               <legend>Upload Training Location Picture </legend>
               <div class="row">
-
                 <div class="col-sm-3">
-                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Front Main Entrance Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png"
-                               formControlName="FrontMainEntrancePhoto" maxSize="1024" [nopreview]="true" matInput></file-upload>
-                  <mat-error style="font-size: 11px;" *ngFor="let error of TrainingForm.get('FrontMainEntrancePhoto').errors | keyvalue">
+                  <mat-label class="custom-label"
+                    style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Front Main
+                    Entrance Picture</mat-label>
+                  <file-upload accept="image/jpeg,image/png" formControlName="FrontMainEntrancePhoto" maxSize="1024"
+                    [nopreview]="true" matInput></file-upload>
+                  <mat-error style="font-size: 11px;"
+                    *ngFor="let error of TrainingForm.get('FrontMainEntrancePhoto').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </div>
                 <div class="col-sm-3">
-                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Class Room Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png"
-                               formControlName="ClassroomPhoto" maxSize="1024" [nopreview]="true" matInput></file-upload>
-                  <mat-error style="font-size: 11px;" *ngFor="let error of TrainingForm.get('ClassroomPhoto').errors | keyvalue">
+                  <mat-label class="custom-label"
+                    style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Class Room
+                    Picture</mat-label>
+                  <file-upload accept="image/jpeg,image/png" formControlName="ClassroomPhoto" maxSize="1024"
+                    [nopreview]="true" matInput></file-upload>
+                  <mat-error style="font-size: 11px;"
+                    *ngFor="let error of TrainingForm.get('ClassroomPhoto').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </div>
                 <div class="col-sm-3">
-                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Practical Area Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png"
-                               formControlName="PracticalAreaPhoto" maxSize="1024" [nopreview]="true" matInput></file-upload>
-                  <mat-error style="font-size: 11px;" *ngFor="let error of TrainingForm.get('PracticalAreaPhoto').errors | keyvalue">
+                  <mat-label class="custom-label"
+                    style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Practical
+                    Area Picture</mat-label>
+                  <file-upload accept="image/jpeg,image/png" formControlName="PracticalAreaPhoto" maxSize="1024"
+                    [nopreview]="true" matInput></file-upload>
+                  <mat-error style="font-size: 11px;"
+                    *ngFor="let error of TrainingForm.get('PracticalAreaPhoto').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </div>
                 <div class="col-sm-3">
-                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Computer Lab Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png"
-                               formControlName="ComputerLabPhoto" maxSize="1024" [nopreview]="true" matInput></file-upload>
-                  <mat-error style="font-size: 11px;" *ngFor="let error of TrainingForm.get('ComputerLabPhoto').errors | keyvalue">
+                  <mat-label class="custom-label"
+                    style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Computer Lab
+                    Picture</mat-label>
+                  <file-upload accept="image/jpeg,image/png" formControlName="ComputerLabPhoto" maxSize="1024"
+                    [nopreview]="true" matInput></file-upload>
+                  <mat-error style="font-size: 11px;"
+                    *ngFor="let error of TrainingForm.get('ComputerLabPhoto').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </div>
                 <div class="col-sm-3">
-                  <mat-label class="custom-label" style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Tools And Equipments Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png"
-                               formControlName="ToolsAndEquipmentsPhoto" maxSize="1024" [nopreview]="true" matInput></file-upload>
-                  <mat-error style="font-size: 11px;" *ngFor="let error of TrainingForm.get('ToolsAndEquipmentsPhoto').errors | keyvalue">
+                  <mat-label class="custom-label"
+                    style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Tools And
+                    Equipments Picture</mat-label>
+                  <file-upload accept="image/jpeg,image/png" formControlName="ToolsAndEquipmentsPhoto" maxSize="1024"
+                    [nopreview]="true" matInput></file-upload>
+                  <mat-error style="font-size: 11px;"
+                    *ngFor="let error of TrainingForm.get('ToolsAndEquipmentsPhoto').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </div>
               </div>
-
             </fieldset>
             <!-- <div class="row">
                <div class="col-sm-3">
@@ -295,15 +297,13 @@ getErrorMessage(error.key,
                   </mat-form-field>
                </div>
             </div> -->
-
             <div class="row" style="float:right">
               <div class="col-sm-12">
                 <button color="primary" mat-raised-button>
                   <i class="fas fa-check"></i> {{savebtn}} Record
                 </button> |
-
                 <button color="warn" type="reset" matTooltip="Click to Reset form data" (click)="ResetFrom()"
-                        mat-raised-button>
+                  mat-raised-button>
                   <i class="fas fa-times"></i>
                   Reset
                 </button> |
@@ -311,7 +311,6 @@ getErrorMessage(error.key,
                   <i class="fa fa-arrow-right"></i>
                   Next
                 </a>
-
               </div>
             </div>
           </fieldset>
@@ -331,24 +330,26 @@ getErrorMessage(error.key,
             <ng-container *ngFor="let column of TrainingTableColumns" [matColumnDef]="column">
               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <ng-container *ngIf="column !='TrainingLocationName' && column !='ToolsAndEquipments' && column !='ComputerLab' && column !='PracticalArea'  && column !='Classroom' && column !='FrontMainEntrance' "> &nbsp;{{ row[column] }}</ng-container>
-
+                <ng-container
+                  *ngIf="column !='TrainingLocationName' && column !='ToolsAndEquipments' && column !='ComputerLab' && column !='PracticalArea'  && column !='Classroom' && column !='FrontMainEntrance' ">
+                  &nbsp;{{ row[column] }}</ng-container>
                 <ng-container *ngIf="column === 'TrainingLocationName' && (row['PaymentStatus'] === 'UNPAID')">
                   <span (click)="EditTrainingLocation(row)" matTooltip="Click to proceed edit"
-                        style="color: #005b9e; text-decoration: underline; cursor: pointer;">
+                    style="color: #005b9e; text-decoration: underline; cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
                   </span>
                 </ng-container>
                 <ng-container *ngIf="column === 'TrainingLocationName' && (row['PaymentStatus'] == 'PAID')">
                   <span matTooltip="This training location is currently locked."
-                        style="color: #727475; text-decoration: underline; cursor: pointer;">
+                    style="color: #727475; text-decoration: underline; cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
                   </span>
                 </ng-container>
-                <ng-container *ngIf="column =='ToolsAndEquipments' || column =='ComputerLab' || column =='PracticalArea'  || column =='Classroom' || column =='FrontMainEntrance'">
+                <ng-container
+                  *ngIf="column =='ToolsAndEquipments' || column =='ComputerLab' || column =='PracticalArea'  || column =='Classroom' || column =='FrontMainEntrance'">
                   &nbsp;
                   <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
-                     matTooltip="Preview document" class="file-lable">
+                    matTooltip="Preview document" class="file-lable">
                     <mat-icon>get_app</mat-icon>
                   </a>
                 </ng-container>
@@ -358,12 +359,12 @@ getErrorMessage(error.key,
             <mat-row *matRowDef="let row; columns: TrainingTableColumns;"></mat-row>
           </mat-table>
           <mat-paginator [pageSize]="10" #TrainingPaginator="matPaginator"
-                         [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+            [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
         </div>
       </mat-tab>
       <mat-tab label="Training Certificate">
         <fieldset *ngIf="totalScore!=currentScore" class="border"
-                  style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+          style="padding: 3px 10px !important;margin-bottom: 5px !important;">
           <legend>Profile Completion </legend>
           <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
           <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
@@ -381,14 +382,14 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Training Location</mat-label>
-                  <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID"
-                              matInput required>
+                  <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID" matInput
+                    required>
                     <mat-option *ngFor="let s of TrainingLocation"
-                                [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
+                      [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of Certificate.get('TrainingLocationID').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -396,14 +397,14 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Registration Authority</mat-label>
-                  <mat-select placeholder="Select Registration Authority"
-                              formControlName="RegistrationAuthority" matInput required>
+                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority"
+                    matInput required>
                     <mat-option *ngFor="let s of registrationAuthority"
-                                [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
+                      [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of Certificate.get('RegistrationAuthority').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -411,14 +412,14 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Registration Status</mat-label>
-                  <mat-select placeholder="Select Registration Status" formControlName="RegistrationStatus"
-                              matInput required>
+                  <mat-select placeholder="Select Registration Status" formControlName="RegistrationStatus" matInput
+                    required>
                     <mat-option *ngFor="let s of RegistrationStatus"
-                                [value]="s.RegistrationStatusID">{{s.RegistrationStatus}}</mat-option>
+                      [value]="s.RegistrationStatusID">{{s.RegistrationStatus}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of Certificate.get('RegistrationStatus').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -426,11 +427,11 @@ getErrorMessage(error.key,
               <div class="col-sm-3" *ngIf="Certificate.get('RegistrationStatus').value != 3">
                 <mat-form-field>
                   <mat-label>Registration Certificate No.</mat-label>
-                  <input formControlName="RegistrationCerNum" matInput
-                         placeholder="Registration Certificate No." required />
+                  <input formControlName="RegistrationCerNum" matInput placeholder="Registration Certificate No."
+                    required />
                   <mat-error *ngFor="let error of Certificate.get('RegistrationCerNum').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -438,13 +439,13 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Issuance Date</mat-label>
-                  <input formControlName="IssuanceDate" [max]="maxDate" [matDatepicker]="IssuanceDate" readonly
-                         matInput required>
+                  <input formControlName="IssuanceDate" [max]="maxDate" [matDatepicker]="IssuanceDate" readonly matInput
+                    required>
                   <mat-datepicker-toggle matSuffix [for]="IssuanceDate"></mat-datepicker-toggle>
                   <mat-datepicker #IssuanceDate disabled="false"></mat-datepicker>
                   <mat-error *ngFor="let error of Certificate.get('IssuanceDate').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -452,30 +453,29 @@ getErrorMessage(error.key,
               <div class="col-sm-3" *ngIf="Certificate.get('RegistrationStatus').value != 3">
                 <mat-form-field>
                   <mat-label>Expiry Date</mat-label>
-                  <input formControlName="ExpiryDate" [max]="maxDate" [matDatepicker]="ExpiryDate" readonly
-                         matInput required>
+                  <input formControlName="ExpiryDate" [max]="maxDate" [matDatepicker]="ExpiryDate" readonly matInput
+                    required>
                   <mat-datepicker-toggle matSuffix [for]="ExpiryDate"></mat-datepicker-toggle>
                   <mat-datepicker #ExpiryDate disabled="false"></mat-datepicker>
                   <mat-error *ngFor="let error of Certificate.get('ExpiryDate').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
               </div>
               <div class="col-sm-3">
                 <mat-label class="custom-label"
-                           style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
+                  style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
                   Registration
                   Certificate Evidence
                 </mat-label>
-                <file-upload accept="application/pdf,image/jpeg,image/png"
-                             formControlName="RegistrationCerEvidence" maxSize="1024" [nopreview]="true"
-                             matInput></file-upload>
+                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="RegistrationCerEvidence"
+                  maxSize="1024" [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
-                           *ngFor="let error of Certificate.get('RegistrationCerEvidence').errors | keyvalue">
+                  *ngFor="let error of Certificate.get('RegistrationCerEvidence').errors | keyvalue">
                   {{
-                           getErrorMessage(error.key, error.value)
+                  getErrorMessage(error.key, error.value)
                   }}
                 </mat-error>
               </div>
@@ -487,11 +487,10 @@ getErrorMessage(error.key,
                   <i class="fas fa-check"></i> {{savebtn}} Record
                 </button> |
                 <button color="warn" type="reset" matTooltip="Click to Reset form data" (click)="ResetFrom()"
-                        mat-raised-button>
+                  mat-raised-button>
                   <i class="fas fa-times"></i>
                   Reset
                 </button>|
-
                 <a color="accent" (click)="NextTap()" mat-raised-button>
                   <i class="fa fa-arrow-right"></i>
                   Next
@@ -513,31 +512,40 @@ getErrorMessage(error.key,
             <ng-container *ngFor="let column of CertificateTableColumns" [matColumnDef]="column">
               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <ng-container *ngIf="column !='TrainingLocationName' && column !='ExpiryDate' && column !='IssuanceDate' && column !='RegistrationCertificateEvidence'">
+                <ng-container
+                  *ngIf="column !='TrainingLocationName' && column !='ExpiryDate' && column !='IssuanceDate' && column !='RegistrationCertificateEvidence'">
                   &nbsp;{{ row[column] }}
                 </ng-container>
-                <ng-container *ngIf="column =='TrainingLocationName'">
+               
+
+                <ng-container *ngIf="column === 'TrainingLocationName' && (row['TotalMappedTrade'] != 0)">
                   &nbsp;
-                  <span (click)="EditCertificationDetail(row)"
-                        style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                  <span  matTooltip="This training Certificate currently locked."
+                    style="color: #5a5c5e;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
                   </span>
                 </ng-container>
+                <ng-container *ngIf="column === 'TrainingLocationName' && (row['TotalMappedTrade'] == 0)">
+                  &nbsp;
+                  <span (click)="EditCertificationDetail(row)"
+                    style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                    <strong>{{ row[column] }}</strong>
+                  </span>
+                </ng-container>
+
                 <ng-container *ngIf="column =='IssuanceDate'">
                   &nbsp; {{ row[column] | date:environment.DateFormat }}
                 </ng-container>
                 <ng-container *ngIf="column =='ExpiryDate' && row[column] !='---'">
-
                   &nbsp; {{ row[column] | date:environment.DateFormat }}
-
                 </ng-container>
                 <ng-container *ngIf="column =='ExpiryDate' && row[column] =='---'">
-                  &nbsp; {{ row[column]  }}
+                  &nbsp; {{ row[column] }}
                 </ng-container>
                 <ng-container *ngIf="column =='RegistrationCertificateEvidence'">
                   &nbsp;
                   <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
-                     matTooltip="Preview document" class="file-lable">
+                    matTooltip="Preview document" class="file-lable">
                     <mat-icon>get_app</mat-icon>
                   </a>
                 </ng-container>
@@ -547,12 +555,12 @@ getErrorMessage(error.key,
             <mat-row *matRowDef="let row; columns: CertificateTableColumns;"></mat-row>
           </mat-table>
           <mat-paginator [pageSize]="10" #CertificatePaginator="matPaginator"
-                         [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+            [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
         </div>
       </mat-tab>
       <mat-tab label="Training Certificate Mapping">
         <fieldset *ngIf="totalScore!=currentScore" class="border"
-                  style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+          style="padding: 3px 10px !important;margin-bottom: 5px !important;">
           <legend>Profile Completion </legend>
           <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
           <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
@@ -570,14 +578,14 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Training Location</mat-label>
-                  <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID"
-                              matInput required>
+                  <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID" matInput
+                    required>
                     <mat-option *ngFor="let s of TrainingLocation"
-                                [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
+                      [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TradeForm.get('TrainingLocationID').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -585,14 +593,14 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Training Certificate</mat-label>
-                  <mat-select placeholder="Select Training Certificate" formControlName="CertificateID"
-                              matInput required>
+                  <mat-select placeholder="Select Training Certificate" formControlName="CertificateID" matInput
+                    required>
                     <mat-option *ngFor="let s of Certification"
-                                [value]="s.TrainingCertificationID">{{s.RegistrationCerNum}}-{{s.RegistrationAuthorityName}}</mat-option>
+                      [value]="s.TrainingCertificationID">{{s.RegistrationCerNum}}-{{s.RegistrationAuthorityName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TradeForm.get('CertificateID').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -602,16 +610,15 @@ getErrorMessage(error.key,
                   <mat-label>Select Trade</mat-label>
                   <mat-select placeholder="Select Trade" formControlName="TradeID" matInput required>
                     <mat-optgrp class="ddlsrchheader">
-                      <input placeholder="Search"
-                             (keydown)="$event.stopPropagation()" [formControl]="TSearchCtr" />
+                      <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="TSearchCtr" />
                     </mat-optgrp>
                     <!-- <mat-option  [value]=0>Other</mat-option> -->
-                    <mat-option *ngFor="let s of Trade | like:['TradeName',TSearchCtr.value]"
-                                [value]="s.TradeID" [matTooltip]="s.TradeName">{{s.TradeName}}</mat-option>
+                    <mat-option *ngFor="let s of Trade | like:['TradeName',TSearchCtr.value]" [value]="s.TradeID"
+                      [matTooltip]="s.TradeName">{{s.TradeName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TradeForm.get('TradeID').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -619,11 +626,10 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Trade Per Certificate </mat-label>
-                  <input formControlName="TradeAsPerCer" matInput placeholder="Trade Per Certificate"
-                         required />
+                  <input formControlName="TradeAsPerCer" matInput placeholder="Trade Per Certificate" required />
                   <mat-error *ngFor="let error of TradeForm.get('TradeAsPerCer').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -631,11 +637,11 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Training Duration (Months) </mat-label>
-                  <input formControlName="TrainingDuration" matInput placeholder="Training Duration (Months)" NumberPercent
-                         required />
+                  <input formControlName="TrainingDuration" matInput placeholder="Training Duration (Months)"
+                    NumberPercent required />
                   <mat-error *ngFor="let error of TradeForm.get('TrainingDuration').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -644,10 +650,10 @@ getErrorMessage(error.key,
                 <mat-form-field>
                   <mat-label>Morning Total Classes</mat-label>
                   <input formControlName="NoOfClassMor" NumberOnly matInput placeholder="Morning Total Classes"
-                         required />
+                    required />
                   <mat-error *ngFor="let error of TradeForm.get('NoOfClassMor').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -655,11 +661,11 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Morning Class Capacity </mat-label>
-                  <input formControlName="ClassCapacityMor" NumberOnly matInput
-                         placeholder="Morning Class Capacity" required />
+                  <input formControlName="ClassCapacityMor" NumberOnly matInput placeholder="Morning Class Capacity"
+                    required />
                   <mat-error *ngFor="let error of TradeForm.get('ClassCapacityMor').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -668,10 +674,10 @@ getErrorMessage(error.key,
                 <mat-form-field>
                   <mat-label>Evening Total Classes </mat-label>
                   <input formControlName="NoOfClassEve" NumberOnly matInput placeholder="Evening Total Classes"
-                         required />
+                    required />
                   <mat-error *ngFor="let error of TradeForm.get('ClassCapacityMor').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -679,11 +685,11 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Evening Class Capacity </mat-label>
-                  <input formControlName="ClassCapacityEve" NumberOnly matInput
-                         placeholder="Evening Class Capacity" required />
+                  <input formControlName="ClassCapacityEve" NumberOnly matInput placeholder="Evening Class Capacity"
+                    required />
                   <mat-error *ngFor="let error of TradeForm.get('ClassCapacityEve').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -692,12 +698,11 @@ getErrorMessage(error.key,
             <div class="row" style="float:right">
               <div class="col-sm-12">
                 <a (click)="PreviousTap()" mat-raised-button><i class="fa fa-arrow-left"></i> Previous</a> |
-
                 <button color="primary" mat-raised-button>
                   <i class="fas fa-check"></i> {{savebtn}} Record
                 </button> |
                 <button color="warn" type="reset" matTooltip="Click to Reset form data" (click)="ResetFrom()"
-                        mat-raised-button>
+                  mat-raised-button>
                   <i class="fas fa-times"></i>
                   Reset
                 </button> |
@@ -705,8 +710,6 @@ getErrorMessage(error.key,
                   <i class="fa fa-arrow-right"></i>
                   Next
                 </a>
-
-
               </div>
             </div>
           </fieldset>
@@ -726,17 +729,19 @@ getErrorMessage(error.key,
               <mat-cell *matCellDef="let row">
                 <ng-container *ngIf="column !='TradeName' && column !='CreatedDate' && column !='ApprovalStatus'">
                   &nbsp;{{
-                           row[column]
+                  row[column]
                   }}
                 </ng-container>
-                <ng-container *ngIf="column =='TradeName' && (row['ApprovalStatus'] !== 'Accepted' ||  row['PaymentStatus'] === 'UNPAID')">
+                <ng-container
+                  *ngIf="column =='TradeName' && (row['ApprovalStatus'] !== 'Accepted' ||  row['PaymentStatus'] === 'UNPAID')">
                   &nbsp;
                   <span (click)="EditTradeMapping(row)"
-                        style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                    style="color: #005b9e;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
                   </span>
                 </ng-container>
-                <ng-container *ngIf="column =='TradeName' && (row['ApprovalStatus'] === 'Accepted' && row['PaymentStatus'] === 'PAID')">
+                <ng-container
+                  *ngIf="column =='TradeName' && (row['ApprovalStatus'] === 'Accepted' && row['PaymentStatus'] === 'PAID')">
                   &nbsp;
                   <span style="color: #424242;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
@@ -759,12 +764,12 @@ getErrorMessage(error.key,
             <mat-row *matRowDef="let row; columns: TradeMapTableColumns;"></mat-row>
           </mat-table>
           <mat-paginator [pageSize]="10" #TradePaginator="matPaginator"
-                         [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+            [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
         </div>
       </mat-tab>
       <mat-tab label="Trainer Profile">
         <fieldset *ngIf="totalScore!=currentScore" class="border"
-                  style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+          style="padding: 3px 10px !important;margin-bottom: 5px !important;">
           <legend>Profile Completion </legend>
           <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
           <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
@@ -785,7 +790,7 @@ getErrorMessage(error.key,
                   <input formControlName="TrainerName" matInput placeholder="Trainer Name" required />
                   <mat-error *ngFor="let error of TrainerForm.get('TrainerName').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -793,11 +798,11 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Trainer Mobile#</mat-label>
-                  <input formControlName="TrainerMobile" [imask]="{mask:'0000-0000000'}" [unmask]="false"
-                         matInput placeholder="Trainer Mobile#" required />
+                  <input formControlName="TrainerMobile" [imask]="{mask:'0000-0000000'}" [unmask]="false" matInput
+                    placeholder="Trainer Mobile#" required />
                   <mat-error *ngFor="let error of TrainerForm.get('TrainerMobile').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -805,11 +810,10 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Trainer Email</mat-label>
-                  <input formControlName="TrainerEmail" type="email" matInput placeholder="Trainer Email"
-                         required />
+                  <input formControlName="TrainerEmail" type="email" matInput placeholder="Trainer Email" required />
                   <mat-error *ngFor="let error of TrainerForm.get('TrainerEmail').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -821,7 +825,7 @@ getErrorMessage(error.key,
                   </mat-select>
                   <mat-error *ngFor="let error of TrainerForm.get('Gender').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -831,89 +835,88 @@ getErrorMessage(error.key,
               <div class="col-sm-4">
                 <mat-form-field>
                   <mat-label>Trainer CNIC#</mat-label>
-                  <input formControlName="TrainerCNIC" [imask]="{mask:'00000-0000000-0'}" [unmask]="false"
-                         matInput placeholder="Trainer CNIC#" required />
+                  <input formControlName="TrainerCNIC" [imask]="{mask:'00000-0000000-0'}" [unmask]="false" matInput
+                    placeholder="Trainer CNIC#" required />
                   <mat-error *ngFor="let error of TrainerForm.get('TrainerCNIC').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
               </div>
               <div class="col-sm-4">
                 <mat-label class="custom-label"
-                           style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
+                  style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
                   CNIC Front
                   Photo
                 </mat-label>
-                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="CnicFrontPhoto"
-                             maxSize="1024" [nopreview]="true" matInput></file-upload>
+                <file-upload accept="application/pdf,image/jpeg,image/png"  formControlName="CnicFrontPhoto"
+                  maxSize="1024" [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
-                           *ngFor="let error of TrainerForm.get('CnicFrontPhoto').errors | keyvalue">
+                  *ngFor="let error of TrainerForm.get('CnicFrontPhoto').errors | keyvalue">
                   {{
-                           getErrorMessage(error.key, error.value)
+                  getErrorMessage(error.key, error.value)
                   }}
                 </mat-error>
               </div>
               <div class="col-sm-4">
                 <mat-label class="custom-label"
-                           style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
+                  style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
                   CNIC Back
                   Photo
                 </mat-label>
                 <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="CnicBackPhoto"
-                             maxSize="1024" [nopreview]="true" matInput></file-upload>
+                  maxSize="1024" [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
-                           *ngFor="let error of TrainerForm.get('CnicBackPhoto').errors | keyvalue">
+                  *ngFor="let error of TrainerForm.get('CnicBackPhoto').errors | keyvalue">
                   {{
-                           getErrorMessage(error.key,
-                           error.value)
+                  getErrorMessage(error.key,
+                  error.value)
                   }}
                 </mat-error>
               </div>
               <div class="col-sm-4">
                 <mat-form-field>
-                  <mat-select placeholder="Select Qualification" formControlName="Qualification" matInput
-                              required>
+                  <mat-select placeholder="Select Qualification" formControlName="Qualification" matInput required>
                     <mat-option *ngFor="let s of EducationTypes"
-                                [value]="s.EducationTypeID">{{s.Education}}</mat-option>
+                      [value]="s.EducationTypeID">{{s.Education}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TrainerForm.get('Qualification').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
               </div>
               <div class="col-sm-4">
                 <mat-label class="custom-label"
-                           style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
+                  style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
                   Qual.
                   Evidence
                 </mat-label>
-                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="QualEvidence"
-                             maxSize="1024" [nopreview]="true" matInput></file-upload>
+                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="QualEvidence" maxSize="1024"
+                  [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
-                           *ngFor="let error of TrainerForm.get('QualEvidence').errors | keyvalue">
+                  *ngFor="let error of TrainerForm.get('QualEvidence').errors | keyvalue">
                   {{
-                           getErrorMessage(error.key,
-                           error.value)
+                  getErrorMessage(error.key,
+                  error.value)
                   }}
                 </mat-error>
               </div>
               <div class="col-sm-4">
                 <mat-label class="custom-label"
-                           style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
+                  style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">
                   Trainer
                   CV
                 </mat-label>
-                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="TrainerCV"
-                             maxSize="1024" [nopreview]="true" matInput></file-upload>
+                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="TrainerCV" maxSize="1024"
+                  [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
-                           *ngFor="let error of TrainerForm.get('TrainerCV').errors | keyvalue">
+                  *ngFor="let error of TrainerForm.get('TrainerCV').errors | keyvalue">
                   {{
-                           getErrorMessage(error.key,
-                           error.value)
+                  getErrorMessage(error.key,
+                  error.value)
                   }}
                 </mat-error>
               </div>
@@ -937,25 +940,25 @@ getErrorMessage(error.key,
                     <tr [formGroupName]="i" *ngFor="let item of trainerDetails.controls;let i=index">
                       <td style="vertical-align: middle;">
                         <a class="border-btn btn-danger" *ngIf="trainerDetails.length>1"
-                           (click)="RemoveDetail(i,trainerDetails)"><i class="fas fa-times"></i></a>
+                          (click)="RemoveDetail(i,trainerDetails)"><i class="fas fa-times"></i></a>
                       </td>
                       <td>
                         <mat-form-field>
                           <mat-label>Select Trade</mat-label>
-                          <mat-select (openedChange)="EmptyCtrl($event)" formControlName="TrainerTradeID"
-                                      matInput required>
+                          <mat-select (openedChange)="EmptyCtrl($event)" formControlName="TrainerTradeID" matInput
+                            required>
                             <mat-optgrp class="ddlsrchheader">
-                              <input placeholder="Search"
-                                     (keydown)="$event.stopPropagation()" [formControl]="TTSearchCtr" />
+                              <input placeholder="Search" (keydown)="$event.stopPropagation()"
+                                [formControl]="TTSearchCtr" />
                             </mat-optgrp>
                             <mat-option *ngFor="let s of TspMappedTrades | like:['TradeName',TTSearchCtr.value] "
-                                        [value]="s.TradeID">{{s.TradeName}}</mat-option>
+                              [value]="s.TradeID">{{s.TradeName}}</mat-option>
                             <mat-option *ngFor="let s of Trade" disabled hidden
-                                        [value]="s.TradeID">{{s.TradeName}}</mat-option>
+                              [value]="s.TradeID">{{s.TradeName}}</mat-option>
                           </mat-select>
                           <mat-error *ngFor="let error of TrainerForm.get('Gender').errors | keyvalue">
                             {{
-                                          getErrorMessage(error.key, error.value)
+                            getErrorMessage(error.key, error.value)
                             }}
                           </mat-error>
                         </mat-form-field>
@@ -975,11 +978,10 @@ getErrorMessage(error.key,
                       <td>
                         <div class="col-sm-12">
                           <mat-label>Prof. Qual. Evidence </mat-label>
-                          <file-upload accept="application/pdf,image/jpeg,image/png"
-                                       formControlName="ProfQualEvidence" maxSize="1024" [nopreview]="true"
-                                       matInput></file-upload>
+                          <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="ProfQualEvidence"
+                            maxSize="1024" [nopreview]="true" matInput></file-upload>
                           <mat-icon (click)="ShowPreview(trainerEditRecord[i].QualificationEvidence)"
-                                    *ngIf="trainerEditRecord.length> i">get_app</mat-icon>
+                            *ngIf="trainerEditRecord.length> i">get_app</mat-icon>
                         </div>
                       </td>
                       <td>
@@ -993,11 +995,10 @@ getErrorMessage(error.key,
                           <mat-label>
                             Experience Letter
                             <mat-icon (click)="ShowPreview(trainerEditRecord[i].RelationalExpLetter)"
-                                      *ngIf="trainerEditRecord.length>i">get_app</mat-icon>
+                              *ngIf="trainerEditRecord.length>i">get_app</mat-icon>
                           </mat-label>
-                          <file-upload accept="application/pdf,image/jpeg,image/png"
-                                       formControlName="RelExpLetter" maxSize="1024" [nopreview]="true"
-                                       matInput></file-upload>
+                          <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="RelExpLetter"
+                            maxSize="1024" [nopreview]="true" matInput></file-upload>
                         </div>
                       </td>
                     </tr>
@@ -1015,12 +1016,11 @@ getErrorMessage(error.key,
             <div class="row" style="float:right">
               <div class="col-sm-12">
                 <a (click)="PreviousTap()" mat-raised-button><i class="fa fa-arrow-left"></i> Previous</a> |
-
                 <button color="primary" mat-raised-button [disabled]="TspMappedTrades.length==0">
                   <i class="fas fa-check"></i> {{savebtn}} Record
                 </button> |
                 <button color="warn" type="reset" matTooltip="Click to Reset form data" (click)="ResetFrom()"
-                        mat-raised-button>
+                  mat-raised-button>
                   <i class="fas fa-times"></i>
                   Reset
                 </button> |
@@ -1028,7 +1028,6 @@ getErrorMessage(error.key,
                   <i class="fa fa-arrow-right"></i>
                   Next
                 </a>
-
               </div>
             </div>
           </fieldset>
@@ -1046,20 +1045,22 @@ getErrorMessage(error.key,
             <ng-container *ngFor="let column of TrainerTableColumns" [matColumnDef]="column">
               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <ng-container *ngIf="column !='TrainerName' && column !='CreatedDate'&& column !='TrainerResume' && column != 'QualificationEvidence' && column != 'FrontCNIC'  && column  != 'BackCNIC' ">
+                <ng-container
+                  *ngIf="column !='TrainerName' && column !='CreatedDate'&& column !='TrainerResume' && column != 'QualificationEvidence' && column != 'FrontCNIC'  && column  != 'BackCNIC' ">
                   &nbsp;{{ row[column] }}
                 </ng-container>
                 <ng-container *ngIf="column =='TrainerName'">
                   &nbsp;
                   <span (click)="EditRecord(row,'TrainerID',row.TrainerID,TrainerForm)"
-                        style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                    style="color: #005b9e;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
                   </span>
                 </ng-container>
-                <ng-container *ngIf="column =='TrainerResume' || column =='QualificationEvidence' || column =='FrontCNIC'  || column =='BackCNIC'">
+                <ng-container
+                  *ngIf="column =='TrainerResume' || column =='QualificationEvidence' || column =='FrontCNIC'  || column =='BackCNIC'">
                   &nbsp;
                   <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
-                     matTooltip="Preview document" class="file-lable">
+                    matTooltip="Preview document" class="file-lable">
                     <mat-icon>get_app</mat-icon>
                   </a>
                 </ng-container>
@@ -1072,13 +1073,13 @@ getErrorMessage(error.key,
             <mat-row *matRowDef="let row; columns: TrainerTableColumns;"></mat-row>
           </mat-table>
           <mat-paginator [pageSize]="10" #TrainerPaginator="matPaginator"
-                         [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+            [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
         </div>
         <!-- record list end -->
       </mat-tab>
       <mat-tab label="Bank Detail">
         <fieldset *ngIf="totalScore!=currentScore" class="border"
-                  style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+          style="padding: 3px 10px !important;margin-bottom: 5px !important;">
           <legend>Profile Completion </legend>
           <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
           <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
@@ -1096,18 +1097,17 @@ getErrorMessage(error.key,
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Bank</mat-label>
-                  <mat-select (openedChange)="EmptyCtrl($event)" placeholder="Select Bank"
-                              formControlName="BankName" matInput required>
+                  <mat-select (openedChange)="EmptyCtrl($event)" placeholder="Select Bank" formControlName="BankName"
+                    matInput required>
                     <mat-optgrp class="ddlsrchheader">
-                      <input placeholder="Search"
-                             (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" />
+                      <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" />
                     </mat-optgrp>
                     <mat-option *ngFor="let s of bank | like:['BankName',BSearchCtr.value]"
-                                [value]="s.BankID">{{s.BankName}}</mat-option>
+                      [value]="s.BankID">{{s.BankName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of BankInfoForm.get('BankName').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -1116,10 +1116,10 @@ getErrorMessage(error.key,
                 <mat-form-field>
                   <mat-label>Other Bank {{readOnly}}</mat-label>
                   <input formControlName="OtherBank" [readonly]="readOnly" matInput placeholder="Other Bank"
-                         [required]="required" />
+                    [required]="required" />
                   <mat-error *ngFor="let error of BankInfoForm.get('OtherBank').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -1130,7 +1130,7 @@ getErrorMessage(error.key,
                   <input formControlName="AccountTitle" matInput placeholder="Account Title" required />
                   <mat-error *ngFor="let error of BankInfoForm.get('AccountTitle').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -1141,7 +1141,7 @@ getErrorMessage(error.key,
                   <input formControlName="AccountNumber" matInput placeholder="Account # | IBAN #" required />
                   <mat-error *ngFor="let error of BankInfoForm.get('AccountNumber').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -1152,7 +1152,7 @@ getErrorMessage(error.key,
                   <input formControlName="BranchCode" matInput placeholder="Branch Code" required />
                   <mat-error *ngFor="let error of BankInfoForm.get('BranchCode').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -1163,7 +1163,7 @@ getErrorMessage(error.key,
                   <input formControlName="BranchAddress" matInput placeholder="Branch Address" required />
                   <mat-error *ngFor="let error of BankInfoForm.get('BranchAddress').errors | keyvalue">
                     {{
-                              getErrorMessage(error.key, error.value)
+                    getErrorMessage(error.key, error.value)
                     }}
                   </mat-error>
                 </mat-form-field>
@@ -1172,12 +1172,11 @@ getErrorMessage(error.key,
             <div class="row" style="float:right">
               <div class="col-sm-12">
                 <a (click)="PreviousTap()" mat-raised-button><i class="fa fa-arrow-left"></i> Previous</a> |
-
                 <button color="primary" mat-raised-button>
                   <i class="fas fa-check"></i> {{savebtn}} Record
                 </button> |
                 <button color="warn" type="reset" matTooltip="Click to Reset form data" (click)="ResetFrom()"
-                        mat-raised-button>
+                  mat-raised-button>
                   <i class="fas fa-times"></i>
                   Reset
                 </button>
@@ -1202,13 +1201,12 @@ getErrorMessage(error.key,
               <mat-cell *matCellDef="let row">
                 <ng-container *ngIf="column !='Bank' && column !='CreatedDate'">
                   &nbsp; {{
- row[column]
+                  row[column]
                   }}
                 </ng-container>
                 <ng-container *ngIf="column =='Bank'">
                   &nbsp;
-                  <span (click)="BankEdit(row)"
-                        style="color: #005b9e;text-decoration: underline;cursor: pointer;">
+                  <span (click)="BankEdit(row)" style="color: #005b9e;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }} </strong>
                   </span> | <a color="primary" mat-button (click)="SetDefault(row)"> Set Default</a>
                 </ng-container>
@@ -1221,7 +1219,7 @@ getErrorMessage(error.key,
             <mat-row *matRowDef="let row; columns: BankTableColumns;"></mat-row>
           </mat-table>
           <mat-paginator #BankPaginator="matPaginator" [pageSize]="10"
-                         [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+            [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
         </div>
         <!-- record list end -->
       </mat-tab>

@@ -77,7 +77,7 @@ namespace PSDF_BSS
             services.AddHttpContextAccessor();
             services.AddTransient<IUserService, UserService>();
             services.AddSingletonClasses();
-           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -118,8 +118,8 @@ namespace PSDF_BSS
             });
 
             RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)env);
-            
-           // scheduler.Start();
+
+            // scheduler.Start();
         }
     }
 }

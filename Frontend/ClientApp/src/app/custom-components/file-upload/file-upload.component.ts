@@ -63,6 +63,9 @@ export class FileUploadComponent implements ControlValueAccessor, OnInit {
     if (this.pattren == 'image.*') {
       this.imgTypeNote = 'Allowed only image file (e.g: .jpg, .jpeg, .png)';
     }
+    if (this.pattren == 'image.*,pdf') {
+      this.imgTypeNote = 'Allowed only image file (e.g: .jpg, .jpeg, .png,.pdf)';
+    }
   }
   registerOnChange(fn) {
     this.propagateChange = fn;

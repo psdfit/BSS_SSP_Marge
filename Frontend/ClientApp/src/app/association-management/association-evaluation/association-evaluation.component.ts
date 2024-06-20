@@ -176,7 +176,8 @@ export class AssociationEvaluationComponent implements OnInit {
       return;
     }
     this.AssociationEvaluationTrailData = this.AssociationEvaluationData.filter(d => d.ProgramID == this.ProgramID)
-    this.AssociationEvaluationData = this.AssociationEvaluationData.filter(d => d.ProgramID == this.ProgramID && d.InActive == false)
+    // this.AssociationEvaluationData = this.AssociationEvaluationData.filter(d => d.ProgramID == this.ProgramID)
+     this.AssociationEvaluationData = this.AssociationEvaluationData.filter(d => d.ProgramID == this.ProgramID && d.InActive == false)
     if (this.AssociationEvaluationData.length > 0) {
       this.LoadMatTable(this.AssociationEvaluationData, 'AssociationEvaluation')
     } else {
