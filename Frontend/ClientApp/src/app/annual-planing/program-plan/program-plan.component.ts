@@ -365,9 +365,15 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
       DistrictID: row.DistrictIDs.split(',').map(Number),
     });
     setTimeout(() => {
-      this.AnnualPlanInfoForm.get('FundingCategoryID').setValue(row.FundingCategoryID)
+      
+      this.AnnualPlanInfoForm.get('PlaningTypeID').setValue(Number(row.PlaningTypeID))
       this.AnnualPlanInfoForm.get('BusinessRuleType').setValue(row.BusinessRuleType)
+      this.AnnualPlanInfoForm.get('FundingSourceID').setValue(Number(row.FundingSourceID))
+      this.AnnualPlanInfoForm.get('FundingCategoryID').setValue(Number(row.FundingCategoryID))
+      this.AnnualPlanInfoForm.get('ProgramTypeID').setValue(Number(row.ProgramTypeID))
       this.AnnualPlanInfoForm.get('SelectionMethodID').setValue(Number(row.SelectionMethodIDs))
+      this.AnnualPlanInfoForm.get('ProgramCategoryID').setValue(2)
+      
     }, 0);
     this.FinalSubmit = row.IsSubmitted
     if (this.FinalSubmit) {
