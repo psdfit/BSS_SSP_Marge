@@ -410,7 +410,7 @@ namespace DataLayer.Services
             {
                 SqlParameter[] param = new SqlParameter[10];
                 param[0] = new SqlParameter("@TraineeStatusTypeID", 4); //Expell ID
-                param[1] = new SqlParameter("@TraineeProfileID", traineestatus.TraineeID);
+                param[1] = new SqlParameter("@TraineeProfileID", traineestatus.CoursraTraineeIDs);
                 param[2] = new SqlParameter("@Comments", traineestatus.Comment);
                 param[3] = new SqlParameter("@CreatedUserID", traineestatus.CurUserID);
 
@@ -483,9 +483,14 @@ namespace DataLayer.Services
             tsr.TraineeAge = row.Field<int>("TraineeAge");
             tsr.TraineeEmail = row.Field<string>("TraineeEmail");
             tsr.InvitationDate = row.Field<DateTime>("InvitationDate");
+            if (row.Table.Columns.Contains("LastActivityDate"))
+            {
+                tsr.LastActivityDate = row.Field<DateTime>("LastActivityDate");
+                tsr.PercentageCompleted = row.Field<double>("PercentageCompleted");
+                tsr.DaysSinceLastActivity = row.Field<int>("DaysSinceLastActivity");
+            }
             return tsr;
         }
-
         public List<TSRLiveDataModel> FetchPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)
         {
             try

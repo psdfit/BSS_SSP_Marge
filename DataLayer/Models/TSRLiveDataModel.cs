@@ -130,5 +130,9 @@ namespace DataLayer.Models
         public DateTime InvitationDate { get; set; }
         public int CurUserID { get; set; }
         public string Comment { get; set; }
+        public DateTime LastActivityDate { get; set; }
+        public double PercentageCompleted { get; set; }
+        public int DaysSinceLastActivity { get; set; }
+        public string CoursraTraineeIDs { get; set; }
     }
 }
