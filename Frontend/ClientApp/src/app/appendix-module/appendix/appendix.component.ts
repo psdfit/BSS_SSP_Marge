@@ -531,7 +531,7 @@ export class AppendixComponent implements OnInit {
     this.http.confirm(titleConfirm, messageConfirm).subscribe(
       (isConfirm: Boolean) => {
         if (isConfirm) {
-          this.http.getJSON(`api/Scheme/GenerateAppendix?SchemeID=${schemeID}`).subscribe(
+          this.http.getJSON(`api/Scheme/GenerateAutoAppendix?SchemeID=${schemeID}`).subscribe(
             (d: any) => {
               if (d) {
                 this.reloadPage();
