@@ -189,12 +189,12 @@ export class CourseraReportComponent implements OnInit {
           }
 
           // Construct the payload with IDs and Comment based on schemeFilter value
-          const payload = { TraineeIDs: ids.join(','), Comment: comment };
+          const payload = { CoursraTraineeIDs: ids.join(','), Comment: comment };
 
           // Send a single HTTP post request with the determined API endpoint and payload
           this.commonService.postJSON(apiEndpoint, payload).subscribe(
             response => {
-              this.commonService.ShowError('Trainees status changed successfully!');
+              this.commonService.openSnackBar('Trainees status changed successfully!');
               this.initPagedData();
             },
             error => {
