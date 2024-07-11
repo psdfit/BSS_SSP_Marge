@@ -514,5 +514,23 @@ namespace MasterDataModule.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetSchemeByID")]
+        public IActionResult GetSchemeByID()
+        {
+            try
+            {
+                var mod = new SchemeModel
+                {
+                    SchemeID = 22533
+                };
+                return Ok(srvScheme.FetchScheme(mod));
+            }
+            catch (Exception e)
+            {
+                return Ok(e);
+            }
+        }
     }
 }

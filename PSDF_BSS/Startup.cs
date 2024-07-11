@@ -120,7 +120,7 @@ namespace PSDF_BSS
             //RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)env);
             // Rotativa configuration
             //var wkHtmlPath = Path.Combine("C:\\Program Files", "wkhtmltopdf", "wkhtmltopdf.exe");
-            RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)env, "C:\\Program Files\\wkhtmltopdf");
+            RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)env, "C:\\Program Files\\wkhtmltopdf\\bin");
 
             // scheduler.Start();
         }

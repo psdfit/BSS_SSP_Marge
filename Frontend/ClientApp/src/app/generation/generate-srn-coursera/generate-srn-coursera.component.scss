@@ -1,0 +1,94 @@
+.mat-column-Scheme {
+  flex: 0 0 200px;
+}
+
+.mat-column-TSP {
+  flex: 0 0 200px;
+}
+
+.mat-column-Address {
+  flex: 0 0 200px;
+}
+
+.mat-column-ClassCode {
+  flex: 0 0 200px;
+}
+
+.mat-column-ClassStatusName {
+  flex: 0 0 200px;
+}
+
+.mat-column-Duration {
+  flex: 0 0 200px;
+}
+
+.mat-column-TrainingAddressLocation {
+  flex: 0 0 300px;
+}
+
+.mat-column-StartDate {
+  flex: 0 0 200px;
+}
+
+.mat-column-EndDate {
+  flex: 0 0 200px;
+}
+
+.mat-column-TradeName {
+  flex: 0 0 200px;
+}
+
+.mat-column-TraineesPerClass {
+  flex: 0 0 200px;
+}
+
+.mat-column-CertAuthName {
+  flex: 0 0 200px;
+}
+
+.mat-column-Batch {
+  flex: 0 0 200px;
+}
+
+.mat-cell {
+  border: 1px solid black;
+}
+
+.mat-header-cell {
+  border: 1px solid black;
+}
+
+mat-row, mat-footer-row {
+  min-height: 19px !important;
+}
+
+mat-header-row {
+  min-height: 23px !important;
+}
+
+.table-responsive {
+  white-space: nowrap !important;
+}
+
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+mat-row, mat-header-row, mat-footer-row {
+  display: table-row !important;
+}
+
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+}
+
+.myAnchor {
+  color: #005b9e;
+}
+
+.myAnchor:hover {
+  color: #fbb417;
+}
