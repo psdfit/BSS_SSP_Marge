@@ -125,14 +125,37 @@
                     <mat-icon class="material-icons">view_comfy</mat-icon>
                     <span class="spacer">Examination Classes</span>
                     <div class="spacer"></div>
-                    <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+                    <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
                   </mat-toolbar>
+                 
+                  <div class="col-sm-11">
+                    <mat-form-field>
+                      <mat-label>Parent Scheme Name</mat-label>
+                      <input [(ngModel)]="ParentSchemeName" placeholder="Enter Parent Scheme Name" matInput />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-1">
+                    <button class="mt-4" color="primary" (click)="getSelectedScheme()" mat-raised-button><i class="fas fa-check"></i> Save </button>
+                  </div>
+                 
+
                   <div class="table-responsive">
                     <mat-table matTableExporter [dataSource]="pbteClasses" #SortClass="matSort" #exporter="matTableExporter" matSort>
+                  
 
                       <ng-container matColumnDef="SchemeName">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme</mat-header-cell>
-                        <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                          <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                          </mat-checkbox>
+                          Scheme</mat-header-cell>
+                        <mat-cell *matCellDef="let Row"> 
+                      
+                          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(Row) : null"
+                            [checked]="selection.isSelected(Row)">
+                          </mat-checkbox>
+                          {{Row.SchemeName}}
+                        </mat-cell>
                       </ng-container>
                       <ng-container matColumnDef="Batch">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Batch</mat-header-cell>
@@ -218,7 +241,7 @@
 
                     </form>
 
-                    <mat-paginator #PageClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                    <mat-paginator #PageClass [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100,1000]"></mat-paginator>
 
                   </div>
 

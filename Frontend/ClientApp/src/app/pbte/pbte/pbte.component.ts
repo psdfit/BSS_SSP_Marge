@@ -24,6 +24,7 @@ import { ExportExcel } from '../../shared/Interfaces';
 import { FormControl } from '@angular/forms';
 import { GroupByPipe } from 'angular-pipes';
 import { DialogueService } from 'src/app/shared/dialogue.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 @Component({
@@ -34,6 +35,26 @@ import { DialogueService } from 'src/app/shared/dialogue.service';
 })
 
 export class PBTEComponent implements OnInit {
+  selection = new SelectionModel<any>(true, []);
+  ParentSchemeName: string=""
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.pbteClasses.filteredData.length;
+    return numSelected === numRows;
+  }
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.pbteClasses.filteredData.forEach(row => this.selection.select(row));
+    // console.log(numRows)
+  }
+
+  getSelectedScheme(){
+    debugger;
+const _schemeName = this.ParentSchemeName
+const _schemeList= this.selection.selected
+  }
+
   environment = environment;
   pbteform: FormGroup;
   title: string; savebtn: string;

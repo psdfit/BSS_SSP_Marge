@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Text.Json;
 using DataLayer.Models.SSP;
 
 
@@ -18,6 +19,8 @@ namespace DataLayer.Interfaces
         public DataTable FetchDropDownList(string Param);
         public DataTable SaveProfile(BusinessProfileModel param);
         public DataTable SaveContactPersonProfile(BusinessProfileModel param);
+
+       public DataTable FetchData(dynamic data,string SpName);
 
     }
 }

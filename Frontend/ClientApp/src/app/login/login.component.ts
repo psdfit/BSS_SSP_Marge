@@ -80,6 +80,7 @@ export class LoginComponent implements OnInit {
   }
   checkForKAMUser() {
     this.currentUser = this.Common.getUserDetails();
+    console.log(this.currentUser)
     const userid = this.currentUser.UserID;
     this.Common.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe((d: any) => {
       this.kamAssignedUsers = d;

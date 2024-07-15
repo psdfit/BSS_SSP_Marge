@@ -92,7 +92,9 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
         if (this.user.RoleID == EnumUserRoles.TSP) {
           this.IsTspUser = true;
         }
+        
         this.mainMenuItems = this.common.getMenuItems();
+        console.log(this.mainMenuItems);
         this.userOrgs = this.common.getUserOrgs();
       }
       else

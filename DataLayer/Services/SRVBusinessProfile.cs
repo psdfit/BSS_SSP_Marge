@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Mvc;
 using DataLayer.JobScheduler.Scheduler;
 using DataLayer.Models.SSP;
 using System.IO;
+using System.Dynamic;
+using System.Text.Json;
+using System.Security.Cryptography.Xml;
 namespace DataLayer.Services
 {
     public class SRVBusinessProfile : ISRVBusinessProfile
@@ -203,5 +206,25 @@ namespace DataLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public DataTable FetchData(dynamic data, string SpName)
+        {
+            try
+            {
+                
+                dynamic DataObject = JsonConvert.DeserializeObject<dynamic>(data.ToString());
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@StartDate", DataObject.StartDate.ToString()));
+                param.Add(new SqlParameter("@EndDate", DataObject.EndDate.ToString()));
+               
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
+                return dt; ;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }
