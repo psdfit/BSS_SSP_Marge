@@ -4,6 +4,7 @@ import { AuthGuardService } from '../../app/security/auth-guard.service';
 import { GeneratePrnCompletionComponent } from './generate-prn-completion/generate-prn-completion.component';
 import { GeneratePrnFinalComponent } from './generate-prn-final/generate-prn-final.component';
 import { GenerateTrnComponent } from './generate-trn/generate-trn.component';
+import { GenerateSrnCourseraComponent } from './generate-srn-coursera/generate-srn-coursera.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Generate TRN',
+    },
+  },
+  {
+    path: 'generate-srn-coursera',
+    component: GenerateSrnCourseraComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate Coursera SRN',
     },
   },
 ];

@@ -1032,7 +1032,7 @@ For the Month of ${monthForReport}`;
         , '2 day before': item.TwoDayBefore1
         , '3 day before': item.ThreeDayBefore1
         , 'Sufficient Consumables': item.SufficientConsumablesVisit1
-        , 'Sufficient equipment/tools': item.SufficientEquipmentTools1
+        , 'Sufficient equipment/tools': item.SufficientEquipmentToolsVisit1
         , 'Quality of practical training': item.QualityOfPracticalTrainingVisit1
         , 'Quality of meals': item.QualityOfMealsVisit1
         , 'Quality of boarding facility': item.QualityOfBoardingFacilityVisit1
@@ -1044,7 +1044,7 @@ For the Month of ${monthForReport}`;
         , '2 day before ': item.TwoDayBefore2
         , '3 day before ': item.ThreeDayBefore2
         , 'Sufficient Consumables ': item.SufficientConsumablesVisit2
-        , 'Sufficient equipment/tools ': item.SufficientEquipmentTools2
+        , 'Sufficient equipment/tools ': item.SufficientEquipmentToolsVisit2
         , 'Quality of practical training ': item.QualityOfPracticalTrainingVisit2
         , 'Quality of meals ': item.QualityOfMealsVisit2
         , 'Quality of boarding facility ': item.QualityOfBoardingFacilityVisit2
@@ -1056,7 +1056,7 @@ For the Month of ${monthForReport}`;
         , '2 day before  ': item.TwoDayBefore3
         , '3 day before  ': item.ThreeDayBefore3
         , 'Sufficient Consumables  ': item.SufficientConsumablesVisit3
-        , 'Sufficient equipment/tools  ': item.SufficientEquipmentTools3
+        , 'Sufficient equipment/tools  ': item.SufficientEquipmentToolsVisit3
         , 'Quality of practical training  ': item.QualityOfPracticalTrainingVisit3
         , 'Quality of meals  ': item.QualityOfMealsVisit3
         , 'Quality of boarding facility  ': item.QualityOfBoardingFacilityVisit3

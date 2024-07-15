@@ -5,11 +5,32 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 
 namespace DataLayer.Services
 {
     public class SRVAttendancePerception : SRVBase, DataLayer.Interfaces.ISRVAttendancePerception
     {
+        public DataTable FetchAttendancePerceptionList(AMSReportsParamModel model)
+        {
+            String sDate = model.Month.ToString();
+            DateTime datevalue = (Convert.ToDateTime(sDate.ToString()));
+
+            String Month = datevalue.Day.ToString(); //Converting Day to Month
+            String Day = datevalue.Month.ToString();  // Converting Month to Day
+            String yy = datevalue.Year.ToString();
+            string strMonth = yy + "-" + Month + "-" + Day;
+
+            SqlParameter[] param = new SqlParameter[5];
+
+            param[0] = new SqlParameter("@SchemeID", model.SchemeID);
+            param[1] = new SqlParameter("@TSPID", model.TSPID);
+            param[2] = new SqlParameter("@ClassID", model.ClassID);
+            param[3] = new SqlParameter("@Month", model.Month);
+            param[4] = new SqlParameter("@UserID", model.UserID);
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_AttendancePerceptionData", param).Tables[0];
+           return dt;
+        }
         public List<AttendancePerceptionModel> GetAttendancePerceptionList(AMSReportsParamModel model)
         {
             try

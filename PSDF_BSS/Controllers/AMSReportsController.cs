@@ -78,7 +78,9 @@ namespace PSDF_BSS.Controllers
         {
             try
             {
-                return Ok(srvAP.GetAttendancePerceptionList(m));
+                //return Ok(srvAP.GetAttendancePerceptionList(m));
+                return Ok(srvAP.FetchAttendancePerceptionList(m));
+
             }
             catch (Exception e)
             { return BadRequest(e.InnerException.ToString()); }
