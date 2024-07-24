@@ -105,8 +105,6 @@ namespace DataLayer.Models
         public string ProgramFocusName { get; set; }
         public string RegistrationAuthorityName { get; set; }
 
-        /// Added by Rao Ali Haider on 22-July-2024 for VRN Payment
-        public int balloonpayment { get; set; }
 
     }
 }
