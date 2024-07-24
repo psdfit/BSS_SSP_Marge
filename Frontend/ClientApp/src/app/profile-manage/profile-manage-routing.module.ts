@@ -5,6 +5,7 @@ import { AuthGuardService } from '../security/auth-guard.service';
 
 import { BaseDataComponent } from './base-data/base-data.component';
 import { RegistrationEvaluationComponent } from './registration-evaluation/registration-evaluation.component';
+import { TspRegistrationReportComponent } from './tsp-registration-report/tsp-registration-report.component';
 
 
 
@@ -39,6 +40,16 @@ const routes: Routes = [
       icon: "verified_user",
       inMenu: true,
       title: "Registration Evaluation",
+    },
+  },
+  {
+    path: "registration-report",
+    component: TspRegistrationReportComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "TSP Registration Report",
     },
   },
 ];

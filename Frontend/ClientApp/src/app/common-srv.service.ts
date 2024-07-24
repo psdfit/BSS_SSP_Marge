@@ -364,6 +364,7 @@ export class CommonSrvService {
     return headers;
   }
   getMenuItems(): MenuItem[] {
+    debugger;
     this.userrights = JSON.parse(sessionStorage.getItem(environment.RightsToken));
     // console.log(this.userrights)
     this.currentUser = this.getUserDetails();

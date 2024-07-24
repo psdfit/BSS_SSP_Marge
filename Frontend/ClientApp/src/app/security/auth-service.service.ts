@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -29,6 +30,7 @@ export class AuthService {
     this.Loading.next(v); // {2}
   }
   setCredntial(cred: any, rememberme: boolean) {
+console.log(JSON.parse(cred[1]).filter(dd=>dd.ModuleTitle=="Reports"))
     let u: UsersModel = JSON.parse(atob(cred[0]));
     let UserImg = u.UserImage;
     u.UserImage = "";

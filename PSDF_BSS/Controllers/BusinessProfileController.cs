@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Newtonsoft.Json;
 using PSDF_BSS.Logging;
+using Newtonsoft;
+using System.Text.Json;
+using System.Dynamic;
+
 namespace PSDF_BSSMaster.Controllers
 {
     [ApiController]
@@ -204,7 +208,49 @@ namespace PSDF_BSSMaster.Controllers
             {
                 return BadRequest("Access Denied. you are not authorized for this activity");
             }
+        }      
+        
+        
+        [HttpPost("GetDashboardData")]
+        public IActionResult GetDashboardData([FromBody] dynamic data)
+        {
+            var startDate = data.StartDate;
+
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(
+                false,
+                Convert.ToInt32(User.Identity.Name),
+                Split[2],
+                Split[3]
+            );
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    var _formWiseTSPCount = srvprofile.FetchData(data, "RD_SSPFormWiseTSPCount");
+                    var _programWiseRegisteredTSP = srvprofile.FetchData(data, "RD_SSPProgramWiseRegisteredTSP");
+                    var _registeredTSPCount = srvprofile.FetchData(data, "RD_SSPRegisteredTSPCount");
+                    var _registrationDetail = srvprofile.FetchDropDownList("RD_SSPTSPRegistrationDetail");
+                    return Ok(new 
+                    { 
+                        formWiseTSPCount = _formWiseTSPCount ,
+                        programWiseRegisteredTSP= _programWiseRegisteredTSP,
+                        registeredTSPCount= _registeredTSPCount,
+                        registrationDetail= _registrationDetail
+                    });
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
         }
+
+     
         [HttpPost]
         [Route("GetStatus")]
         public IActionResult GetStatus()

@@ -1,0 +1,131 @@
+<mat-toolbar color="accent" class=" slim slim mt-1" style="margin-bottom: 0px !important;">
+  <mat-icon class="material-icons"> view_comfy </mat-icon>
+  <span class="spacer">Manage and View All </span>
+</mat-toolbar>
+<div class="row mt-1">
+  <div class="col-sm-12">
+    <div class="card  mb-2">
+      <div class="pb-3">
+        <form (ngSubmit)="ApplyFilter()" [formGroup]="FilterForm">
+          <div class="row " style="margin: 0.1px;">
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>Start Date</mat-label>
+                <input formControlName="StartDate" [max]="SDate" [matDatepicker]="StartDate" readonly matInput required>
+                <mat-datepicker-toggle matSuffix [for]="StartDate" matTooltip="Start Date"></mat-datepicker-toggle>
+                <mat-datepicker #StartDate disabled="false"></mat-datepicker>
+                <mat-error *ngFor="let error of FilterForm.get('StartDate').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>End Date</mat-label>
+                <input formControlName="EndDate" [max]="SDate" [matDatepicker]="EndDate" readonly matInput required>
+                <mat-datepicker-toggle matSuffix [for]="EndDate" matTooltip="End Date"></mat-datepicker-toggle>
+                <mat-datepicker #EndDate disabled="false"></mat-datepicker>
+                <mat-error *ngFor="let error of FilterForm.get('EndDate').errors | keyvalue">{{
+                  getErrorMessage(error.key, error.value) }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>Filter 3</mat-label>
+                <mat-select formControlName="SchemeDesignOn" matInput required>
+                  <mat-option value="Province">Province</mat-option>
+                  <mat-option value="Cluster">Cluster</mat-option>
+                  <mat-option value="District">District</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>Filter 4</mat-label>
+                <mat-select formControlName="SchemeDesignOn" matInput required>
+                  <mat-option value="Province">Province</mat-option>
+                  <mat-option value="Cluster">Cluster</mat-option>
+                  <mat-option value="District">District</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row" style="float:right">
+            <div class="col-sm-12">
+              <button class="mr-1" color="primary" mat-raised-button><i class="fas fa-check"></i> Fetch Record </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <div class="card  mb-2">
+      <mat-toolbar color="accent" class=" slim slim mt-1" style="margin-bottom: 0px !important;">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">TSP Registration Completion </span>
+      </mat-toolbar>
+      <div id="containerPassed" style="width:100%;"></div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card  mb-2">
+      <mat-toolbar color="accent" class=" slim slim mt-1" style="margin-bottom: 0px !important;">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">Program Registration </span>
+      </mat-toolbar>
+      <div id="programRegChart" style="width:100%;"></div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card  mb-2">
+      <mat-toolbar color="accent" class=" slim slim mt-1" style="margin-bottom: 0px !important;">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">TSP Registration </span>
+      </mat-toolbar>
+      <div id="tspRegChart" style="width:100%;"></div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card  mb-2">
+      <mat-toolbar color="accent" class=" slim slim mt-1" style="margin-bottom: 0px !important;">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">Registration Completion</span>
+      </mat-toolbar>
+      <div id="regCompletionStatusChart" style="width:100%;"></div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <div class="card pr-1 pl-1">
+      <mat-toolbar color="accent" class=" slim slim mt-1" style="margin-bottom: 0px !important;">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">TSP Registration Detail </span>
+      </mat-toolbar>
+      <ng-container *ngIf="TablesData.filteredData.length==0;">
+        <div class="alert alert-success" role="alert">
+          No record found.
+        </div>
+      </ng-container>
+      <!-- <ng-template #elseBlock> -->
+      <div class="table-responsive" [hidden]="TablesData.filteredData.length==0">
+        <mat-table [dataSource]="TablesData" #Sort="matSort" matSort>
+          <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <ng-container>
+                &nbsp;{{row[column]}}
+              </ng-container>
+              <ng-container *ngIf="column == 'TspName'">
+                {{ row[column] | titlecase }}
+              </ng-container>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
