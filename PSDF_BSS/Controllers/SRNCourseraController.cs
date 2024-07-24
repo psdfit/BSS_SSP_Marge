@@ -50,5 +50,38 @@ namespace PSDF_BSS.Controllers
             catch (Exception e)
             { return BadRequest(e.InnerException.ToString()); }
         }
+
+        //// Develop by Rao Ali Haider 24-july-2024
+        /// Fetch the VRN Classes 
+        [HttpPost]
+        [Route("GetVRNReport")]
+        public IActionResult GetVRNReport([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                return Ok(srvsrnCoursera.FetchVRNClasses(mod));
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
+
+        //// Develop by Rao Ali Haider 24-july-2024
+        /// Fetch the VRN Classes 
+        [HttpPost]
+        [Route("GenerateVRN")]
+        public IActionResult GenerateVRN([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+                ls.Add(srvsrnCoursera.GenerateVRN(mod, out string IsGenerated));
+                ls.Add(Convert.ToBoolean(IsGenerated));
+                return Ok(ls);
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
     }
 }

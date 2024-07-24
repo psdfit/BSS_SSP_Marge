@@ -396,6 +396,11 @@
           <mat-error *ngIf="notForm.controls.Stipend.invalid && notForm.controls.Stipend.errors.required">required</mat-error>
         </mat-form-field>
       </div>
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        <mat-form-field>
+          <input matInput placeholder="Balloon payment" formControlName="balloonpayment" required type="text" DecimelOnly>
+        </mat-form-field>
+      </div>
       <!--<input type="hidden" formControlName="Stipend" required>-->
       <!--<div class="col-sm-6 col-md-3 col-lg-3">
     <mat-form-field>
@@ -779,6 +784,7 @@
           <th>Formal Employment Commitment</th>
           <th>Overall Employment Commitment</th>
           <th>Stipend</th>
+          <th>Balloon payment</th>
           <th>Total Cost</th>
           <th *ngIf="!scheme[0]?.FinalSubmitted">Action</th>
         </tr>
@@ -1269,6 +1275,17 @@
               <ng-container *ngIf="!row.IsEditable">{{row.Stipend}}</ng-container>
               <br />
               <span *ngIf="!row.Stipend" [style.color]="!row.Stipend? 'red': ''">Please save scheme</span>
+
+              <!--<mat-form-field>
+      <mat-form-field><input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly maxlength="15">
+      <mat-error *ngIf="row.controls.Stipend.invalid && row.controls.Stipend.errors.required">required</mat-error>
+    </mat-form-field>-->
+            </td>
+            
+            <td>
+              <ng-container *ngIf="row.IsEditable"> <mat-form-field><input matInput type="text" formControlName="balloonpayment" [ngModel]="row.balloonpayment" /></mat-form-field></ng-container>
+              <ng-container *ngIf="!row.IsEditable">{{row.balloonpayment}}</ng-container>
+              <br />
 
               <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly maxlength="15">

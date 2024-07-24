@@ -5,7 +5,7 @@ import { GeneratePrnCompletionComponent } from './generate-prn-completion/genera
 import { GeneratePrnFinalComponent } from './generate-prn-final/generate-prn-final.component';
 import { GenerateTrnComponent } from './generate-trn/generate-trn.component';
 import { GenerateSrnCourseraComponent } from './generate-srn-coursera/generate-srn-coursera.component';
-
+import { GenerateVrnComponent } from './generate-vrn/generate-vrn.component';
 const routes: Routes = [
   {
     path: 'generate-prn-completion',
@@ -45,6 +45,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Generate Coursera SRN',
+    },
+  }, 
+  {
+    path: 'generate-vrn',
+    component: GenerateVrnComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate VRN',
     },
   },
 ];

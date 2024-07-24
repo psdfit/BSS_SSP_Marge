@@ -133,6 +133,7 @@ export class ClassComponent implements OnInit {
       EmploymentCommitmentFormal: [0, Validators.required],
       OverallEmploymentCommitment: [0, Validators.required],
       Stipend: [0, Validators.required],
+      balloonpayment: 0,
       //StipendMode: ['Digital', Validators.required],
       TotalCostPerClass: [0, Validators.required],
       //TradeDetailMapID: ['']
@@ -515,6 +516,7 @@ export class ClassComponent implements OnInit {
               this.tableList['EmploymentCommitmentFormal'] = this.notForm.controls.EmploymentCommitmentFormal.value,
               this.tableList['OverallEmploymentCommitment'] = this.notForm.controls.OverallEmploymentCommitment.value,
               this.tableList['Stipend'] = Math.round(this.notForm.controls.Stipend.value),
+              this.tableList['balloonpayment'] = this.notForm.controls.balloonpayment.value,
               this.tableList['TotalCostPerClass'] = this.notForm.controls.TotalCostPerClass.value,
               this.tableList['TradeDetailMapID'] = tradeDetailID,
               this.tableList['IsEditable'] = false
@@ -561,6 +563,7 @@ export class ClassComponent implements OnInit {
               EmploymentCommitmentFormal: this.notForm.controls.EmploymentCommitmentFormal.value,
               OverallEmploymentCommitment: this.notForm.controls.OverallEmploymentCommitment.value,
               Stipend: this.notForm.controls.Stipend.value,
+              balloonpayment: this.notForm.controls.balloonpayment.value,
               TotalCostPerClass: TotalCost_temp
             }, { emitEvent: true });
           });
@@ -983,6 +986,7 @@ export class ClassComponent implements OnInit {
             this.tableList['EmploymentCommitmentFormal'] = Math.round(f['Employment Commitment Formal']),
             this.tableList['OverallEmploymentCommitment'] = Math.round(f['Employment Commitment Self'] + f['Employment Commitment Formal']),
             this.tableList['Stipend'] = Math.round(f['Stipend']),
+            this.tableList['balloonpayment'] = f['Balloon payment'] ?? 0,
             this.tableList['TotalCostPerClass'] = Math.round(TotalCost_temp),
             this.tableList['IsEditable'] = false
 
@@ -1048,6 +1052,7 @@ export class ClassComponent implements OnInit {
             EmploymentCommitmentFormal: Math.round(f['Employment Commitment Formal']),
             OverallEmploymentCommitment: Math.round(f['Employment Commitment Self'] + f['Employment Commitment Formal']),
             Stipend: Math.round(f['Stipend']),
+            balloonpayment: Math.round(f['balloonpayment']),
             TotalCostPerClass: Math.round(TotalCost_temp)
           }, { emitEvent: true });
           form.markAllAsTouched();
@@ -1247,6 +1252,7 @@ export class ClassComponent implements OnInit {
       (!row['TrainingCostPerTraineePerMonthInTax'] && row['TrainingCostPerTraineePerMonthInTax'] != 0) ||
       (isNaN(row.UniformBagCost)) ||
       (isNaN(row.Stipend)) ||
+      (!row['balloonpayment'] && row['balloonpayment'] != 0) ||
       (!row['PerTraineeTestCertCost'] && row['PerTraineeTestCertCost'] != 0) ||
       (!row['EmploymentCommitmentSelf'] && row['EmploymentCommitmentSelf'] != 0) ||
       (!row['EmploymentCommitmentFormal'] && row['EmploymentCommitmentFormal'] != 0) ||
@@ -1401,6 +1407,7 @@ export class ClassComponent implements OnInit {
       OverallEmploymentCommitment: [0, Validators.required],
       Stipend: [0, Validators.required],
       //StipendMode: ['Digital', Validators.required],
+      balloonpayment: 0,
       TotalCostPerClass: [0, Validators.required],
       TradeDetailMapID: ['', Validators.required],
       RequiredLocationGeoTag: ['', Validators.required]
@@ -1454,6 +1461,7 @@ export class ClassModel extends ModelBase {
   PerTraineeTestCertCost: number;
   TotalCostPerClass: number;
   Stipend: number;
+  balloonpayment: number;
   //StipendMode: string;
   BoardingAllowancePerTrainee: number;
   BidPrice: number;
