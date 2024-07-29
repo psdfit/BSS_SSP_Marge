@@ -442,15 +442,20 @@ namespace DataLayer.Services
             try
             {
                 DataTable dt = new DataTable();
-
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
                 if (filterModel.SchemeID == 1)
                 { dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "CourseEraInvitationNotAccepted").Tables[0]; }
                 else if (filterModel.SchemeID == 2)
                 {
-                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "CourseEra14DaysInActive").Tables[0];
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "CourseEra14DaysInActive", param.ToArray()).Tables[0];
                 }
                 else if (filterModel.SchemeID == 3)
                 { dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "CourseEra28DaysInActive").Tables[0]; }
+                else if(filterModel.SchemeID >= 4)
+                { 
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "CourseEra14DaysInActive", param.ToArray()).Tables[0];
+                }
 
                 if (dt.Rows.Count > 0)
                     totalCount = dt.Rows.Count;

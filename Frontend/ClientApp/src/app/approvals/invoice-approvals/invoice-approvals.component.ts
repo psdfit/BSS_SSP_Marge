@@ -195,7 +195,7 @@ export class InvoiceApprovalsComponent implements OnInit {
 
 
   openApprovalDialogue(row: any): void {
-
+    debugger;
     this.dialogue.openApprovalDialogue(row.ProcessKey, row.InvoiceHeaderID).subscribe(result => {
       console.log(result);
       // location.reload();

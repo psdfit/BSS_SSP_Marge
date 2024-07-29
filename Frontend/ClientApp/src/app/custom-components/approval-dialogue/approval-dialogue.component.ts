@@ -48,18 +48,21 @@ export class ApprovalDialogueComponent implements OnInit {
   RejectedButtonHide(ProcessKey: any) {
     if (ProcessKey === 'PO_SRN'
       || ProcessKey === 'PO_TRN'
+      || ProcessKey === 'PO_VRN'
       || ProcessKey === 'PO_TSP'
       || ProcessKey === 'PRN_C'
       || ProcessKey === 'PRN_F'
       || ProcessKey === 'PRN_R'
       || ProcessKey === 'PRN_T'
       || ProcessKey === 'SRN'
+      || ProcessKey === 'VRN'
       || ProcessKey === 'INV_1ST'
       || ProcessKey === 'INV_2ND'
       || ProcessKey === 'INV_C'
       || ProcessKey === 'INV_F'
       || ProcessKey === 'INV_R'
       || ProcessKey === 'INV_SRN'
+      || ProcessKey === 'INV_VRN'
       || ProcessKey === 'INV_TRN'
     )
       this.RejectedButtonHideBit = false;
@@ -70,10 +73,12 @@ export class ApprovalDialogueComponent implements OnInit {
       EnumApprovalProcess.AP_BD === this.latest.ProcessKey
       || EnumApprovalProcess.AP_PD === this.latest.ProcessKey
       || EnumApprovalProcess.PO_SRN === this.latest.ProcessKey
+      || EnumApprovalProcess.PO_VRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_TRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_TSP === this.latest.ProcessKey
       || EnumApprovalProcess.INV_R === this.latest.ProcessKey
       || EnumApprovalProcess.INV_SRN === this.latest.ProcessKey
+      || EnumApprovalProcess.INV_VRN === this.latest.ProcessKey
       || EnumApprovalProcess.INV_F === this.latest.ProcessKey
       || EnumApprovalProcess.INV_TRN === this.latest.ProcessKey
       || EnumApprovalProcess.INV_C === this.latest.ProcessKey
@@ -127,8 +132,10 @@ export class ApprovalDialogueComponent implements OnInit {
       ApprovalStatusID: approvalStatusID,
       Comments: this.approvalForm.getRawValue().Remarks,
     };
+    debugger;
     this.http.postJSON('api/Approval/SaveApprovalHistory', obj).subscribe(
       (_response: boolean) => {
+        debugger;
         if (_response === true) {
           this.ngOnInit();
           if (!this.latest.IsFinalStep && isPostInSAP && EnumApprovalProcess.AP_PD === this.latest.ProcessKey) {

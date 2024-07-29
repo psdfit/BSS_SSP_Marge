@@ -237,8 +237,14 @@ namespace DataLayer.Services
 
                         if (isFinalApprover)
                         {
-                            srvPurchaseOrder.CreatePOForSRN(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_SRN, model.CurUserID, _transaction);
-                        }
+                            var ProcessKey = model.ProcessKey;
+                            if (ProcessKey == "VRN") {
+                                srvPurchaseOrder.CreatePOForSRN(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_VRN, model.CurUserID, _transaction);
+                            }
+                            else {
+                                srvPurchaseOrder.CreatePOForSRN(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_SRN, model.CurUserID, _transaction);
+                            }
+                         }
                         _transaction.Commit();
                         result = true;
                     }
@@ -702,6 +708,36 @@ namespace DataLayer.Services
                                                 _transaction.Commit();
                                                 result = true;
                                                 break;
+
+                                            case EnumApprovalProcess.PO_VRN:
+                                                srvPurchaseOrder.POHeaderApproveReject(new POHeaderModel()
+                                                {
+                                                    POHeaderID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    ModifiedUserID = model.CurUserID
+                                                }, _transaction);
+
+                                                //Enter Purchase Order in SAP
+                                                var mdVRN = new POHeaderModel { POHeaderID = model.FormID, ProcessKey = "", Month = null };
+                                                var poHeaderVRN = srvPOHeader.FetchPOHeader(mdVRN, _transaction).First();
+                                                var poLinesVRN = srvPOLines.GetPOLinesByPOHeaderID(model.FormID, _transaction);
+                                                if (string.IsNullOrEmpty(poHeaderVRN?.DocNum) || poHeaderVRN?.DocNum == "0")
+                                                {
+                                                    var sapSRNResponse = srvSAPApi.SaveSAPPurchaseOrder(poHeaderVRN, poLinesVRN, _transaction).Result;
+                                                    if (sapSRNResponse.Status == "1"
+                                                        //|| (sapSRNResponse.Status == "0" && sapSRNResponse.POModel.DocEntry > 0 && !string.IsNullOrEmpty(sapSRNResponse.POModel.DocNum))
+                                                        )
+                                                    {
+                                                        new SRVPOHeader().UpdateSAPInPOHeader(model.FormID, sapSRNResponse.POModel.DocEntry, sapSRNResponse.POModel.DocNum, _transaction);
+                                                        // new SRVPOLines().UpdateSAPInPOLines(model.FormID, sapSRNResponse.POModel.PODetail, poLinesSRN, _transaction);
+                                                    }
+                                                }
+                                                srvSRN.GenerateInvoiceHeader_SRN(model.FormID, _transaction, EnumApprovalProcess.INV_VRN);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
+
 
                                             case EnumApprovalProcess.PO_TSP:
                                                 List<POHeaderModel> POHeaderModel = srvPurchaseOrder.GetPOHeaderByID(model.FormID, _transaction);

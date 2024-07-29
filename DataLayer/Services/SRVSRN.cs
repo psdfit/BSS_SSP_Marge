@@ -122,7 +122,13 @@ namespace DataLayer.Services
             SRN.ModifiedUserID = row.Field<int>("ModifiedUserID");
             SRN.ModifiedDate = row.Field<DateTime?>("ModifiedDate"); ;
             SRN.InActive = row.Field<bool?>("InActive");
+
             
+           if (row.Table.Columns.Contains("ProcessKey"))
+            {
+                SRN.ProcessKey = row.Field<string>("ProcessKey");
+            }
+
             return SRN;
         }
 
