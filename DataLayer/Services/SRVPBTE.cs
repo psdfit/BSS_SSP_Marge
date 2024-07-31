@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Reflection;
 
 namespace DataLayer.Services
 {
@@ -45,7 +47,7 @@ namespace DataLayer.Services
 
                     SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[Update_Classes_PBTE]", param);
                 }
-                if(ls[0].NAVTTCCollegeID != null)
+                if (ls[0].NAVTTCCollegeID != null)
                 {
                     SqlParameter[] param = new SqlParameter[1];
                     param[0] = new SqlParameter("@Json", JsonConvert.SerializeObject(ls));
@@ -130,8 +132,8 @@ namespace DataLayer.Services
             }
             catch (Exception ex)
             { throw new Exception(ex.Message); }
-        } 
-        
+        }
+
         public void UpdateNAVTTCTrainees(List<PBTEModel> ls)
         {
             try
@@ -150,16 +152,16 @@ namespace DataLayer.Services
             catch (Exception ex)
             { throw new Exception(ex.Message); }
         }
-        
+
         public void UpdatePBTETrades(List<PBTEModel> ls)
         {
             try
             {
 
-                    SqlParameter[] param = new SqlParameter[1];
-                    param[0] = new SqlParameter("@Json", JsonConvert.SerializeObject(ls));
+                SqlParameter[] param = new SqlParameter[1];
+                param[0] = new SqlParameter("@Json", JsonConvert.SerializeObject(ls));
 
-                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[Update_Trades_PBTE]", param);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[Update_Trades_PBTE]", param);
             }
             catch (Exception ex)
             { throw new Exception(ex.Message); }
@@ -176,16 +178,16 @@ namespace DataLayer.Services
 
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[Update_Trainees_Result_PBTE]", param);
 
-                if (ls.Count>0)
+                if (ls.Count > 0)
                 {
                     foreach (var item in ls)
                     {
-                        approvalModel.CustomComments +=",("+ "TraineeCode :" + item.TraineeCode+","+ "ResultStatusName :"+item.ResultStatusName+")";
+                        approvalModel.CustomComments += ",(" + "TraineeCode :" + item.TraineeCode + "," + "ResultStatusName :" + item.ResultStatusName + ")";
                     }
-                    
+
                 }
 
-                
+
                 approvalModel.ProcessKey = EnumApprovalProcess.EXAM_STATUS;
                 approvalModel.UserIDs = CurUserID.ToString();
                 approvalModel.isUserMapping = true;
@@ -220,7 +222,7 @@ namespace DataLayer.Services
             }
             return PBTEStatsL;
         }
-        
+
         private List<PBTEClassModel> LoopinClassData(DataTable dt)
         {
             List<PBTEClassModel> PBTEClassesL = new List<PBTEClassModel>();
@@ -293,7 +295,7 @@ namespace DataLayer.Services
                 PBTETraineesL.Add(RowOfPBTEDropoutTrainees(r));
             }
             return PBTETraineesL;
-        } 
+        }
         private List<PBTETradeModel> LoopinTradeData(DataTable dt)
         {
             List<PBTETradeModel> PBTETradesL = new List<PBTETradeModel>();
@@ -315,7 +317,7 @@ namespace DataLayer.Services
         //    }
         //    catch (Exception ex) { throw new Exception(ex.Message); }
         //}
-        
+
         public List<SchemeModel> FetchPBTESchemes()
         {
             try
@@ -325,7 +327,7 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
-        
+
         public List<PBTEClassModel> FetchPBTEClasses(PBTEQueryFilters filters)
         {
             try
@@ -638,6 +640,7 @@ namespace DataLayer.Services
         {
             PBTEClassModel PBTE = new PBTEClassModel();
             PBTE.SchemeName = r["SchemeName"].ToString();
+            PBTE.PBTESchemeName = r["PBTESchemeName"].ToString();
             PBTE.Batch = Convert.ToInt32(r["Batch"]);
             PBTE.TSPID = Convert.ToInt32(r["TSPID"]);
             PBTE.SchemeID = Convert.ToInt32(r["SchemeID"]);
@@ -647,6 +650,7 @@ namespace DataLayer.Services
             PBTE.DistrictID = Convert.ToInt32(r["DistrictID"]);
             PBTE.ClassCode = r["ClassCode"].ToString();
             PBTE.TradeName = r["TradeName"].ToString();
+            PBTE.PBTETradeName = r["PBTETradeName"].ToString();
             PBTE.TrainingAddressLocation = r["TrainingAddressLocation"].ToString();
             PBTE.TehsilName = r["TehsilName"].ToString();
             PBTE.DistrictName = r["DistrictName"].ToString();
@@ -700,7 +704,7 @@ namespace DataLayer.Services
             PBTE.CPDesignation = r["CPDesignation"].ToString();
             PBTE.CPEmail = r["CPEmail"].ToString();
             PBTE.CPLandline = r["CPLandline"].ToString();
-         
+
 
             return PBTE;
         }
@@ -770,7 +774,7 @@ namespace DataLayer.Services
         {
             PBTETraineeExamScriptModel PBTE = new PBTETraineeExamScriptModel();
 
-           
+
             PBTE.ExamID = Convert.ToInt32(r["ExamID"]);
             PBTE.ExamSessionUrdu = r["ExamSessionUrdu"].ToString();
             PBTE.ExamSessionenglish = r["ExamSessionenglish"].ToString();
@@ -785,7 +789,7 @@ namespace DataLayer.Services
 
             return PBTE;
         }
-        
+
         private PBTETraineeModel RowOfNAVTTCScriptTrainees(DataRow r)
         {
             PBTETraineeModel PBTE = new PBTETraineeModel();
@@ -816,7 +820,7 @@ namespace DataLayer.Services
         {
             PBTETraineeExamScriptModel PBTE = new PBTETraineeExamScriptModel();
 
-           
+
             PBTE.instituteId = Convert.ToInt32(r["instituteId"]);
             PBTE.qabId = Convert.ToInt32(r["qabId"]);
             PBTE.termId = Convert.ToInt32(r["termId"]);
@@ -862,12 +866,63 @@ namespace DataLayer.Services
             PBTE.TSPsCount = Convert.ToInt32(r["TSPsCount"]);
             PBTE.TraineesCount = Convert.ToInt32(r["TraineesCount"]);
             PBTE.DropOutTraineesCount = Convert.ToInt32(r["DropOutTraineesCount"]);
-   
+
 
             return PBTE;
         }
 
+        public DataTable FetchReportBySPName(string spName)
+        {
+            try
+            {
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), spName);
+                return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public bool savePBTESchemeMapping(List<SchemeMappingModel> data,int CurUser)
+        {
+            foreach (var model in data)
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@PBTESchemeName", model.PBTESchemeName));
+                param.Add(new SqlParameter("@SchemeName", model.SchemeName));
+                param.Add(new SqlParameter("@SchemeID", model.SchemeID));
+                param.Add(new SqlParameter("@CurUserID", CurUser));
+                 SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTESchemeMapping", param.ToArray());
+            }
+            return true;
+        }
+
+        public bool savePBTEDBFile(string attachment, int CurUser)
+        {
+
+            string _dbFile = SaveAttachment("PBTE-DB-BAK-File", attachment);
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@DBFile", _dbFile));
+            param.Add(new SqlParameter("@CreatedUserID", CurUser));
+            SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTEDBRestorationLog", param.ToArray());
+            return true;
+        }
 
 
+        private static string SaveAttachment(string FolderName, string attachment)
+        {
+            if (!string.IsNullOrEmpty(attachment))
+            {
+                string path = FilePaths.DOCUMENTS_FILE_DIR + FolderName;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                string paths = path + "\\";
+                return Common.AddFile(attachment, paths,"bak");
+            }
+            return "";
+        }
     }
 }

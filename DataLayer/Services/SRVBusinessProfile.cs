@@ -165,7 +165,7 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@POCEmail", user.POCEmail));
             param.Add(new SqlParameter("@POCMobile", user.POCMobile));
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPContactPerson", param.ToArray()).Tables[0];
-            return ProfileLoopinData(dt); ;
+            return ProfileLoopinData(dt);
         }
         private void UpdateAttachment(DataRow row, string columnName)
         {

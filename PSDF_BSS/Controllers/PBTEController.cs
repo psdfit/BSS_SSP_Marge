@@ -6,13 +6,18 @@ using System.Collections.Generic;
 using DataLayer.Classes;
 using DataLayer.Interfaces;
 using System.Threading.Tasks;
+using DataLayer.Models.SSP;
+using PSDF_BSS.Logging;
+using System.Data;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 namespace PSDF_BSSMaster.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class PBTEController : ControllerBase
     {
-        private readonly ISRVPBTE srvPBTE ;
+        private readonly ISRVPBTE srvPBTE;
         private readonly ISRVTraineeResultStatusTypes srvResultStatusType;
         private readonly ISRVScheme srvScheme;
         private readonly ISRVTSPDetail srvTSPDetail;
@@ -20,7 +25,7 @@ namespace PSDF_BSSMaster.Controllers
         private readonly ISRVTrade srvTrade;
         private readonly ISRVDistrict srvDistrict;
         private readonly ISRVSendEmail srvSendEmail;
-        public PBTEController(ISRVSendEmail srvSendEmail,ISRVPBTE srvPBTE, ISRVTraineeResultStatusTypes srvResultStatusType,ISRVScheme srvScheme, ISRVTSPDetail srvTSPDetail,ISRVClass srvClass,ISRVTrade srvTrade, ISRVDistrict srvDistrict)
+        public PBTEController(ISRVSendEmail srvSendEmail, ISRVPBTE srvPBTE, ISRVTraineeResultStatusTypes srvResultStatusType, ISRVScheme srvScheme, ISRVTSPDetail srvTSPDetail, ISRVClass srvClass, ISRVTrade srvTrade, ISRVDistrict srvDistrict)
         {
             this.srvPBTE = srvPBTE;
             this.srvResultStatusType = srvResultStatusType;
@@ -78,7 +83,7 @@ namespace PSDF_BSSMaster.Controllers
                 list.Add(srvScheme.FetchScheme(new SchemeModel() { FinalSubmitted = true, IsApproved = true }));
                 list.Add(srvTSPDetail.FetchApprovedTSPs());
                 list.Add(srvClass.FetchClassForPBTEFilter());
-                list.Add(srvTrade.FetchTrade(new TradeModel() { IsApproved = true}));
+                list.Add(srvTrade.FetchTrade(new TradeModel() { IsApproved = true }));
                 list.Add(srvDistrict.FetchDistrict(false));
 
                 return Ok(list);
@@ -97,6 +102,9 @@ namespace PSDF_BSSMaster.Controllers
                 List<object> list = new List<object>();
 
                 list.Add(srvPBTE.FetchPBTEClasses(filters));
+                list.Add(srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping"));
+                list.Add(srvPBTE.FetchReportBySPName("RD_PBTETradeMapping"));
+                list.Add(srvPBTE.FetchReportBySPName("RD_PBTETrade"));
 
                 return Ok(list);
             }
@@ -104,7 +112,8 @@ namespace PSDF_BSSMaster.Controllers
             {
                 return BadRequest(e.InnerException.ToString());
             }
-        }        [HttpPost]
+        }
+        [HttpPost]
         [Route("GetPBTETSPs")]
         public IActionResult GetPBTETSPs(PBTEQueryFilters filters)
         {
@@ -138,7 +147,7 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("GetPBTETraineesExamScriptData")]
         public IActionResult GetPBTETraineesExamScriptData(PBTEQueryFilters filters)
@@ -172,7 +181,7 @@ namespace PSDF_BSSMaster.Controllers
             {
                 return BadRequest(e.InnerException.ToString());
             }
-        } 
+        }
         [HttpPost]
         [Route("GetPBTEDropOutTrainees")]
         public IActionResult GetPBTEDropOutTrainees(PBTEQueryFilters filters)
@@ -224,7 +233,7 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("GetNAVTTCClasses")]
         public IActionResult GetNAVTTCClasses(PBTEQueryFilters filters)
@@ -241,7 +250,7 @@ namespace PSDF_BSSMaster.Controllers
             {
                 return BadRequest(e.InnerException.ToString());
             }
-        } 
+        }
         [HttpPost]
         [Route("GetNAVTTCTSPs")]
         public IActionResult GetNAVTTCTSPs(PBTEQueryFilters filters)
@@ -258,7 +267,7 @@ namespace PSDF_BSSMaster.Controllers
             {
                 return BadRequest(e.InnerException.ToString());
             }
-        } 
+        }
         [HttpPost]
         [Route("GetNAVTTCTrainees")]
         public IActionResult GetNAVTTCTrainees(PBTEQueryFilters filters)
@@ -366,7 +375,7 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpGet]
         [Route("GetPBTESchemes")]
         public IActionResult GetPBTESchemes()
@@ -399,7 +408,7 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("UpdateNAVTTCClasses")]
         public IActionResult UpdateNAVTTCClasses(List<PBTEModel> mod)
@@ -444,7 +453,7 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("UpdateNAVTTCTrainees")]
         public IActionResult UpdateNAVTTCTrainees(List<PBTEModel> mod)
@@ -459,7 +468,7 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("UpdatePBTETrades")]
         public IActionResult UpdatePBTETrades(List<PBTEModel> mod)
@@ -474,7 +483,7 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("UpdatePBTETraineesResult")]
         public IActionResult UpdatePBTETraineesResult(List<PBTEModel> mod)
@@ -486,9 +495,9 @@ namespace PSDF_BSSMaster.Controllers
                 //approvalModel.ProcessKey = EnumApprovalProcess.EXAM_STATUS;
                 //approvalModel.CurUserID = Convert.ToInt32(User.Identity.Name);
                 //srvSendEmail.GenerateEmailToApprovers(approvalModel, approvalHistoryModel);
-                int CurUserID= Convert.ToInt32(User.Identity.Name);
+                int CurUserID = Convert.ToInt32(User.Identity.Name);
                 srvPBTE.UpdatePBTETraineesResult(mod, CurUserID);
-               
+
                 return Ok(true);
             }
             catch (Exception e)
@@ -513,6 +522,61 @@ namespace PSDF_BSSMaster.Controllers
         //        return BadRequest(e.InnerException.ToString());
         //    }
         //}
+
+        [HttpPost]
+        [Route("SaveSchemeMapping")]
+        public IActionResult Save(List<SchemeMappingModel> data)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(false,Convert.ToInt32(User.Identity.Name),Split[2],Split[3]);
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    int CurUserID = Convert.ToInt32(User.Identity.Name);
+                    srvPBTE.savePBTESchemeMapping(data, CurUserID);
+                    DataTable MappedData=srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping");
+                    return Ok(MappedData);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }  
+        
+        [HttpPost]
+        [Route("SavePbteDBFile")]
+        public IActionResult SavePbteDBFile([FromBody] JObject data)
+
+       {
+
+            string pbteValue = data["pbteFile"]?.ToString();
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(false,Convert.ToInt32(User.Identity.Name),Split[2],Split[3]);
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    int CurUserID = Convert.ToInt32(User.Identity.Name);
+                    srvPBTE.savePBTEDBFile(pbteValue, CurUserID);
+                    //DataTable MappedData=srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping");
+                    return Ok("OK");
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }
     }
 }
 

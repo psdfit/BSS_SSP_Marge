@@ -36,25 +36,21 @@ import { SelectionModel } from '@angular/cdk/collections';
 
 export class PBTEComponent implements OnInit {
   selection = new SelectionModel<any>(true, []);
-  ParentSchemeName: string=""
+  ParentSchemeName: any=""
+  PbteDBFile: any;
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.pbteClasses.filteredData.length;
+    const numRows = this.hTablesData.filteredData.length;
     return numSelected === numRows;
   }
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.pbteClasses.filteredData.forEach(row => this.selection.select(row));
+      this.hTablesData.filteredData.forEach(row => this.selection.select(row));
     // console.log(numRows)
   }
 
-  getSelectedScheme(){
-    debugger;
-const _schemeName = this.ParentSchemeName
-const _schemeList= this.selection.selected
-  }
-
+  
   environment = environment;
   pbteform: FormGroup;
   title: string; savebtn: string;
@@ -62,9 +58,9 @@ const _schemeList= this.selection.selected
   navttcfilters: IQueryFilters = { SchemeID: 0, TSPID: 0, ClassID: 0, TradeID: 0, DistrictID: 0 };
 
   //exportAsConfig: ExportAsConfig
-  displayedColumnsClasses = ['SchemeName', 'Batch',
+  displayedColumnsClasses = ['SchemeName','PBTESchemeName', 'Batch',
     //'TSPID',
-    'TSPName', 'ClassCode', 'TradeName', 'TrainingAddressLocation', 'TehsilName',
+    'TSPName', 'ClassCode', 'TradeName','PBTETradeName', 'TrainingAddressLocation', 'TehsilName',
     'DistrictName', 'CertAuthName', 'TraineesPerClass', 'GenderName', 'Duration', 'StartDate', 'EndDate', 'ClassStatusName'];
 
   displayedColumnsTsps = [
@@ -94,6 +90,24 @@ const _schemeList= this.selection.selected
   ];
   displayedColumnsTrades = ['PBTETradeName', 'PBTETradeDuration'
   ];
+
+
+  hTablesData: MatTableDataSource<any>;
+  @ViewChild("hpaginator") hpaginator: MatPaginator;
+  @ViewChild("hsort") hsort: MatSort;
+  
+  hTableColumns = [];
+
+  tTablesData: MatTableDataSource<any>;
+  @ViewChild("tpaginator") tpaginator: MatPaginator;
+  @ViewChild("tsort") tsort: MatSort;
+  
+  tTableColumns = [];
+  // hTableColumns = [];
+
+
+
+
 
   groupedPbteTSPs: MatTableDataSource<any>;
   groupedTSPsArray: any;
@@ -320,6 +334,45 @@ const _schemeList= this.selection.selected
     }
   }
 
+
+  selectedCourseID:any=0
+  onSelectionChange(row: any) {
+    debugger;
+    this.selectedCourseID=0
+
+    // Perform any actions needed when the selection changes
+    console.log('Selected Course ID:', row.selectedCourseID);
+
+    this.selectedCourseID=row.selectedCourseID
+    this.BSearchCtr.setValue('');
+  }
+
+  getSelectedTrade(row:any) {
+    console.log('Selected Course ID:', row.selectedCourseID);
+    return;
+    const _schemeName = this.ParentSchemeName
+    const _schemeList = this.selection.selected
+
+    _schemeList.forEach(obj => {
+      obj.PBTESchemeName = _schemeName;
+    });
+
+    this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
+     this.mappedPBTEScheme = data;
+     this.selection.clear()
+     this.getPBTEClassData()
+     this.ParentSchemeName=""
+    }, error => this.error = error// error path
+    );
+
+  }
+
+  EmptyCtr() {
+    this.BSearchCtr.setValue('');
+  }
+  BSearchCtr = new FormControl('');
+
+  pbtecourse:any;
   getPBTEClassData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTEClasses', this.filters).subscribe((d: any) => {
       this.pbteClasses = new MatTableDataSource(d[0]);
@@ -328,9 +381,130 @@ const _schemeList= this.selection.selected
 
       this.pbteClasses.paginator = this.PageClass;
       this.pbteClasses.sort = this.SortClass;
+      this.GetScheme(d[0],d[1]);
+      this.GetTrade(d[0],d[2]);
+      this.pbtecourse=d[3];
     }, error => this.error = error// error path
     );
   }
+
+
+
+  GetScheme(_schemedata: any[], _mappedScheme: any[]) {
+    
+    const uniqueSchemes = {};
+
+    // Create a set of SchemeIDs from _mappedScheme for quick lookup
+    const mappedSchemeIds = new Set(_mappedScheme.map(item => item.SchemeID));
+
+    // Populate uniqueSchemes from _schemedata
+    _schemedata.forEach(item => {
+        uniqueSchemes[item.SchemeID] = {
+            SchemeID: item.SchemeID,
+            SchemeName: item.SchemeName
+        };
+    });
+
+    // Convert uniqueSchemes to an array
+    const _pbteScheme: any[] = Object.values(uniqueSchemes);
+
+    // Filter out schemes that are in _mappedScheme
+    const filteredSchemes = _pbteScheme.filter(scheme => !mappedSchemeIds.has(scheme.SchemeID));
+
+    // Load the filtered schemes into the MatTable
+    this.LoadMatTable(filteredSchemes, "SchemeMapping");
+}
+  GetTrade(_tradedata: any[], _mappedTrade: any[]) {
+    debugger
+    const uniqueTrades = {};
+
+    // Create a set of tradeIDs from _mappedtrade for quick lookup
+    const mappedTradeIds = new Set(_mappedTrade.map(item => item.TradeID));
+
+    // Populate uniqueTrades from _Tradedata
+    _tradedata.forEach(item => {
+        uniqueTrades[item.TradeID] = {
+          TradeID: item.TradeID,
+          TradeName: item.TradeName
+        };
+    });
+
+    // Convert uniqueTrades to an array
+    const _pbteTrade: any[] = Object.values(uniqueTrades);
+
+    // Filter out Trades that are in _mappedTrade
+    const filteredTrades = _pbteTrade.filter(Trade => !mappedTradeIds.has(Trade.TradeID));
+
+    // Load the filtered trades into the MatTable
+   this.LoadMatTable(filteredTrades, "tradeMapping");
+}
+
+
+  camelCaseToWords(input: string): string {
+    return input.replace(/([a-z])([A-Z])/g, '$1 $2');
+  }
+  DataExcelExport(Data: any, ReportName: string) {
+    this.ComSrv.ExcelExporWithForm(Data, ReportName);
+  }
+  LoadMatTable(tableData: any, tableName: string) {
+   debugger;
+    if (tableName == 'SchemeMapping') {
+      const excludeColumnArray = ["Status"]
+      this.hTableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key));
+      // this.hTableColumns.push('PBTE Scheme Name')
+      // this.hTableColumns.push('Action')
+      this.hTablesData = new MatTableDataSource(tableData)
+      this.hTablesData.paginator = this.hpaginator;
+      this.hTablesData.sort = this.hsort;
+      
+    }
+    if (tableName == 'tradeMapping') {
+      debugger
+      const excludeColumnArray = []
+      this.tTableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key));
+      this.tTableColumns.push('PBTE Trade Name')
+      this.tTableColumns.push('Action')
+      this.tTablesData = new MatTableDataSource(tableData)
+      this.tTablesData.paginator = this.tpaginator;
+      this.tTablesData.sort = this.tsort;
+      
+    }
+  }
+
+  mappedPBTEScheme:any=[]
+  getSelectedScheme() {
+    
+    const _schemeName = this.ParentSchemeName
+    const _schemeList = this.selection.selected
+
+    _schemeList.forEach(obj => {
+      obj.PBTESchemeName = _schemeName;
+    });
+
+    this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
+     this.mappedPBTEScheme = data;
+     this.selection.clear()
+     this.getPBTEClassData()
+     this.ParentSchemeName=""
+    }, error => this.error = error// error path
+    );
+
+  }
+  getSelectedFile() {
+    debugger
+    if(this.PbteDBFile){
+      const _pbteDBFile = this.PbteDBFile
+      this.ComSrv.postJSON('api/PBTE/SavePbteDBFile', {pbteFile:_pbteDBFile}).subscribe((data: any) => {
+       this.PbteDBFile=""
+      }, error => this.error = error// error path
+      );
+    }else{
+      this.ComSrv.ShowError('Please select a PBTE DB file')
+    }
+  
+
+  }
+
 
   getPBTETSPData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTETSPs', this.filters).subscribe((d: any) => {
@@ -1417,6 +1591,11 @@ const _schemeList= this.selection.selected
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.pbteClasses.filter = filterValue;
   }
+  applyFilter1(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    this.hTablesData.filter = filterValue;
+  }
 
   generateExcel() {
     let timeSpan = new Date().toISOString();
@@ -1784,13 +1963,13 @@ const _schemeList= this.selection.selected
  
   openTraineeJourneyDialogue(data: any): void 
   {
-    debugger;
+    
     this.dialogueService.openTraineeJourneyDialogue(data);
     }
 
     openClassJourneyDialogue(data: any): void 
     {
-      debugger;
+      
       this.dialogueService.openClassJourneyDialogue(data);
     }
 }

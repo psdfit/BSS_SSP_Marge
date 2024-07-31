@@ -1,5 +1,6 @@
 using DataLayer.Models;
 using System.Collections.Generic;
+using System.Data;
 
 namespace DataLayer.Interfaces
 {
@@ -46,6 +47,9 @@ namespace DataLayer.Interfaces
 
         public List<PBTETraineeModel> FetchNAVTTCTraineesSqlScript(PBTEQueryFilters filters);
 
+       bool savePBTESchemeMapping(List<SchemeMappingModel> data,int CurUser);
+       bool savePBTEDBFile(string data,int CurUser);
+        DataTable FetchReportBySPName(string spName);
 
 
     }

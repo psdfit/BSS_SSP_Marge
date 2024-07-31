@@ -16,6 +16,7 @@ namespace DataLayer.Models
         public int SchemeID { get; set; }
         public string ClassCode { get; set; }
         public string SchemeName { get; set; }
+        public string PBTESchemeName { get; set; }
         public int Batch { get; set; }
 
         public string TrainingAddressLocation { get; set; }
@@ -37,6 +38,7 @@ namespace DataLayer.Models
         public int TSPID { get; set; }
         public string TSPName { get; set; }
         public string TradeName { get; set; }
+        public string PBTETradeName { get; set; }
 
 
 
