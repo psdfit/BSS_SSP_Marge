@@ -4,6 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { ApprovalsComponent } from "./approvals/approvals.component";
 import { AuthGuardService } from "../../app/security/auth-guard.service";
 import { SrnApprovalsComponent } from "./srn-approvals/srn-approvals.component";
+import { VrnApprovalsComponent } from "./vrn-approvals/vrn-approvals.component";
 import { TradeApprovalsComponent } from "./trade-approvals/trade-approvals.component";
 import { RTPApprovalsComponent } from "./rtp-approvals/rtp-approvals.component";
 import { PrnApprovalsComponent } from "./prn-approvals/prn-approvals.component";
@@ -44,6 +45,16 @@ const routes: Routes = [
       icon: "verified_user",
       inMenu: true,
       title: "SRN Approval Requests",
+    },
+  },
+  {
+    path: "vrn-approvals",
+    component: VrnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "VRN Approval Requests",
     },
   },
   {

@@ -769,6 +769,7 @@ namespace DataLayer.Services
 
                                             case EnumApprovalProcess.INV_C:
                                             case EnumApprovalProcess.INV_SRN:
+                                            case EnumApprovalProcess.INV_VRN:
                                             case EnumApprovalProcess.INV_F:
                                                 ApprovalProcessModel ApprovalProcessInvoiceF = _srvApprovalProcess.GetByProcessKey(model.ProcessKey);
                                                 srvInvoiceMaster.InvoiceHeaderApproveReject(new InvoiceMasterModel()

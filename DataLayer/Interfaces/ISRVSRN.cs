@@ -9,6 +9,7 @@ namespace DataLayer.Interfaces
     {
         SRNModel GetBySrnId(int SRNID);
         List<SRNModel> FetchSRN(SRNModel mod);
+        List<SRNModel> FetchVRN(SRNModel mod);
         List<SRNModel> FetchSRN();
         List<SRNModel> FetchSRN(bool InActive);
         void ActiveInActive(int SrnId, bool? InActive, int CurUserID);

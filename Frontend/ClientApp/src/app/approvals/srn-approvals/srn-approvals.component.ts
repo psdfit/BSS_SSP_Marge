@@ -129,10 +129,6 @@ export class SrnApprovalsComponent implements OnInit {
             console.log(data)
             this.srnMasterArray = data.map(o => o.SRNID);
           this.SRNMasterIDs = this.srnMasterArray.join(',');
-            const groupedData = this.groupByPipe.transform(data, "ProcessKey");
-            if (groupedData.length > 0 && groupedData[0].hasOwnProperty('ProcessKey')) {
-              this.varProcessKey = groupedData[0].ProcessKey;
-            }
             this.srn = [];
             this.srnGroupedByBatch = this.groupByPipe.transform(data, "ApprovalBatchNo")
             let indexSRN = 0;
@@ -223,20 +219,11 @@ export class SrnApprovalsComponent implements OnInit {
       debugger;
       //let datas: IApprovalHistory = { ProcessKey: processKey, FormID: formID };
       var processk = srnGroup.map(x => x.ProcessKey)
-      if (processk.includes('VRN')) {
-        const dialogRef = this.dialog.open(SrnApprovalsDialogueComponent, {
-          width: '60%',
-          data: { ProcessKey: EnumApprovalProcess.VRN, FormIDs: srnGroup.map(x => x.SRNID) }
-        })
-      }
-      else {
+      
         const dialogRef = this.dialog.open(SrnApprovalsDialogueComponent, {
           width: '60%',
           data: { ProcessKey: EnumApprovalProcess.SRN, FormIDs: srnGroup.map(x => x.SRNID) }
         })
-      }
-
-        
 
     }
     ///---Invoke  Dialog---E--////

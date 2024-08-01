@@ -356,6 +356,7 @@ export class ApprovalsComponent implements OnInit {
           // ,"Employment Commitment Self	Employment Commitment Formal": x.
           // ,"Overall Employment Commitment": x.
           , Stipend: x.Stipend
+          , 'Baloon Payment': x.balloonpayment
           // ,"Total Cost": x.
           , 'Training Cost Per Trainee Per Month Ex Tax': x.TrainingCostPerTraineePerMonthExTax
           , 'Training Cost Per Trainee Per Month In Tax': x.TrainingCostPerTraineePerMonthInTax

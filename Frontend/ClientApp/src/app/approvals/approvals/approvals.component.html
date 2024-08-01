@@ -236,6 +236,7 @@
                         <th>Employment Commitment Formal</th>
                         <th>Overall Employment Commitment</th>
                         <th>Stipend</th>
+                        <th>Baloon Payment</th>
                         <th>Total Cost</th>
                       </tr>
                     </thead>
@@ -281,6 +282,7 @@
                         <td>{{r.EmploymentCommitmentFormal}}</td>
                         <td>{{r.OverallEmploymentCommitment}}</td>
                         <td class="decimal-align-right">{{r.Stipend | number: environment.Decimal}}</td>
+                        <td class="decimal-align-right">{{r.balloonpayment | number: environment.Decimal}}</td>
                         <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
                       </tr>
                     </tbody>
