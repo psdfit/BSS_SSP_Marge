@@ -12,17 +12,19 @@
     </div>
     <div class="col-sm-3">
       <mat-form-field fxFlex>
-        <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month" [formControl]="DateMonth" required readonly />
+        <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month"  [max]="today" [formControl]="DateMonth" required readonly />
         <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #customDatePicker
                         startView="multi-year"
                         (yearSelected)="chosenYearHandler($event)"
                         (monthSelected)="chosenMonthHandler($event, customDatePicker)"
-                        panelClass="example-month-picker">
+                        panelClass="example-month-picker"
+                        [max]="maxDate">
         </mat-datepicker>
         <mat-label>Month</mat-label>
       </mat-form-field>
     </div>
+
 
   </div>
 
@@ -56,7 +58,7 @@
       </div>
     </div>
 
-    <div class="row" *ngIf="IsGenerated">
+    <div class="row">
       <div class="col">
         <h1 class="text-center">{{message}}</h1>
       </div>

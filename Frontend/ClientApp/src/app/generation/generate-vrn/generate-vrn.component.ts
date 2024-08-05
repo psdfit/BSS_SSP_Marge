@@ -10,8 +10,8 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 const moment = _moment;
 import { DatePipe } from '@angular/common';
 import { DialogueService } from 'src/app/shared/dialogue.service';
-// See the Moment.js docs for the meaning of these formats:
-// https://momentjs.com/docs/#/displaying/format/
+
+// Date formats
 export const MY_FORMATS = {
   parse: {
     dateInput: 'MM/YYYY',
@@ -28,10 +28,7 @@ export const MY_FORMATS = {
   selector: 'app-generate-vrn',
   templateUrl: './generate-vrn.component.html',
   styleUrls: ['./generate-vrn.component.scss'],
-providers: [
-    // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
-    // application's root module. We provide it at the component level here, due to limitations of
-    // our example generation script.
+  providers: [
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
@@ -42,8 +39,6 @@ providers: [
   ],
 })
 export class GenerateVrnComponent implements OnInit, AfterViewInit {
-
-
   Scheme = [];
   Kam = [];
   TspDetail = [];
@@ -70,10 +65,14 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
   result: any;
   isValid = false;
   infoAlert: boolean;
+  maxDate: Moment;
+  today = new Date(); 
 
 
   constructor(private http: CommonSrvService, private fb: FormBuilder, private dialogue: DialogueService) {
     this.http.setTitle('Generate VRN');
+    this.maxDate = moment(); // Set maxDate to today's date as a Moment object
+    console.log(this.maxDate.format('YYYY-MM-DD')); // Debug maxDate value
   }
 
   ngOnInit(): void {
@@ -82,6 +81,7 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
       this.filters.Month = '';
     })
   }
+
   ngAfterViewInit(): void {
     this.getSchemes();
   }
@@ -98,44 +98,56 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
     );
   }
 
+  //getTspClassesForVRNCompletion(value) {
+  //  this.filters.Month = moment(this.DateMonth.value).format('YYYY-MM-DD');
+  //  this.filters.SchemeID = value;
+  //  this.isValid = false;
+  //  this.IsGenerated = false;
+  //  this.http.postJSON(`api/SRNCoursera/GetVRNReport`, this.filters).subscribe(
+  //    (data: any) => {
+  //      this.error = '';
+  //      this.PrnClasses = data;
+  //      debugger;
+  //      this.IsGenerated = data.length > 0 && data[0] ? data[0].IsStipend : false;
+  //      this.isValid = true;
+  //      this.message = 'Already Generated.'
+  //    },
+  //    error => {
+  //      this.error = error;
+  //    })
+  //}
   getTspClassesForVRNCompletion(value) {
     this.filters.Month = moment(this.DateMonth.value).format('YYYY-MM-DD');
     this.filters.SchemeID = value;
     this.isValid = false;
     this.IsGenerated = false;
+
     this.http.postJSON(`api/SRNCoursera/GetVRNReport`, this.filters).subscribe(
       (data: any) => {
         this.error = '';
-        this.PrnClasses = data;
         debugger;
-        //this.IsGenerated = data.map(item => item.IsStipend);
-        this.IsGenerated = data.length > 0 && data[0] ? data[0].IsStipend : false;
-
-
-
-        this.isValid = true;
-        //this.TotalCompletedClasses = data[1];
-        //this.CompletedClassesWithResult = data[2];
-        //this.IsGenerated = data[3];
-        //if (this.IsGenerated) {
-        //  this.PrnClasses = [];
-        //  this.isValid = false;
-        this.message = 'Already Generated.'
-        //}
-        //else {
-        //  if (this.TotalCompletedClasses === this.CompletedClassesWithResult)
-        //    this.isValid = true;
-        //  else
-        //    this.isValid = false;
-        //}
+        if (data && data.length > 0 && data[0].Message) {
+          // SRN has already been generated for this month
+          this.message = data[0].Message; // This will be "Already generated of this month"
+          this.isValid = false;
+          this.IsGenerated = false;
+        } else {
+          // Process the data as usual
+          this.PrnClasses = data;
+          this.IsGenerated = data.length > 0 && data[0] ? data[0].IsStipend : false;
+          this.isValid = true;
+          this.message = 'Already Generated.';
+        }
       },
       error => {
         this.error = error;
-      })
+      }
+    );
   }
+
+
   generatePrnCompletion() {
     this.delay(1000);
-    // this.filters.ClassIDs = this.PrnClasses.map(x=>x.ClassID).join(',');
     this.http.confirm('VRN Generation', 'Are You Sure you want to generate VRN?').subscribe(result => {
       if (result) {
         this.http.postJSON(`api/SRNCoursera/GenerateVRN`, this.filters).subscribe(
@@ -144,16 +156,12 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
               this.PrnClasses = [];
               this.message = 'Generated Successfully.';
               this.IsGenerated = true;
-              // this.http.openSnackBar('Generated successfully','',2000);
-              // this.getTspClassesForPRNCompletion(this.filters.TspID);
             }
           }, (error) => {
             this.error = error.error;
             this.http.ShowError(error.error);
           }
         )
-      }
-      else {
       }
     });
   }
@@ -169,13 +177,15 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
     ctrlValue.year(normalizedYear.year());
     this.DateMonth.setValue(ctrlValue);
   }
+
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
     const ctrlValue = this.DateMonth.value;
     ctrlValue.month(normalizedMonth.month());
     this.DateMonth.setValue(ctrlValue);
     debugger;
-    if (this.schemeFilter.value !== 0)
+    if (this.schemeFilter.value !== 0) {
       this.getTspClassesForVRNCompletion(this.schemeFilter.value);
+    }
     datepicker.close();
   }
 
@@ -186,13 +196,9 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
   openClassJourneyDialogue(data: any): void {
     this.dialogue.openClassJourneyDialogue(data);
   }
+
   displayHideAlert() {
-    if (this.infoAlert) {
-      this.infoAlert = false;
-    }
-    else {
-      this.infoAlert = true;
-    }
+    this.infoAlert = !this.infoAlert;
   }
 }
 
