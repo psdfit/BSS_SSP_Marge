@@ -313,7 +313,7 @@ namespace DataLayer.Services
             Instructor.InActive = Convert.ToBoolean(r["InActive"]);
             Instructor.InstrMasterID = Convert.ToInt32(r["InstrMasterID"]);
             Instructor.SchemeID = Convert.ToInt32(r["SchemeID"]);
-            //Instructor.ClassID = Convert.ToInt32(r["ClassID"]);
+            Instructor.ClassID = Convert.ToInt32(r["ClassID"]);
             Instructor.BiometricData1 = r.Field<string>("BiometricData1");
             Instructor.BiometricData2 = r.Field<string>("BiometricData2");
             Instructor.BiometricData3 = r.Field<string>("BiometricData3");
@@ -409,6 +409,14 @@ namespace DataLayer.Services
                 errMsg = ex.Message;
             }
             return result;
+        }
+
+        public DataTable FetchReport(int UserID, string SpName)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@CreatedUserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
+            return dt;
         }
     }
 }

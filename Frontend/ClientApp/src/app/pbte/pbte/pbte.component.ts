@@ -1,23 +1,16 @@
+import { filter } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonSrvService } from '../../common-srv.service';
-
-import { Element } from '@angular/compiler/src/render3/r3_ast';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { environment } from '../../../environments/environment';
-import { ModelBase } from '../../shared/ModelBase';
 import { UserRightsModel } from '../../master-data/users/users.component';
 import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
-import { IOrgConfig } from '../../registration/Interface/IOrgConfig';
 import * as XLSX from 'xlsx';
-import { ITraineeProfile } from '../../registration/Interface/ITraineeProfile';
 import * as fileSaver from 'file-saver';
-import { DatePipe } from '@angular/common';
-import { ExportType, EnumExcelReportType } from '../../shared/Enumerations';
+import { ExportType, EnumExcelReportType, PBTESheetNames } from '../../shared/Enumerations';
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 import { ExportExcel } from '../../shared/Interfaces';
@@ -25,6 +18,28 @@ import { FormControl } from '@angular/forms';
 import { GroupByPipe } from 'angular-pipes';
 import { DialogueService } from 'src/app/shared/dialogue.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import * as _moment from 'moment';
+import { Moment } from 'moment';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+// import { Select2OptionData } from 'ng-select2';
+
+const moment = _moment;
+import { DatePipe } from '@angular/common';
+import { MatDatepicker } from '@angular/material/datepicker';
+// See the Moment.js docs for the meaning of these formats:
+// https://momentjs.com/docs/#/displaying/format/
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 
 @Component({
@@ -36,8 +51,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 
 export class PBTEComponent implements OnInit {
   selection = new SelectionModel<any>(true, []);
-  ParentSchemeName: any=""
+  ParentSchemeName: any = ""
   PbteDBFile: any;
+  _examDataArray: any = []
+  _tsrDataArray: any = []
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.hTablesData.filteredData.length;
@@ -49,8 +66,13 @@ export class PBTEComponent implements OnInit {
       this.hTablesData.filteredData.forEach(row => this.selection.select(row));
     // console.log(numRows)
   }
+  _fileUploadForm: FormGroup;
 
-  
+  initForm() {
+    this._fileUploadForm = this.fb.group({
+      excelFile: ['', Validators.required]
+    });
+  }
   environment = environment;
   pbteform: FormGroup;
   title: string; savebtn: string;
@@ -58,9 +80,7 @@ export class PBTEComponent implements OnInit {
   navttcfilters: IQueryFilters = { SchemeID: 0, TSPID: 0, ClassID: 0, TradeID: 0, DistrictID: 0 };
 
   //exportAsConfig: ExportAsConfig
-  displayedColumnsClasses = ['SchemeName','PBTESchemeName', 'Batch',
-    //'TSPID',
-    'TSPName', 'ClassCode', 'TradeName','PBTETradeName', 'TrainingAddressLocation', 'TehsilName',
+  displayedColumnsClasses = ['SchemeName', 'PBTESchemeName', 'Batch', 'TSPName', 'ClassCode', 'TradeName', 'TrainingAddressLocation', 'PBTEAddress', 'TehsilName',
     'DistrictName', 'CertAuthName', 'TraineesPerClass', 'GenderName', 'Duration', 'StartDate', 'EndDate', 'ClassStatusName'];
 
   displayedColumnsTsps = [
@@ -95,16 +115,43 @@ export class PBTEComponent implements OnInit {
   hTablesData: MatTableDataSource<any>;
   @ViewChild("hpaginator") hpaginator: MatPaginator;
   @ViewChild("hsort") hsort: MatSort;
-  
   hTableColumns = [];
 
   tTablesData: MatTableDataSource<any>;
   @ViewChild("tpaginator") tpaginator: MatPaginator;
   @ViewChild("tsort") tsort: MatSort;
-  
   tTableColumns = [];
-  // hTableColumns = [];
 
+
+  cTablesData: MatTableDataSource<any>;
+  @ViewChild("cpaginator") cpaginator: MatPaginator;
+  @ViewChild("csort") csort: MatSort;
+  cTableColumns = [];
+
+
+  traineeTablesData: MatTableDataSource<any>;
+  @ViewChild("traineepaginator") traineepaginator: MatPaginator;
+  @ViewChild("traineesort") traineesort: MatSort;
+  traineeTableColumns = [];
+
+  examTablesData: MatTableDataSource<any>;
+  @ViewChild("exampaginator") exampaginator: MatPaginator;
+  @ViewChild("examsort") examsort: MatSort;
+  examTableColumns = [];
+
+
+  date = new FormControl(moment());
+  chosenYearHandler(normalizedYear: Moment) {
+    const ctrlValue = this.date.value;
+    ctrlValue.year(normalizedYear.year());
+    this.date.setValue(ctrlValue);
+  }
+  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.date.value;
+    ctrlValue.month(normalizedMonth.month());
+    this.date.setValue(ctrlValue);
+    datepicker.close();
+  }
 
 
 
@@ -219,7 +266,7 @@ export class PBTEComponent implements OnInit {
   @ViewChild('tabGroupN') tabGroupN;
 
   working: boolean;
-  constructor(private fb: FormBuilder, private ComSrv: CommonSrvService, private route: ActivatedRoute,public dialogueService: DialogueService
+  constructor(private fb: FormBuilder, private ComSrv: CommonSrvService, private route: ActivatedRoute, public dialogueService: DialogueService
     , private _date: DatePipe,) {
     this.pbteform = this.fb.group({
       PBTEID: 0,
@@ -251,7 +298,10 @@ export class PBTEComponent implements OnInit {
     //this.GetPBTEFiltersData();
     this.GetPBTEFiltersData();
     this.getSelectedTabData();
-
+    this.initForm()
+    this.GetPbteData("Scheme")
+    this.GetPbteData("Class")
+    this.GetPbteData("CenterLocation")
   }
 
   getSelectedTabData() {
@@ -335,44 +385,41 @@ export class PBTEComponent implements OnInit {
   }
 
 
-  selectedCourseID:any=0
+  selectedPbteCenter: any = 0
+  SearchCtr = new FormControl('')
   onSelectionChange(row: any) {
-    debugger;
-    this.selectedCourseID=0
-
-    // Perform any actions needed when the selection changes
-    console.log('Selected Course ID:', row.selectedCourseID);
-
-    this.selectedCourseID=row.selectedCourseID
-    this.BSearchCtr.setValue('');
+    this.SavePBTECenterMapping(row)
   }
 
-  getSelectedTrade(row:any) {
-    console.log('Selected Course ID:', row.selectedCourseID);
-    return;
-    const _schemeName = this.ParentSchemeName
-    const _schemeList = this.selection.selected
+  // getSelectedTrade(row:any) {
+  //   console.log('Selected Course ID:', row.selectedCourseID);
+  //   return;
+  //   const _schemeName = this.ParentSchemeName
+  //   const _schemeList = this.selection.selected
 
-    _schemeList.forEach(obj => {
-      obj.PBTESchemeName = _schemeName;
-    });
+  //   _schemeList.forEach(obj => {
+  //     obj.PBTESchemeName = _schemeName;
+  //   });
 
-    this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
-     this.mappedPBTEScheme = data;
-     this.selection.clear()
-     this.getPBTEClassData()
-     this.ParentSchemeName=""
-    }, error => this.error = error// error path
-    );
+  //   this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
+  //    this.mappedPBTEScheme = data;
+  //    this.selection.clear()
+  //    this.getPBTEClassData()
+  //    this.ParentSchemeName=""
+  //   }, error => this.error = error// error path
+  //   );
 
-  }
+  // }
 
-  EmptyCtr() {
-    this.BSearchCtr.setValue('');
-  }
+  // EmptyCtr() {
+  //   this.BSearchCtr.setValue('');
+  // }
   BSearchCtr = new FormControl('');
 
-  pbtecourse:any;
+  pbteTSPLocation: any;
+  pbtecourse: any;
+  GetDataObject: any = {}
+ _dataObject: any;
   getPBTEClassData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTEClasses', this.filters).subscribe((d: any) => {
       this.pbteClasses = new MatTableDataSource(d[0]);
@@ -381,17 +428,122 @@ export class PBTEComponent implements OnInit {
 
       this.pbteClasses.paginator = this.PageClass;
       this.pbteClasses.sort = this.SortClass;
-      this.GetScheme(d[0],d[1]);
-      this.GetTrade(d[0],d[2]);
-      this.pbtecourse=d[3];
+      // this.GetScheme(d[0], d[1]);
+      // this.GetTrade(d[0],d[2]);
+      this.LoadMatTable(d[2], "CenterLocationMapping");
+
+      this.GetDataObject["pbte"] = d[3];
+      this.pbtecourse = [];
+    }, error => this.error = error// error path
+    );
+  }
+  pbteScheme:any=[]
+  selectedPbteScheme:string=""
+
+  onSchemeChange(){
+    if(this.selectedPbteScheme=="New Scheme"){
+      this.ParentSchemeName=this.selectedPbteScheme
+    }else{
+      this.ParentSchemeName=""
+    }
+  }
+ async GetPbteData(reportName: string="Scheme"){
+  debugger
+    const _month = moment(this.date.value).format('YYYY-MM')
+
+    const data={ month: _month,report:reportName };
+
+    const response = await this.ComSrv.postJSON("api/PBTE/GetPbteData",data).toPromise();
+
+    this._dataObject=response
+    this.pbteScheme=this._dataObject.mappedScheme
+    if(response !=undefined && response!=null) {
+      if (reportName=="Scheme") {
+        this.LoadMatTable(this._dataObject.data, "SchemeMapping");
+      }
+      if (reportName=="CenterLocation") {
+        this.LoadMatTable(this._dataObject.data, "CenterLocationMapping");
+      }
+      if (reportName=="Class") {
+        this.LoadMatTable(this._dataObject.data, "Class");
+      }
+      if (reportName=="Trainee") {
+        
+      }
+    }else{
+      this.ComSrv.ShowError("No data found for the selected month")
+    }
+        
+    
+  }
+
+
+  mappedPBTEScheme: any = []
+  saveMappedScheme() {
+    let _schemeName
+        if(this.selectedPbteScheme=="New Scheme"){
+          _schemeName=this.ParentSchemeName
+        }else{
+          _schemeName  =this.selectedPbteScheme
+        }
+   
+    const _schemeList = this.selection.selected
+
+    _schemeList.forEach(obj => {
+      obj.PBTESchemeName = _schemeName;
+    });
+
+    this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
+      this.mappedPBTEScheme = data;
+      this.selection.clear()
+     this.search=""
+     this.selectedPbteScheme=""
+     this.GetPbteData("Scheme");
+      this.ParentSchemeName = ""
+    }, error => this.error = error// error path
+    );
+
+  }
+  getSelectedFile() {
+    // debugger
+    if (this.PbteDBFile) {
+      const _pbteDBFile = this.PbteDBFile
+      this.ComSrv.postJSON('api/PBTE/SavePbteDBFile', { pbteFile: _pbteDBFile }).subscribe((data: any) => {
+        this.PbteDBFile = ""
+      }, error => this.error = error// error path
+      );
+    } else {
+      this.ComSrv.ShowError('Please select a PBTE DB file')
+    }
+
+
+  }
+  SavePBTECenterMapping(row: any) {
+    // debugger;
+    const data: any = {
+      PBTECollegeID: row.selectedPbteCenter,
+      TSPName: row.BSSTSP,
+      TSPCenterLocation: row.BSSCenter,
+      TSPCenterDistrict: row.BSSDistrict
+    }
+    this.ComSrv.postJSON('api/PBTE/SavePBTECenterMapping', data).subscribe((d: any) => {
+      this.GetPbteData("CenterLocation")
     }, error => this.error = error// error path
     );
   }
 
-
+  openedSelection(row: any) {
+    this.pbtecourse = []
+    const data = this.GetDataObject.pbte.filter(x => x.College_Name == row.BSSTSP && x.District_Name == row.BSSDistrict);
+    this.pbtecourse = data
+    if (this.pbtecourse.length == 0) {
+      this.ComSrv.ShowError("No TSP found in the PBTE Database")
+    }
+    console.log(data)
+  }
 
   GetScheme(_schemedata: any[], _mappedScheme: any[]) {
-    
+
     const uniqueSchemes = {};
 
     // Create a set of SchemeIDs from _mappedScheme for quick lookup
@@ -399,10 +551,10 @@ export class PBTEComponent implements OnInit {
 
     // Populate uniqueSchemes from _schemedata
     _schemedata.forEach(item => {
-        uniqueSchemes[item.SchemeID] = {
-            SchemeID: item.SchemeID,
-            SchemeName: item.SchemeName
-        };
+      uniqueSchemes[item.SchemeID] = {
+        SchemeID: item.SchemeID,
+        SchemeName: item.SchemeName
+      };
     });
 
     // Convert uniqueSchemes to an array
@@ -413,31 +565,31 @@ export class PBTEComponent implements OnInit {
 
     // Load the filtered schemes into the MatTable
     this.LoadMatTable(filteredSchemes, "SchemeMapping");
-}
-  GetTrade(_tradedata: any[], _mappedTrade: any[]) {
-    debugger
-    const uniqueTrades = {};
+  }
+  //   GetTrade(_tradedata: any[], _mappedTrade: any[]) {
+  //     debugger
+  //     const uniqueTrades = {};
 
-    // Create a set of tradeIDs from _mappedtrade for quick lookup
-    const mappedTradeIds = new Set(_mappedTrade.map(item => item.TradeID));
+  //     // Create a set of tradeIDs from _mappedtrade for quick lookup
+  //     const mappedTradeIds = new Set(_mappedTrade.map(item => item.TradeID));
 
-    // Populate uniqueTrades from _Tradedata
-    _tradedata.forEach(item => {
-        uniqueTrades[item.TradeID] = {
-          TradeID: item.TradeID,
-          TradeName: item.TradeName
-        };
-    });
+  //     // Populate uniqueTrades from _Tradedata
+  //     _tradedata.forEach(item => {
+  //         uniqueTrades[item.TradeID] = {
+  //           TradeID: item.TradeID,
+  //           TradeName: item.TradeName
+  //         };
+  //     });
 
-    // Convert uniqueTrades to an array
-    const _pbteTrade: any[] = Object.values(uniqueTrades);
+  //     // Convert uniqueTrades to an array
+  //     const _pbteTrade: any[] = Object.values(uniqueTrades);
 
-    // Filter out Trades that are in _mappedTrade
-    const filteredTrades = _pbteTrade.filter(Trade => !mappedTradeIds.has(Trade.TradeID));
+  //     // Filter out Trades that are in _mappedTrade
+  //     const filteredTrades = _pbteTrade.filter(Trade => !mappedTradeIds.has(Trade.TradeID));
 
-    // Load the filtered trades into the MatTable
-   this.LoadMatTable(filteredTrades, "tradeMapping");
-}
+  //     // Load the filtered trades into the MatTable
+  //    this.LoadMatTable(filteredTrades, "CenterLocationMapping");
+  // }
 
 
   camelCaseToWords(input: string): string {
@@ -447,63 +599,54 @@ export class PBTEComponent implements OnInit {
     this.ComSrv.ExcelExporWithForm(Data, ReportName);
   }
   LoadMatTable(tableData: any, tableName: string) {
-   debugger;
+    //  debugger;
     if (tableName == 'SchemeMapping') {
-      const excludeColumnArray = ["Status"]
-      this.hTableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key));
-      // this.hTableColumns.push('PBTE Scheme Name')
-      // this.hTableColumns.push('Action')
+      this.hTableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID'));
       this.hTablesData = new MatTableDataSource(tableData)
       this.hTablesData.paginator = this.hpaginator;
       this.hTablesData.sort = this.hsort;
-      
+
     }
-    if (tableName == 'tradeMapping') {
-      debugger
+
+    if (tableName == 'Class') {
+      this.cTableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID'));
+      this.cTablesData = new MatTableDataSource(tableData)
+      this.cTablesData.paginator = this.cpaginator;
+      this.cTablesData.sort = this.csort;
+
+    }
+
+    if (tableName == 'CenterLocationMapping') {
+      // debugger
       const excludeColumnArray = []
-      this.tTableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key));
-      this.tTableColumns.push('PBTE Trade Name')
-      this.tTableColumns.push('Action')
+      this.tTableColumns = Object.keys(tableData[0]).filter(key => !excludeColumnArray.includes(key));
+      this.tTableColumns.push('PBTE Center Location')
       this.tTablesData = new MatTableDataSource(tableData)
       this.tTablesData.paginator = this.tpaginator;
       this.tTablesData.sort = this.tsort;
-      
     }
-  }
 
-  mappedPBTEScheme:any=[]
-  getSelectedScheme() {
-    
-    const _schemeName = this.ParentSchemeName
-    const _schemeList = this.selection.selected
-
-    _schemeList.forEach(obj => {
-      obj.PBTESchemeName = _schemeName;
-    });
-
-    this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
-     this.mappedPBTEScheme = data;
-     this.selection.clear()
-     this.getPBTEClassData()
-     this.ParentSchemeName=""
-    }, error => this.error = error// error path
-    );
-
-  }
-  getSelectedFile() {
-    debugger
-    if(this.PbteDBFile){
-      const _pbteDBFile = this.PbteDBFile
-      this.ComSrv.postJSON('api/PBTE/SavePbteDBFile', {pbteFile:_pbteDBFile}).subscribe((data: any) => {
-       this.PbteDBFile=""
-      }, error => this.error = error// error path
-      );
-    }else{
-      this.ComSrv.ShowError('Please select a PBTE DB file')
+    if (tableName == 'ExamData') {
+      // debugger
+      const excludeColumnArray = []
+      this.examTableColumns = Object.keys(tableData[0]).filter(key => !excludeColumnArray.includes(key));
+      this.examTablesData = new MatTableDataSource(tableData)
+      this.examTablesData.paginator = this.exampaginator;
+      this.examTablesData.sort = this.examsort;
     }
-  
+
+    if (tableName == 'TraineeData') {
+      const excludeColumnArray = []
+      this.traineeTableColumns = Object.keys(tableData[0]).filter(key => !excludeColumnArray.includes(key));
+      this.traineeTablesData = new MatTableDataSource(tableData)
+      this.traineeTablesData.paginator = this.traineepaginator;
+      this.traineeTablesData.sort = this.traineesort;
+    }
+
 
   }
+
+
 
 
   getPBTETSPData() {
@@ -531,6 +674,7 @@ export class PBTEComponent implements OnInit {
     }, error => this.error = error// error path
     );
   }
+
   getPBTETraineeExamScriptData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTETraineesExamScriptData', this.filters).subscribe((d: any) => {
       this.pbteTraineesExamScriptArray = d[0];
@@ -1133,6 +1277,90 @@ export class PBTEComponent implements OnInit {
     }
   }
 
+
+
+  onTSRFileChange(ev: any) {
+    const file = ev.target.files[0];
+
+    if (!file) {
+      this.ComSrv.ShowError('Please upload an Excel file.');
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      let workBook: XLSX.WorkBook;
+      let jsonData: any;
+
+      try {
+
+        const data = reader.result as string;
+        workBook = XLSX.read(data, { type: 'binary' });
+
+        jsonData = workBook.SheetNames.reduce((initial, name) => {
+          const sheet = workBook.Sheets[name];
+          initial[name] = XLSX.utils.sheet_to_json(sheet);
+          return initial;
+        }, {});
+
+        const dataString = JSON.parse(JSON.stringify(jsonData));
+
+        const _exampData = dataString[Object.keys(workBook.Sheets).find(x => x.toLowerCase() === PBTESheetNames.ExaminationData.toLowerCase())];
+        const _traineeData = dataString[Object.keys(workBook.Sheets).find(x => x.toLowerCase() === PBTESheetNames.TraineeData.toLowerCase())];
+
+        if (!_exampData || _exampData.length === 0) {
+          this.ComSrv.ShowError("Sheet with the name '" + PBTESheetNames.ExaminationData + "' not found in Excel file.");
+        } else {
+          console.log(_exampData);
+          // this.populateFieldsFromFile(_exampData[0]);
+        }
+
+        if (!_traineeData || _traineeData.length === 0) {
+          this.ComSrv.ShowError("Sheet with the name '" + PBTESheetNames.TraineeData + "' not found in Excel file.");
+        } else {
+          console.log(_traineeData);
+          // Handle trainee data here
+        }
+        this._examDataArray = _exampData;
+        this._tsrDataArray = _traineeData;
+        this.LoadMatTable(_exampData, "ExamData");
+        this.LoadMatTable(_traineeData, "TraineeData");
+      } catch (error) {
+        console.error('Error processing file:', error);
+        this.ComSrv.ShowError('An error occurred while processing the file.');
+      }
+    };
+
+    reader.readAsBinaryString(file);
+    ev.target.value = '';
+  }
+
+
+  saveExamData() {
+    console.log(this._examDataArray)
+    console.log(this._tsrDataArray)
+    this.ComSrv.postJSON('api/PBTE/SavePBTEExam', this._examDataArray).subscribe((d: any) => {
+      if (d.success) {
+        this.ComSrv.openSnackBar("PBTE Exam data saved successfully");
+      } else {
+        this.ComSrv.ShowError("Error saving PBTE Exam data");
+      }
+    }, error => this.error = error// error path
+  );
+  }
+  saveTsrData() {
+    console.log(this._tsrDataArray)
+    this.ComSrv.postJSON('api/PBTE/SavePBTEStudent', this._tsrDataArray).subscribe((d: any) => {
+      if (d.success) {
+        this.ComSrv.openSnackBar("PBTE Exam data saved successfully");
+      } else {
+        this.ComSrv.ShowError("Error saving PBTE Exam data");
+      }
+    }, error => this.error = error// error path
+    );
+  }
+
   onFileChange(ev: any) {
     let workBook = null;
     let jsonData = null;
@@ -1591,7 +1819,9 @@ export class PBTEComponent implements OnInit {
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.pbteClasses.filter = filterValue;
   }
+  search:any=""
   applyFilter1(filterValue: string) {
+    console.log(this.search)
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.hTablesData.filter = filterValue;
@@ -1960,18 +2190,16 @@ export class PBTEComponent implements OnInit {
 
 
   get InActive() { return this.pbteform.get("InActive"); }
- 
-  openTraineeJourneyDialogue(data: any): void 
-  {
-    
-    this.dialogueService.openTraineeJourneyDialogue(data);
-    }
 
-    openClassJourneyDialogue(data: any): void 
-    {
-      
-      this.dialogueService.openClassJourneyDialogue(data);
-    }
+  openTraineeJourneyDialogue(data: any): void {
+
+    this.dialogueService.openTraineeJourneyDialogue(data);
+  }
+
+  openClassJourneyDialogue(data: any): void {
+
+    this.dialogueService.openClassJourneyDialogue(data);
+  }
 }
 
 

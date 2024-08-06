@@ -20,6 +20,7 @@ namespace DataLayer.Models
         public int Batch { get; set; }
 
         public string TrainingAddressLocation { get; set; }
+        public string PBTEAddress { get; set; }
         public int TraineesPerClass { get; set; }
 
         public string GenderName { get; set; }

@@ -1119,7 +1119,7 @@ namespace DataLayer.Services
             { throw new Exception(e.Message); }
         }
 
-        public bool SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg)
+        public int SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg)
         {
             errMsg = string.Empty;
             try
@@ -1130,7 +1130,7 @@ namespace DataLayer.Services
                 //}
                 if (!IsValidCNICFormat(model.TraineeCNIC, out errMsg))
                 {
-                    return false;
+                    return 0;
                 }
                 //Remove Mobile format by Ali Haider 01-07-22
                 //if (!IsValidMobileNoFormat(model.MobileNumber, out errMsg))
@@ -1140,7 +1140,7 @@ namespace DataLayer.Services
                 int age = CalculateAgeEligibility(model.DateOfBirth, model.ClassID, out errMsg);
                 if (!string.IsNullOrEmpty(errMsg))
                 {
-                    return false;
+                    return 0;
                 }
                 bool isEligible = isEligibleTrainee(new TraineeProfileModel()
                 {
@@ -1150,7 +1150,7 @@ namespace DataLayer.Services
                 }, out errMsg);
                 if (!isEligible)
                 {
-                    return false;
+                    return 0;
                 }
 
                 List<SqlParameter> param = new List<SqlParameter>();
@@ -1186,13 +1186,20 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TemporaryDistrict", model.TemporaryDistrict));
                 param.Add(new SqlParameter("@TemporaryTehsil", model.TemporaryTehsil));
                 param.Add(new SqlParameter("@TemporaryResidence", model.TemporaryResidence));
-                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeProfileDVV", param.ToArray());
-                return true;
+                DataSet dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeProfileDVV", param.ToArray());
+
+                if (dt != null && dt.Tables.Count > 0 && dt.Tables[0].Rows.Count > 0)
+                {
+                    int TraineeID = Convert.ToInt32(dt.Tables[0].Rows[0]["TraineeID"]);
+                    return TraineeID;
+                }
+
+                return 0;
             }
             catch (Exception ex)
             {
                 errMsg = ex.Message;
-                return false;
+                return 0;
             }
         }
 
@@ -1958,6 +1965,14 @@ namespace DataLayer.Services
                 throw;
             }
 
+        }
+
+        public DataTable FetchReport(int UserID, string SpName)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@CreatedUserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
+            return dt;
         }
 
     }

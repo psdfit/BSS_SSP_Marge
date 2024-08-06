@@ -185,6 +185,11 @@ export enum AppendixImportSheetNames {
   Instructor = 'Instructor'
 }
 
+export enum PBTESheetNames {
+  ExaminationData = 'ExaminationData',
+  TraineeData = 'TraineeData'
+}
+
 export enum EnumTPMReports {
   CenterInspection = 'Center Inspection',
   ClassFormIII = 'Class (Form III)',

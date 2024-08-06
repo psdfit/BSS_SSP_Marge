@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace DataLayer.Services
@@ -650,8 +651,8 @@ namespace DataLayer.Services
             PBTE.DistrictID = Convert.ToInt32(r["DistrictID"]);
             PBTE.ClassCode = r["ClassCode"].ToString();
             PBTE.TradeName = r["TradeName"].ToString();
-            PBTE.PBTETradeName = r["PBTETradeName"].ToString();
             PBTE.TrainingAddressLocation = r["TrainingAddressLocation"].ToString();
+            PBTE.PBTEAddress = r["PBTEAddress"].ToString();
             PBTE.TehsilName = r["TehsilName"].ToString();
             PBTE.DistrictName = r["DistrictName"].ToString();
             PBTE.CertAuthName = r["CertAuthName"].ToString();
@@ -883,6 +884,20 @@ namespace DataLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+        public DataTable PbteData(string SpName, string paramValue)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@EndMonth", paramValue));
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure,SpName, param.ToArray()).Tables[0];
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         public bool savePBTESchemeMapping(List<SchemeMappingModel> data,int CurUser)
         {
@@ -923,6 +938,89 @@ namespace DataLayer.Services
                 return Common.AddFile(attachment, paths,"bak");
             }
             return "";
+        }
+
+        public DataTable SavePBTECenterMapping(PBTECenterLocationMappingModel data)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@TSPName", data.TSPName));
+            param.Add(new SqlParameter("@TSPCenterLocation", data.TSPCenterLocation));
+            param.Add(new SqlParameter("@TSPCenterDistrict", data.TSPCenterDistrict));
+            param.Add(new SqlParameter("@PBTECollegeID", data.PBTECollegeID));
+            param.Add(new SqlParameter("@CreatedUserID", data.CurUserID));
+            
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTECenterLocationMapping", param.ToArray()).Tables[0];
+            return dt;
+        } 
+        
+        public bool SavePBTEExam(List<PbteExamDataModel> data)
+        {
+            if (data == null || data.Count == 0)
+            {
+                throw new ArgumentException("Data cannot be null or empty", nameof(data));
+            }
+
+            foreach (var item in data)
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@BatchNo", item.Batch));
+                param.Add(new SqlParameter("@ClassStartDate", item.ClassStartDate));
+                param.Add(new SqlParameter("@ClassEndDate", item.ClassEndDate));
+                param.Add(new SqlParameter("@SchemeForPBTE", item.SchemeForPBTE));
+                param.Add(new SqlParameter("@Duration", item.Duration));
+                param.Add(new SqlParameter("@ExamYear", item.ExamYear));
+                //param.Add(new SqlParameter("@CreatedUserID", item.CurUserID));
+           
+            
+              SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTEExamination", param.ToArray());
+            }
+
+            return true;
+        } 
+        
+        public bool SavePBTETrainee(List<PbteTraineeDataModel> data)
+        {
+            if (data == null || data.Count == 0)
+            {
+                throw new ArgumentException("Data cannot be null or empty", nameof(data));
+            }
+            foreach (var item in data)
+            {
+                string jsonString = JsonConvert.SerializeObject(item,Formatting.Indented);
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@Batch", item.Batch));
+                param.Add(new SqlParameter("@CNIC", item.CNIC));
+                param.Add(new SqlParameter("@CNICVerified", item.CNICVerified));
+                param.Add(new SqlParameter("@CertificationAuthority", item.CertificationAuthority));
+                param.Add(new SqlParameter("@ClassCode", item.ClassCode));
+                param.Add(new SqlParameter("@ClassEndDate", item.ClassEndDate));
+                param.Add(new SqlParameter("@ClassStartDate", item.ClassStartDate));
+                param.Add(new SqlParameter("@ClassStatus", item.ClassStatus));
+                param.Add(new SqlParameter("@ContactNumber", item.ContactNumber));
+                param.Add(new SqlParameter("@Duration", item.Duration));
+                param.Add(new SqlParameter("@Education", item.Education));
+                param.Add(new SqlParameter("@FatherName", item.FatherName));
+                param.Add(new SqlParameter("@Gender", item.Gender));
+                param.Add(new SqlParameter("@ResidenceDistrict", item.ResidenceDistrict));
+                param.Add(new SqlParameter("@ResidenceTehsil", item.ResidenceTehsil));
+                param.Add(new SqlParameter("@Scheme", item.Scheme));
+                param.Add(new SqlParameter("@SchemeForPBTE", item.SchemeForPBTE));
+                param.Add(new SqlParameter("@TSP", item.TSP));
+                param.Add(new SqlParameter("@Trade", item.Trade));
+                param.Add(new SqlParameter("@TraineeID", item.TraineeID));
+                param.Add(new SqlParameter("@TraineeAddress", item.TraineeAddress));
+                param.Add(new SqlParameter("@TraineeName", item.TraineeName));
+                param.Add(new SqlParameter("@TraineeStatusName", item.TraineeStatusName));
+                param.Add(new SqlParameter("@TrainingLocation", item.TrainingLocation));
+                param.Add(new SqlParameter("@TrainingDistrict", item.TrainingDistrict));
+                //param.Add(new SqlParameter("@TraineeYear", item.TraineeYear));
+                //param.Add(new SqlParameter("@CreatedUserID", item.CurUserID));
+
+
+                SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTEStudent", param.ToArray());
+            }
+
+            return true;
         }
     }
 }

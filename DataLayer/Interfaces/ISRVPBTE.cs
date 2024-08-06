@@ -50,6 +50,10 @@ namespace DataLayer.Interfaces
        bool savePBTESchemeMapping(List<SchemeMappingModel> data,int CurUser);
        bool savePBTEDBFile(string data,int CurUser);
         DataTable FetchReportBySPName(string spName);
+        DataTable PbteData(string SpName, string paramValue);
+        DataTable SavePBTECenterMapping(PBTECenterLocationMappingModel data);
+        bool SavePBTEExam(List<PbteExamDataModel> data);
+        bool SavePBTETrainee(List<PbteTraineeDataModel> data);
 
 
     }

@@ -11,6 +11,7 @@ using PSDF_BSS.Logging;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 namespace PSDF_BSSMaster.Controllers
 {
     [ApiController]
@@ -103,8 +104,10 @@ namespace PSDF_BSSMaster.Controllers
 
                 list.Add(srvPBTE.FetchPBTEClasses(filters));
                 list.Add(srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping"));
-                list.Add(srvPBTE.FetchReportBySPName("RD_PBTETradeMapping"));
-                list.Add(srvPBTE.FetchReportBySPName("RD_PBTETrade"));
+                list.Add(srvPBTE.FetchReportBySPName("Get_PBTE_Classes_TSP"));
+                list.Add(srvPBTE.FetchReportBySPName("Get_PBTE_TSP"));
+                //list.Add(srvPBTE.FetchReportBySPName("RD_PBTETradeMapping"));
+                //list.Add(srvPBTE.FetchReportBySPName("RD_PBTETrade"));
 
                 return Ok(list);
             }
@@ -566,6 +569,146 @@ namespace PSDF_BSSMaster.Controllers
                     srvPBTE.savePBTEDBFile(pbteValue, CurUserID);
                     //DataTable MappedData=srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping");
                     return Ok("OK");
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }
+
+   
+
+        [HttpPost]
+        [Route("SavePBTECenterMapping")]
+        public IActionResult SavePBTECenterMapping(PBTECenterLocationMappingModel data)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(
+                false,
+                Convert.ToInt32(User.Identity.Name),
+                Split[2],
+                Split[3]
+            );
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    data.CurUserID = Convert.ToInt32(User.Identity.Name);
+                    return Ok(srvPBTE.SavePBTECenterMapping(data));
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }
+        [HttpPost]
+        [Route("SavePBTEExam")]
+        public IActionResult SavePBTEExam(List<PbteExamDataModel> data)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(
+                false,
+                Convert.ToInt32(User.Identity.Name),
+                Split[2],
+                Split[3]
+            );
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    return Ok(srvPBTE.SavePBTEExam(data));
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }    
+        [HttpPost]
+        [Route("SavePBTEStudent")]
+        public IActionResult SavePBTEStudent(List<PbteTraineeDataModel> data)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(
+                false,
+                Convert.ToInt32(User.Identity.Name),
+                Split[2],
+                Split[3]
+            );
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    return Ok(srvPBTE.SavePBTETrainee(data));
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }  
+        [HttpPost]
+        [Route("GetPbteData")]
+        public IActionResult GetPbteData([FromBody] dynamic data)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(
+                false,
+                Convert.ToInt32(User.Identity.Name),
+                Split[2],
+                Split[3]
+            );
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    DataTable MappedData = srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping");
+
+                    string month = data.month.Value;
+                    string reportName = data.report.Value;
+
+                    if (reportName=="Scheme")
+                    {
+                       var pbteData = srvPBTE.PbteData("RD_PBTESchemeData", month);
+                        return Ok(new {mappedScheme=MappedData,data= pbteData });
+                    }
+                     if (reportName=="CenterLocation")
+                    {
+                        var pbteData = srvPBTE.PbteData("RD_PBTECenterLocationData", month);
+                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+
+                    }
+
+                    if (reportName=="Class")
+                    {
+                        var pbteData = srvPBTE.PbteData("RD_PBTEClassData", month);
+                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                    }  
+                    if (reportName=="Trainee")
+                    {
+                        var pbteData = srvPBTE.PbteData("RD_PBTETSRData", month);
+                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                    }
+
+                    return Ok("No Record");
                 }
                 catch (Exception e)
                 {

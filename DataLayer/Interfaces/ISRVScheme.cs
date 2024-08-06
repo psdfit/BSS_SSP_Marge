@@ -10,7 +10,6 @@ namespace DataLayer.Interfaces
         SchemeModel GetLastScheme(int UserID);
 
         public DataTable FetchReport(int UserID, string SpName);
-
         SchemeModel GetBySchemeID(int SchemeID, SqlTransaction transaction = null);
 
         List<SchemeModel> SaveScheme(SchemeModel Scheme);
