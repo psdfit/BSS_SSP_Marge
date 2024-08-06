@@ -1,118 +1,22 @@
-<div class="row">
-  <div class="col-sm-6 visibility-sm-hidden ">
-    <form (ngSubmit)="Save()" autocomplete="off" style="height: auto !important;" [formGroup]="signUp" class="register">
-      <!-- <form (ngSubmit)="Save()" autocomplete="off" (keydown.enter)="onEnterKey($event)"   style="height: auto !important;" [formGroup]="signUp" class="register"> -->
-      <div class="card-icon"><img src="../../assets/images/logo.png" alt="" /> </div>
-      <div class="row text-center">
-        <div class="col-12">
-          <h1 class="mt-1">Sign Up</h1>
-          <h6 class="text-center">اگر آپ کا اکاونٹ نہیں بنا ہوا تو یہاں رجسٹر کریں</h6>
-          <h6 class="text-center">If you do not have an account,register here</h6>
-        </div>
-      </div>
-      <div class="row">
-       
-        <div class="col-sm-5">
-          <mat-form-field>
-            <mat-label>Business NTN</mat-label>
-            <input formControlName="BusinessNTN"  matInput placeholder="0000000-0"
-              [imask]="{mask:'0000000-0'}" [unmask]="false" required />
-            <mat-error *ngFor="let error of signUp.get('BusinessNTN').errors | keyvalue">
-              {{ getErrorMessage(error.key, error.value) }}
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="col-sm-7">
-          <mat-form-field>
-            <mat-label>Business Name</mat-label>
-            <input formControlName="BusinessName" TitleCase  matInput placeholder="Business Name*"
-              TitleCase required />
-            <mat-error *ngFor="let error of signUp.get('BusinessName').errors | keyvalue">
-              {{ getErrorMessage(error.key, error.value) }}
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="col-sm-5">
-          <mat-form-field>
-            <mat-label>Mobile Number</mat-label>
-            <input formControlName="Mobile" matInput placeholder="Mobile Number*" [imask]="{mask:'0300-0000000'}"
-              [unmask]="false" required />
-            <mat-error *ngFor="let error of signUp.get('Mobile').errors | keyvalue">
-              {{ getErrorMessage(error.key, error.value) }}
-            </mat-error>
-            <mat-hint>Hint:031104567789 </mat-hint>
-          </mat-form-field>
-        </div>
-        <div class="col-sm-7">
-          <mat-form-field>
-            <mat-label>Email Address</mat-label>
-            <input formControlName="Email" (blur)="CheckEmail()" matInput placeholder="Email Address*" required />
-            <mat-error *ngFor="let error of signUp.get('Email').errors | keyvalue">
-              {{ getErrorMessage(error.key, error.value) }}
-            </mat-error>
-          </mat-form-field>
-        </div>
-       
-        <div class="col-sm-12">
-          <mat-form-field>
-            <mat-label>Password</mat-label>
-            <input [type]="hide ? 'password' : 'text'" formControlName="Password" matInput placeholder="Password*"
-              required />
-            <mat-icon matSuffix (click)="hide = !hide" style="cursor:pointer;">{{hide ? 'visibility' :
-              'visibility_off'}}
-            </mat-icon>
-            <mat-hint> The Special character must be one of the following: @$!%*?&</mat-hint>
-            <mat-error *ngFor="let error of signUp.get('Password').errors | keyvalue">
-              {{ getErrorMessage(error.key, error.value) }}
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="col-sm-12">
-          <mat-form-field>
-            <mat-label>Confirm Password</mat-label>
-            <input [type]="hide ? 'password' : 'text'" formControlName="CPassword" matInput
-              placeholder="Confirm Password*" required />
-            <mat-icon matSuffix (click)="hide = !hide" style="cursor:pointer;">{{hide ? 'visibility' :
-              'visibility_off'}}
-            </mat-icon>
-            <mat-hint>The Special character must be one of the following: @$!%*?&</mat-hint>
-            <mat-error *ngFor="let error of signUp.get('CPassword').errors | keyvalue">
-              {{ getErrorMessage(error.key, error.value) }}
-            </mat-error>
-          </mat-form-field>
-        </div>
-      </div>
-      <fieldset class="actions">
-      </fieldset>
-      <div class="col-12  p-1">
-        <h6 class="text-center">Already have an account. Please Sign in</h6>
-        <h6 class="text-center">اگر آپ کا پہلے سے اکاونٹ بنا ہوا ہے تو یہاں سا ئن ان کریں</h6>
-        <a color="primary" mat-stroked-button routerLinkActive="selected" [routerLink]="'/login'">
-          <i class="fas fa-sign-in-alt"></i> Sign In
-        </a>
-      </div>
-      <button mat-raised-button [disabled]="IsDisabled" style="position: absolute !important;" color="primary">
-        <i class="fas fa-sign-in-alt"></i> Sign Up
-      </button>
-    </form>
-  </div>
+<div class="row" style="overflow-y: hidden;">
   <div class="col-sm-6 bg text-center text-white py-5">
     <div class="row">
-      <div class="col-12 mt-3 mb-3">
-        <h1>Welcome to <strong> PSDF </strong> <span class="text-warningA">Online Registration Portal</span></h1>
+      <div class="col-12">
+        <h1 class="fs-1">Welcome to <strong> PSDF </strong></h1>
+        <h1><strong> <span class="text-warningA">Online Registration Portal</span> </strong></h1>
       </div>
       <div class="col-12">
-        <h1><b> پی ایس ڈی ایف </b> <span class="text-warningA"> آن لائن رجسٹریشن پورٹل </span> <span> میں خوش
+        <h1><b> پی ایس ڈی ایف </b><span class="text-warningA"> آن لائن رجسٹریشن پورٹل </span> <span> میں خوش
             آمدید</span></h1>
       </div>
     </div>
     <br />
-    <div class="row">
-      <div class="col-12">
+    <div class="row mb-4">
+      <!-- <div class="col-12">
         <h3>Please watch this video before registration</h3>
       </div>
       <div class="col-12">
-        <h3>برائے مہربانی رجسٹریشن سے پہلے یہ مختصر ویڈیو دیکھیں</h3>
+        <h4>برائے مہربانی رجسٹریشن سے پہلے یہ مختصر ویڈیو دیکھیں</h4>
       </div>
       <div class="col-12">
         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
@@ -121,6 +25,67 @@
           </path>
           <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
         </svg>
+      </div> -->
+      <!-- <div class='col-12'>
+        <ngb-carousel [showNavigationArrows]="true" [showNavigationIndicators]="false">
+          <ng-template ngbSlide *ngFor="let image of images; track by $index">
+            <div class="picsum-img-wrapper">
+              <img class="img " [src]="image" alt="Random slide" />
+            </div>
+            <div class="carousel-caption">
+            </div>
+          </ng-template>
+        </ngb-carousel>
+      </div> -->
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <!-- YouTube Video Embed -->
+            <div class="embed-responsive embed-responsive-16by9 shadow-lg rounded">
+              <iframe class="embed-responsive-item  " src="https://www.youtube.com/embed/PNSjlbyyBNw"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+          <!-- <div class="col-md-8 mt-3 d-flex justify-content-center flex-column">
+              <h3 class="fs-5 text-white">
+                 To understand the process of Base Data
+              </h3>
+              <h3>
+                 <a href="https://www.youtube.com/watch?v=HjX9of__LJE" class="text-warningA video-link"
+                    target="_blank" rel="noopener noreferrer">
+                    watch this video
+                 </a>
+              </h3>
+           </div> -->
+        </div>
+      </div>
+      <div class="container mt-3">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <!-- YouTube Video Embed -->
+            <div class="embed-responsive embed-responsive-16by9 shadow-lg rounded">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/HjX9of__LJE"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+          <!-- <div class="col-md-8 mt-3 d-flex justify-content-center flex-column">
+              <h3 class="fs-5 text-white">
+                 To understand the process of Base Data
+              </h3>
+              <h3>
+                 <a href="https://www.youtube.com/watch?v=HjX9of__LJE" class="text-warningA video-link"
+                    target="_blank" rel="noopener noreferrer">
+                    watch this video
+                 </a>
+              </h3>
+           </div> -->
+        </div>
       </div>
       <div class="col-sm-12 hidden-sm">
         <form (ngSubmit)="Save()" autocomplete="off" style="height: auto !important;" [formGroup]="signUp"
@@ -211,5 +176,103 @@
         <h6>UAN 042-111-11-PSDF (7733) From 8:30AM to 4:30PM (Monday-Friday)</h6>
       </div>
     </div>
+  </div>
+  <div class="col-sm-6 visibility-sm-hidden ">
+    <form (ngSubmit)="Save()" autocomplete="off" style="height: auto !important;" [formGroup]="signUp" class="register">
+      <!-- <form (ngSubmit)="Save()" autocomplete="off" (keydown.enter)="onEnterKey($event)"   style="height: auto !important;" [formGroup]="signUp" class="register"> -->
+      <div class="card-icon"><img src="../../assets/images/logo.png" alt="" /> </div>
+      <div class="row text-center">
+        <div class="col-12">
+          <h1 class="mt-1">Sign Up</h1>
+          <h6 class="text-center">اگر آپ کا اکاونٹ نہیں بنا ہوا تو یہاں رجسٹر کریں</h6>
+          <h6 class="text-center">If you do not have an account,register here</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-7">
+          <mat-form-field>
+            <mat-label>Business Name</mat-label>
+            <input formControlName="BusinessName" TitleCase (blur)="CheckNTN()" matInput placeholder="Business Name*"
+              TitleCase required />
+            <mat-error *ngFor="let error of signUp.get('BusinessName').errors | keyvalue">
+              {{ getErrorMessage(error.key, error.value) }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-5">
+          <mat-form-field>
+            <mat-label>Business NTN</mat-label>
+            <input formControlName="BusinessNTN" (blur)="CheckNTN()" matInput placeholder="0000000-0"
+              [imask]="{mask:'0000000-0'}" [unmask]="false" required />
+            <mat-error *ngFor="let error of signUp.get('BusinessNTN').errors | keyvalue">
+              {{ getErrorMessage(error.key, error.value) }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-7">
+          <mat-form-field>
+            <mat-label>Email Address</mat-label>
+            <input formControlName="Email" (blur)="CheckEmail()" matInput placeholder="Email Address*" required />
+            <mat-error *ngFor="let error of signUp.get('Email').errors | keyvalue">
+              {{ getErrorMessage(error.key, error.value) }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-5">
+          <mat-form-field>
+            <mat-label>Mobile Number</mat-label>
+            <input formControlName="Mobile" matInput placeholder="Mobile Number*" [imask]="{mask:'0000-0000000'}"
+              [unmask]="false" required />
+            <mat-error *ngFor="let error of signUp.get('Mobile').errors | keyvalue">
+              {{ getErrorMessage(error.key, error.value) }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input [type]="hide ? 'password' : 'text'" formControlName="Password" matInput placeholder="Password*"
+              required />
+            <mat-icon matSuffix (click)="hide = !hide" style="cursor:pointer;">{{hide ? 'visibility' :
+              'visibility_off'}}
+            </mat-icon>
+            <mat-error *ngFor="let error of signUp.get('Password').errors | keyvalue">
+              {{ getErrorMessage(error.key, error.value) }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field>
+            <mat-label>Confirm Password</mat-label>
+            <input [type]="hide ? 'password' : 'text'" formControlName="CPassword" matInput
+              placeholder="Confirm Password*" required />
+            <mat-icon matSuffix (click)="hide = !hide" style="cursor:pointer;">{{hide ? 'visibility' :
+              'visibility_off'}}
+            </mat-icon>
+            <mat-error *ngFor="let error of signUp.get('CPassword').errors | keyvalue">
+              {{ getErrorMessage(error.key, error.value) }}
+            </mat-error>
+          </mat-form-field>
+          <fieldset class="actions">
+            <div class="row">
+              <div class="col-6">
+                <button mat-raised-button color="primary">
+                  <i class="fas fa-sign-in-alt"></i> Sign Up
+                </button>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <fieldset class="actions">
+      </fieldset>
+      <div class="col-12  p-1 d-flex align-items-center flex-column">
+        <h6 class="text-center">Already have an account. Please Sign in</h6>
+        <h6 class="text-center">اگر آپ کا پہلے سے اکاونٹ بنا ہوا ہے تو یہاں سا ئن ان کریں</h6>
+        <a class="mt-2" color="primary" mat-raised-button routerLinkActive="selected" [routerLink]="'/login'">
+          <i class="fas fa-sign-in-alt"></i> Sign in - سائن ان کریں
+        </a>
+      </div>
+    </form>
   </div>
 </div>

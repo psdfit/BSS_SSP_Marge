@@ -1,10 +1,11 @@
-import { __await } from 'tslib';
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { CommonSrvService } from '../common-srv.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DialogueService } from '../shared/dialogue.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'app-tsp-sign-up',
   templateUrl: './tsp-sign-up.component.html',
@@ -13,6 +14,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class TspSignUpComponent implements OnInit {
   BName: boolean = false;
   error: any;
+  // images: string[] = [
+  //   '../../../../assets/images/LMS---Slider-04.jpg',
+  //   '../../../../assets/images/LMS---Slider-04.jpg',
+  //   '../../../../assets/images/LMS---Slider-04.jpg',
+  //   // Add more image paths as needed
+  // ];
+  images = [1055, 194, 368].map((n) => `https://picsum.photos/id/${n}/900/500`);
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -21,8 +29,12 @@ export class TspSignUpComponent implements OnInit {
     public dialog: MatDialog,
     public dialogueService: DialogueService,
     private renderer: Renderer2,
-    private el: ElementRef
-  ) { }
+    private el: ElementRef,
+    config: NgbCarouselConfig
+  ) {
+    config.showNavigationArrows = true;
+    config.showNavigationIndicators = true;
+  }
   ngOnInit(): void {
     this.CreateForm();
   }
@@ -32,7 +44,7 @@ export class TspSignUpComponent implements OnInit {
     this.signUp = this.fb.group({
       TSPID: [''],
       BusinessName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      BusinessNTN: ['', [Validators.required, Validators.minLength(9)]],
+      BusinessNTN: ['', [Validators.required, Validators.minLength(8)]],
       Email: ['', [Validators.required, Validators.email]],
       Mobile: ['', [Validators.required, Validators.minLength(12)]],
       Password: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&\\-\' ]+$')]],
@@ -46,11 +58,6 @@ export class TspSignUpComponent implements OnInit {
       if (!this.isValidText(value)) {
         this.signUp.controls.BusinessName.setErrors({ customError: "Business name should only contain text." });
       }
-      this.CheckNTN()
-    });
-
-    this.signUp.get('BusinessNTN').valueChanges.subscribe((value) => {
-      this.CheckNTN()
     });
   }
   CheckMatchChanged(formValues: any) {
@@ -63,29 +70,21 @@ export class TspSignUpComponent implements OnInit {
     return regex.test(input);
   }
   CheckNTN() {
-    if (this.signUp.get('BusinessName').value !='' && this.signUp.get('BusinessNTN').value !='' ) {
-    const data={
-      BusinessNTN:this.signUp.get('BusinessNTN').value,
-      BusinessName:this.signUp.get('BusinessName').value
-    }
-      this.ComSrv.postNoAuth('api/Users/CheckNTN',data)
+    if (this.signUp.get('BusinessName').valid && this.signUp.get('BusinessNTN').valid) {
+      this.ComSrv.postNoAuth('api/Users/CheckNTN', this.signUp.value)
         .subscribe((response: any) => {
-          // if (response) {
+          if (response) {
             if (response == 1) {
               this.signUp.controls.IsHeadOffice.setValue('Branch Office')
-              this.signUp.controls.BusinessName.setErrors(null);
-
             }
             if (response == 0) {
               this.signUp.controls.IsHeadOffice.setValue('Head Office')
-              this.signUp.controls.BusinessName.setErrors(null);
-
             }
             if (response == 2) {
               this.signUp.controls.BusinessName.setErrors({ customError: "Business Name and NTN already existed" });
               this.ComSrv.ShowError("Business Name and NTN already existed.Please Use Login interface");
             }
-          // }
+          }
         }, error => {
           this.ComSrv.ShowError(error);
         })
@@ -110,25 +109,13 @@ export class TspSignUpComponent implements OnInit {
   onEnterKey(event: KeyboardEvent): void {
     event.preventDefault();
   }
-  IsDisabled = false
   Save() {
-
-
-    if (!this.isValidText(this.signUp.get('BusinessName').value)) {
-      this.ComSrv.ShowError('Business name should only contain text.')
-      return
-    }
-
-    if (this.signUp.valid && this.signUp.get('BusinessNTN').value.length==9) {
-      this.IsDisabled = true
-
+    if (this.signUp.valid) {
       this.ComSrv.postNoAuth('api/Users/SignUp', this.signUp.value)
         .subscribe((response: any) => {
           if (response) {
             this.ComSrv.openSnackBar("Saved data");
             this.ComSrv.setMessage(response)
-            this.IsDisabled = false
-
             this.router.navigate(['verify-otp']);
           }
         })
@@ -137,15 +124,13 @@ export class TspSignUpComponent implements OnInit {
       this.ComSrv.ShowError("please enter valid data");
     }
   }
-   getErrorMessage(errorKey: string, errorValue: any): string {
-    const error = errorValue.requiredLength != 8 ? errorValue.requiredLength -1 : errorValue.requiredLength
+  getErrorMessage(errorKey: string, errorValue: any): string {
     const errorMessages = {
-    required: 'This field is required.',
-    minlength: `This field must be at least ${error} long.`,
-    maxlength: `This field's text exceeds the specified maximum length.  (maxLength: ${errorValue.requiredLength} characters)`,
-    email: 'Invalid email address.',
-    pattern: 'Password contain 1 uppercase, 1 lowercase, 1 number, 1 special character (@$!%*?&)',
-      
+      required: 'This field is required.',
+      minlength: `This field must be at least ${errorValue.requiredLength} long.`,
+      maxlength: `This field's text exceeds the specified maximum length.  (maxLength: ${errorValue.requiredLength} characters)`,
+      email: 'Invalid email address.',
+      pattern: 'Password must be  include with one uppercase,lowercase letter, one number, and one special character.',
       customError: errorValue
     };
     return errorMessages[errorKey];
@@ -156,7 +141,7 @@ export class TspSignUpComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.setFocusOnControl("BusinessNTN");
+      this.setFocusOnControl("BusinessName");
     });
   }
 }

@@ -6,11 +6,12 @@ import * as _moment from 'moment';
 import { Moment } from 'moment';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-
+import { ExportExcel } from '../../shared/Interfaces';
+import { GroupByPipe } from 'angular-pipes';
 const moment = _moment;
 import { DatePipe } from '@angular/common';
 import { DialogueService } from 'src/app/shared/dialogue.service';
-
+import { EnumExcelReportType } from '../../shared/Enumerations';
 // Date formats
 export const MY_FORMATS = {
   parse: {
@@ -35,7 +36,7 @@ export const MY_FORMATS = {
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-    DatePipe
+    DatePipe, GroupByPipe
   ],
 })
 export class GenerateVrnComponent implements OnInit, AfterViewInit {
@@ -60,7 +61,7 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
   schemeFilter = new FormControl(0);
   tspFilter = new FormControl(0);
 
-  displayedColumnsClass = ['Sr', 'ClassCode', 'SchemeName', 'TradeName', 'ClassStatusName', 'CompletionReportStatus', 'TotalPassTraineesInClass'];
+  displayedColumnsClass = ['Sr', 'SchemeName', 'TSPName', 'TradeName', 'ClassCode', 'StartDate', 'EndDate', 'ClassStatusName', 'CompletionReportStatus', 'TotalEligibleTrainees'];
 
   result: any;
   isValid = false;
@@ -69,7 +70,7 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
   today = new Date(); 
 
 
-  constructor(private http: CommonSrvService, private fb: FormBuilder, private dialogue: DialogueService) {
+  constructor(private http: CommonSrvService, private fb: FormBuilder, private dialogue: DialogueService, private groupByPipe: GroupByPipe , private _date: DatePipe,) {
     this.http.setTitle('Generate VRN');
     this.maxDate = moment(); // Set maxDate to today's date as a Moment object
     console.log(this.maxDate.format('YYYY-MM-DD')); // Debug maxDate value
@@ -130,12 +131,14 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
           // SRN has already been generated for this month
           this.message = data[0].Message; // This will be "Already generated of this month"
           this.isValid = false;
-          this.IsGenerated = false;
-        } else {
+          this.IsGenerated = true;
+        }
+        else {
           // Process the data as usual
           this.PrnClasses = data;
           this.IsGenerated = data.length > 0 && data[0] ? data[0].IsStipend : false;
           this.isValid = true;
+          this.IsGenerated = false;
           this.message = 'Already Generated.';
         }
       },
@@ -164,6 +167,45 @@ export class GenerateVrnComponent implements OnInit, AfterViewInit {
         )
       }
     });
+  }
+
+  exportToExcel() {
+    const filteredData = [...this.PrnClasses]
+    const data = {
+      'Filters:': '',
+      'Scheme(s)': this.groupByPipe.transform(filteredData, 'Scheme').map(x => x.key).join(','),
+      'TSP(s)': this.groupByPipe.transform(filteredData, 'TSP').map(x => x.key).join(','),
+      Batch: 'All',
+      Trade: 'All',
+      'Certification Agency': 'All',
+      Gender: 'All',
+      'District of Training Location': 'All',
+      'Class Status': 'All',
+    };
+    const exportExcel: ExportExcel = {
+      Title: 'VRN Generation Report',
+      Author: this.currentUser.FullName,
+      Type: EnumExcelReportType.MasterSheet,
+      Data: data,
+      List1: this.populateData(filteredData),
+    };
+    this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
+  }
+  
+  populateData(data: any) {
+    return data.map(item => {
+      return {
+          'Scheme': item.SchemeName
+        , 'TSP Name': item.TSPName
+        , 'Trade Name': item.TradeName
+        , 'Class Code': item.ClassCode
+        , 'Class Start Date': this._date.transform(item.StartDate, 'dd/MM/yyyy')
+        , 'Class End Date': this._date.transform(item.EndDate, 'dd/MM/yyyy')
+        , 'Class Status': item.ClassStatusName
+        , 'Completion Report': item.ClassCode
+        , 'Total Eligible Trainees': item.TotalPassTraineesInClass
+      }
+    })
   }
 
   EmptyCtrl() {

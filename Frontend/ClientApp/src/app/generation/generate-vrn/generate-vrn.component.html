@@ -12,7 +12,7 @@
     </div>
     <div class="col-sm-3">
       <mat-form-field fxFlex>
-        <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month"  [max]="today" [formControl]="DateMonth" required readonly />
+        <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month" [max]="today" [formControl]="DateMonth" required readonly />
         <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #customDatePicker
                         startView="multi-year"
@@ -25,6 +25,10 @@
       </mat-form-field>
     </div>
 
+    <div class="col-sm-3">
+      <br />
+      <button mat-raised-button color="success" style="float:right" *ngIf="PrnClasses != null && PrnClasses.length != 0" (click)="exportToExcel()">Export Excel</button>
+    </div>
 
   </div>
 
@@ -44,6 +48,10 @@
           <li>The classes should end in that month and class status should be completed.</li>
           <li>Trainee status should be completed.</li>
           <li>Trainee should pass the exam.</li>
+          <li>Trainee Should not be extra.</li>
+          <li>Trainee status should be verified.</li>
+          <li>Trainee result status should not be none in any given class.</li>
+          <li>Completion PRN of the classes shall already be approved.</li>
         </ul>
 
 
@@ -58,7 +66,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row"  *ngIf="IsGenerated">
       <div class="col">
         <h1 class="text-center">{{message}}</h1>
       </div>
@@ -74,19 +82,34 @@
                 <mat-cell *matCellDef="let Row; let i = index;"><strong>{{ i + 1 || ""}}</strong></mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="ClassCode">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>ClassCode</mat-header-cell>
-                <mat-cell *matCellDef="let Row" style="color: #005b9e;"> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
-              </ng-container>
-
               <ng-container matColumnDef="SchemeName" style="width: 300px;">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>SchemeName</mat-header-cell>
                 <mat-cell *matCellDef="let Row; let i = index;"><strong>{{Row.SchemeName}}</strong></mat-cell>
               </ng-container>
 
+              <ng-container matColumnDef="TSPName" style="width: 300px;">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TSPName</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;"><strong>{{Row.TSPName}}</strong></mat-cell>
+              </ng-container>
+
               <ng-container matColumnDef="TradeName" style="width: 300px;">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>TradeName</mat-header-cell>
                 <mat-cell *matCellDef="let Row; let i = index;"><strong>{{Row.TradeName}}</strong></mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="ClassCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>ClassCode</mat-header-cell>
+                <mat-cell *matCellDef="let Row" style="color: #005b9e;"> <a class="myAnchor" (click)="openClassJourneyDialogue(Row.ClassID)"> <strong>{{Row.ClassCode}}</strong> </a> </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="StartDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>StartDate</mat-header-cell>
+                <mat-cell *matCellDef="let Row"><strong>{{Row.StartDate | date:'dd/MM/yyyy'}}</strong> </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="EndDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>EndDate</mat-header-cell>
+                <mat-cell *matCellDef="let Row"><strong>{{Row.EndDate | date:'dd/MM/yyyy'}}</strong> </mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="ClassStatusName">
@@ -99,8 +122,8 @@
                 <mat-cell *matCellDef="let Row"> {{Row.CompletionReportStatus}} </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="TotalPassTraineesInClass">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>TotalPassTraineesInClass</mat-header-cell>
+              <ng-container matColumnDef="TotalEligibleTrainees">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TotalEligibleTrainees</mat-header-cell>
                 <mat-cell *matCellDef="let Row"> {{Row.TotalPassTraineesInClass}} </mat-cell>
               </ng-container>
 
