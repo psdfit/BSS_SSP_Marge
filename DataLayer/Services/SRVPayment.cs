@@ -141,7 +141,7 @@ namespace DataLayer.Services
             DataTable TSP = GetTSPData(UserID);
 
             DateTime issueDate = DateTime.Now.Date;
-            DateTime dueDate = DateTime.Today.AddDays(7).Date;
+            DateTime dueDate = DateTime.Today.AddDays(20).Date;
 
            string pattern = "[^a-zA-Z0-9\\s]"; 
            string TSPNameWithOutSpecialCh = Regex.Replace(TSP.Rows[0]["InstituteName"].ToString(), pattern, "");

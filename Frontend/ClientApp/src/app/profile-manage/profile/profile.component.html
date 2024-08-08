@@ -144,7 +144,7 @@
                <div class="col-sm-3">
                   <mat-form-field fxFlex>
                      <mat-label>Business NTN#</mat-label>
-                     <input formControlName="InstituteNTN" readonly   [imask]="{mask:'0000000-0'}" [unmask]="false"  matInput placeholder="Business NTN" required >
+                     <input formControlName="InstituteNTN" readonly   matInput placeholder="Business NTN" required >
                      <mat-error *ngFor="let error of ProfileForm.get('InstituteNTN').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
                   </mat-form-field>
                </div>

@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
       TaxTypeID: [''],
       InstituteName: ['', [Validators.required]],
       RegistrationDate: [{ value: '' }, [Validators.required]],
-      InstituteNTN: ['', [Validators.required, Validators.minLength(9)]],
+      InstituteNTN: ['', [Validators.required]],
       NTNAttachment: ['', [Validators.required]],
       TaxType: ['', [Validators.required]],
       GSTNumber: [{ value: '', disabled: true }],
@@ -324,26 +324,33 @@ export class ProfileComponent implements OnInit {
     });
   }
   SaveContactPersonInfo() {
-    this.ContactInfoForm.get("TspID").setValue(this.currentUser.UserID)
-    this.ContactInfoForm.get("InstituteName").setValue(this.ProfileForm.get("InstituteName").value)
-    this.ContactInfoForm.get("InstituteNTN").setValue(this.ProfileForm.get("InstituteNTN").value)
-    if (this.ContactInfoForm.valid) {
-      this.ComSrv.postJSON("api/BusinessProfile/SavePOC", this.ContactInfoForm.value).subscribe(
-        (response) => {
-          if (response[0] > 0) {
-            this.COPreadonly = false
+    const check = this.PendingForm.includes("BusinessProfile");
+
+    if (!check) {
+      this.ContactInfoForm.get("TspID").setValue(this.currentUser.UserID)
+      this.ContactInfoForm.get("InstituteName").setValue(this.ProfileForm.get("InstituteName").value)
+      this.ContactInfoForm.get("InstituteNTN").setValue(this.ProfileForm.get("InstituteNTN").value)
+      if (this.ContactInfoForm.valid) {
+        this.ComSrv.postJSON("api/BusinessProfile/SavePOC", this.ContactInfoForm.value).subscribe(
+          (response) => {
+            if (response[0] > 0) {
+              this.COPreadonly = false
+            }
+            this.GetTSPProfileScore()
+            this.ComSrv.openSnackBar("Profile data has been modified.");
+            this.POCEdit(response[0])
+          },
+          (error) => {
+            let url = error.url.split("/")
+            this.ComSrv.ShowError(`${error.error} in ${url[4] + "/" + url[5]}`, "Close", 50000);
           }
-          this.GetTSPProfileScore()
-          this.ComSrv.openSnackBar("Profile data has been modified.");
-          this.POCEdit(response[0])
-        },
-        (error) => {
-          let url = error.url.split("/")
-          this.ComSrv.ShowError(`${error.error} in ${url[4] + "/" + url[5]}`, "Close", 50000);
-        }
-      );
-    } else {
-      this.ComSrv.ShowError("please enter valid data");
+        );
+      } else {
+        this.ComSrv.ShowError("please enter valid data");
+      }
+    }
+    else {
+      this.ComSrv.ShowError("Business profile is not completed. Please complete the business profile!");
     }
   }
   POCEdit(profile: any): void {
