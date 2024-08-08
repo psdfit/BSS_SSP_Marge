@@ -28,6 +28,7 @@ export class TspSignUpComponent implements OnInit {
   }
   signUp: FormGroup;
   hide = true;
+  NTNFormat:any="1"
   CreateForm() {
     this.signUp = this.fb.group({
       TSPID: [''],
@@ -40,6 +41,7 @@ export class TspSignUpComponent implements OnInit {
       IsHeadOffice: ['Branch Office']
     });
     this.signUp.valueChanges.subscribe((formValues) => {
+   
       this.CheckMatchChanged(formValues);
     });
     this.signUp.get('BusinessName').valueChanges.subscribe((value) => {
@@ -52,6 +54,18 @@ export class TspSignUpComponent implements OnInit {
     this.signUp.get('BusinessNTN').valueChanges.subscribe((value) => {
       this.CheckNTN()
     });
+
+
+  }
+
+  onFormateChange(){
+    debugger;
+    if(this.NTNFormat==2){
+      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
+    }else{
+      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(9)])
+    }
+    this.signUp.get('BusinessNTN').updateValueAndValidity();
   }
   CheckMatchChanged(formValues: any) {
     if (formValues.Password != formValues.CPassword) {
@@ -119,7 +133,7 @@ export class TspSignUpComponent implements OnInit {
       return
     }
 
-    if (this.signUp.valid && this.signUp.get('BusinessNTN').value.length==9) {
+    if (this.signUp.valid && [7, 9].includes(this.signUp.get('BusinessNTN').value.length)) {
       this.IsDisabled = true
 
       this.ComSrv.postNoAuth('api/Users/SignUp', this.signUp.value)
@@ -138,7 +152,7 @@ export class TspSignUpComponent implements OnInit {
     }
   }
    getErrorMessage(errorKey: string, errorValue: any): string {
-    const error = errorValue.requiredLength != 8 ? errorValue.requiredLength -1 : errorValue.requiredLength
+    const error = errorValue.requiredLength != 8 &&  errorValue.requiredLength != 7 ? errorValue.requiredLength -1 : errorValue.requiredLength
     const errorMessages = {
     required: 'This field is required.',
     minlength: `This field must be at least ${error} long.`,

@@ -1,4 +1,3 @@
-import { filter } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonSrvService } from '../../common-srv.service';
 import { MatPaginator } from '@angular/material/paginator';
@@ -20,10 +19,6 @@ import { DialogueService } from 'src/app/shared/dialogue.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import * as _moment from 'moment';
 import { Moment } from 'moment';
-import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
-import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-// import { Select2OptionData } from 'ng-select2';
-
 const moment = _moment;
 import { DatePipe } from '@angular/common';
 import { MatDatepicker } from '@angular/material/datepicker';
@@ -40,15 +35,12 @@ export const MY_FORMATS = {
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
-
-
 @Component({
   selector: 'hrapp-pbte',
   templateUrl: './pbte.component.html',
   styleUrls: ['./pbte.component.scss'],
   providers: [DatePipe]
 })
-
 export class PBTEComponent implements OnInit {
   selection = new SelectionModel<any>(true, []);
   ParentSchemeName: any = ""
@@ -67,7 +59,6 @@ export class PBTEComponent implements OnInit {
     // console.log(numRows)
   }
   _fileUploadForm: FormGroup;
-
   initForm() {
     this._fileUploadForm = this.fb.group({
       excelFile: ['', Validators.required]
@@ -78,11 +69,9 @@ export class PBTEComponent implements OnInit {
   title: string; savebtn: string;
   filters: IQueryFilters = { SchemeID: 0, TSPID: 0, ClassID: 0, TradeID: 0, DistrictID: 0 };
   navttcfilters: IQueryFilters = { SchemeID: 0, TSPID: 0, ClassID: 0, TradeID: 0, DistrictID: 0 };
-
   //exportAsConfig: ExportAsConfig
   displayedColumnsClasses = ['SchemeName', 'PBTESchemeName', 'Batch', 'TSPName', 'ClassCode', 'TradeName', 'TrainingAddressLocation', 'PBTEAddress', 'TehsilName',
     'DistrictName', 'CertAuthName', 'TraineesPerClass', 'GenderName', 'Duration', 'StartDate', 'EndDate', 'ClassStatusName'];
-
   displayedColumnsTsps = [
     //'TSPID',
     'TSPName',
@@ -90,7 +79,6 @@ export class PBTEComponent implements OnInit {
     //'ClassID',
     'Address', 'HeadName', 'HeadDesignation', 'HeadEmail', 'HeadLandline',
     'OrgLandline', 'Website', 'CPName', 'CPDesignation', 'CPEmail', 'CPLandline'];
-
   displayedColumnsTrainees = ['ClassCode', 'Batch', 'TradeName',
     //'TradeID',
     'TraineeName', 'TraineeCode', 'FatherName', 'TraineeCNIC', 'DateOfBirth', 'Education', 'TraineeImg',
@@ -102,7 +90,6 @@ export class PBTEComponent implements OnInit {
     //'TraineeImg',
     'TraineeID', 'PBTEID', 'CollegeID'
   ];
-
   displayedColumnsDropOutTrainees = ['ClassCode', 'Batch', 'TradeName',
     //'TradeID',
     'TraineeName', 'FatherName', 'TraineeCNIC', 'DateOfBirth', 'Education',
@@ -110,36 +97,26 @@ export class PBTEComponent implements OnInit {
   ];
   displayedColumnsTrades = ['PBTETradeName', 'PBTETradeDuration'
   ];
-
-
-  hTablesData: MatTableDataSource<any>;
+  hTablesData: MatTableDataSource<any>
   @ViewChild("hpaginator") hpaginator: MatPaginator;
   @ViewChild("hsort") hsort: MatSort;
   hTableColumns = [];
-
-  tTablesData: MatTableDataSource<any>;
+  tTablesData: MatTableDataSource<any>
   @ViewChild("tpaginator") tpaginator: MatPaginator;
   @ViewChild("tsort") tsort: MatSort;
   tTableColumns = [];
-
-
-  cTablesData: MatTableDataSource<any>;
+  cTablesData: MatTableDataSource<any>
   @ViewChild("cpaginator") cpaginator: MatPaginator;
   @ViewChild("csort") csort: MatSort;
   cTableColumns = [];
-
-
-  traineeTablesData: MatTableDataSource<any>;
+  traineeTablesData: MatTableDataSource<any>
   @ViewChild("traineepaginator") traineepaginator: MatPaginator;
   @ViewChild("traineesort") traineesort: MatSort;
   traineeTableColumns = [];
-
-  examTablesData: MatTableDataSource<any>;
+  examTablesData: MatTableDataSource<any>
   @ViewChild("exampaginator") exampaginator: MatPaginator;
   @ViewChild("examsort") examsort: MatSort;
   examTableColumns = [];
-
-
   date = new FormControl(moment());
   chosenYearHandler(normalizedYear: Moment) {
     const ctrlValue = this.date.value;
@@ -152,10 +129,6 @@ export class PBTEComponent implements OnInit {
     this.date.setValue(ctrlValue);
     datepicker.close();
   }
-
-
-
-
   groupedPbteTSPs: MatTableDataSource<any>;
   groupedTSPsArray: any;
   groupednavttcTSPsArray: any;
@@ -183,8 +156,6 @@ export class PBTEComponent implements OnInit {
   navttcDropOutTraineesAfterReset: MatTableDataSource<any>;
   groupedTSPsArrayForData = [];
   groupednavttcTSPsArrayForData = [];
-
-
   selectedClasses: any;
   pbteClassesArray: any;
   pbteTSPsArray: any;
@@ -221,11 +192,8 @@ export class PBTEComponent implements OnInit {
   navttcTraineesSqlScriptArray: any;
   navttcTraineesRegisterSqlScriptArray: any;
   data: any;
-
   traineeResultStatusTypes: any;
-
   update: String;
-
   isOpenRegistration: boolean = false;
   isOpenRegistrationMessage: string = "";
   formrights: UserRightsModel;
@@ -238,7 +206,6 @@ export class PBTEComponent implements OnInit {
   };
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
   @ViewChild('SortTrainee') SortTrainee: MatSort;
   @ViewChild('PageTrainee') PageTrainee: MatPaginator;
   @ViewChild('SortExamResultTrainee') SortExamResultTrainee: MatSort;
@@ -264,7 +231,6 @@ export class PBTEComponent implements OnInit {
   @ViewChild('tabGroup') tabGroup;
   @ViewChild('tabGroupS') tabGroupS;
   @ViewChild('tabGroupN') tabGroupN;
-
   working: boolean;
   constructor(private fb: FormBuilder, private ComSrv: CommonSrvService, private route: ActivatedRoute, public dialogueService: DialogueService
     , private _date: DatePipe,) {
@@ -275,21 +241,29 @@ export class PBTEComponent implements OnInit {
     this.pbteTrainees = new MatTableDataSource([]);
     this.formrights = ComSrv.getFormRights("/pbte");
   }
-
   SearchSch = new FormControl('');
   SearchCls = new FormControl('');
   SearchTSP = new FormControl('');
   SearchTrade = new FormControl('');
   SearchDistrict = new FormControl('');
-  EmptyCtrl(ev: any) {
+  EmptyCtrl(ev: any="") {
     this.SearchCls.setValue('');
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
+    this.SearchCtr.setValue('')
     this.SearchTrade.setValue('');
     this.SearchDistrict.setValue('');
   }
-
   ngOnInit() {
+
+
+    this.cTablesData = new MatTableDataSource([]);
+    this.hTablesData = new MatTableDataSource([]);
+    this.tTablesData = new MatTableDataSource([]);
+    this.examTablesData = new MatTableDataSource([]);
+    this.traineeTablesData = new MatTableDataSource([]);
+  
+
     this.ComSrv.setTitle("PBTE");
     this.title = "Add New ";
     this.savebtn = "Save ";
@@ -303,7 +277,6 @@ export class PBTEComponent implements OnInit {
     this.GetPbteData("Class")
     this.GetPbteData("CenterLocation")
   }
-
   getSelectedTabData() {
     switch (this.tabGroup?.selectedIndex ?? 0) {
       case 0:
@@ -316,17 +289,14 @@ export class PBTEComponent implements OnInit {
         //this.GetPBTEFiltersData();
         this.getNAVTTCSelectedSubTabData();
         break;
-
       default:
     }
   }
-
   getPBTEStatsData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTEStatsData', this.filters).subscribe((d: any) => {
       this.pbteStats = d[0];
       this.pbteStatsAfterReset = d[0];
       //this.getPBTEClassData();
-
     }, error => this.error = error// error path
     );
   }
@@ -335,11 +305,9 @@ export class PBTEComponent implements OnInit {
       this.navttcStats = d[0];
       this.navttcStatsAfterReset = d[0];
       //this.getNAVTTCClassData();
-
     }, error => this.error = error// error path
     );
   }
-
   getPBTESelectedSubTabData() {
     switch (this.tabGroupS?.selectedIndex ?? 0) {
       case 0:
@@ -383,141 +351,150 @@ export class PBTEComponent implements OnInit {
       default:
     }
   }
-
-
   selectedPbteCenter: any = 0
   SearchCtr = new FormControl('')
   onSelectionChange(row: any) {
     this.SavePBTECenterMapping(row)
   }
 
-  // getSelectedTrade(row:any) {
-  //   console.log('Selected Course ID:', row.selectedCourseID);
-  //   return;
-  //   const _schemeName = this.ParentSchemeName
-  //   const _schemeList = this.selection.selected
-
-  //   _schemeList.forEach(obj => {
-  //     obj.PBTESchemeName = _schemeName;
-  //   });
-
-  //   this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
-  //    this.mappedPBTEScheme = data;
-  //    this.selection.clear()
-  //    this.getPBTEClassData()
-  //    this.ParentSchemeName=""
-  //   }, error => this.error = error// error path
-  //   );
-
-  // }
-
-  // EmptyCtr() {
-  //   this.BSearchCtr.setValue('');
-  // }
   BSearchCtr = new FormControl('');
-
   pbteTSPLocation: any;
   pbtecourse: any;
   GetDataObject: any = {}
- _dataObject: any;
+  _dataObject: any;
   getPBTEClassData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTEClasses', this.filters).subscribe((d: any) => {
       this.pbteClasses = new MatTableDataSource(d[0]);
       this.pbteClassesAfterReset = new MatTableDataSource(d[0]);
       this.pbteClassesArray = d[0];
-
       this.pbteClasses.paginator = this.PageClass;
       this.pbteClasses.sort = this.SortClass;
       // this.GetScheme(d[0], d[1]);
       // this.GetTrade(d[0],d[2]);
-      this.LoadMatTable(d[2], "CenterLocationMapping");
-
+      // this.LoadMatTable(d[2], "CenterLocationMapping");
       this.GetDataObject["pbte"] = d[3];
       this.pbtecourse = [];
     }, error => this.error = error// error path
     );
   }
-  pbteScheme:any=[]
-  selectedPbteScheme:string=""
-
-  onSchemeChange(){
-    if(this.selectedPbteScheme=="New Scheme"){
-      this.ParentSchemeName=this.selectedPbteScheme
-    }else{
-      this.ParentSchemeName=""
+  pbteScheme: any = []
+  selectedPbteScheme: string = ""
+  onSchemeChange() {
+    if (this.selectedPbteScheme == "New Scheme") {
+      this.ParentSchemeName = this.selectedPbteScheme
+    } else {
+      this.ParentSchemeName = ""
     }
   }
- async GetPbteData(reportName: string="Scheme"){
-  debugger
+  async GetPbteData(reportName: string = "Scheme") {
+    this.hTablesData = new MatTableDataSource([]);
+    this.cTablesData = new MatTableDataSource([]);
     const _month = moment(this.date.value).format('YYYY-MM')
+    const data = { month: _month, report: reportName };
+    const response = await this.ComSrv.postJSON("api/PBTE/GetPbteData", data).toPromise();
+    this._dataObject = response
+    this.pbteScheme = this._dataObject.mappedScheme
 
-    const data={ month: _month,report:reportName };
-
-    const response = await this.ComSrv.postJSON("api/PBTE/GetPbteData",data).toPromise();
-
-    this._dataObject=response
-    this.pbteScheme=this._dataObject.mappedScheme
-    if(response !=undefined && response!=null) {
-      if (reportName=="Scheme") {
+    if (response && this._dataObject.data.length > 0) {
+      if (reportName == "Scheme") {
         this.LoadMatTable(this._dataObject.data, "SchemeMapping");
       }
-      if (reportName=="CenterLocation") {
+      if (reportName == "CenterLocation") {
         this.LoadMatTable(this._dataObject.data, "CenterLocationMapping");
       }
-      if (reportName=="Class") {
+      if (reportName == "Class") {
         this.LoadMatTable(this._dataObject.data, "Class");
       }
-      if (reportName=="Trainee") {
-        
+      if (reportName == "Exam") {
+        this.LoadMatTable(this._dataObject.data, "ExamData");
+
       }
-    }else{
+      if (reportName == "Trainee") {
+        this.LoadMatTable(this._dataObject.data, "TraineeData");
+      }
+
+      if (reportName == "ExaminationSqlScript") {
+        let textarray:any = [];
+        this._dataObject.data.forEach(item => {
+          var text = `insert into dbo.Examination (ExamID,ExamSessionUrdu,ExamSessionenglish,maincategoryid,BatchNo,ExamYear,StartDate,EndDate,Description,Active,ExamSession) values(${item.examId},'${item.ExamSessionUrdu}','${item.ExamSessionenglish}',${item.maincategoryid},${item.BatchNo},${item.ExamYear},'${item.StartDate}','${item.EndDate}',${item.Active==true?1:0},'${item.ExamSession}');`
+          textarray.push(text);
+        });
+        var blob = new Blob([textarray.join('\r\n')], { type: "text/plain;charset=utf-8, endings: 'native'" });
+        fileSaver.saveAs(blob, "PBTE-Examination-Sql-Script.sql");
+      }
+
+      if (reportName == "TraineeSqlScript") {
+        let textarray:any = [];
+        this._dataObject.data.forEach(item => {
+          let obj = {};
+          this.displayedColumnsTrainees.forEach(key => {
+            obj[key] = item[key] || item;
+            console.log(item.Batch);
+          });
+          var text = `insert into dbo.Student (ExamId,CollegeId,course_categoryId,Lock,ResultLocked,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To) values(${item.ExamId},${item.CollegeId},${item.course_categoryId},1,1,'${item.StudentName}','${item.FathersName}','${item.DateofBirth}','${item.Qualification}',${item.Gender},${1},'${item.Class_Code}','${item.NIC}','${item.Trainee_ID}','${item.Shift}','${item.Shift_Time_From}','${item.Shift_Time_To}');`
+          textarray.push(text);
+        });
+        var blob = new Blob([textarray.join('\r\n')], { type: "text/plain;charset=utf-8, endings: 'native'" });
+        fileSaver.saveAs(blob, "PBTE-Trainee-Sql-Script.sql");
+      }
+    } else {
       this.ComSrv.ShowError("No data found for the selected month")
     }
-        
-    
   }
-
-
   mappedPBTEScheme: any = []
   saveMappedScheme() {
     let _schemeName
-        if(this.selectedPbteScheme=="New Scheme"){
-          _schemeName=this.ParentSchemeName
-        }else{
-          _schemeName  =this.selectedPbteScheme
-        }
-   
+    if (this.selectedPbteScheme == "New Scheme") {
+      _schemeName = this.ParentSchemeName.trim()
+    } else {
+      _schemeName = this.selectedPbteScheme
+    }
     const _schemeList = this.selection.selected
 
+    if (_schemeList.length == 0) {
+      this.ComSrv.ShowError("Please select at least one row");
+      return;
+    }
+    if (_schemeName =="" || _schemeName==null) {
+      this.ComSrv.ShowError("Please Enter a scheme");
+      return;
+    }
     _schemeList.forEach(obj => {
       obj.PBTESchemeName = _schemeName;
     });
 
+
     this.ComSrv.postJSON('api/PBTE/SaveSchemeMapping', _schemeList).subscribe((data: any) => {
       this.mappedPBTEScheme = data;
       this.selection.clear()
-     this.search=""
-     this.selectedPbteScheme=""
-     this.GetPbteData("Scheme");
+      this.search = ""
+      this.selectedPbteScheme = ""
+      this.GetPbteData("Scheme");
       this.ParentSchemeName = ""
     }, error => this.error = error// error path
     );
-
   }
   getSelectedFile() {
     // debugger
     if (this.PbteDBFile) {
-      const _pbteDBFile = this.PbteDBFile
-      this.ComSrv.postJSON('api/PBTE/SavePbteDBFile', { pbteFile: _pbteDBFile }).subscribe((data: any) => {
-        this.PbteDBFile = ""
-      }, error => this.error = error// error path
+      const _pbteDBFile = this.PbteDBFile;
+      this.ComSrv.postJSON('api/PBTE/SavePbteDBFile', { pbteFile: _pbteDBFile }).subscribe(
+        (data: any) => {
+          this.PbteDBFile = "";
+          if (data==true) {
+            this.ComSrv.openSnackBar("PBTE DB File saved successfully.");
+          } else {
+            this.ComSrv.ShowError("Failed to save");
+          }
+        },
+        (error) => {
+          this.ComSrv.ShowError(`${error.message}`, "Close", 5000);
+        }
       );
     } else {
-      this.ComSrv.ShowError('Please select a PBTE DB file')
+      this.ComSrv.ShowError('Please select a PBTE DB file');
     }
-
-
-  }
+  }    
   SavePBTECenterMapping(row: any) {
     // debugger;
     const data: any = {
@@ -531,7 +508,6 @@ export class PBTEComponent implements OnInit {
     }, error => this.error = error// error path
     );
   }
-
   openedSelection(row: any) {
     this.pbtecourse = []
     const data = this.GetDataObject.pbte.filter(x => x.College_Name == row.BSSTSP && x.District_Name == row.BSSDistrict);
@@ -542,62 +518,23 @@ export class PBTEComponent implements OnInit {
     console.log(data)
   }
 
-  GetScheme(_schemedata: any[], _mappedScheme: any[]) {
-
-    const uniqueSchemes = {};
-
-    // Create a set of SchemeIDs from _mappedScheme for quick lookup
-    const mappedSchemeIds = new Set(_mappedScheme.map(item => item.SchemeID));
-
-    // Populate uniqueSchemes from _schemedata
-    _schemedata.forEach(item => {
-      uniqueSchemes[item.SchemeID] = {
-        SchemeID: item.SchemeID,
-        SchemeName: item.SchemeName
-      };
-    });
-
-    // Convert uniqueSchemes to an array
-    const _pbteScheme: any[] = Object.values(uniqueSchemes);
-
-    // Filter out schemes that are in _mappedScheme
-    const filteredSchemes = _pbteScheme.filter(scheme => !mappedSchemeIds.has(scheme.SchemeID));
-
-    // Load the filtered schemes into the MatTable
-    this.LoadMatTable(filteredSchemes, "SchemeMapping");
-  }
-  //   GetTrade(_tradedata: any[], _mappedTrade: any[]) {
-  //     debugger
-  //     const uniqueTrades = {};
-
-  //     // Create a set of tradeIDs from _mappedtrade for quick lookup
-  //     const mappedTradeIds = new Set(_mappedTrade.map(item => item.TradeID));
-
-  //     // Populate uniqueTrades from _Tradedata
-  //     _tradedata.forEach(item => {
-  //         uniqueTrades[item.TradeID] = {
-  //           TradeID: item.TradeID,
-  //           TradeName: item.TradeName
-  //         };
-  //     });
-
-  //     // Convert uniqueTrades to an array
-  //     const _pbteTrade: any[] = Object.values(uniqueTrades);
-
-  //     // Filter out Trades that are in _mappedTrade
-  //     const filteredTrades = _pbteTrade.filter(Trade => !mappedTradeIds.has(Trade.TradeID));
-
-  //     // Load the filtered trades into the MatTable
-  //    this.LoadMatTable(filteredTrades, "CenterLocationMapping");
-  // }
-
-
   camelCaseToWords(input: string): string {
     return input.replace(/([a-z])([A-Z])/g, '$1 $2');
   }
   DataExcelExport(Data: any, ReportName: string) {
+    if (ReportName === "PBTE_MSR") {
+      const Error = Data.find(element => element.PBTESchemeName.includes("Required"));
+  
+      if (Error) {
+        this.ComSrv.ShowError("Mapping required for " + Error.SchemeName);
+        return; 
+      }
+    }
+  
     this.ComSrv.ExcelExporWithForm(Data, ReportName);
   }
+  
+  
   LoadMatTable(tableData: any, tableName: string) {
     //  debugger;
     if (tableName == 'SchemeMapping') {
@@ -605,17 +542,13 @@ export class PBTEComponent implements OnInit {
       this.hTablesData = new MatTableDataSource(tableData)
       this.hTablesData.paginator = this.hpaginator;
       this.hTablesData.sort = this.hsort;
-
     }
-
     if (tableName == 'Class') {
       this.cTableColumns = Object.keys(tableData[0]).filter(key => !key.includes('ID'));
       this.cTablesData = new MatTableDataSource(tableData)
       this.cTablesData.paginator = this.cpaginator;
       this.cTablesData.sort = this.csort;
-
     }
-
     if (tableName == 'CenterLocationMapping') {
       // debugger
       const excludeColumnArray = []
@@ -625,7 +558,6 @@ export class PBTEComponent implements OnInit {
       this.tTablesData.paginator = this.tpaginator;
       this.tTablesData.sort = this.tsort;
     }
-
     if (tableName == 'ExamData') {
       // debugger
       const excludeColumnArray = []
@@ -634,7 +566,6 @@ export class PBTEComponent implements OnInit {
       this.examTablesData.paginator = this.exampaginator;
       this.examTablesData.sort = this.examsort;
     }
-
     if (tableName == 'TraineeData') {
       const excludeColumnArray = []
       this.traineeTableColumns = Object.keys(tableData[0]).filter(key => !excludeColumnArray.includes(key));
@@ -642,22 +573,14 @@ export class PBTEComponent implements OnInit {
       this.traineeTablesData.paginator = this.traineepaginator;
       this.traineeTablesData.sort = this.traineesort;
     }
-
-
   }
-
-
-
-
   getPBTETSPData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTETSPs', this.filters).subscribe((d: any) => {
       this.pbteTSPs = new MatTableDataSource(d[0]);
       this.pbteTSPsAfterReset = new MatTableDataSource(d[0]);
       this.pbteTSPsArray = d[0];
       this.pbteTSPsArrayToFilter = d[0];
-
       this.GroupTSPs(this.pbteTSPs);
-
       this.pbteTSPs.paginator = this.PageTSP;
       this.pbteTSPs.sort = this.SortTSP;
     }, error => this.error = error// error path
@@ -668,18 +591,15 @@ export class PBTEComponent implements OnInit {
       this.pbteTrainees = new MatTableDataSource(d[0]);
       this.pbteTraineesAfterReset = new MatTableDataSource(d[0]);
       this.pbteTraineesArray = d[0];
-
       this.pbteTrainees.paginator = this.PageTrainee;
       this.pbteTrainees.sort = this.SortTrainee;
     }, error => this.error = error// error path
     );
   }
-
   getPBTETraineeExamScriptData() {
     this.ComSrv.postJSON('api/PBTE/GetPBTETraineesExamScriptData', this.filters).subscribe((d: any) => {
       this.pbteTraineesExamScriptArray = d[0];
       this.GetSql('TraineesExamination');
-
     }, error => this.error = error// error path
     );
   }
@@ -690,7 +610,6 @@ export class PBTEComponent implements OnInit {
       //this.pbteDropOutTraineesArray = d[0];
       this.pbteDropOutTrainees.paginator = this.PageDropOutTrainee;
       this.pbteDropOutTrainees.sort = this.SortDropOutTrainee;
-
     }, error => this.error = error// error path
     );
   }
@@ -699,11 +618,8 @@ export class PBTEComponent implements OnInit {
       this.pbteTrades = new MatTableDataSource(d[0]);
       this.pbteTradesAfterReset = new MatTableDataSource(d[0]);
       this.pbteTradesArray = d[0];
-
       this.pbteTrades.paginator = this.PageTrade;
       this.pbteTrades.sort = this.SortTrade;
-
-
     }, error => this.error = error// error path
     );
   }
@@ -712,37 +628,29 @@ export class PBTEComponent implements OnInit {
       this.pbteExamResultTrainees = new MatTableDataSource(d[0]);
       this.pbteExamResultTraineesAfterReset = new MatTableDataSource(d[0]);
       this.pbteExamResultTraineesArray = d[0];
-
       this.traineeResultStatusTypes = d[1];
-
       this.pbteExamResultTrainees.paginator = this.PageExamResultTrainee;
       this.pbteExamResultTrainees.sort = this.SortExamResultTrainee;
-
     }, error => this.error = error// error path
     );
   }
-
   getNAVTTCClassData() {
     this.ComSrv.postJSON('api/PBTE/GetNAVTTCClasses', this.navttcfilters).subscribe((d: any) => {
       this.navttcClasses = new MatTableDataSource(d[0]);
       this.navttcClassesAfterReset = new MatTableDataSource(d[0]);
       this.navttcClassesArray = d[0];
-
       this.navttcClasses.paginator = this.PageNavttcClass;
       this.navttcClasses.sort = this.SortNavttcClass;
     }, error => this.error = error// error path
     );
   }
-
   getNAVTTCTSPData() {
     this.ComSrv.postJSON('api/PBTE/GetNAVTTCTSPs', this.navttcfilters).subscribe((d: any) => {
       this.navttcTSPs = new MatTableDataSource(d[0]);
       this.navttcTSPsAfterReset = new MatTableDataSource(d[0]);
       this.navttcTSPsArray = d[0];
       this.navttcTSPsArrayToFilter = d[0]
-
       this.GroupNavttcTSPs(this.navttcTSPs);
-
       this.navttcTSPs.paginator = this.PageNavttcTSP;
       this.navttcTSPs.sort = this.SortNavttcTSP;
     }, error => this.error = error// error path
@@ -753,7 +661,6 @@ export class PBTEComponent implements OnInit {
       this.navttcTrainees = new MatTableDataSource(d[0]);
       this.navttcTraineesAfterReset = new MatTableDataSource(d[0]);
       this.navttcTraineesArray = d[0];
-
       this.navttcTrainees.paginator = this.PageNavttcTrainee;
       this.navttcTrainees.sort = this.SortNavttcTrainee;
     }, error => this.error = error// error path
@@ -788,28 +695,21 @@ export class PBTEComponent implements OnInit {
       //this.pbteDropOutTraineesArray = d[0];
       this.navttcDropOutTrainees.paginator = this.PageNavttcDropOutTrainee;
       this.navttcDropOutTrainees.sort = this.SortNavttcDropOutTrainee;
-
     }, error => this.error = error// error path
     );
   }
-
   getNAVTTCExamResultTraineeData() {
     this.ComSrv.postJSON('api/PBTE/GetNAVTTCTraineesExamResult', this.navttcfilters).subscribe((d: any) => {
       this.navttcExamResultTrainees = new MatTableDataSource(d[0]);
       this.navttcExamResultTraineesAfterReset = new MatTableDataSource(d[0]);
       this.navttcExamResultTraineesArray = d[0];
-
       this.traineeResultStatusTypes = d[1];
-
       this.navttcExamResultTrainees.paginator = this.PageNAVTTCExamResultTrainee;
       this.navttcExamResultTrainees.sort = this.SortNAVTTCExamResultTrainee;
-
     }, error => this.error = error// error path
     );
   }
-
   //FilteredData(moduleName: string) {
-
   //    if (moduleName == "PBTE") {
   //        if (this.filters.SchemeID != 0) {
   //            this.pbteClasses = new MatTableDataSource(this.pbteClassesArray.filter(cl => cl.SchemeID == this.filters.SchemeID));
@@ -817,7 +717,6 @@ export class PBTEComponent implements OnInit {
   //            this.pbteTrainees = new MatTableDataSource(this.pbteTraineesArray.filter(cl => cl.SchemeID == this.filters.SchemeID));
   //            this.pbteExamResultTrainees = new MatTableDataSource(this.pbteExamResultTraineesArray.filter(cl => cl.SchemeID == this.filters.SchemeID));
   //            this.GroupTSPs(this.pbteTSPs);
-
   //        }
   //        if (this.filters.TSPID != 0) {
   //            this.pbteClasses = new MatTableDataSource(this.pbteClassesArray.filter(cl => cl.TSPID == this.filters.TSPID));
@@ -825,14 +724,12 @@ export class PBTEComponent implements OnInit {
   //            this.pbteTrainees = new MatTableDataSource(this.pbteTraineesArray.filter(cl => cl.TSPID == this.filters.TSPID));
   //            this.pbteExamResultTrainees = new MatTableDataSource(this.pbteExamResultTraineesArray.filter(cl => cl.TSPID == this.filters.TSPID));
   //            this.GroupTSPs(this.pbteTSPs);
-
   //        }
   //        if (this.filters.ClassID != 0) {
   //            this.pbteClasses = new MatTableDataSource(this.pbteClassesArray.filter(cl => cl.ClassID == this.filters.ClassID));
   //            this.pbteTSPs = new MatTableDataSource(this.pbteTSPsArray.filter(cl => cl.ClassID == this.filters.ClassID));
   //            this.pbteTrainees = new MatTableDataSource(this.pbteTraineesArray.filter(cl => cl.ClassID == this.filters.ClassID));
   //            this.pbteExamResultTrainees = new MatTableDataSource(this.pbteExamResultTraineesArray.filter(cl => cl.ClassID == this.filters.ClassID));
-
   //        }
   //        if (this.filters.TradeID != 0) {
   //            this.pbteClasses = new MatTableDataSource(this.pbteClassesArray.filter(cl => cl.TradeID == this.filters.TradeID));
@@ -840,38 +737,27 @@ export class PBTEComponent implements OnInit {
   //            this.pbteTrainees = new MatTableDataSource(this.pbteTraineesArray.filter(cl => cl.TradeID == this.filters.TradeID));
   //            this.pbteExamResultTrainees = new MatTableDataSource(this.pbteExamResultTraineesArray.filter(cl => cl.TradeID == this.filters.TradeID));
   //            this.pbteTrades = new MatTableDataSource(this.pbteTradesArray.filter(cl => cl.TradeID == this.filters.TradeID));
-
   //            this.GroupTSPs(this.pbteTSPs);
-
   //        }
   //        if (this.filters.DistrictID != 0) {
   //            this.pbteClasses = new MatTableDataSource(this.pbteClassesArray.filter(cl => cl.DistrictID == this.filters.DistrictID));
   //            this.pbteTSPs = new MatTableDataSource(this.pbteTSPsArray.filter(cl => cl.DistrictID == this.filters.DistrictID));
   //            this.pbteTrainees = new MatTableDataSource(this.pbteTraineesArray.filter(cl => cl.DistrictID == this.filters.DistrictID));
   //            this.pbteExamResultTrainees = new MatTableDataSource(this.pbteExamResultTraineesArray.filter(cl => cl.DistrictID == this.filters.DistrictID));
-
   //            this.GroupTSPs(this.pbteTSPs);
-
   //        }
-
-
   //        this.pbteStats = [
   //            { "classes": this.pbteClasses.data.length, "tsps": this.pbteTSPs.data.length, "trainees": this.pbteTrainees.data.length, "drpout": this.pbteDropOutTrainees.data.length },
   //        ];
-
   //        this.SortANDPaginate();
-
-
   //    }
   //    if (moduleName == "NAVTTC") {
-
   //        if (this.filters.SchemeID != 0) {
   //            this.navttcClasses = new MatTableDataSource(this.navttcClassesArray.filter(cl => cl.SchemeID == this.filters.SchemeID));
   //            this.navttcTSPs = new MatTableDataSource(this.navttcTSPsArray.filter(cl => cl.SchemeID == this.filters.SchemeID));
   //            this.navttcTrainees = new MatTableDataSource(this.navttcTraineesArray.filter(cl => cl.SchemeID == this.filters.SchemeID));
   //            this.navttcExamResultTrainees = new MatTableDataSource(this.navttcExamResultTraineesArray.filter(cl => cl.SchemeID == this.filters.SchemeID));
   //            this.GroupNavttcTSPs(this.navttcTSPs);
-
   //        }
   //        if (this.filters.TSPID != 0) {
   //            this.navttcClasses = new MatTableDataSource(this.navttcClassesArray.filter(cl => cl.TSPID == this.filters.TSPID));
@@ -879,14 +765,12 @@ export class PBTEComponent implements OnInit {
   //            this.navttcTrainees = new MatTableDataSource(this.navttcTraineesArray.filter(cl => cl.TSPID == this.filters.TSPID));
   //            this.navttcExamResultTrainees = new MatTableDataSource(this.navttcExamResultTraineesArray.filter(cl => cl.TSPID == this.filters.TSPID));
   //            this.GroupNavttcTSPs(this.navttcTSPs);
-
   //        }
   //        if (this.filters.ClassID != 0) {
   //            this.navttcClasses = new MatTableDataSource(this.navttcClassesArray.filter(cl => cl.ClassID == this.filters.ClassID));
   //            this.navttcTSPs = new MatTableDataSource(this.navttcTSPsArray.filter(cl => cl.ClassID == this.filters.ClassID));
   //            this.navttcTrainees = new MatTableDataSource(this.navttcTraineesArray.filter(cl => cl.ClassID == this.filters.ClassID));
   //            this.navttcExamResultTrainees = new MatTableDataSource(this.navttcExamResultTraineesArray.filter(cl => cl.ClassID == this.filters.ClassID));
-
   //        }
   //        if (this.filters.TradeID != 0) {
   //            this.navttcClasses = new MatTableDataSource(this.navttcClassesArray.filter(cl => cl.TradeID == this.filters.TradeID));
@@ -894,7 +778,6 @@ export class PBTEComponent implements OnInit {
   //            this.navttcTrainees = new MatTableDataSource(this.navttcTraineesArray.filter(cl => cl.TradeID == this.filters.TradeID));
   //            this.navttcExamResultTrainees = new MatTableDataSource(this.navttcExamResultTraineesArray.filter(cl => cl.TradeID == this.filters.TradeID));
   //            this.GroupNavttcTSPs(this.navttcTSPs);
-
   //        }
   //        if (this.filters.DistrictID != 0) {
   //            this.navttcClasses = new MatTableDataSource(this.navttcClassesArray.filter(cl => cl.DistrictID == this.filters.DistrictID));
@@ -902,69 +785,54 @@ export class PBTEComponent implements OnInit {
   //            this.navttcTrainees = new MatTableDataSource(this.navttcTraineesArray.filter(cl => cl.DistrictID == this.filters.DistrictID));
   //            this.navttcExamResultTrainees = new MatTableDataSource(this.navttcExamResultTraineesArray.filter(cl => cl.DistrictID == this.filters.DistrictID));
   //            this.GroupNavttcTSPs(this.navttcTSPs);
-
   //        }
-
   //        this.navttcStats = [
   //            { "classes": this.navttcClasses.data.length, "tsps": this.navttcTSPs.data.length, "trainees": this.navttcTrainees.data.length, "drpout": this.navttcDropOutTrainees.data.length },
   //        ];
-
   //        this.SortANDPaginate();
   //    }
   //}
-
   ResetFilters() {
     this.filters.SchemeID = 0;
     this.filters.TSPID = 0;
     this.filters.ClassID = 0;
     this.filters.TradeID = 0;
     this.filters.DistrictID = 0;
-
     this.navttcfilters.SchemeID = 0;
     this.navttcfilters.TSPID = 0;
     this.navttcfilters.ClassID = 0;
     this.navttcfilters.TradeID = 0;
     this.navttcfilters.DistrictID = 0;
-
     //this.getPBTEStatsData();
     this.getSelectedTabData();
     //this.getPBTESelectedSubTabData();
     //this.navttcStats = this.navttcStatsAfterReset;
     //this.getNAVTTCSelectedSubTabData();
-
     //this.pbteClasses = this.pbteClassesAfterReset;
     //this.pbteTSPs = this.pbteTSPsAfterReset;
     //this.pbteTrainees = this.pbteTraineesAfterReset;
     //this.pbteExamResultTrainees = this.pbteExamResultTraineesAfterReset;
     //this.pbteDropOutTrainees = this.pbteDropOutTraineesAfterReset;
     //this.pbteTrades = this.pbteTradesAfterReset;
-
     //this.navttcClasses = this.navttcClassesAfterReset;
     //this.navttcTSPs = this.navttcTSPsAfterReset;
     //this.navttcTrainees = this.navttcTraineesAfterReset;
     //this.navttcExamResultTrainees = this.navttcExamResultTraineesAfterReset;
     //this.navttcDropOutTrainees = this.navttcDropOutTraineesAfterReset;
-
     //this.pbteStats = this.pbteStatsAfterReset;
     //this.navttcStats = this.navttcStatsAfterReset;
-
     //this.SortANDPaginate();
   }
-
   GetPBTEFiltersData() {
     this.ComSrv.getJSON('api/PBTE/GetPBTEFiltersData').subscribe((d: any) => {
-
       this.Schemes = d[0];
       this.TSPDetail = d[1];
       this.classesArray = d[2];
       this.Trade = d[3];
       this.District = d[4];
-
-
     }, error => this.error = error// error path
     );
   };
-
   //GetData() {
   //    this.ComSrv.getJSON('api/PBTE/GetPBTE').subscribe((d: any) => {
   //        this.pbteClasses = new MatTableDataSource(d[0]);
@@ -1013,82 +881,57 @@ export class PBTEComponent implements OnInit {
   //        this.navttcExamResultTraineesAfterReset = new MatTableDataSource(d[16]);
   //        this.navttcExamResultTraineesArray = d[16];
   //        //console.log(this.pbteTradesArray)
-
   //        //this.Schemes = this.Schemes.filter(x => this.pbteClassesArray.map(y => y.SchemeID).includes(x.SchemeID))
-
   //        //this.TSPDetail = this.TSPDetail.filter(x => this.pbteTSPsArray.map(y => y.TSPID).includes(x.TSPID))
-
   //        //this.classesArray = this.classesArray.filter(x => this.pbteClassesArray.map(y => y.ClassID).includes(x.ClassID))
-
   //        //this.Trade = this.Trade.filter(x => this.pbteClassesArray.map(y => y.TradeID).includes(x.TradeID))
-
   //        //this.District = this.District.filter(x => this.pbteClassesArray.map(y => y.DistrictID).includes(x.DistrictID))
-
   //        //this.navttcSchemes = this.navttcSchemes.filter(x => this.navttcClassesArray.map(y => y.SchemeID).includes(x.SchemeID))
-
   //        //this.navttcTSPDetail = this.navttcTSPDetail.filter(x => this.navttcTSPsArray.map(y => y.TSPID).includes(x.TSPID))
-
   //        //this.navttcclassesArray = this.navttcclassesArray.filter(x => this.navttcClassesArray.map(y => y.ClassID).includes(x.ClassID))
-
   //        //this.groupArr = new MatTableDataSource(this.pbteTSPsArray.reduce((r, { TSPID }) => {
   //        //    if (!r(o => o.TSPID == TSPID)) {
   //        //        r.push({ TSPID, groupItem: this.pbteTSPsArray.filter(v => v.TSPID == TSPID) });
   //        //    }
   //        //}));
-
-
   //        this.pbteTSPs = new MatTableDataSource(new GroupByPipe().transform(this.pbteTSPsArrayToFilter, 'TSPID'));
   //        //this.groupedTSPsArray = (new GroupByPipe().transform(this.pbteTSPsArray, 'TSPID'));
-
   //        this.pbteTSPs.filteredData.forEach(key => {
   //            let obj = [];
   //            this.groupedTSPsArray = this.pbteTSPsArrayToFilter.filter(t => t.TSPID === Number(key.key));
   //            //this.groupedTSPsArray.map(x=> x.ClassID = this.groupedTSPsArray.map(t => t.ClassID));
-
   //            this.groupedTSPsArrayForData.push(this.groupedTSPsArray[0]);
-
   //        });
   //        this.pbteTSPs = new MatTableDataSource(this.groupedTSPsArrayForData)
   //        this.pbteTSPsAfterReset = new MatTableDataSource(this.groupedTSPsArrayForData);
   //        console.log(this.groupedTSPsArrayForData);
-
   //        this.navttcTSPs = new MatTableDataSource(new GroupByPipe().transform(this.navttcTSPsArrayToFilter, 'TSPID'));
   //        //this.groupedTSPsArray = (new GroupByPipe().transform(this.pbteTSPsArray, 'TSPID'));
-
   //        this.navttcTSPs.filteredData.forEach(key => {
   //            let obj = [];
   //            this.groupednavttcTSPsArray = this.navttcTSPsArrayToFilter.filter(t => t.TSPID === Number(key.key));
   //            //this.groupedTSPsArray.map(x=> x.ClassID = this.groupedTSPsArray.map(t => t.ClassID));
-
   //            this.groupednavttcTSPsArrayForData.push(this.groupednavttcTSPsArray[0]);
-
   //        });
   //        this.navttcTSPs = new MatTableDataSource(this.groupednavttcTSPsArrayForData)
   //        this.navttcTSPsAfterReset = new MatTableDataSource(this.groupednavttcTSPsArrayForData);
   //        console.log(this.groupednavttcTSPsArrayForData);
-
-
   //        this.pbteStats = [
   //            { "classes": this.pbteClasses.data.length, "tsps": this.pbteTSPs.data.length, "trainees": this.pbteTrainees.data.length, "drpout": this.pbteDropOutTrainees.data.length },
   //        ];
-
   //        this.pbteStatsAfterReset = [
   //            { "classes": this.pbteClasses.data.length, "tsps": this.pbteTSPs.data.length, "trainees": this.pbteTrainees.data.length, "drpout": this.pbteDropOutTrainees.data.length },
   //        ];
-
   //        this.navttcStats = [
   //            { "classes": this.navttcClasses.data.length, "tsps": this.navttcTSPs.data.length, "trainees": this.navttcTrainees.data.length, "drpout": this.navttcDropOutTrainees.data.length },
   //        ];
   //        this.navttcStatsAfterReset = [
   //            { "classes": this.navttcClasses.data.length, "tsps": this.navttcTSPs.data.length, "trainees": this.navttcTrainees.data.length, "drpout": this.navttcDropOutTrainees.data.length },
   //        ];
-
   //        this.SortANDPaginate();
-
   //    }, error => this.error = error// error path
   //    );
   //};
-
   GetSql(tableName: string) {
     let data = [];
     let textarray = [];
@@ -1168,18 +1011,15 @@ export class PBTEComponent implements OnInit {
           //textarray = textarray + text;
           textarray.push(text);
         });
-
         //console.log(textarrady.join(" "));
         var blob = new Blob([textarray.join('\r\n')], { type: "text/plain;charset=utf-8, endings: 'native'" });
         fileSaver.saveAs(blob, "PBTE-Classes-Sql-Script.sql");
         break;
       }
       default: {
-
       }
     }
   }
-
   GetNAVTTCSql(tableName: string) {
     let data = [];
     let textarray = [];
@@ -1272,50 +1112,36 @@ export class PBTEComponent implements OnInit {
         break;
       }
       default: {
-
       }
     }
   }
-
-
-
   onTSRFileChange(ev: any) {
     const file = ev.target.files[0];
-
     if (!file) {
       this.ComSrv.ShowError('Please upload an Excel file.');
       return;
     }
-
     const reader = new FileReader();
-
     reader.onload = (event) => {
       let workBook: XLSX.WorkBook;
       let jsonData: any;
-
       try {
-
         const data = reader.result as string;
         workBook = XLSX.read(data, { type: 'binary' });
-
         jsonData = workBook.SheetNames.reduce((initial, name) => {
           const sheet = workBook.Sheets[name];
           initial[name] = XLSX.utils.sheet_to_json(sheet);
           return initial;
         }, {});
-
         const dataString = JSON.parse(JSON.stringify(jsonData));
-
         const _exampData = dataString[Object.keys(workBook.Sheets).find(x => x.toLowerCase() === PBTESheetNames.ExaminationData.toLowerCase())];
         const _traineeData = dataString[Object.keys(workBook.Sheets).find(x => x.toLowerCase() === PBTESheetNames.TraineeData.toLowerCase())];
-
         if (!_exampData || _exampData.length === 0) {
           this.ComSrv.ShowError("Sheet with the name '" + PBTESheetNames.ExaminationData + "' not found in Excel file.");
         } else {
           console.log(_exampData);
           // this.populateFieldsFromFile(_exampData[0]);
         }
-
         if (!_traineeData || _traineeData.length === 0) {
           this.ComSrv.ShowError("Sheet with the name '" + PBTESheetNames.TraineeData + "' not found in Excel file.");
         } else {
@@ -1331,36 +1157,58 @@ export class PBTEComponent implements OnInit {
         this.ComSrv.ShowError('An error occurred while processing the file.');
       }
     };
-
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
-
   saveExamData() {
-    console.log(this._examDataArray)
-    console.log(this._tsrDataArray)
-    this.ComSrv.postJSON('api/PBTE/SavePBTEExam', this._examDataArray).subscribe((d: any) => {
-      if (d.success) {
-        this.ComSrv.openSnackBar("PBTE Exam data saved successfully");
-      } else {
-        this.ComSrv.ShowError("Error saving PBTE Exam data");
+      const Error = this.examTablesData.filteredData.find(element => element.SchemeForPBTE.includes("required"));
+  
+      if (Error) {
+        this.ComSrv.ShowError("Mapping required for " + Error.SchemeName);
+        return; 
       }
-    }, error => this.error = error// error path
-  );
-  }
-  saveTsrData() {
-    console.log(this._tsrDataArray)
-    this.ComSrv.postJSON('api/PBTE/SavePBTEStudent', this._tsrDataArray).subscribe((d: any) => {
-      if (d.success) {
-        this.ComSrv.openSnackBar("PBTE Exam data saved successfully");
-      } else {
-        this.ComSrv.ShowError("Error saving PBTE Exam data");
-      }
-    }, error => this.error = error// error path
-    );
-  }
+    
 
+    if (this.examTablesData) {
+      this.ComSrv.postJSON('api/PBTE/SavePBTEExam', this.examTablesData.filteredData).subscribe((d: any) => {
+        if (d) {
+          this.ComSrv.openSnackBar("PBTE Exam data saved successfully");
+        } else {
+          this.ComSrv.ShowError("Error saving PBTE Exam data");
+        }
+      }, error => this.error = error// error path
+      );
+    }
+
+  }
+  saveTraineeData() {
+    const error = this.traineeTablesData.filteredData.find(element => 
+      element.SchemeForPBTE.includes("required") || 
+      element.PBTETrainingAddress.includes("required")
+    );
+  
+    if (error) {
+      const errorMessage = error.SchemeForPBTE.includes("required") ? "Scheme mapping required for " + error.Scheme : "Training location mapping required for " + error.TrainingLocation;
+  
+      this.ComSrv.ShowError(errorMessage);
+      return; 
+    }
+  
+    if (this.traineeTablesData) {
+      this.ComSrv.postJSON('api/PBTE/SavePBTEStudent', this.traineeTablesData.filteredData).subscribe((d: any) => {
+        if (d.success) {
+          this.ComSrv.openSnackBar("PBTE Exam data saved successfully");
+        } else {
+          this.ComSrv.ShowError("Error saving PBTE Exam data");
+        }
+      }, error => {
+        this.ComSrv.ShowError(error.message);
+      });
+    } else {
+      this.ComSrv.ShowError("No data found");
+    }
+  }
+  
   onFileChange(ev: any) {
     let workBook = null;
     let jsonData = null;
@@ -1374,29 +1222,22 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.pbteClasses.filteredData);
       console.log(this.data.Class_PBTE);
-
       if (!this.data.Class_PBTE) {
         this.ComSrv.ShowError("Sheet with the name 'Class_PBTE' not found in Excel file");
         return false;
       }
-
       this.selectedClasses = this.pbteClasses.filteredData
-
       this.selectedClasses = this.data.Class_PBTE.filter(x => this.pbteClasses.filteredData.map(y => y.ClassCode).includes(x.ClassCode));
       console.log(this.selectedClasses);
-
       if (this.selectedClasses.length == 0) {
         this.error = "No matched class to update";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTEClasses', this.selectedClasses)
         .subscribe((d: any) => {
           this.update = "PBTE imported for Classes";
@@ -1421,30 +1262,22 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.navttcClasses.filteredData);
       console.log(this.data.Class_NAVTTC);
-
       if (!this.data.Class_NAVTTC) {
         this.ComSrv.ShowError("Sheet with the name 'Class_NAVTTC' not found in Excel file");
         return false;
       }
-
       this.selectedClasses = this.navttcClasses.filteredData
-
-
       this.selectedClasses = this.data.Class_NAVTTC.filter(x => this.navttcClasses.filteredData.map(y => y.ClassCode).includes(x.ClassCode));
       console.log(this.selectedClasses);
-
       if (this.selectedClasses.length == 0) {
         this.error = "No matched class to update";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.ComSrv.postJSON('api/PBTE/UpdateNAVTTCClasses', this.selectedClasses)
         .subscribe((d: any) => {
           this.update = "CollegeID and TradeID updated for matched Classes";
@@ -1456,7 +1289,6 @@ export class PBTEComponent implements OnInit {
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
   onTraineeFileChange(ev: any) {
     let workBook = null;
     let jsonData = null;
@@ -1470,29 +1302,22 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.pbteTrainees.filteredData);
       console.log(this.data.Trainee_PBTE);
-
       if (!this.data.Trainee_PBTE) {
         this.ComSrv.ShowError("Sheet with the name 'Trainee_PBTE' not found in Excel file");
         return false;
       }
-
       this.selectedTrainees = this.pbteTrainees.filteredData
-
       this.selectedTrainees = this.data.Trainee_PBTE.filter(x => this.pbteTrainees.filteredData.map(y => y.TraineeCode).includes(x.TraineeCode));
       console.log(this.selectedTrainees);
-
       if (this.selectedTrainees.length == 0) {
         this.error = "No matched trainee to update result";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTETrainees', this.selectedTrainees)
         .subscribe((d: any) => {
           this.update = "PBTE imported for Trainees";
@@ -1517,29 +1342,22 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.navttcTrainees.filteredData);
       console.log(this.data.Trainee_NAVTTC);
-
       if (!this.data.Trainee_NAVTTC) {
         this.ComSrv.ShowError("Sheet with the name 'Trainee_NAVTTC' not found in Excel file");
         return false;
       }
-
       this.selectedTrainees = this.navttcTrainees.filteredData
-
       this.selectedTrainees = this.data.Trainee_NAVTTC.filter(x => this.navttcTrainees.filteredData.map(y => y.TraineeCode).includes(x.TraineeCode));
       console.log(this.selectedTrainees);
-
       if (this.selectedTrainees.length == 0) {
         this.error = "No matched trainee to update result";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTETrainees', this.selectedTrainees)
         .subscribe((d: any) => {
           this.update = "NAVTTC imported for Trainees";
@@ -1551,7 +1369,6 @@ export class PBTEComponent implements OnInit {
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
   onTraineeResultFileChange(ev: any) {
     let workBook = null;
     let jsonData = null;
@@ -1565,40 +1382,29 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.traineeResultStatusTypes);
       console.log(this.pbteTrainees.filteredData);
       console.log(this.data.PBTE_Results);
-
       if (!this.data.PBTE_Results) {
         this.ComSrv.ShowError("Sheet with the name 'PBTE_Results' not found in Excel file");
         return false;
       }
-
       this.selectedTrainees = this.pbteExamResultTrainees.filteredData
-
       this.selectedTrainees = this.data.PBTE_Results.filter(x => this.pbteExamResultTrainees.filteredData.map(y => y.TraineeCode).includes(x.TraineeCode));
       console.log(this.selectedTrainees);
-
       if (this.selectedTrainees.length == 0) {
         this.error = "No matched trainee to update result";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.selectedTrainees = this.selectedTrainees.filter(x => this.traineeResultStatusTypes.map(y => y.ResultStatusName).includes(x.ResultStatusName));
       console.log(this.selectedTrainees);
-
       if (this.selectedTrainees.length == 0) {
         this.error = "No matched trainee to update result";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
-
       }
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTETraineesResult', this.selectedTrainees)
         .subscribe((d: any) => {
           this.update = "Result Status imported for Trainees";
@@ -1610,8 +1416,6 @@ export class PBTEComponent implements OnInit {
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
-
   onNAVTTCTraineeResultFileChange(ev: any) {
     let workBook = null;
     let jsonData = null;
@@ -1625,34 +1429,25 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.traineeResultStatusTypes);
       console.log(this.navttcExamResultTrainees.filteredData);
       console.log(this.data.NAVTTC_Results);
-
       if (!this.data.NAVTTC_Results) {
         this.ComSrv.ShowError("Sheet with the name 'NAVTTC_Results' not found in Excel file");
         return false;
       }
-
       this.selectedTrainees = this.pbteTrainees.filteredData
-
       this.selectedTrainees = this.data.NAVTTC_Results.filter(x => this.navttcExamResultTrainees.filteredData.map(y => y.TraineeCode).includes(x.TraineeCode));
       console.log(this.selectedTrainees);
       if (this.selectedTrainees.length == 0) {
         this.error = "No matched trainee to update result";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.selectedTrainees = this.selectedTrainees.filter(x => this.traineeResultStatusTypes.map(y => y.ResultStatusName).includes(x.ResultStatusName));
       console.log(this.selectedTrainees);
-
-
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTETraineesResult', this.selectedTrainees)
         .subscribe((d: any) => {
           this.update = "Result Status imported for Trainees";
@@ -1664,7 +1459,6 @@ export class PBTEComponent implements OnInit {
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
   onTSPFileChange(ev: any) {
     let workBook = null;
     let jsonData = null;
@@ -1678,30 +1472,22 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.pbteTSPs.filteredData);
       console.log(this.data.TSP_PBTE);
-
-
       if (!this.data.TSP_PBTE) {
         this.ComSrv.ShowError("Sheet with the name 'TSP_PBTE' not found in Excel file");
         return false;
       }
-
       this.selectedTSPs = this.pbteTSPs.filteredData
-
       this.selectedTSPs = this.data.TSP_PBTE.filter(x => this.pbteTSPs.filteredData.map(y => y.TSPCode).includes(x.TSPCode.toString()));
       console.log(this.selectedTSPs);
-
       if (this.selectedTSPs.length == 0) {
         this.error = "No matched TSP to update";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTETSPs', this.selectedTSPs)
         .subscribe((d: any) => {
           this.update = "PBTE imported for TSPs";
@@ -1713,9 +1499,7 @@ export class PBTEComponent implements OnInit {
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
   onNAVTTCTSPFileChange(ev: any) {
-
     let workBook = null;
     let jsonData = null;
     const reader = new FileReader();
@@ -1728,30 +1512,22 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.navttcTSPs.filteredData);
       console.log(this.data.TSP_NAVTTC);
-
       if (!this.data.TSP_NAVTTC) {
         this.ComSrv.ShowError("Sheet with the name 'TSP_NAVTTC' not found in Excel file");
         return false;
       }
-
       this.selectedTSPs = this.navttcTSPs.filteredData
-
       this.selectedTSPs = this.data.TSP_NAVTTC.filter(x => this.navttcTSPs.filteredData.map(y => y.TSPCode).includes(x.TSPCode.toString()));
       console.log(this.selectedTSPs);
-
       if (this.selectedTSPs.length == 0) {
         this.error = "No matched TSP to update";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTETSPs', this.selectedTSPs)
         .subscribe((d: any) => {
           this.update = "NAVTTC imported for TSPs";
@@ -1763,7 +1539,6 @@ export class PBTEComponent implements OnInit {
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
   onTradeFileChange(ev: any) {
     let workBook = null;
     let jsonData = null;
@@ -1777,31 +1552,22 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-
       const dataString = JSON.stringify(jsonData);
       this.data = JSON.parse(dataString);
       console.log(this.pbteTrades.filteredData);
       console.log(this.data.Trade_PBTE);
-
       if (!this.data.Trade_PBTE) {
         this.ComSrv.ShowError("Sheet with the name 'Trade_PBTE' not found in Excel file");
         return false;
       }
-
       this.selectedTrades = this.pbteTrades.filteredData
-
-
-
       this.selectedTrades = this.data.Trade_PBTE.filter(x => this.pbteTrades.filteredData.map(y => y.TradeCode).includes(x.TradeCode));
       console.log(this.selectedTrades);
-
       if (this.selectedTrades.length == 0) {
         this.error = "No matched Trade to update";
-
         this.ComSrv.ShowError(this.error.toString(), "Error");
         return false;
       }
-
       this.ComSrv.postJSON('api/PBTE/UpdatePBTETrades', this.selectedTrades)
         .subscribe((d: any) => {
           this.update = "PBTE imported for Trades";
@@ -1813,13 +1579,12 @@ export class PBTEComponent implements OnInit {
     reader.readAsBinaryString(file);
     ev.target.value = '';
   }
-
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.pbteClasses.filter = filterValue;
   }
-  search:any=""
+  search: any = ""
   applyFilter1(filterValue: string) {
     console.log(this.search)
     filterValue = filterValue.trim(); // Remove whitespace
@@ -1827,6 +1592,12 @@ export class PBTEComponent implements OnInit {
     this.hTablesData.filter = filterValue;
   }
 
+  applyFilter2(filterValue: string) {
+    console.log(this.search)
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    this.cTablesData.filter = filterValue;
+  }
   generateExcel() {
     let timeSpan = new Date().toISOString();
     //let prefix = this.input.Title || "Exported";
@@ -1837,33 +1608,26 @@ export class PBTEComponent implements OnInit {
     this.pbteTradesArray = this.pbteTrades.filteredData;
     let dataForExport = this.pbteTradesArray.map(x => { return { TradeName: x.TradeName, Duration: x.Duration } });
     //let dataForExport = this.pbteTrades.data.values;
-
     if (this.filters.SchemeID != 0) {
       let Scheme = [];
       this.schemeForExport = this.Schemes.filter(x => x.SchemeID == this.filters.SchemeID);
       console.log(this.schemeForExport);
       console.log(this.schemeForExport[0]['SchemeName']);
-
     }
     let workbook = new Workbook();
     let workSheet = workbook.addWorksheet();
-
     workSheet.mergeCells('A1:C2');
     ///SET TITLE
     //if (this.filters.SchemeID != 0) {
     //    let titleRow = workSheet.addRow(['Scheme & Trade']);
-
     //}
     //else {
     //    let titleRow = workSheet.addRow(['Unique Trade List & Its Duration (in Months):']);
     //}
     //let titleRow = workSheet.addRow(['Unique Trade List & Its Duration (in Months):']);
-
-
     if (this.filters.SchemeID != 0) {
       let schemeName = this.schemeForExport[0]['SchemeName'];
       console.log(schemeName);
-
       workSheet.getCell('A1:C2').value = 'Scheme & Trade';
       let titleRow = workSheet.getCell('A1:C2');
       titleRow.font = { bold: true, size: 20 };
@@ -1872,13 +1636,10 @@ export class PBTEComponent implements OnInit {
         pattern: 'solid',
         fgColor: { argb: '04FFC5' },
       }
-
       titleRow.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
       titleRow.font = { bold: true }
       titleRow.alignment = { vertical: 'middle', horizontal: 'center', readingOrder: "ltr" }
-
       workSheet.mergeCells('A3:C4');
-
       workSheet.getCell('A3:C4').value = schemeName;
       let schemeRow = workSheet.getCell('A3:C4');
       schemeRow.font = { bold: true, size: 20 };
@@ -1887,11 +1648,9 @@ export class PBTEComponent implements OnInit {
         pattern: 'solid',
         fgColor: { argb: 'FFAC04' },
       }
-
       schemeRow.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
       schemeRow.font = { bold: true }
       schemeRow.alignment = { vertical: 'middle', horizontal: 'center', readingOrder: "ltr" }
-
       //let titleRow = workSheet.addRow(['Scheme Wise Trade List']);
       //let schemeRow = workSheet.addRow([schemeName]);
       //titleRow.font = { bold: true, size: 14 }
@@ -1901,7 +1660,6 @@ export class PBTEComponent implements OnInit {
       //        type: 'pattern',
       //        pattern: 'solid',
       //        fgColor: { argb: 'cdcdcd' },
-
       //    }
       //    cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
       //    cell.font = { bold: true }
@@ -1914,10 +1672,7 @@ export class PBTEComponent implements OnInit {
       //        type: 'pattern',
       //        pattern: 'solid',
       //        fgColor: { argb: 'FF8000' },
-
-
       //    }
-
       //    cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
       //    cell.font = { bold: true }
       //    cell.alignment = { vertical: 'middle', horizontal: 'center', readingOrder: "ltr" }
@@ -1933,7 +1688,6 @@ export class PBTEComponent implements OnInit {
         pattern: 'solid',
         fgColor: { argb: '04FFC5' },
       }
-
       titleRow.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
       titleRow.font = { bold: true }
       titleRow.alignment = { vertical: 'middle', horizontal: 'center', readingOrder: "ltr" }
@@ -1943,20 +1697,15 @@ export class PBTEComponent implements OnInit {
       //        type: 'pattern',
       //        pattern: 'solid',
       //        fgColor: { argb: 'cdcdcd' },
-
       //    }
-
     }
-
     dataForExport.forEach((item, index) => {
       let keys = Object.keys(item);
       let values = Object.values(item);
-
       //SET SERIAL NUMBER
       keys.unshift("Sr#");
       values.unshift(++index)
       index--;
-
       if (index == 0) {
         ///SET HEADER
         let headerRow = workSheet.addRow(keys);
@@ -1973,7 +1722,6 @@ export class PBTEComponent implements OnInit {
           cell.alignment = { vertical: 'middle', horizontal: 'center', readingOrder: "ltr" }
         });
       };
-
       ///SET COLUMN VALUES
       let row = workSheet.addRow(values);
       row.height = 80;
@@ -1982,9 +1730,7 @@ export class PBTEComponent implements OnInit {
         cell.alignment = { vertical: 'middle', horizontal: 'center', readingOrder: "ltr" }
         workSheet.getColumn(number).width = 30;
       })
-
     });
-
     workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, `${fileName}.${ExportType.XLSX}`);
@@ -1993,9 +1739,7 @@ export class PBTEComponent implements OnInit {
       console.error(error);
       //this.onNoClick();
     });
-
   }
-
   generateTraineeExcel(tablename: string) {
     let timeSpan = new Date().toISOString();
     //let prefix = this.input.Title || "Exported";
@@ -2010,7 +1754,6 @@ export class PBTEComponent implements OnInit {
     }
     let workbookTrainee = new Workbook();
     let workSheetTrainee = workbookTrainee.addWorksheet();
-
     let exportExcel: ExportExcel = {
       Title: 'Trainee PBTE Report',
       Author: '',
@@ -2019,17 +1762,14 @@ export class PBTEComponent implements OnInit {
       List1: [],
       ImageFieldNames: ["Trainee Img"]
     }
-
     dataForExport.forEach((item, index) => {
       let keys = Object.keys(item);
       //let values = Object.entries(item).map(([key, value]) => value);
       let values = Object.values(item);
-
       ///SET SERIAL NUMBER
       //keys.unshift("Sr#");
       //values.unshift(++index)
       //index--;
-
       if (index == 0) {
         ///SET HEADER
         let headerRow = workSheetTrainee.addRow(keys);
@@ -2046,7 +1786,6 @@ export class PBTEComponent implements OnInit {
           cell.alignment = { vertical: 'middle', horizontal: 'center', readingOrder: "ltr" }
         });
       };
-
       ///SET COLUMN VALUES
       let row = workSheetTrainee.addRow(values);
       row.height = 80;
@@ -2055,7 +1794,6 @@ export class PBTEComponent implements OnInit {
         cell.alignment = { vertical: 'middle', readingOrder: "ltr" }
         workSheetTrainee.getColumn(number).width = 20;
       })
-
       ///SET IMAGE
       keys.forEach((key, indx) => {
         if (exportExcel.ImageFieldNames.includes(key) && item[key] != "") {
@@ -2071,10 +1809,7 @@ export class PBTEComponent implements OnInit {
           });
         }
       });
-
     });
-
-
     workbookTrainee.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       if (tablename == "NAVTTC-Trainees") {
@@ -2088,9 +1823,7 @@ export class PBTEComponent implements OnInit {
       console.error(error);
       //this.onNoClick();
     });
-
   }
-
   populateData(data: any) {
     return data.map((item, index) => {
       return {
@@ -2113,52 +1846,35 @@ export class PBTEComponent implements OnInit {
       }
     })
   }
-
-
   GroupTSPs(tspArray: any) {
-
     this.groupedTSPsArrayForData = [];
-
     this.pbteTSPs = new MatTableDataSource(new GroupByPipe().transform(tspArray.filteredData, 'TSPMasterID'));
     //this.groupedTSPsArray = (new GroupByPipe().transform(this.pbteTSPsArray, 'TSPID'));
-
     this.pbteTSPs.filteredData.forEach(key => {
       let obj = [];
       this.groupedTSPsArray = this.pbteTSPsArrayToFilter.filter(t => t.TSPMasterID === Number(key.key));
       //this.groupedTSPsArray.map(x=> x.ClassID = this.groupedTSPsArray.map(t => t.ClassID));
-
       this.groupedTSPsArrayForData.push(this.groupedTSPsArray[0]);
-
     });
     this.pbteTSPs = new MatTableDataSource(this.groupedTSPsArrayForData)
     //this.pbteTSPsAfterReset = new MatTableDataSource(this.groupedTSPsArrayForData);
     console.log(this.groupedTSPsArrayForData);
-
   }
-
   GroupNavttcTSPs(tspArray: any) {
-
     this.groupednavttcTSPsArrayForData = [];
-
     this.navttcTSPs = new MatTableDataSource(new GroupByPipe().transform(tspArray.filteredData, 'TSPMasterID'));
     //this.groupedTSPsArray = (new GroupByPipe().transform(this.pbteTSPsArray, 'TSPID'));
-
     this.navttcTSPs.filteredData.forEach(key => {
       let obj = [];
       this.groupednavttcTSPsArray = this.navttcTSPsArrayToFilter.filter(t => t.TSPMasterID === Number(key.key));
       //this.groupedTSPsArray.map(x=> x.ClassID = this.groupedTSPsArray.map(t => t.ClassID));
-
       this.groupednavttcTSPsArrayForData.push(this.groupednavttcTSPsArray[0]);
-
     });
     this.navttcTSPs = new MatTableDataSource(this.groupednavttcTSPsArrayForData)
     //this.pbteTSPsAfterReset = new MatTableDataSource(this.groupedTSPsArrayForData);
     console.log(this.groupednavttcTSPsArrayForData);
-
   }
-
   SortANDPaginate() {
-
     this.pbteClasses.paginator = this.PageClass;
     this.pbteClasses.sort = this.SortClass;
     this.pbteTSPs.paginator = this.PageTSP;
@@ -2167,13 +1883,10 @@ export class PBTEComponent implements OnInit {
     this.pbteTrainees.sort = this.SortTrainee;
     this.pbteExamResultTrainees.paginator = this.PageExamResultTrainee;
     this.pbteExamResultTrainees.sort = this.SortExamResultTrainee;
-
     this.pbteDropOutTrainees.paginator = this.PageDropOutTrainee;
     this.pbteDropOutTrainees.sort = this.SortDropOutTrainee;
-
     this.pbteTrades.paginator = this.PageTrade;
     this.pbteTrades.sort = this.SortTrade;
-
     this.navttcClasses.paginator = this.PageNavttcClass;
     this.navttcClasses.sort = this.SortNavttcClass;
     this.navttcTSPs.paginator = this.PageNavttcTSP;
@@ -2182,28 +1895,17 @@ export class PBTEComponent implements OnInit {
     this.navttcTrainees.sort = this.SortNavttcTrainee;
     this.navttcExamResultTrainees.paginator = this.PageNAVTTCExamResultTrainee;
     this.navttcExamResultTrainees.sort = this.SortNAVTTCExamResultTrainee;
-
     this.navttcDropOutTrainees.paginator = this.PageNavttcDropOutTrainee;
     this.navttcDropOutTrainees.sort = this.SortNavttcDropOutTrainee;
-
   }
-
-
   get InActive() { return this.pbteform.get("InActive"); }
-
   openTraineeJourneyDialogue(data: any): void {
-
     this.dialogueService.openTraineeJourneyDialogue(data);
   }
-
   openClassJourneyDialogue(data: any): void {
-
     this.dialogueService.openClassJourneyDialogue(data);
   }
 }
-
-
-
 export interface IQueryFilters {
   SchemeID: number;
   TSPID: number;

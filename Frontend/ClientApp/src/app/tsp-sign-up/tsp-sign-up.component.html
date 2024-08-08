@@ -12,17 +12,27 @@
       </div>
       <div class="row">
        
-        <div class="col-sm-5">
+        <div class="col-sm-3">
+          <mat-form-field>
+            <mat-label >NTN Format</mat-label>
+            <mat-select (selectionChange)="onFormateChange()" [(ngModel)]="NTNFormat" [ngModelOptions]="{standalone: true}"  matInput>
+              <mat-option  value="1" selected>0000000-0</mat-option>
+              <mat-option  value="2">D000000</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-3">
           <mat-form-field>
             <mat-label>Business NTN</mat-label>
-            <input formControlName="BusinessNTN"  matInput placeholder="0000000-0"
-              [imask]="{mask:'0000000-0'}" [unmask]="false" required />
+            <input formControlName="BusinessNTN"   [imask]="NTNFormat=='1'?{mask:'0000000-0'}:{mask:'a000000'}" [unmask]="false" matInput [placeholder]=" NTNFormat ==1 ?'0000000-0': 'D000000'"  required />
             <mat-error *ngFor="let error of signUp.get('BusinessNTN').errors | keyvalue">
               {{ getErrorMessage(error.key, error.value) }}
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="col-sm-7">
+
+        <div class="col-sm-6">
           <mat-form-field>
             <mat-label>Business Name</mat-label>
             <input formControlName="BusinessName" TitleCase  matInput placeholder="Business Name*"
@@ -32,7 +42,7 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="col-sm-5">
+        <div class="col-sm-6">
           <mat-form-field>
             <mat-label>Mobile Number</mat-label>
             <input formControlName="Mobile" matInput placeholder="Mobile Number*" [imask]="{mask:'0300-0000000'}"
@@ -40,10 +50,10 @@
             <mat-error *ngFor="let error of signUp.get('Mobile').errors | keyvalue">
               {{ getErrorMessage(error.key, error.value) }}
             </mat-error>
-            <mat-hint>Hint:031104567789 </mat-hint>
+            <mat-hint>Hint:03110456789 </mat-hint>
           </mat-form-field>
         </div>
-        <div class="col-sm-7">
+        <div class="col-sm-6">
           <mat-form-field>
             <mat-label>Email Address</mat-label>
             <input formControlName="Email" (blur)="CheckEmail()" matInput placeholder="Email Address*" required />

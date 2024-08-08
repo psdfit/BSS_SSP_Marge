@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
       TaxTypeID: [''],
       InstituteName: ['', [Validators.required]],
       RegistrationDate: [{ value: '' }, [Validators.required]],
-      InstituteNTN: ['', [Validators.required, Validators.minLength(9)]],
+      InstituteNTN: ['', [Validators.required]],
       NTNAttachment: ['', [Validators.required]],
       TaxType: ['', [Validators.required]],
       GSTNumber: [{ value: '', disabled: true }],
@@ -324,6 +324,10 @@ export class ProfileComponent implements OnInit {
     });
   }
   SaveContactPersonInfo() {
+debugger
+const check=this.PendingForm.includes("BusinessProfile");
+
+if(!check) {
     this.ContactInfoForm.get("TspID").setValue(this.currentUser.UserID)
     this.ContactInfoForm.get("InstituteName").setValue(this.ProfileForm.get("InstituteName").value)
     this.ContactInfoForm.get("InstituteNTN").setValue(this.ProfileForm.get("InstituteNTN").value)
@@ -345,6 +349,9 @@ export class ProfileComponent implements OnInit {
     } else {
       this.ComSrv.ShowError("please enter valid data");
     }
+  }else {
+this.ComSrv.ShowError("Business Profile is not completed.please complete business profile")
+  }
   }
   POCEdit(profile: any): void {
     if (profile.OrgHeadCNICFrontImgUrl) {

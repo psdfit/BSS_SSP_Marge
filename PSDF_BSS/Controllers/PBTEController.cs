@@ -555,20 +555,26 @@ namespace PSDF_BSSMaster.Controllers
         [HttpPost]
         [Route("SavePbteDBFile")]
         public IActionResult SavePbteDBFile([FromBody] JObject data)
-
-       {
-
+        {
             string pbteValue = data["pbteFile"]?.ToString();
-            string[] Split = HttpContext.Request.Path.Value.Split("/");
-            bool IsAuthrized = Authorize.CheckAuthorize(false,Convert.ToInt32(User.Identity.Name),Split[2],Split[3]);
-            if (IsAuthrized == true)
+            string[] split = HttpContext.Request.Path.Value.Split("/");
+            bool isAuthorized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), split[2], split[3]);
+
+            if (isAuthorized)
             {
                 try
                 {
-                    int CurUserID = Convert.ToInt32(User.Identity.Name);
-                    srvPBTE.savePBTEDBFile(pbteValue, CurUserID);
-                    //DataTable MappedData=srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping");
-                    return Ok("OK");
+                    int curUserId = Convert.ToInt32(User.Identity.Name);
+                    bool isSaved = srvPBTE.savePBTEDBFile(pbteValue, curUserId);
+
+                    if (isSaved)
+                    {
+                        return Ok("true");
+                    }
+                    else
+                    {
+                        return Ok("false");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -577,11 +583,11 @@ namespace PSDF_BSSMaster.Controllers
             }
             else
             {
-                return BadRequest("Access Denied. you are not authorized for this activity");
+                return BadRequest("Access Denied. You are not authorized for this activity.");
             }
         }
 
-   
+
 
         [HttpPost]
         [Route("SavePBTECenterMapping")]
@@ -705,6 +711,22 @@ namespace PSDF_BSSMaster.Controllers
                     if (reportName=="Trainee")
                     {
                         var pbteData = srvPBTE.PbteData("RD_PBTETSRData", month);
+                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                    } 
+                    
+                    if (reportName=="Exam")
+                    {
+                        var pbteData = srvPBTE.PbteData("RD_PBTEExamData", month);
+                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                    }
+                      if (reportName== "ExaminationSqlScript")
+                    {
+                        var pbteData = srvPBTE.PbteData("RD_PBTEExamSqlData", month);
+                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                    }
+                      if (reportName== "TraineeSqlScript")
+                    {
+                        var pbteData = srvPBTE.PbteData("RD_PBTETraineeSqlData", month);
                         return Ok(new { mappedScheme = MappedData, data = pbteData });
                     }
 

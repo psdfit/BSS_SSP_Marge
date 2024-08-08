@@ -144,7 +144,7 @@
                <div class="col-sm-3">
                   <mat-form-field fxFlex>
                      <mat-label>Business NTN#</mat-label>
-                     <input formControlName="InstituteNTN" readonly   [imask]="{mask:'0000000-0'}" [unmask]="false"  matInput placeholder="Business NTN" required >
+                     <input formControlName="InstituteNTN" readonly placeholder="0000000-0"    matInput placeholder="Business NTN" required >
                      <mat-error *ngFor="let error of ProfileForm.get('InstituteNTN').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
                   </mat-form-field>
                </div>
@@ -370,6 +370,7 @@
             <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
             <p *ngIf="PendingForm.length>0" class="pt-1"><span style="color: red;" >Please complete the required form:</span> [{{PendingForm.join(", ")}}]</p>
          </fieldset>
+         
          <form (ngSubmit)="SaveContactPersonInfo()" [formGroup]="ContactInfoForm" >
          <fieldset class="border">
             <legend>Head Of Organization Information</legend>
