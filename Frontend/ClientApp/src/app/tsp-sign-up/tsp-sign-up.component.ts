@@ -36,8 +36,8 @@ export class TspSignUpComponent implements OnInit {
       BusinessNTN: ['', [Validators.required, Validators.minLength(9)]],
       Email: ['', [Validators.required, Validators.email]],
       Mobile: ['', [Validators.required, Validators.minLength(12)]],
-      Password: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[@$!%?&])[A-Za-z\\d@$!%?&\\-\' ]+$')]],
-      CPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[@$!%?&])[A-Za-z\\d@$!%?&\\-\' ]+$')]],
+      Password: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&\\-\' ]+$')]],
+      CPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&\\-\' ]+$')]],
       IsHeadOffice: ['Branch Office']
     });
     this.signUp.valueChanges.subscribe((formValues) => {
@@ -140,6 +140,7 @@ export class TspSignUpComponent implements OnInit {
     }
   }
   getErrorMessage(errorKey: string, errorValue: any): string {
+    debugger
     const error = errorValue.requiredLength != 8 && errorValue.requiredLength != 7 ? errorValue.requiredLength - 1 : errorValue.requiredLength
     const errorMessages = {
       required: 'This field is required.',
@@ -151,16 +152,14 @@ export class TspSignUpComponent implements OnInit {
     };
     return errorMessages[errorKey];
   }
-
   setFocusOnControl(controlName: string) {
     const control = this.el.nativeElement.querySelector(`[formControlName=${controlName}]`);
     this.renderer.selectRootElement(control).focus();
   }
-
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.setFocusOnControl("BusinessNTN");
     });
   }
-
+  
 }
