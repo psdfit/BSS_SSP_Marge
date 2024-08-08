@@ -35,29 +35,20 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   p = 1;
   mastersheetform: FormGroup;
   title: string; savebtn: string;
-  displayedColumns = ['SchemeCode',
-    'Scheme', 'Batch', 'TSP',
-    'Class', 'TradeGroup', 'Trade',
-    'FundingSourceName', 'TrainingAddressLocation',
-    'Province'
-    , 'Tehsil', 'District', 'WhoIsDeliveringTraining',
-    'Certification_Authority','RegistrationAuthorityName','ProgramFocusName', 'TraineesPerClass', 'Gender',
+  displayedColumns = ['SchemeCode', 'Scheme', 'Batch', 'TSP', 'Class', 'TradeGroup', 'Trade',
+    'FundingSourceName', 'TrainingAddressLocation', 'Province', 'Tehsil', 'District', 'WhoIsDeliveringTraining',
+    'Certification_Authority', 'RegistrationAuthorityName', 'ProgramFocusName', 'TraineesPerClass', 'Gender',
     'Duration', 'TotalTrainingHours', 'StartDate', 'EndDate', 'ClassStartTime', 'ClassEndTime',
-    'InceptionReportDueOn', 'StudentProfileOverDueOn', 'CompletionReportDue',
-    'InceptionReportReceived', 'InceptionReportDeliveredToTPM',
-    'DateOfDeliveryToTPM', 'EnrolledTrainees',
-    'TraineeProfilesReceived', 'TraineeProfileReceivedDate', 'TotalTraineeProfilesReceived',
-    'RTP', 'ClassStatusName', 'CompletionReportStatus', 'Remarks',
-    'ClassID_U', 'SchemeID_U', 'TSPID_U',
-    'SchemeType', 'MinHoursPerMonth',
-    'EmploymentInvoiceStatus',
-    'Shift', 'Section',
-    'Sector', 'OverallEmploymentCommitment', 'MinimumEducation', 'Organization', 'TradeCode',
-      'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC','TSPNTN','FundingCategoryName', 'IsDVV', 'TotalClassDays', 'DayNames', 'SourceOfCurriculum','PaymentSchedule',
-    'Action'];
-  displayedTPMColumns = ['Batch', 'ClassID', 'TrainingAddressLocation', 'TradeID', 'ProvinceID', 'TehsilID', 'DistrictID', 'Duration', 'StartDate', 'EndDate', 'SectorID', 'OverallEmploymentCommitment', 'MinimumEducation', 'OID',
-    'UserID',
-    'ClusterID', 'Action'];
+    'InceptionReportDueOn', 'StudentProfileOverDueOn', 'CompletionReportDue', 'InceptionReportReceived',
+    'InceptionReportDeliveredToTPM', 'DateOfDeliveryToTPM', 'EnrolledTrainees', 'TraineeProfilesReceived',
+    'TraineeProfileReceivedDate', 'TotalTraineeProfilesReceived', 'RTP', 'ClassStatusName', 'CompletionReportStatus',
+    'Remarks', 'ClassID_U', 'SchemeID_U', 'TSPID_U', 'SchemeType', 'MinHoursPerMonth', 'EmploymentInvoiceStatus',
+    'Shift', 'Section', 'Sector', 'OverallEmploymentCommitment', 'MinimumEducation', 'Organization', 'TradeCode',
+    'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC', 'TSPNTN', 'FundingCategoryName', 'IsDVV',
+    'TotalClassDays', 'DayNames', 'SourceOfCurriculum', 'PaymentSchedule', 'Action'];
+  displayedTPMColumns = ['Batch', 'ClassID', 'TrainingAddressLocation', 'TradeID', 'ProvinceID',
+    'TehsilID', 'DistrictID', 'Duration', 'StartDate', 'EndDate', 'SectorID', 'OverallEmploymentCommitment',
+    'MinimumEducation', 'OID', 'UserID', 'ClusterID', 'Action'];
   enumUserLevel = EnumUserLevel;
   mastersheet: MatTableDataSource<any>;
   // mastersheetList: MatTableDataSource<any>;
@@ -152,6 +143,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     this.mastersheet = new MatTableDataSource([]);
     this.formrights = ComSrv.getFormRights();
   }
+
   EmptyCtrl() {
     this.SearchCls.setValue('');
     this.SearchTSP.setValue('');
@@ -167,6 +159,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       this.visitPlan = result;
     })
   }
+
   openTPMDialog(level: number): void {
     const dialogRef = this.dialog.open(VisitPlanDialogComponent, {
       height: '90%',
@@ -176,6 +169,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       this.visitPlan = result;
     })
   }
+
   GetVisitPlanData(id: number) {
     this.ComSrv.postJSON('api/VisitPlan/RD_VisitPlanBy', { ClassID: id }).subscribe((response: any) => {
       // let VisitPlanData = <VisitPlanModel>response[0];
@@ -183,6 +177,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       // this.classObj = response[1];
     });
   }
+
   getTSPDetailByScheme(schemeId: number) {
     this.classesArray = [];
     this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=` + schemeId)
@@ -192,6 +187,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         this.error = error;
       })
   }
+
   getClassesByTsp(tspId: number) {
     this.ComSrv.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${tspId}`)
       .subscribe(data => {
@@ -200,6 +196,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         this.error = error;
       })
   }
+
   getMasterSheet() {
     if (this.isTSPUser) {
       this.ComSrv.getJSON(`api/MasterSheet/GetFilteredMasterSheet/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.userid}&filter=${this.ComSrv.OID.value}`)
@@ -223,6 +220,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
           })
     }
   }
+
   ngOnInit() {
     this.ComSrv.setTitle('MasterSheet');
     this.title = 'Add New ';
@@ -232,26 +230,17 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     if (this.currentUser.UserLevel === EnumUserLevel.TSP) {
       this.isTSPUser = true;
       this.filters.UserID = this.userid;
-      this.displayedColumns = ['SchemeCode',
-        'Scheme', 'Batch', 'TSP',
-        'Class', 'TradeGroup', 'Trade',
-        'TrainingAddressLocation', 'Province',
-        'Tehsil', 'District', 'WhoIsDeliveringTraining',
-        'Certification_Authority', 'TraineesPerClass', 'Gender',
-        'Duration', 'TotalTrainingHours', 'StartDate', 'EndDate', 'ClassStartTime', 'ClassEndTime',
-        'InceptionReportDueOn', 'StudentProfileOverDueOn', 'CompletionReportDue',
-        'InceptionReportReceived',
-        'EnrolledTrainees',
-        'TraineeProfilesReceived', 'TraineeProfileReceivedDate', 'TotalTraineeProfilesReceived',
-        'RTP', 'ClassStatusName', 'CompletionReportStatus', 'Remarks',
-        'SchemeType', 'MinHoursPerMonth',
-        'EmploymentInvoiceStatus',
-        'Shift', 'Section',
-        'Sector', 'OverallEmploymentCommitment', 'MinimumEducation', 'TradeCode',
-        'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC', 'Action'];
+      this.displayedColumns = ['SchemeCode', 'Scheme', 'Batch', 'TSP', 'Class', 'TradeGroup', 'Trade',
+        'TrainingAddressLocation', 'Province', 'Tehsil', 'District', 'WhoIsDeliveringTraining',
+        'Certification_Authority', 'TraineesPerClass', 'Gender', 'Duration', 'TotalTrainingHours',
+        'StartDate', 'EndDate', 'ClassStartTime', 'ClassEndTime', 'InceptionReportDueOn',
+        'StudentProfileOverDueOn', 'CompletionReportDue', 'InceptionReportReceived', 'EnrolledTrainees',
+        'TraineeProfilesReceived', 'TraineeProfileReceivedDate', 'TotalTraineeProfilesReceived', 'RTP',
+        'ClassStatusName', 'CompletionReportStatus', 'Remarks', 'SchemeType', 'MinHoursPerMonth',
+        'EmploymentInvoiceStatus', 'Shift', 'Section', 'Sector', 'OverallEmploymentCommitment',
+        'MinimumEducation', 'TradeCode', 'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC', 'Action'];
     } else if (this.currentUser.UserLevel === EnumUserLevel.AdminGroup || this.currentUser.UserLevel === EnumUserLevel.OrganizationGroup) {
       this.isInternalUser = true;
-
     }
     this.ComSrv.OID.subscribe(OID => {
       this.filters.SchemeID = 0;
@@ -272,7 +261,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       Gender: 'All',
       'District of Training Location': 'All',
       'Class Status': 'All',
-    };
+    }
     const exportExcel: ExportExcel = {
       Title: 'Master Sheet Report',
       Author: this.currentUser.FullName,
@@ -282,8 +271,17 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     };
     this.dialogueService.openExportConfirmDialogue(exportExcel).subscribe();
   }
+
   populateData(data: any) {
-    return data.map(item => {
+    const dataWithLatestInstructorName = [...data];
+    dataWithLatestInstructorName.forEach(entry => {
+      if (entry.InstructorName) {
+        // Split the names by comma and take the last element
+        const names = entry.InstructorName.split(',');
+        entry.InstructorName = names[names.length - 1].trim();
+      }
+    });
+    return dataWithLatestInstructorName.map(item => {
       return {
         'Scheme Code': item.SchemeCode
         , Scheme: item.Scheme
@@ -345,22 +343,25 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         , 'Days Name': item.DayNames
         , 'Source Of Curriculum': item.SourceOfCurriculum
         , 'Payment Schedule': item.PaymentSchedule
-        , 'Registration Authority': item.RegistrationAuthorityName=="" ?'---':item.RegistrationAuthorityName
+        , 'Registration Authority': item.RegistrationAuthorityName == "" ? '---' : item.RegistrationAuthorityName
         , 'Program Focus': item.ProgramFocusName
         , 'SAPID': item.SAPID
       }
     })
   }
+
   ngAfterViewInit() {
     this.ComSrv.OID.subscribe(
       OID => {
         this.initPagedData();
       });
   }
+
   initPagedData() {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     this.paginator.pageSize = 10;
-    merge(this.sort.sortChange, this.paginator.page, this.schemeFilter.valueChanges, this.tspFilter.valueChanges, this.classFilter.valueChanges)
+    merge(this.sort.sortChange, this.paginator.page, this.schemeFilter.valueChanges,
+      this.tspFilter.valueChanges, this.classFilter.valueChanges)
       .pipe(
         startWith({}),
         switchMap(() => {
@@ -376,15 +377,25 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
           this.filters.TSPID = this.tspFilter.value
           this.filters.ClassID = this.classFilter.value
           return this.getPagedData(pagedModel, this.filters);
-        })).subscribe(data => {
-          this.mastersheet = new MatTableDataSource(data[0]);
+        })).subscribe((data: any) => {
+          const dataWithLatestInstructorName = [...data];
+          dataWithLatestInstructorName[0].forEach((entry: any) => {
+            if (entry.InstructorName) {
+              // Split the names by comma and take the last element
+              const names = entry.InstructorName.split(',');
+              entry.InstructorName = names[names.length - 1].trim();
+            }
+          });
+          this.mastersheet = new MatTableDataSource(dataWithLatestInstructorName[0]);
           this.Scheme = data[1];
           this.resultsLength = data[2].TotalCount;
         });
   }
+
   getPagedData(pagingModel, filterModel) {
     return this.ComSrv.postJSON('api/MasterSheet/GetFilteredMasterSheetPaged', { pagingModel, filterModel });
   }
+
   getDependantFilters() {
     if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
       this.getClassesBySchemeFilter();
@@ -393,6 +404,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       this.getTSPDetailByScheme(this.filters.SchemeID);
     }
   }
+
   getClassesBySchemeFilter() {
     this.filters.ClassID = 0;
     this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.filters.SchemeID}&UserID=${this.userid}`)
@@ -402,9 +414,11 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         this.error = error;
       })
   }
+
   openClassJourneyDialogue(data: any): void {
     this.dialogueService.openClassJourneyDialogue(data);
   }
+
   get ID() { return this.mastersheetform.get('ID'); }
   get DistrictID() { return this.mastersheetform.get('DistrictID'); }
   get ProvinceID() { return this.mastersheetform.get('ProvinceID'); }
@@ -452,7 +466,6 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   get ClassStatusID() { return this.mastersheetform.get('ClassStatusID'); }
   get ClassStatusName() { return this.mastersheetform.get('ClassStatusName'); }
   get Shift() { return this.mastersheetform.get('Shift'); }
-
   get InActive() { return this.mastersheetform.get('InActive'); }
 }
 export class MasterSheetModel extends ModelBase {
