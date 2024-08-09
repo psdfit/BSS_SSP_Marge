@@ -283,73 +283,81 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     this.dialogueService.openExportConfirmDialogue(exportExcel).subscribe();
   }
   populateData(data: any) {
-    return data.map(item => {
-      return {
-        'Scheme Code': item.SchemeCode
-        , Scheme: item.Scheme
-        , Batch: item.Batch
-        , TSP: item.TSP
-        , 'Class Code': item.Class
-        , 'Trade Group': item.TradeGroup
-        , Trade: item.Trade
-        , 'Funding Source': item.FundingSourceName
-        , 'Training Location': item.TrainingAddressLocation
-        , 'Tehsil of Training Center': item.Tehsil
-        , 'District of Training Center': item.District
-        , 'Province of Training Center': item.ProvinceName
-        , 'Who is Delivering Training?': item.WhoIsDeliveringTraining
-        , 'Testing/Certify Authority': item.Certification_Authority
-        , 'Contractual Trainees per Class': item.TraineesPerClass
-        , 'Class Gender Male/Female/Mix': item.Gender
-        , 'Training Duration (Months)': item.Duration
-        , 'Total Training Hours': item.TotalTrainingHours
-        , 'Start Date': this._date.transform(item.StartDate, 'dd/MM/yyyy')
-        , 'Completion Date': this._date.transform(item.EndDate, 'dd/MM/yyyy')
-        , 'Class Start Time': this._date.transform(item.ClassStartTime, 'h:mm a')
-        , 'Class End Time': this._date.transform(item.ClassEndTime, 'h:mm a')
-        , 'Inception Report Due On': this._date.transform(item.InceptionReportDueOn, 'dd/MM/yyyy')
-        , 'Student Profile Overdue on': this._date.transform(item.StudentProfileOverDueOn, 'dd/MM/yyyy')
-        , 'Completion Report Due': this._date.transform(item.CompletionReportDue, 'dd/MM/yyyy')
-        , 'Inception Report Received': item.InceptionReportReceived
-        , 'Inception Report Delivered To TPM': item.InceptionReportDeliveredToTPM
-        , 'Date of Delivery To TPM': item.DateOfDeliveryToTPM
-        , 'Enrolled Trainees': item.EnrolledTrainees
-        , 'Trainee Profiles Received': item.TraineeProfilesReceived
-        , 'Trainee Profile Received Date': item.TraineeProfileReceivedDate
-        , 'Total Trainee Profiles Received': item.TotalTraineeProfilesReceived
-        , 'RTP Received': item.RTP
-        , 'Class Status': item.ClassStatusName
-        , 'Completion Report Status': item.CompletionReportStatus
-        , Remarks: item.Remarks
-        , ClassID: item.ClassID_U
-        , 'Scheme ID': item.SchemeID_U
-        , 'TSP ID': item.TSPID_U
-        , 'Scheme Type': item.SchemeType
-        , 'Contractual Class Hours': item.MinHoursPerMonth
-        , EmploymentInvoiceStatus: item.EmploymentInvoiceStatus
-        , Shift: item.Shift
-        , Section: item.Section
-        , Sector: item.Sector
-        , 'Overall Employment Commitment': item.OverallEmploymentCommitment
-        , 'Minimum Education': item.MinimumEducation
-        , Organization: item.Organization
-        , 'Trade Code': item.TradeCode
-        , Cluster: item.Cluster
-        , KAM: item.UserName
-        , 'Instructor Name': item.InstructorName
-        , 'Instructor CNIC': item.InstructorCNIC
-        , 'TSP NTN': item.TSPNTN
-        , 'Project': item.FundingCategoryName
-        , 'Is DVV': item.IsDVV
-        , 'No of Class Days': item.TotalClassDays
-        , 'Days Name': item.DayNames
-        , 'Source Of Curriculum': item.SourceOfCurriculum
-        , 'Payment Schedule': item.PaymentSchedule
-        , 'Registration Authority': item.RegistrationAuthorityName=="" ?'---':item.RegistrationAuthorityName
-        , 'Program Focus': item.ProgramFocusName
-        , 'SAPID': item.SAPID
+    const dataWithLatestInstructorName = [...data];
+    dataWithLatestInstructorName.forEach(entry => {
+      if (entry.InstructorName) {
+        // Split the names by comma and take the last element
+        const names = entry.InstructorName.split(',');
+        entry.InstructorName = names[names.length - 1].trim();
       }
-    })
+    });
+    return dataWithLatestInstructorName.map(item => {
+        return {
+          'Scheme Code': item.SchemeCode
+          , Scheme: item.Scheme
+          , Batch: item.Batch
+          , TSP: item.TSP
+          , 'Class Code': item.Class
+          , 'Trade Group': item.TradeGroup
+          , Trade: item.Trade
+          , 'Funding Source': item.FundingSourceName
+          , 'Training Location': item.TrainingAddressLocation
+          , 'Tehsil of Training Center': item.Tehsil
+          , 'District of Training Center': item.District
+          , 'Province of Training Center': item.ProvinceName
+          , 'Who is Delivering Training?': item.WhoIsDeliveringTraining
+          , 'Testing/Certify Authority': item.Certification_Authority
+          , 'Contractual Trainees per Class': item.TraineesPerClass
+          , 'Class Gender Male/Female/Mix': item.Gender
+          , 'Training Duration (Months)': item.Duration
+          , 'Total Training Hours': item.TotalTrainingHours
+          , 'Start Date': this._date.transform(item.StartDate, 'dd/MM/yyyy')
+          , 'Completion Date': this._date.transform(item.EndDate, 'dd/MM/yyyy')
+          , 'Class Start Time': this._date.transform(item.ClassStartTime, 'h:mm a')
+          , 'Class End Time': this._date.transform(item.ClassEndTime, 'h:mm a')
+          , 'Inception Report Due On': this._date.transform(item.InceptionReportDueOn, 'dd/MM/yyyy')
+          , 'Student Profile Overdue on': this._date.transform(item.StudentProfileOverDueOn, 'dd/MM/yyyy')
+          , 'Completion Report Due': this._date.transform(item.CompletionReportDue, 'dd/MM/yyyy')
+          , 'Inception Report Received': item.InceptionReportReceived
+          , 'Inception Report Delivered To TPM': item.InceptionReportDeliveredToTPM
+          , 'Date of Delivery To TPM': item.DateOfDeliveryToTPM
+          , 'Enrolled Trainees': item.EnrolledTrainees
+          , 'Trainee Profiles Received': item.TraineeProfilesReceived
+          , 'Trainee Profile Received Date': item.TraineeProfileReceivedDate
+          , 'Total Trainee Profiles Received': item.TotalTraineeProfilesReceived
+          , 'RTP Received': item.RTP
+          , 'Class Status': item.ClassStatusName
+          , 'Completion Report Status': item.CompletionReportStatus
+          , Remarks: item.Remarks
+          , ClassID: item.ClassID_U
+          , 'Scheme ID': item.SchemeID_U
+          , 'TSP ID': item.TSPID_U
+          , 'Scheme Type': item.SchemeType
+          , 'Contractual Class Hours': item.MinHoursPerMonth
+          , EmploymentInvoiceStatus: item.EmploymentInvoiceStatus
+          , Shift: item.Shift
+          , Section: item.Section
+          , Sector: item.Sector
+          , 'Overall Employment Commitment': item.OverallEmploymentCommitment
+          , 'Minimum Education': item.MinimumEducation
+          , Organization: item.Organization
+          , 'Trade Code': item.TradeCode
+          , Cluster: item.Cluster
+          , KAM: item.UserName
+          , 'Instructor Name': item.InstructorName
+          , 'Instructor CNIC': item.InstructorCNIC
+          , 'TSP NTN': item.TSPNTN
+          , 'Project': item.FundingCategoryName
+          , 'Is DVV': item.IsDVV
+          , 'No of Class Days': item.TotalClassDays
+          , 'Days Name': item.DayNames
+          , 'Source Of Curriculum': item.SourceOfCurriculum
+          , 'Payment Schedule': item.PaymentSchedule
+          , 'Registration Authority': item.RegistrationAuthorityName == "" ? '---' : item.RegistrationAuthorityName
+          , 'Program Focus': item.ProgramFocusName
+          , 'SAPID': item.SAPID
+        }
+      })
   }
   ngAfterViewInit() {
     this.ComSrv.OID.subscribe(
@@ -376,8 +384,17 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
           this.filters.TSPID = this.tspFilter.value
           this.filters.ClassID = this.classFilter.value
           return this.getPagedData(pagedModel, this.filters);
-        })).subscribe(data => {
-          this.mastersheet = new MatTableDataSource(data[0]);
+        })).subscribe((data: any) => {
+          const dataWithLatestInstructorName = [...data];
+          dataWithLatestInstructorName[0].forEach((entry: any) => {
+            if (entry.InstructorName) {
+              // Split the names by comma and take the last element
+              const names = entry.InstructorName.split(',');
+              entry.InstructorName = names[names.length - 1].trim();
+            }
+          });
+          this.mastersheet = new MatTableDataSource(dataWithLatestInstructorName[0]);
+
           this.Scheme = data[1];
           this.resultsLength = data[2].TotalCount;
         });

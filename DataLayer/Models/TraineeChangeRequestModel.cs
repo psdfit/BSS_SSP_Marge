@@ -52,4 +52,11 @@ namespace DataLayer.Models
         public string TraineePreImage { get; set; }
         public string TraineechangeImage { get; set; }
         public string TraineeClassCode { get; set; }
+        // Newly add fields by Umair Nadeem, date: 9 August 2024
+        public string ClassStartDate { get; set; }
+        public string ClassEndDate { get; set; }
+
+        public string SchemeType { get; set; }
+        public string KAMName { get; set; }
+        public string ProjectName { get; set; }
     }}

@@ -330,6 +330,18 @@ namespace DataLayer.Services
                 TraineeChangeRequest.PermanentDistrict = r["PermanentDistrict"].ToString();
             if (r.Table.Columns.Contains("PermanentTehsil"))
                 TraineeChangeRequest.PermanentTehsil = r["PermanentTehsil"].ToString();
+            //newly added columns by Umair Nadeem, date: 9 August 2024
+            if (r.Table.Columns.Contains("ClassStartDate"))
+                TraineeChangeRequest.ClassStartDate = r["ClassStartDate"].ToString();
+            if (r.Table.Columns.Contains("ClassEndDate"))
+                TraineeChangeRequest.ClassEndDate = r["ClassEndDate"].ToString();
+            if (r.Table.Columns.Contains("SchemeType"))
+                TraineeChangeRequest.SchemeType = r["SchemeType"].ToString();
+            if (r.Table.Columns.Contains("SchemeType"))
+                TraineeChangeRequest.KAMName = r["KAMName"].ToString();
+            if (r.Table.Columns.Contains("FundingSourceName"))
+                TraineeChangeRequest.ProjectName = r["FundingSourceName"].ToString();
+
             return TraineeChangeRequest;
         }
     }
