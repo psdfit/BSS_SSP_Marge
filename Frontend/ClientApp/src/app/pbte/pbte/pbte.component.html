@@ -38,16 +38,19 @@
                   </mat-toolbar>
                      <div class="row" *ngIf="hTablesData.filteredData.length>0">
                         <div class="col-sm-4">
-                           <mat-form-field>
+                           <mat-form-field fxFlex>
                               <mat-label>Select PBTE Scheme</mat-label>
-                              <mat-select [(ngModel)]="selectedPbteScheme" (openedChange)="EmptyCtrl()"
-                                 (selectionChange)="onSchemeChange()">
-                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
-                                       [formControl]="SearchCtr" /></mat-optgrp>
+                              <mat-select  #schemeMapping [(ngModel)]="selectedPbteScheme" (openedChange)="EmptyCtrl()"
+                                 (selectionChange)="[onSchemeChange()]" id="SchemeMapping" matInput required>
+                                 <mat-optgrp  class="ddlsrchheader"> <input  (keydown)="$event.stopPropagation()" type="text" placeholder="Search" [formControl]="SearchCtr" /></mat-optgrp>
                                  <mat-option value="New Scheme">New Scheme</mat-option>
                                  <mat-option *ngFor="let s of pbteScheme  | like:['PBTESchemeName',SearchCtr.value]"
                                     [value]="s.PBTESchemeName"> {{s.PBTESchemeName}}</mat-option>
                               </mat-select>
+
+
+                             
+
                            </mat-form-field>
                         </div>
                         <div class="col-sm-4" *ngIf="this.selectedPbteScheme =='New Scheme'">

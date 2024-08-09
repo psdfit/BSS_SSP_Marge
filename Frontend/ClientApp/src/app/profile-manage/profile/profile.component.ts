@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
       TaxTypeID: [''],
       InstituteName: ['', [Validators.required]],
       RegistrationDate: [{ value: '' }, [Validators.required]],
-      InstituteNTN: ['', [Validators.required]],
+      InstituteNTN: ['', [Validators.required, Validators.minLength(9)]],
       NTNAttachment: ['', [Validators.required]],
       TaxType: ['', [Validators.required]],
       GSTNumber: [{ value: '', disabled: true }],
@@ -350,7 +350,7 @@ if(!check) {
       this.ComSrv.ShowError("please enter valid data");
     }
   }else {
-this.ComSrv.ShowError("Business Profile is not completed.please complete business profile")
+this.ComSrv.ShowError("Business profile is not completed.please complete business profile")
   }
   }
   POCEdit(profile: any): void {

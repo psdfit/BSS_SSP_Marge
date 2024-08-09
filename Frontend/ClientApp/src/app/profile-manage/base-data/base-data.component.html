@@ -516,11 +516,11 @@
                   *ngIf="column !='TrainingLocationName' && column !='ExpiryDate' && column !='IssuanceDate' && column !='RegistrationCertificateEvidence'">
                   &nbsp;{{ row[column] }}
                 </ng-container>
-               
+
 
                 <ng-container *ngIf="column === 'TrainingLocationName' && (row['TotalMappedTrade'] != 0)">
                   &nbsp;
-                  <span  matTooltip="This training Certificate currently locked."
+                  <span matTooltip="This training Certificate currently locked."
                     style="color: #5a5c5e;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
                   </span>
@@ -850,7 +850,7 @@
                   CNIC Front
                   Photo
                 </mat-label>
-                <file-upload accept="application/pdf,image/jpeg,image/png"  formControlName="CnicFrontPhoto"
+                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="CnicFrontPhoto"
                   maxSize="1024" [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
                   *ngFor="let error of TrainerForm.get('CnicFrontPhoto').errors | keyvalue">
