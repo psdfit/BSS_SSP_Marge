@@ -123,39 +123,81 @@ export class ClassStatusDialougeComponent implements OnInit {
   get SchemeCode() { return this.csuForm.get("SchemeCode"); }
   checkStatusTypesSelection(option: any) {
     let isInternalUser = this.currentUser.UserLevel == EnumUserLevel.AdminGroup || this.currentUser.UserLevel == EnumUserLevel.OrganizationGroup;
+  //  if (this.currentUser.RoleID != 1) {
+  //    if (isInternalUser) {
+
+  //      debugger;
+  //      if (option == EnumClassStatus.Cancelled) {
+  //        if (this.ClassStatusID.value == EnumClassStatus.Active || this.ClassStatusID.value == EnumClassStatus.Ready) {
+  //          ///make enabled
+  //          return false;
+  //        } else {
+  //          //make disabled
+  //          return true;
+  //        }
+  //      }
+  //     if (option == EnumClassStatus.Cancelled || option == EnumClassStatus.Abandoned) {
+  //        if (this.ClassStatusID.value == EnumClassStatus.Planned || this.ClassStatusID.value == EnumClassStatus.Cancelled) {
+  //          // Enable the option (Cancelled or Abandoned)
+  //          return false;
+  //        } else {
+  //          // Disable the option
+  //          return true;
+  //        }
+  //      }
+  //      else {
+  //        //make disabled
+  //        return true;
+  //      }
+  //    }
+  //  } else {
+  //    if (this.currentUser.UserLevel == EnumUserLevel.AdminGroup) {
+  //      if (option == EnumClassStatus.Cancelled || option == EnumClassStatus.Abandoned || option == EnumClassStatus.Active || option == EnumClassStatus.Planned || option == EnumClassStatus.Ready) {
+  //        return true;
+  //      } else {
+  //        return false;
+  //      }
+    //
+
+
+    //  }
+
     if (this.currentUser.RoleID != 1) {
       if (isInternalUser) {
-        if (option == EnumClassStatus.Cancelled) {
-          if (this.ClassStatusID.value == EnumClassStatus.Active || this.ClassStatusID.value == EnumClassStatus.Ready) {
-            ///make enabled
+        debugger;
+        if (this.ClassStatusID.value == EnumClassStatus.Planned || this.ClassStatusID.value == EnumClassStatus.Cancelled) {
+          if (option == EnumClassStatus.Cancelled || option == EnumClassStatus.Abandoned) {
+            // Enable the option (Cancelled or Abandoned)
             return false;
-          } else {
-            //make disabled
+          }
+          else {
             return true;
           }
         }
-        else if (option == EnumClassStatus.Abandoned) {
-          if (this.ClassStatusID.value == EnumClassStatus.Planned) {
-            ///make enabled
+        else if (this.ClassStatusID.value == EnumClassStatus.Ready || this.ClassStatusID.value == EnumClassStatus.Active) {
+          if (option == EnumClassStatus.Cancelled) {
+            // Enable the option (Cancelled or Abandoned)
             return false;
-          } else {
-            //make disabled
+          }
+          else {
             return true;
           }
         }
         else {
-          //make disabled
+          // Disable the option for any other status
           return true;
         }
       }
     } else {
       if (this.currentUser.UserLevel == EnumUserLevel.AdminGroup) {
-        if (option == EnumClassStatus.Cancelled || option == EnumClassStatus.Abandoned || option == EnumClassStatus.Active || option == EnumClassStatus.Planned || option == EnumClassStatus.Ready ) {
+        if (option == EnumClassStatus.Cancelled || option == EnumClassStatus.Abandoned || option == EnumClassStatus.Active || option == EnumClassStatus.Planned || option == EnumClassStatus.Ready) {
+          // Enable the option for AdminGroup
           return true;
         } else {
           return false;
         }
       }
     }
+
   }
 }
