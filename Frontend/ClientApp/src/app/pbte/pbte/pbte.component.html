@@ -10,7 +10,7 @@
    <mat-tab label="PBTE Examination">
       <mat-card>
          <mat-card-content>
-            <mat-tab-group #tabGroupPBTE (selectedTabChange)="[getPBTESelectedSubTabData()]">
+            <mat-tab-group #tabGroupPBTE>
                <mat-tab label="(1) Scheme Mapping">
                   <div class="row">
                      <div class="col-sm-4">
@@ -36,18 +36,21 @@
                      <input type="text" placeholder="Search" [(ngModel)]="search"
                      (keyup)="applyFilter1($event.target.value)" class="search" />
                   </mat-toolbar>
-                     <div class="row" *ngIf="hTablesData.filteredData.length>0">
+                     <div class="row" *ngIf="hTablesData.filteredData">
                         <div class="col-sm-4">
-                           <mat-form-field>
+                           <mat-form-field fxFlex>
                               <mat-label>Select PBTE Scheme</mat-label>
-                              <mat-select [(ngModel)]="selectedPbteScheme" (openedChange)="EmptyCtrl()"
-                                 (selectionChange)="onSchemeChange()">
-                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
-                                       [formControl]="SearchCtr" /></mat-optgrp>
+                              <mat-select  #schemeMapping [(ngModel)]="selectedPbteScheme" (openedChange)="EmptyCtrl()"
+                                 (selectionChange)="[onSchemeChange()]" id="SchemeMapping" matInput required>
+                                 <mat-optgrp  class="ddlsrchheader"> <input  (keydown)="$event.stopPropagation()" type="text" placeholder="Search" [formControl]="SearchCtr" /></mat-optgrp>
                                  <mat-option value="New Scheme">New Scheme</mat-option>
                                  <mat-option *ngFor="let s of pbteScheme  | like:['PBTESchemeName',SearchCtr.value]"
                                     [value]="s.PBTESchemeName"> {{s.PBTESchemeName}}</mat-option>
                               </mat-select>
+
+
+                             
+
                            </mat-form-field>
                         </div>
                         <div class="col-sm-4" *ngIf="this.selectedPbteScheme =='New Scheme'">
@@ -151,7 +154,78 @@
                      </div>
                   </div>
                </mat-tab>
-               <mat-tab label="(4) Center Location Mapping">
+               <mat-tab label="(4) Trade Mapping">
+
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <mat-form-field>
+                           <input matInput [matDatepicker]="dp5" [formControl]="date" readonly>
+                           <mat-datepicker-toggle matSuffix [for]="dp5"></mat-datepicker-toggle>
+                           <mat-datepicker #dp5 startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+                              (monthSelected)="chosenMonthHandler($event, dp5)" panelClass="example-month-picker">
+                           </mat-datepicker>
+                           <mat-label>Class Completion Month</mat-label>
+                        </mat-form-field>
+                     </div>
+                     <div class="col-sm-1">
+                        <button class="mt-4 mr-1" color="primary" (click)="GetPbteData('Trade')"
+                           mat-raised-button><i class="fas fa-check"></i> Load Trade </button>
+                     </div>
+                  </div>
+                  <div class="table-responsive" *ngIf="tradeTablesData">
+                     <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
+                        <mat-icon class="material-icons">view_comfy</mat-icon>
+                        <span class="spacer">Trade Mapping</span>
+                        <!-- <input type="text" placeholder="Search" [(ngModel)]="search" (keyup)="applyFilter1($event.target.value)" class="search" /> -->
+                        <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+                           (click)="DataExcelExport(tradeTablesData.filteredData,'Trade')">
+                           <i class="fas fa-file-export"></i>Export</button>
+                     </mat-toolbar>
+                     <mat-table [dataSource]="tradeTablesData" #tradesort="matSort" matSort class="table table-bordered">
+                        <ng-container *ngFor="let column of tradeTableColumns" [matColumnDef]="column">
+                           <mat-header-cell mat-sort-header *matHeaderCellDef>{{ camelCaseToWords(column)}}</mat-header-cell>
+                              <mat-cell *matCellDef="let row">
+                                 <ng-container *ngIf="column !== 'PBTE Trade' && column !== 'Action'">
+                                   &nbsp;{{ row[column] }}
+                                 </ng-container>
+                                 
+                                 <ng-container *ngIf="column === 'PBTE Trade'">
+                                   <mat-form-field>
+                                     <mat-label>Select PBTE Trade</mat-label>
+                                     <mat-select [(ngModel)]="row.selectedPbteTrade" 
+                                                 (selectionChange)="onTradeSelectionChange(row)"
+                                                 (opened)="[openedTradeSelection(row), EmptyCtrl($event)]">
+                                                 
+                                       <mat-optgroup class="ddlsrchheader">
+                                         <input placeholder="Search" 
+                                                (keydown)="$event.stopPropagation()" 
+                                                [formControl]="BSearchCtr" />
+                                       </mat-optgroup>
+                                       
+                                       <ng-container>
+                                         <mat-option disabled>Select PBTE Trade</mat-option>
+                                         <mat-option *ngFor="let s of pbteTrade | like: ['CourseInfo', BSearchCtr.value]"
+                                                     [matTooltip]="s.CourseInfo" 
+                                                     [value]="s.CourseID">
+                                           {{s.CourseInfo}}
+                                         </mat-option>
+                                       </ng-container>
+                                       
+                                     </mat-select>
+                                   </mat-form-field>
+                                 </ng-container>
+                               </mat-cell>
+                               
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="tradeTableColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: tradeTableColumns;"></mat-row>
+                     </mat-table>
+                     <mat-paginator #tradepaginator="matPaginator" [pageSize]="10"
+                        [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
+                  </div>
+               </mat-tab>
+
+               <mat-tab label="(5) Center Location Mapping">
 
                   <div class="row">
                      <div class="col-sm-4">
@@ -172,8 +246,8 @@
                   <div class="table-responsive" *ngIf="tTablesData">
                      <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
                         <mat-icon class="material-icons">view_comfy</mat-icon>
-                        <span class="spacer">Mapping Center Location</span>
-                        <!-- <input type="text" placeholder="Search" [(ngModel)]="search" (keyup)="applyFilter1($event.target.value)" class="search" /> -->
+                        <span class="spacer">Center Location Mapping</span>
+                        <input type="text" placeholder="Search" [(ngModel)]="search" (keyup)="applyFilter1($event.target.value)" class="search" />
                         <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
                            (click)="DataExcelExport(tTablesData.filteredData,'BSS Center Location')">
                            <i class="fas fa-file-export"></i>Export</button>
@@ -344,7 +418,7 @@
                         </div>
                      </div>
                </mat-tab> -->
-               <mat-tab label="(5) Trainee and Exam Sheet ">
+               <mat-tab label="(6) Trainee and Exam Sheet ">
 
                   <div class="row">
                      <div class="col-sm-4">
@@ -384,6 +458,9 @@
                   <mat-toolbar *ngIf="examTablesData" color="accent" class=" mb-2 slim slim">
                      <mat-icon class="material-icons">view_comfy</mat-icon>
                      <span class="spacer">Exam Data Sheet</span>
+                     <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+                     (click)="DataExcelExport(examTablesData.filteredData,'Examination List')">
+                     <i class="fas fa-file-export"></i>Export</button>
                      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
                         (click)="saveExamData()">
                         <i class="fas fa-save"></i> Save</button>
@@ -430,6 +507,10 @@
                   <mat-toolbar *ngIf="traineeTablesData" color="accent" class=" slim slim">
                      <mat-icon class="material-icons">view_comfy</mat-icon>
                      <span class="spacer">Trainee Data Sheet</span>
+                     <input type="text" placeholder="Search" [(ngModel)]="search" (keyup)="applyTraineefilter($event.target.value)" class="search" />
+                     <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+                     (click)="DataExcelExport(traineeTablesData.filteredData,'Examination List')">
+                     <i class="fas fa-file-export"></i>Export</button>
                      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
                         (click)="saveTraineeData()">
                         <i class="fas fa-save"></i> Save</button>

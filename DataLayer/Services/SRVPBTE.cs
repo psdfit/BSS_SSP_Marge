@@ -912,6 +912,19 @@ namespace DataLayer.Services
             }
             return true;
         }
+        public bool savePBTETradeMapping(TradeMappingModel data,int CurUser)
+        {
+            
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@PBTETradeID", data.PBTETradeID));
+                param.Add(new SqlParameter("@TradeName", data.TradeName));
+                param.Add(new SqlParameter("@TradeID", data.TradeID));
+                param.Add(new SqlParameter("@CurUserID", CurUser));
+                param.Add(new SqlParameter("@Duration", data.Duration));
+                 SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTETradeMapping", param.ToArray());
+            
+            return true;
+        }
 
         public bool savePBTEDBFile(string attachment, int CurUser)
         {

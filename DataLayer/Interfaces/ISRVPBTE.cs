@@ -48,6 +48,7 @@ namespace DataLayer.Interfaces
         public List<PBTETraineeModel> FetchNAVTTCTraineesSqlScript(PBTEQueryFilters filters);
 
        bool savePBTESchemeMapping(List<SchemeMappingModel> data,int CurUser);
+       bool savePBTETradeMapping(TradeMappingModel data,int CurUser);
        bool savePBTEDBFile(string data,int CurUser);
         DataTable FetchReportBySPName(string spName);
         DataTable PbteData(string SpName, string paramValue);

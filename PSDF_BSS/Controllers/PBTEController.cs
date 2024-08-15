@@ -107,7 +107,7 @@ namespace PSDF_BSSMaster.Controllers
                 list.Add(srvPBTE.FetchReportBySPName("Get_PBTE_Classes_TSP"));
                 list.Add(srvPBTE.FetchReportBySPName("Get_PBTE_TSP"));
                 //list.Add(srvPBTE.FetchReportBySPName("RD_PBTETradeMapping"));
-                //list.Add(srvPBTE.FetchReportBySPName("RD_PBTETrade"));
+                list.Add(srvPBTE.FetchReportBySPName("RD_PBTETrade"));
 
                 return Ok(list);
             }
@@ -550,6 +550,31 @@ namespace PSDF_BSSMaster.Controllers
             {
                 return BadRequest("Access Denied. you are not authorized for this activity");
             }
+        }     
+        [HttpPost]
+        [Route("SavePBTETradeMapping")]
+        public IActionResult Save(TradeMappingModel data)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(false,Convert.ToInt32(User.Identity.Name),Split[2],Split[3]);
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    int CurUserID = Convert.ToInt32(User.Identity.Name);
+                    srvPBTE.savePBTETradeMapping(data, CurUserID);
+                    DataTable MappedData=srvPBTE.FetchReportBySPName("RD_PBTETradeData");
+                    return Ok(MappedData);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
         }  
         
         [HttpPost]
@@ -686,48 +711,54 @@ namespace PSDF_BSSMaster.Controllers
             {
                 try
                 {
-                    DataTable MappedData = srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping");
 
                     string month = data.month.Value;
                     string reportName = data.report.Value;
 
                     if (reportName=="Scheme")
                     {
+                       DataTable MappedData = srvPBTE.FetchReportBySPName("RD_PBTESchemeMapping");
                        var pbteData = srvPBTE.PbteData("RD_PBTESchemeData", month);
                         return Ok(new {mappedScheme=MappedData,data= pbteData });
                     }
                      if (reportName=="CenterLocation")
                     {
                         var pbteData = srvPBTE.PbteData("RD_PBTECenterLocationData", month);
-                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                        return Ok(new {data = pbteData });
 
                     }
 
                     if (reportName=="Class")
                     {
                         var pbteData = srvPBTE.PbteData("RD_PBTEClassData", month);
-                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                        return Ok(new {data = pbteData });
                     }  
                     if (reportName=="Trainee")
                     {
                         var pbteData = srvPBTE.PbteData("RD_PBTETSRData", month);
-                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                        return Ok(new {data = pbteData });
                     } 
                     
                     if (reportName=="Exam")
                     {
                         var pbteData = srvPBTE.PbteData("RD_PBTEExamData", month);
-                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                        return Ok(new {data = pbteData });
                     }
                       if (reportName== "ExaminationSqlScript")
                     {
                         var pbteData = srvPBTE.PbteData("RD_PBTEExamSqlData", month);
-                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                        return Ok(new {data = pbteData });
                     }
                       if (reportName== "TraineeSqlScript")
                     {
                         var pbteData = srvPBTE.PbteData("RD_PBTETraineeSqlData", month);
-                        return Ok(new { mappedScheme = MappedData, data = pbteData });
+                        return Ok(new {data = pbteData });
+                    }
+
+                    if (reportName == "Trade")
+                    {
+                        var pbteData = srvPBTE.PbteData("RD_PBTETradeData", month);
+                        return Ok(new {data = pbteData, });
                     }
 
                     return Ok("No Record");
