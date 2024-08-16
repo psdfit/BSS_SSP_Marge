@@ -93,6 +93,9 @@ export class PBTEComponent implements OnInit {
     TradeID: 0,
     DistrictID: 0,
   };
+
+
+  
   //exportAsConfig: ExportAsConfig
   displayedColumnsClasses = [
     "SchemeName",
@@ -467,11 +470,37 @@ export class PBTEComponent implements OnInit {
   selectedPbteTrade: any = 0;
   SearchCtr = new FormControl("");
   onSelectionChange(row: any) {
-    this.SavePBTECenterMapping(row);
+
+    
+debugger
+    let titleConfirm = 'Confirmation';
+    let messageConfirm = "Are you sure you want to map the selected data?";
+    this.ComSrv.confirm(titleConfirm, messageConfirm).subscribe(
+      (isConfirm: Boolean) => {
+        if (isConfirm == true) {
+          this.SavePBTECenterMapping(row);
+        }else{
+       row.selectedPbteCenter=""
+        }
+      })
   }
 
+
+
   onTradeSelectionChange(row: any) {
-    this.SavePBTETradeMapping(row);
+
+    let titleConfirm = 'Confirmation';
+    let messageConfirm = "Are you sure you want to map the selected data?";
+    this.ComSrv.confirm(titleConfirm, messageConfirm).subscribe(
+      (isConfirm: Boolean) => {
+        if (isConfirm == true) {
+          this.SavePBTETradeMapping(row);
+        }else{
+         row.selectedPbteTrade=""
+        }
+      })
+
+   
   }
 
   BSearchCtr = new FormControl("");

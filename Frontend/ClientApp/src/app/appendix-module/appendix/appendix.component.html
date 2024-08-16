@@ -291,23 +291,29 @@
             </mat-step>
             <mat-step>
               <ng-template matStepLabel><span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> TSP(s)</ng-template>
+
               <app-tsp [scheme]="insertedScheme" [incompTSP]="tspsInserted" (tsp)="bindTSPs($event)"
                        (next)="moveForward($event, stepper)" [childClassComponent]="appClass"
                        [childInstructorComponent]="appInstructor"></app-tsp>
+
             </mat-step>
             <mat-step>
               <ng-template matStepLabel>
                 <span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> Class(s)
               </ng-template>
+
               <app-class #appClass [scheme]="insertedScheme" [tsps]="tspsInserted" [classes]="classesInserted"
                          (classData)="bindClasses($event)" (next)="moveForward($event, stepper)"></app-class>
+
             </mat-step>
             <mat-step>
               <ng-template matStepLabel>
                 <span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> Instructor(s)
               </ng-template>
+
               <app-instructor #appInstructor [scheme]="insertedScheme" [tsps]="tspsInserted" [classes]="classesInserted"
                               [incompInstr]="instructorsInserted"></app-instructor>
+                              
             </mat-step>
           </mat-horizontal-stepper>
         </fieldset>
