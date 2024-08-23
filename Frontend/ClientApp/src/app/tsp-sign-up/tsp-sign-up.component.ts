@@ -28,7 +28,7 @@ export class TspSignUpComponent implements OnInit {
   }
   signUp: FormGroup;
   hide = true;
-  NTNFormat:any="1"
+  NTNFormat: any = "1"
   CreateForm() {
     this.signUp = this.fb.group({
       TSPID: [''],
@@ -50,7 +50,6 @@ export class TspSignUpComponent implements OnInit {
       }
       this.CheckNTN()
     });
-
     this.signUp.get('BusinessNTN').valueChanges.subscribe((value) => {
       this.CheckNTN()
     });
@@ -67,6 +66,15 @@ export class TspSignUpComponent implements OnInit {
     }
     this.signUp.get('BusinessNTN').updateValueAndValidity();
   }
+  onFormateChange() {
+    debugger;
+    if (this.NTNFormat == 2) {
+      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
+    } else {
+      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(9)])
+    }
+    this.signUp.get('BusinessNTN').updateValueAndValidity();
+  }
   CheckMatchChanged(formValues: any) {
     if (formValues.Password != formValues.CPassword) {
       this.signUp.controls.CPassword.setErrors({ customError: 'Password and Confirm Password must be the same' });
@@ -77,28 +85,26 @@ export class TspSignUpComponent implements OnInit {
     return regex.test(input);
   }
   CheckNTN() {
-    if (this.signUp.get('BusinessName').value !='' && this.signUp.get('BusinessNTN').value !='' ) {
-    const data={
-      BusinessNTN:this.signUp.get('BusinessNTN').value,
-      BusinessName:this.signUp.get('BusinessName').value
-    }
-      this.ComSrv.postNoAuth('api/Users/CheckNTN',data)
+    if (this.signUp.get('BusinessName').value != '' && this.signUp.get('BusinessNTN').value != '') {
+      const data = {
+        BusinessNTN: this.signUp.get('BusinessNTN').value,
+        BusinessName: this.signUp.get('BusinessName').value
+      }
+      this.ComSrv.postNoAuth('api/Users/CheckNTN', data)
         .subscribe((response: any) => {
           // if (response) {
-            if (response == 1) {
-              this.signUp.controls.IsHeadOffice.setValue('Branch Office')
-              this.signUp.controls.BusinessName.setErrors(null);
-
-            }
-            if (response == 0) {
-              this.signUp.controls.IsHeadOffice.setValue('Head Office')
-              this.signUp.controls.BusinessName.setErrors(null);
-
-            }
-            if (response == 2) {
-              this.signUp.controls.BusinessName.setErrors({ customError: "Business Name and NTN already existed" });
-              this.ComSrv.ShowError("Business Name and NTN already existed.Please Use Login interface");
-            }
+          if (response == 1) {
+            this.signUp.controls.IsHeadOffice.setValue('Branch Office')
+            this.signUp.controls.BusinessName.setErrors(null);
+          }
+          if (response == 0) {
+            this.signUp.controls.IsHeadOffice.setValue('Head Office')
+            this.signUp.controls.BusinessName.setErrors(null);
+          }
+          if (response == 2) {
+            this.signUp.controls.BusinessName.setErrors({ customError: "Business Name and NTN already existed" });
+            this.ComSrv.ShowError("Business Name and NTN already existed.Please Use Login interface");
+          }
           // }
         }, error => {
           this.ComSrv.ShowError(error);
@@ -126,23 +132,18 @@ export class TspSignUpComponent implements OnInit {
   }
   IsDisabled = false
   Save() {
-
-
     if (!this.isValidText(this.signUp.get('BusinessName').value)) {
       this.ComSrv.ShowError('Business name should only contain text.')
       return
     }
-
     if (this.signUp.valid && [7, 9].includes(this.signUp.get('BusinessNTN').value.length)) {
       this.IsDisabled = true
-
       this.ComSrv.postNoAuth('api/Users/SignUp', this.signUp.value)
         .subscribe((response: any) => {
           if (response) {
             this.ComSrv.openSnackBar("Saved data");
             this.ComSrv.setMessage(response)
             this.IsDisabled = false
-
             this.router.navigate(['verify-otp']);
           }
         })
@@ -151,15 +152,15 @@ export class TspSignUpComponent implements OnInit {
       this.ComSrv.ShowError("please enter valid data");
     }
   }
-   getErrorMessage(errorKey: string, errorValue: any): string {
-    const error = errorValue.requiredLength != 8 &&  errorValue.requiredLength != 7 ? errorValue.requiredLength -1 : errorValue.requiredLength
+  getErrorMessage(errorKey: string, errorValue: any): string {
+    debugger
+    const error = errorValue.requiredLength != 8 && errorValue.requiredLength != 7 ? errorValue.requiredLength - 1 : errorValue.requiredLength
     const errorMessages = {
-    required: 'This field is required.',
-    minlength: `This field must be at least ${error} long.`,
-    maxlength: `This field's text exceeds the specified maximum length.  (maxLength: ${errorValue.requiredLength} characters)`,
-    email: 'Invalid email address.',
-    pattern: 'Password contain 1 uppercase, 1 lowercase, 1 number, 1 special character (@$!%*?&)',
-      
+      required: 'This field is required.',
+      minlength: `This field must be at least ${error} long.`,
+      maxlength: `This field's text exceeds the specified maximum length.  (maxLength: ${errorValue.requiredLength} characters)`,
+      email: 'Invalid email address.',
+      pattern: 'Password contain 1 uppercase, 1 lowercase, 1 number, 1 special character (@$!%*?&)',
       customError: errorValue
     };
     return errorMessages[errorKey];
@@ -173,4 +174,5 @@ export class TspSignUpComponent implements OnInit {
       this.setFocusOnControl("BusinessNTN");
     });
   }
+  
 }
