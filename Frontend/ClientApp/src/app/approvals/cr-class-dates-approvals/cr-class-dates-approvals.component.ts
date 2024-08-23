@@ -20,7 +20,7 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
         'TradeName', 'SourceOfCurriculumName', 'EntryQualification', 'CertAuthName',
         'StartDate', 'EndDate', "Action"];
 
-    classes: [];
+    classes: any;
     currentClassDates: [];
 
     ActiveFormApprovalID: number;
@@ -51,18 +51,63 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
       this.GetClassDatesCRs();
     }
 
-    GetClassDatesCRs() {
-        this.http.getJSON('api/ClassChangeRequest/GetClassDatesChangeRequest').subscribe((d: any) => {
-            this.classes = d[0];
-            //this.tsps.paginator = this.paginator;
-            //this.tsps.sort = this.sort;
+    currentPage: number = 1;
+    rowsPerPage: number = 5;
+    totalPages: number = 1;
+
+    currentData: any[] = [];
+    
+   // Method to fetch class dates and set up pagination
+   GetClassDatesCRs() {
+    this.http.getJSON('api/ClassChangeRequest/GetClassDatesChangeRequest').subscribe(
+        (response: any) => {
+            this.classes = response[0];
+            this.totalPages = Math.ceil(this.classes.length / this.rowsPerPage);
+            this.currentData = [...this.classes];  // Keep a copy of the full dataset
+            this.displayTable();  // Display the first page of data
         },
-            error => this.error = error // error path
-            , () => {
-                this.working = false;
-            });
-  }
-  
+        (error) => {
+            this.error = error;
+            this.working = false;  // Ensure the working flag is reset
+        },
+        () => {
+            this.working = false;  // Finalize the process
+        }
+    );
+}
+
+// Method to display the data for the current page
+displayTable() {
+    const start = (this.currentPage - 1) * this.rowsPerPage;
+    const end = start + this.rowsPerPage;
+    this.classes = this.currentData.slice(start, end);
+}
+
+// Method to move to the next page
+nextPage() {
+    if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.displayTable();
+    }
+}
+
+// Method to move to the previous page
+prevPage() {
+    if (this.currentPage > 1) {
+        this.currentPage--;
+        this.displayTable();
+    }
+}
+
+// Method to change the number of rows per page dynamically
+changeRowsPerPage(rows) {
+  debugger;
+    this.rowsPerPage = parseInt(rows);
+    this.totalPages = Math.ceil(this.currentData.length / this.rowsPerPage);
+    this.currentPage = 1; // Reset to the first page whenever rows per page changes
+    this.displayTable();
+}
+
   GetCurrentClassDatesByID(r) {
     if (r.currentClassDates) {
       r.currentClassDates = null;

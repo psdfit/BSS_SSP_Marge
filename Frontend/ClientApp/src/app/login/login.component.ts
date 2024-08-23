@@ -6,14 +6,15 @@ import { AuthService } from '../security/auth-service.service';
 import { UsersModel } from '../master-data/users/users.component';
 import { EnumUserRoles } from '../shared/Enumerations';
 import { FormGroup } from '@angular/forms';
+
 import { Router } from '@angular/router';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  IsDisabled = false;
   hide = true;
   user: any = {};
   kamAssignedUsers: any;
@@ -24,15 +25,32 @@ export class LoginComponent implements OnInit {
   kamUserFlag = false;
   currentUser: UsersModel;
   UserID1: UsersModel;
+
+
+
   PassComp: boolean = false;
   password: string = '';
   passwordForm: FormGroup;
-  constructor(private Common: CommonSrvService, private auths: AuthService, private router: Router) {
+  // images: string[] = [
+  //   '../../../../assets/images/LMS---Slider-04.jpg',
+  //   '../../../../assets/images/LMS---Slider-04.jpg',
+  //   '../../../../assets/images/LMS---Slider-04.jpg',
+  //   // Add more image paths as needed
+  // ];
+	images = [1055, 194, 368].map((n) => `https://picsum.photos/id/${n}/900/500`);
+
+
+  constructor(private Common: CommonSrvService, private auths: AuthService, private router: Router, config: NgbCarouselConfig) {
     Common.setTitle('User Login');
+    config.showNavigationArrows = true;
+		config.showNavigationIndicators = true;
   }
+
   onEnterKey(event: KeyboardEvent): void {
     event.preventDefault();
   }
+
+
   UserName = ''
   Userpassword = ''
   ngOnInit() {
@@ -42,17 +60,23 @@ export class LoginComponent implements OnInit {
     }
     this.resetTokens();
   }
+
   resetTokens() {
     localStorage.clear();
     sessionStorage.clear();
   }
+
+
   Submit(form: NgForm) {
     // if (this.PassComp) {
-    this.IsDisabled = true
     this.Common.postNoAuth('api/Users/Login', this.user).subscribe((response: any) => {
       this.auths.setCredntial(response, this.rememberme);
+      console.log(response)
       this.checkForKAMUser();
       // this.router.navigate(['/']);
+
+
+
       // if (this.currentUser.RoleID == EnumUserRoles.PBTE) {
       //  this.router.navigate(['pbte/pbte']);
       // }
@@ -63,39 +87,38 @@ export class LoginComponent implements OnInit {
       //  this.router.navigate(['/']);
       // }
     },
-      error => { 
-        if(error.status==0 || error.statusText =='Unknown Error'){
-          this.Common.ShowError('Backend services are offline', 'Close',5000); 
-
-        }else{
-          this.Common.ShowError(error.error, 'Close',5000); 
-
-        }
-      }
+      error => { this.Common.ShowError(error.error, 'Close'); }
     )
-    this.IsDisabled = false
     // }
+
   }
+
   receiveMessage($event) {
+    console.log($event)
   }
+
   checkForKAMUser() {
     this.currentUser = this.Common.getUserDetails();
-    console.log(this.currentUser)
     const userid = this.currentUser.UserID;
+
     this.Common.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe((d: any) => {
       this.kamAssignedUsers = d;
       this.userids = this.kamAssignedUsers.filter(y => y.UserID === userid);
       if (this.userids.length > 0) {
         this.kamRoleId = this.userids.map(x => x.RoleID)[0];
       }
+
       this.route();
       // x.UserID, y => y.RoleID)
     },
     );
   }
+
   route() {
+
     // this.currentUser = this.Common.getUserDetails();
     // var userid = this.currentUser.UserID;
+
     // this.Common.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe((d: any) => {
     //  this.kamAssignedUsers = d;
     //  this.userids = this.kamAssignedUsers.filter(y => y.UserID == userid);
@@ -106,6 +129,9 @@ export class LoginComponent implements OnInit {
     //    //x.UserID, y => y.RoleID)
     // },
     // );
+
+
+    console.log(this.currentUser.RoleID)
     switch (this.currentUser.RoleID) {
       case EnumUserRoles.PBTE:
         this.router.navigate(['pbte/pbte']);
@@ -120,7 +146,10 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['profile-manage/profile']);
         break;
       default:
+
         this.router.navigate(['/']);
     }
+    console.log(this.currentUser.RoleID + 'End==============')
+
   }
 }

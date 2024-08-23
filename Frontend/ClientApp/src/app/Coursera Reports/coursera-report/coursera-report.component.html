@@ -16,6 +16,12 @@
               <mat-option value="1">Invitation Not Accepted</mat-option>
               <mat-option value="2">Inactive for 14 days below 70%</mat-option>
               <mat-option value="3">Inactive for 28 days above 70%</mat-option>
+              <mat-option value="4">3months and above</mat-option>
+              <mat-option value="5">4months and above</mat-option>
+              <mat-option value="6">6months and above</mat-option>
+              <mat-option value="7">8months and above</mat-option>
+              <mat-option value="8">10months and above</mat-option>
+              <mat-option value="9">12months and above</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -72,7 +78,7 @@
           </ng-container>
           <ng-container matColumnDef="InvitationDate">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Invitation Date </mat-header-cell>
-            <mat-cell *matCellDef="let row ; let index=index"> {{row.InvitationDate}}</mat-cell>
+            <mat-cell *matCellDef="let row ; let index=index"> {{row.InvitationDate | date:'yyyy-MM-dd'}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="Action">

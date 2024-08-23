@@ -82,7 +82,10 @@ export class AppendixComponent implements OnInit {
     this.schemesDataSourceSSP = new MatTableDataSource([]);
     this.formrights = http.getFormRights();
   }
+  currentUser:any;
   ngOnInit() {
+    this.currentUser = this.http.getUserDetails();
+
     this.http.OID.subscribe(OID => {
       this.loadAppendix()
 
@@ -143,12 +146,13 @@ export class AppendixComponent implements OnInit {
     let maximumEducationControl = this.schemeForm.get('MaximumEducation');
     let stipendControl = this.schemeForm.get('Stipend');
     let uniformAndBagControl = this.schemeForm.get('UniformAndBag');
+    debugger;
     schemeNameControl.valueChanges.subscribe(
       value => {
         if (value) {
           if (!this.insertedScheme[0]?.FinalSubmitted) {
             this.getAllSchemes().subscribe(schemes => {
-              let duplicate = schemes.find(x => (x.SchemeName.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
+              let duplicate =  schemes.find(x => (x.SchemeName.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
               if (duplicate) {
                 schemeNameControl.setErrors({ exists: true });
                 schemeNameControl.markAsDirty();
@@ -163,7 +167,7 @@ export class AppendixComponent implements OnInit {
         if (value) {
           if (!this.insertedScheme[0]?.FinalSubmitted) {
             this.getAllSchemes().subscribe(schemes => {
-              let duplicate = schemes.find(x => (x.SchemeCode.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
+              let duplicate =  schemes.find(x => (x.SchemeCode.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
               if (duplicate) {
                 schemeCodeControl.setErrors({ exists: true });
                 schemeCodeControl.markAsDirty();
@@ -202,7 +206,9 @@ export class AppendixComponent implements OnInit {
     this.schemeForm.markAllAsTouched();
     this.isLoadedAppendixForm = true;
   }
+
   onFileChange(ev: any) {
+    
     let workBook = null;
     let jsonData = null;
     const reader = new FileReader();
@@ -289,6 +295,7 @@ export class AppendixComponent implements OnInit {
       SchemeCode: _schemData['Scheme Code'],
       Description: _schemData['Description'],
       PaymentSchedule: this.paymentSchedule.find(x => _schemData['Payment Schedule'].toLowerCase() == x.PaymentStructure.toLowerCase())?.PaymentStructure || '',
+      OrganizationID: this.organizations .find(x => _schemData['Organization'].toLowerCase() == x.OName.toLowerCase())?.OID || '',
       ProgramTypeID: program,
       PCategoryID: this.programCategories.find(x => _schemData['Program Category'].toLowerCase() == x.PCategoryName.toLowerCase())?.PCategoryID || '',
       FundingSourceID: fundingSrc,

@@ -59,7 +59,8 @@ namespace MasterDataModule.Controllers
                 //List<SchemeModel> submitted = srvScheme.FetchScheme(new SchemeModel() { FinalSubmitted = true }).OrderByDescending(x => x.SchemeID).ToList();
 
                 //List<SchemeModel> schemes = srvScheme.FetchScheme(new SchemeModel() { CreatedUserID = Convert.ToInt32(User.Identity.Name), OrganizationID = OID });
-                List<SchemeModel> schemes = srvScheme.FetchAllScheme(new SchemeModel() { CreatedUserID = Convert.ToInt32(User.Identity.Name), OrganizationID = OID });
+                //List<SchemeModel> schemes = srvScheme.FetchAllScheme(new SchemeModel() { CreatedUserID = Convert.ToInt32(User.Identity.Name), OrganizationID = OID });
+                List<SchemeModel> schemes = srvScheme.FetchAllScheme(new SchemeModel() { CreatedUserID = 0, OrganizationID = OID });
                 //ls.Add(draft.Concat(submitted));
                 ls.Add(schemes);
 

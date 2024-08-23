@@ -31,5 +31,6 @@ namespace DataLayer.Models
         public int KAMID { get; set; }
         public int ApprovalBatchNo { get; set; }
         public int UserID { get; set; }
+        public string ProcessKey { get; set; }
     }
 }

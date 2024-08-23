@@ -186,7 +186,15 @@ export class CourseraReportComponent implements OnInit {
           } else if (this.schemeFilter.value == 3) {
             apiEndpoint = 'api/CourseraReport/SaveExpell';
             comment = 'Dropout: Inactive for 28 days above 70%';
+          } else if (this.schemeFilter.value >= 4) {
+            apiEndpoint = 'api/CourseraReport/SaveExpell';
+            comment = 'Dropout: Inactive for More than 3 months';
           }
+          else {
+            apiEndpoint = 'api/CourseraReport/SaveExpell';
+            comment = 'Dropout: Inactive for 28 days above 70%';
+          }
+
 
           // Construct the payload with IDs and Comment based on schemeFilter value
           const payload = { CoursraTraineeIDs: ids.join(','), Comment: comment };

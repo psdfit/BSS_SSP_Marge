@@ -5,19 +5,19 @@
   margin: -150px 0 0 -230px;
   padding: 20px;
   position: absolute;
-  top:35%;
+  top: 35%;
   left: 50%;
   z-index: 0;
   border-radius: 3px;
-  border: 2px solid #FDB813;
+  border: 2px solid #fdb813;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.mat-stroked-button{
+.mat-stroked-button {
   text-transform: uppercase;
 }
 .register:before {
-  content: '';
+  content: "";
   position: absolute;
   z-index: -1;
   border: 1px dashed #005b9e;
@@ -28,6 +28,15 @@
   -moz-box-shadow: 0 0 0 1px #fff;
   -webkit-box-shadow: 0 0 0 1px #fff;
   box-shadow: 0 0 0 1px #fff;
+}
+
+.video-link {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.video-link:hover {
+  transform: scale(1.1); /* Slightly enlarge the link */
 }
 
 /*--------------------*/
@@ -42,7 +51,6 @@
 //   font: normal 26px/1 Verdana, Helvetica;
 //   position: relative;
 // }
-
 
 // h1:after, h1:before {
 //   background-color: #777;
@@ -73,7 +81,6 @@
 //   left: 0;
 // }
 
-
 /*--------------------*/
 
 fieldset {
@@ -83,7 +90,7 @@ fieldset {
 }
 /*--------------------*/
 
- /*input {
+/*input {
   background: #f1f1f1 url(../../assets/register-sprite.png) no-repeat;
   /*padding: 15px 15px 15px 30px;
   margin: 0 0 10px 0;
@@ -115,7 +122,8 @@ fieldset {
 }*/
 
 /*--------------------*/
-.actions, .text-info {
+.actions,
+.text-info {
   margin: 0 0 0 0;
   position: relative;
 }
@@ -132,16 +140,13 @@ fieldset {
   color: #335 !important;
 }
 
-
-
 .actions a {
-  color: #3151A2;
+  color: #3151a2;
   float: right;
   line-height: 35px;
   margin-left: 10px;
 }
 .register .card-icon {
-
   position: absolute;
   top: -40px;
   left: 50%;
@@ -173,7 +178,7 @@ fieldset {
 
 /* When the checkbox is checked, add a blue background */
 .text-info input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -201,13 +206,13 @@ fieldset {
   transform: rotate(45deg);
 }
 .mat-raised-button {
-  background: #005B9E;
+  background: #005b9e;
   margin-top: 0px;
   padding: 3px 20px;
   text-transform: uppercase;
 }
 .mat-raised-button i {
-  color:white;
+  color: white;
 }
 .mat-raised-button i {
   padding-right: 8px;
@@ -215,12 +220,10 @@ fieldset {
   top: -2px;
 }
 
-
-.hidden-sm{
+.hidden-sm {
   visibility: hidden;
   position: absolute;
 }
-
 
 @media (max-width: 600px) {
   .register {
@@ -228,26 +231,23 @@ fieldset {
     top: 50px;
     transform: translate(-50%);
     margin: 0px !important;
-    
   }
 
-.mat-stroked-button{
-  position: relative;
-    left: 3rem 
-}
-.visibility-sm-hidden{
-  visibility: hidden;
-}
-
-.hidden-sm{
-  visibility: visible;
-  position: relative;
-
-}
-
-  .form-bg{
+  .mat-stroked-button {
     position: relative;
-   
+    left: 3rem;
+  }
+  .visibility-sm-hidden {
+    visibility: hidden;
+  }
+
+  .hidden-sm {
+    visibility: visible;
+    position: relative;
+  }
+
+  .form-bg {
+    position: relative;
   }
   // h1{font-size:19px;}
   // h1:after, h1:before {
@@ -256,112 +256,248 @@ fieldset {
   // }
 }
 
-
-
 .bg {
   margin: 0;
   padding: 0;
-  background: url(https://preview.keenthemes.com/metronic8/demo1/assets/media/misc/auth-bg.png) center/cover no-repeat; 
-  height: 100vh; 
+  background: url(https://preview.keenthemes.com/metronic8/demo1/assets/media/misc/auth-bg.png)
+    center/cover no-repeat;
+  height: 100vh;
   align-items: center;
   justify-content: center;
   position: relative;
-  }
+}
 
-  .bg::before {
+.bg::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #005B9E ; 
-  opacity: 0.4; 
-  }
+  background-color: #005b9e;
+  opacity: 0.4;
+}
 
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-white {
+  color: white;
+}
+.bg-white {
+  background: white;
+}
+.text-primaryA {
+  color: #005b9e;
+}
+.bg-primaryA {
+  background: #005b9e;
+}
+.text-warningA {
+  color: #fdb813;
+}
 
+/* Margin Utility Classes */
+.m-0 {
+  margin: 0;
+}
+.m-1 {
+  margin: 0.25rem;
+}
+.m-2 {
+  margin: 0.5rem;
+}
+.m-3 {
+  margin: 1rem;
+}
+.m-4 {
+  margin: 1.5rem;
+}
+.m-5 {
+  margin: 3rem;
+}
 
-.text-center{text-align: center}
-.text-left{text-align: left}
-.text-right{text-align: right}
-.text-white{color: white}
-.bg-white{background: white}
-.text-primaryA{color: #005b9e}
-.bg-primaryA{background: #005b9e}
-.text-warningA{color: #FDB813}
+.mt-0 {
+  margin-top: 0;
+}
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mt-3 {
+  margin-top: 1rem;
+}
+.mt-4 {
+  margin-top: 1.5rem;
+}
+.mt-5 {
+  margin-top: 3rem;
+}
 
-  /* Margin Utility Classes */
-.m-0 { margin: 0; }
-.m-1 { margin: 0.25rem; }
-.m-2 { margin: 0.5rem; }
-.m-3 { margin: 1rem; }
-.m-4 { margin: 1.5rem; }
-.m-5 { margin: 3rem; }
+.mb-0 {
+  margin-bottom: 0;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-3 {
+  margin-bottom: 1rem;
+}
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+.mb-5 {
+  margin-bottom: 3rem;
+}
 
-.mt-0 { margin-top: 0; }
-.mt-1 { margin-top: 0.25rem; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-3 { margin-top: 1rem; }
-.mt-4 { margin-top: 1.5rem; }
-.mt-5 { margin-top: 3rem; }
+.ml-0 {
+  margin-left: 0;
+}
+.ml-1 {
+  margin-left: 0.25rem;
+}
+.ml-2 {
+  margin-left: 0.5rem;
+}
+.ml-3 {
+  margin-left: 1rem;
+}
+.ml-4 {
+  margin-left: 1.5rem;
+}
+.ml-5 {
+  margin-left: 3rem;
+}
 
-.mb-0 { margin-bottom: 0; }
-.mb-1 { margin-bottom: 0.25rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 1rem; }
-.mb-4 { margin-bottom: 1.5rem; }
-.mb-5 { margin-bottom: 3rem; }
-
-.ml-0 { margin-left: 0; }
-.ml-1 { margin-left: 0.25rem; }
-.ml-2 { margin-left: 0.5rem; }
-.ml-3 { margin-left: 1rem; }
-.ml-4 { margin-left: 1.5rem; }
-.ml-5 { margin-left: 3rem; }
-
-.mr-0 { margin-right: 0; }
-.mr-1 { margin-right: 0.25rem; }
-.mr-2 { margin-right: 0.5rem; }
-.mr-3 { margin-right: 1rem; }
-.mr-4 { margin-right: 1.5rem; }
-.mr-5 { margin-right: 3rem; }
+.mr-0 {
+  margin-right: 0;
+}
+.mr-1 {
+  margin-right: 0.25rem;
+}
+.mr-2 {
+  margin-right: 0.5rem;
+}
+.mr-3 {
+  margin-right: 1rem;
+}
+.mr-4 {
+  margin-right: 1.5rem;
+}
+.mr-5 {
+  margin-right: 3rem;
+}
 
 /* Padding Utility Classes */
-.p-0 { padding: 0; }
-.p-1 { padding: 0.25rem; }
-.p-2 { padding: 0.5rem; }
-.p-3 { padding: 1rem; }
-.p-4 { padding: 1.5rem; }
-.p-5 { padding: 3rem; }
+.p-0 {
+  padding: 0;
+}
+.p-1 {
+  padding: 0.25rem;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.p-3 {
+  padding: 1rem;
+}
+.p-4 {
+  padding: 1.5rem;
+}
+.p-5 {
+  padding: 3rem;
+}
 
-.pt-0 { padding-top: 0; }
-.pt-1 { padding-top: 0.25rem; }
-.pt-2 { padding-top: 0.5rem; }
-.pt-3 { padding-top: 1rem; }
-.pt-4 { padding-top: 1.5rem; }
-.pt-5 { padding-top: 3rem; }
+.pt-0 {
+  padding-top: 0;
+}
+.pt-1 {
+  padding-top: 0.25rem;
+}
+.pt-2 {
+  padding-top: 0.5rem;
+}
+.pt-3 {
+  padding-top: 1rem;
+}
+.pt-4 {
+  padding-top: 1.5rem;
+}
+.pt-5 {
+  padding-top: 3rem;
+}
 
-.pb-0 { padding-bottom: 0; }
-.pb-1 { padding-bottom: 0.25rem; }
-.pb-2 { padding-bottom: 0.5rem; }
-.pb-3 { padding-bottom: 1rem; }
-.pb-4 { padding-bottom: 1.5rem; }
-.pb-5 { padding-bottom: 3rem; }
+.pb-0 {
+  padding-bottom: 0;
+}
+.pb-1 {
+  padding-bottom: 0.25rem;
+}
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+.pb-3 {
+  padding-bottom: 1rem;
+}
+.pb-4 {
+  padding-bottom: 1.5rem;
+}
+.pb-5 {
+  padding-bottom: 3rem;
+}
 
-.pl-0 { padding-left: 0; }
-.pl-1 { padding-left: 0.25rem; }
-.pl-2 { padding-left: 0.5rem; }
-.pl-3 { padding-left: 1rem; }
-.pl-4 { padding-left: 1.5rem; }
-.pl-5 { padding-left: 3rem; }
-.py-5 { padding-top: 3rem;padding-bottom: 3rem; }
+.pl-0 {
+  padding-left: 0;
+}
+.pl-1 {
+  padding-left: 0.25rem;
+}
+.pl-2 {
+  padding-left: 0.5rem;
+}
+.pl-3 {
+  padding-left: 1rem;
+}
+.pl-4 {
+  padding-left: 1.5rem;
+}
+.pl-5 {
+  padding-left: 3rem;
+}
+.py-5 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
 
-.pr-0 { padding-right: 0; }
-.pr-1 { padding-right: 0.25rem; }
-.pr-2 { padding-right: 0}
+.pr-0 {
+  padding-right: 0;
+}
+.pr-1 {
+  padding-right: 0.25rem;
+}
+.pr-2 {
+  padding-right: 0;
+}
 
 /* Text Alignment Utility Classes */
 
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}

@@ -10,6 +10,7 @@ namespace DataLayer.Models
         public const string PO_TSP = "PO_TSP";
         public const string PRN_R = "PRN_R";
         public const string SRN = "SRN";
+        public const string VRN = "VRN";
         public const string AP_BD = "AP_BD";
         public const string PRN_F = "PRN_F";
         public const string PO_SRN = "PO_SRN";
@@ -17,11 +18,13 @@ namespace DataLayer.Models
         public const string INV_1ST = "INV_1ST";
         public const string INV_2ND = "INV_2ND";
         public const string INV_SRN = "INV_SRN";
+        public const string INV_VRN = "INV_VRN";
         public const string INV_F = "INV_F";
         public const string TRD = "TRD";
         public const string NEW_TRD = "NEW_TRD";
         public const string PRN_T = "PRN_T";
         public const string PO_TRN = "PO_TRN";
+        public const string PO_VRN = "PO_VRN";
         public const string INV_TRN = "INV_TRN";
         public const string PRN_C = "PRN_C";
         public const string INV_C = "INV_C";

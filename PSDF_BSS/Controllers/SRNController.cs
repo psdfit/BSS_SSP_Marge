@@ -118,6 +118,28 @@ namespace PSDF_BSSTraineeReports.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost]
+        [Route("GetVRN")]
+        public IActionResult GetVRN(SRNModel model)
+        {
+            try
+            {
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserRole = srvUsers.GetByUserID(curUserID).RoleID;
+
+                if (loggedInUserRole.Equals(Convert.ToInt32(EnumRoles.TSP)))
+                {
+                    model.UserID = curUserID;
+                }
+
+                return Ok(srvSRN.FetchVRN(model));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
 

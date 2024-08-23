@@ -176,7 +176,8 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
         , "Trainee Code": item.TraineeCode
         , "Trainee Name": item.TraineeName
         , "Father Name": item.FatherName
-        , "CNIC Issue Date": this._date.transform(item.CNICIssueDate, 'MM/dd/yyyy')
+        // date format change by Umair Nadeem, date: 9 August 2024
+        , "CNIC Issue Date": this._date.transform(item.CNICIssueDate, 'dd/MM/yyyy')
         , "Trainee CNIC": item.TraineeCNIC
         , "Date Of Birth": this._date.transform(item.DateOfBirth, 'MM/dd/yyyy')
         , "Trainee Address": item.TraineeHouseNumber + " " + item.TraineeStreetMohalla + " " + item.TraineeMauzaTown
@@ -193,6 +194,16 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
         , "Permanent Address": item.PermanentAddress
         , "Permanent District": item.PermanentDistrict
         , "Permanent Tehsil": item.PermanentTehsil
+        // newly added items by Umair Nadeem, date: 9 August 2024
+        , "Class Start Date": this._date.transform(item.ClassStartDate, 'dd/MM/yyyy, h:mm:ss a')
+        , "Class End Date": this._date.transform(item.ClassEndDate, 'dd/MM/yyyy, h:mm:ss a')
+        , "Scheme Type": item.SchemeType
+        , "Project": item.ProjectName
+        , "KAM Name": item.KAMName
+        , "Created Date Time": this._date.transform(item.CreatedDate, 'dd/MM/yyyy, h:mm:ss a')
+        , "Ticket Number": item.TraineeChangeRequestID
+
+
       }
     })
   }

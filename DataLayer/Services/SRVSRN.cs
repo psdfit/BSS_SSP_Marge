@@ -59,6 +59,26 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<SRNModel> FetchVRN(SRNModel mod)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                //param.Add(new SqlParameter("@SchemeId", SRN.SrnId));
+                //param.Add(new SqlParameter("@TspId", SRN.ReportId));
+                //param.Add( new SqlParameter("@ClassId", SRN.TraineeId));
+                param.Add(new SqlParameter("@Month", mod.Month));
+                param.Add(new SqlParameter("@OID", mod.OID));
+                param.Add(new SqlParameter("@KAMID", mod.KAMID));
+                param.Add(new SqlParameter("@SchemeId", mod.SchemeID));
+                //param.Add(new SqlParameter("@TspId", mod.TSPID));
+                param.Add(new SqlParameter("@TSPMasterID", mod.TSPMasterID));
+                param.Add(new SqlParameter("@UserID", mod.UserID));
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_VRN", param.ToArray()).Tables[0];
+                return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
         public List<SRNModel> FetchSRN()
         {
             try
@@ -122,7 +142,13 @@ namespace DataLayer.Services
             SRN.ModifiedUserID = row.Field<int>("ModifiedUserID");
             SRN.ModifiedDate = row.Field<DateTime?>("ModifiedDate"); ;
             SRN.InActive = row.Field<bool?>("InActive");
+
             
+           if (row.Table.Columns.Contains("ProcessKey"))
+            {
+                SRN.ProcessKey = row.Field<string>("ProcessKey");
+            }
+
             return SRN;
         }
 
