@@ -66,15 +66,15 @@ export class TspSignUpComponent implements OnInit {
     }
     this.signUp.get('BusinessNTN').updateValueAndValidity();
   }
-  onFormateChange() {
-    debugger;
-    if (this.NTNFormat == 2) {
-      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
-    } else {
-      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(9)])
-    }
-    this.signUp.get('BusinessNTN').updateValueAndValidity();
-  }
+  // onFormateChange() {
+  //   debugger;
+  //   if (this.NTNFormat == 2) {
+  //     this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
+  //   } else {
+  //     this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(9)])
+  //   }
+  //   this.signUp.get('BusinessNTN').updateValueAndValidity();
+  // }
   CheckMatchChanged(formValues: any) {
     if (formValues.Password != formValues.CPassword) {
       this.signUp.controls.CPassword.setErrors({ customError: 'Password and Confirm Password must be the same' });

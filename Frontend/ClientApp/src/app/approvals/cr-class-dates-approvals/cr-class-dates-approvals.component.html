@@ -1,56 +1,26 @@
-
 <div>
   <mat-card>
     <style>
-     .pagination-controls {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 10px;
-    padding: 0 20px;
-}
+      .custom-paginator {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+      }
 
-.pagination-controls button {
-    margin: 0 5px;
-    min-width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background-color: #3f51b5;
-    color: white;
-    cursor: pointer;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease;
-}
+      .pagination-controls {
+        display: flex;
+        align-items: center;
+      }
 
-.pagination-controls button:disabled {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-    color: #9e9e9e;
-}
+      .pagination-controls span {
+        margin: 0 10px;
+      }
 
-.pagination-controls button:hover:not(:disabled) {
-    background-color: #303f9f;
-}
-
-.pagination-controls span {
-    margin: 0 10px;
-    font-size: 14px;
-    color: #757575;
-}
-
-.pagination-controls select {
-    margin-left: 20px;
-    padding: 5px;
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: white;
-    color: #333;
-}
-
+      .rows-per-page {
+        display: flex;
+        align-items: center;
+      }
     </style>
     <mat-card-content>
       <div fxLayoutAlign="space-around space-around" fxLayout="column">
@@ -85,16 +55,18 @@
 
                 <tr>
                   <td>
-                    <button mat-raised-button color="primary" type="button" mat-button (click)="openApprovalDialogue(r)">
+                    <button mat-raised-button color="primary" type="button" mat-button
+                      (click)="openApprovalDialogue(r)">
                       Decision
                     </button>
                     <span class="p-4 text-dark" *ngIf="r.IsApproved">Approved</span>
-                    <a color="primary" matTooltip="Check current Class Dates" *ngIf="!r.IsApproved"
-                       mat-icon-button (click)="GetCurrentClassDatesByID(r)">
+                    <a color="primary" matTooltip="Check current Class Dates" *ngIf="!r.IsApproved" mat-icon-button
+                      (click)="GetCurrentClassDatesByID(r)">
                       <mat-icon>{{r.currentClassDates ?'remove_circle':'control_point' }}</mat-icon>
                     </a>
                   </td>
-                  <td class="myAnchor" > <a style="color: #005b9e;" (click)="openClassJourneyDialogue(r.ClassID)"> <strong>{{r.ClassCode}}</strong> </a></td>
+                  <td class="myAnchor"> <a style="color: #005b9e;" (click)="openClassJourneyDialogue(r.ClassID)">
+                      <strong>{{r.ClassCode}}</strong> </a></td>
                   <td>{{r.StartDate | date:environment.DateFormat}}</td>
                   <td>{{r.EndDate | date:environment.DateFormat}}</td>
                   <td>{{r.Duration}}</td>
@@ -121,7 +93,9 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let l of r.currentClassDates">
-                            <td class="myAnchor"> <a style="color: #005b9e;" (click)="openClassJourneyDialogue(l.ClassID)"> <strong>{{l.ClassCode}}</strong> </a></td>
+                            <td class="myAnchor"> <a style="color: #005b9e;"
+                                (click)="openClassJourneyDialogue(l.ClassID)"> <strong>{{l.ClassCode}}</strong> </a>
+                            </td>
                             <td>{{l.StartDate | date:environment.DateFormat}}</td>
                             <td>{{l.EndDate | date:environment.DateFormat}}</td>
                             <td>{{l.Duration}}</td>
@@ -136,27 +110,35 @@
 
             </tbody>
           </table>
-          <div class="pagination-controls">
-            <button mat-button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
-            <span>Page {{currentPage}} of {{totalPages}}</span>
-            <button mat-button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-        </div>
-    
-        <div>
-            <label for="rowsPerPage">Rows per page:</label>
-            <select id="rowsPerPage" (change)="changeRowsPerPage($event.target.value)">
-                <option value=5>5</option>
-                <option value=10>10</option>
-                <option value=15>15</option>
-                <option value=20>20</option>
-            </select>
-        </div>
-        </div>
-        <!--</mat-step>-->
 
+        </div>
+        <div class="row">
+          <div class="col-3 mb-2">
+            
+              <button mat-button (click)="prevPage()" [disabled]="currentPage === 1">
+                Previous
+              </button>
+              <span>Page {{currentPage}} - {{rowsPerPage*currentPage}} of {{totalPages}}</span>
+              <button mat-button (click)="nextPage()" [disabled]="currentPage === totalPages">
+                Next
+              </button>
+          </div>
+          
 
+          <div class="col-2">
+            <div class="rows-per-page">
+              <mat-form-field>
+                <mat-label>Rows per page</mat-label>
+                <mat-select (selectionChange)="changeRowsPerPage($event.value)" [value]="rowsPerPage">
+                  <mat-option *ngFor="let option of [5, 10, 15, 20,9999999]" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
       </div>
     </mat-card-content>
   </mat-card>
 </div>
-
