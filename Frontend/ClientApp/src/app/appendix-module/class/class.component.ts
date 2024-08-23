@@ -774,12 +774,12 @@ export class ClassComponent implements OnInit {
     }
   }
   populateFieldsFromFile(_classData: any, stepper: MatStepper = null) {
+    debugger;
     this.stepper = stepper;
     this.Class.clear();
     if (_classData.length == 0) {
       return;
     }
-
     for (let f of _classData) {
       f = this.http.TrimFields(f);
 
@@ -1274,6 +1274,7 @@ export class ClassComponent implements OnInit {
   checkClassGridValidity() {
     let notValidRowsCount = 0;
     let unsavedRowsCount = 0;
+    debugger;
     this.populatedTableList.forEach(x => {
       if (x.NotValid) {
         notValidRowsCount++;

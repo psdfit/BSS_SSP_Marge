@@ -42,3 +42,15 @@
 div#accordion {
   margin: 13px 0px;
 }
+
+.table-responsive {
+  white-space: nowrap !important;
+}
+
+ 
+thead{
+  background: #c3d9ff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}

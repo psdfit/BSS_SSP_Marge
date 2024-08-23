@@ -325,7 +325,7 @@
             <input type="text" placeholder="Search" [(ngModel)]="searchFilter" (keyup)="applyFilter()" class="search" />
           </mat-toolbar>
           <div fxLayout="column">
-            <mat-table [dataSource]="schemesDataSource" matSort>
+            <mat-table [dataSource]="schemesDataSource" #sSort="matSort"  matSort>
               <ng-container matColumnDef="Scheme Name">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Name</mat-header-cell>
                 <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
@@ -369,13 +369,13 @@
               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
               <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
-            <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            <mat-paginator [pageSize]="10"   #sPaginator="matPaginator" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
   </mat-tab>
-  <mat-tab label="Skills Shcolarship Program Appendix(s)">
+  <mat-tab label="Skills Scholarship Program Appendix(s)">
     <mat-card>
       <mat-card-content>
         <div>

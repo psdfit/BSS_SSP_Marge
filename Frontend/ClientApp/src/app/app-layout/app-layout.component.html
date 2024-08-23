@@ -131,7 +131,7 @@
                 <!-- module end -->
                 <!-- module form start -->
                 <ng-container
-                  *ngIf=" navItems.key == 'Profile Management' || navItems.key == 'Annual Plan' || navItems.key == 'Association Management'; else elseTemplate">
+                  *ngIf=" navItems.key == 'Profile Management' || navItems.key == 'Program Design' || navItems.key == 'Association Management'; else elseTemplate">
                   <li *ngFor="let navItem of navItems.value" class="hidedrop">
                     <a [routerLink]="navItem.path" [style.position]="'relative'" *ngIf="open[i]" mat-list-item
                       mat-ripple matTooltip="{{navItem.title}}" routerLinkActive="selected">

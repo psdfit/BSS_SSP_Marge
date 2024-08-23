@@ -137,6 +137,7 @@ export class TSPComponent implements OnInit {
     return this.http.postJSON('api/TSPMaster/CheckTspIsNew', { NTN: ntn, TSPName: tspname });
   }
   submitTSP(nform: FormGroupDirective) {
+    debugger;
     if (!this.checkTspGridValidity()) {
       return;
     }
@@ -144,6 +145,51 @@ export class TSPComponent implements OnInit {
       return;
     //let tsps = this.tspsForm.getRawValue().Tsps
     let tsps = this.populatedTableList;
+    debugger
+    let _errorRowNo=0;
+    
+    const error = tsps.find((tsp, index) => {
+      _errorRowNo = index;
+      return (
+        tsp.HeadDesignation.toLowerCase() === tsp.CPDesignation.toLowerCase() ||
+        tsp.HeadName.toLowerCase() === tsp.CPName.toLowerCase() ||
+        tsp.HeadLandline === tsp.CPLandline ||
+        tsp.HeadEmail.toLowerCase() === tsp.CPEmail.toLowerCase()
+      );
+    });
+    
+  
+  if (error) {
+    const headDesignationError =
+      error.HeadDesignation.toLowerCase() === error.CPDesignation.toLowerCase();
+    const headNameError =
+      error.HeadName.toLowerCase() === error.CPName.toLowerCase();
+    const headLandlineError =
+      error.HeadLandline === error.CPLandline;
+    const headEmailError =
+      error.HeadEmail.toLowerCase() === error.CPEmail.toLowerCase();
+
+    if (headDesignationError) {
+      this.http.ShowError("Head and POC Designation are the same at row " + (_errorRowNo + 1) + ".");
+      return;
+    }
+
+    if (headNameError) {
+      this.http.ShowError("Head and POC names are the same at row " + (_errorRowNo + 1) + ".");
+      return;
+    }
+
+    if (headLandlineError) {
+      this.http.ShowError("Head and POC landlines are the same at row " + (_errorRowNo + 1) + ".");
+      return;
+    }
+
+    if (headEmailError) {
+      this.http.ShowError("Head and POC emails are the same at row " + (_errorRowNo + 1) + ".");
+      return;
+    }
+  } 
+  
     if (this.scheme.length == 0) {
       this.http.ShowError("Save scheme firstly.");
       return;
@@ -285,6 +331,7 @@ export class TSPComponent implements OnInit {
     }
   }
   entry() {
+    debugger;
     if (!this.notForm.valid)
       return;
     let form = this.getNewRow();

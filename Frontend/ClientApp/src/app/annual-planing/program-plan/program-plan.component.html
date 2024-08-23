@@ -67,7 +67,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-2">
+               <div class="col-sm-4">
                   <mat-form-field>
                      <mat-label>Program Type</mat-label>
                      <mat-select (openedChange)="EmptyCtrl()" formControlName="ProgramTypeID" matInput required>
@@ -83,7 +83,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-2">
+               <div class="col-sm-2" hidden>
                   <mat-form-field>
                      <mat-label>Program Department</mat-label>
                      <mat-select (openedChange)="EmptyCtrl()" formControlName="ProgramCategoryID" matInput required>
@@ -476,8 +476,8 @@
                </div>
                <div class="col-sm-8">
                   <mat-form-field>
-                     <mat-label>Program Description</mat-label>
-                     <input formControlName="Description" placeholder="Enter Description" matInput required />
+                     <mat-label>Program Objective</mat-label>
+                     <input formControlName="Description" placeholder="Program Objective" matInput required />
                      <mat-error *ngFor="let error of AnnualPlanInfoForm.get('Description').errors | keyvalue">{{
                         getErrorMessage(error.key, error.value) }}
                      </mat-error>
