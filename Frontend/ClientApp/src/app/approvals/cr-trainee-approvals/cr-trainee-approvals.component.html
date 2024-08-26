@@ -1,4 +1,3 @@
-
 <div>
   <mat-card>
     <mat-card-content>
@@ -14,42 +13,104 @@
         <div class="row">
           <div class="col-sm-3">
             <mat-form-field fxFlex>
-              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetSubmittedTrainees(), getTSPDetailByScheme(scheme.value)]" id="SchemeId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSchemeList" /></mat-optgrp>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()"
+                (selectionChange)="[GetSubmittedTrainees(), getTSPDetailByScheme(scheme.value)]" id="SchemeId" matInput
+                required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                    [formControl]="SearchSchemeList" /></mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
-                <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSchemeList.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSchemeList.value]"
+                  [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
           <div class="col-sm-3">
             <mat-form-field fxFlex>
-              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="[GetSubmittedTrainees(),getClassesByTsp(tsp.value)]" id="TspId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSPList" autofocus /></mat-optgrp>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()"
+                (selectionChange)="[GetSubmittedTrainees(),getClassesByTsp(tsp.value)]" id="TspId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                    [formControl]="SearchTSPList" autofocus /></mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
-                <mat-option *ngFor="let s of TSPDetail | like:['TSPName',SearchTSPList.value] | where :['SchemeID',filters.SchemeID]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                <mat-option
+                  *ngFor="let s of TSPDetail | like:['TSPName',SearchTSPList.value] | where :['SchemeID',filters.SchemeID]"
+                  [value]="s.TSPID">{{s.TSPName}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
           <div class="col-sm-3">
             <mat-form-field fxFlex>
-              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl()" (selectionChange)="GetSubmittedTrainees()" id="ClassId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchClassList" /></mat-optgrp>
+              <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (openedChange)="EmptyCtrl()"
+                (selectionChange)="GetSubmittedTrainees()" id="ClassId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                    [formControl]="SearchClassList" /></mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
-                <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchClassList.value] | where :['TSPID',filters.TSPID]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                <mat-option
+                  *ngFor="let item of classesArray | like:['ClassCode',SearchClassList.value] | where :['TSPID',filters.TSPID]"
+                  [value]="item.ClassID">{{item.ClassCode}}</mat-option>
               </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #kam placeholder="KAM" [formControl]="kamFilter" (openedChange)="EmptyCtrl()" id="KamID"
+                matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                    [formControl]="SearchKam" /></mat-optgrp>
+                <mat-option>--Select--</mat-option>
+                <mat-option *ngFor="let s of Kam | like:['UserName',SearchKam.value]"
+                  [value]="s.UserID">{{s.UserName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #fundingCategory placeholder="Project" [formControl]="fundingCategoryFilter"
+                (openedChange)="EmptyCtrl()" id="FundingCategoryID" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchFundingCategory" />
+                </mat-optgrp>
+                <mat-option>--Select--</mat-option>
+                <mat-option *ngFor="let category of Project | like:['FundingCategoryName', SearchFundingCategory.value]"
+                  [value]="category.FundingCategoryID">
+                  {{ category.FundingCategoryName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Start Date</mat-label>
+              <input matInput [matDatepicker]="startDatePicker" [(ngModel)]="filters.startDate"
+                (dateChange)="onDateChange()" placeholder="Choose a date">
+              <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #startDatePicker></mat-datepicker>
+              <button mat-icon-button matSuffix *ngIf="filters.startDate"
+                (click)="filters.startDate=null; onDateChange()" aria-label="Clear start date">
+                <mat-icon>clear</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>End Date</mat-label>
+              <input matInput [matDatepicker]="endDatePicker" [(ngModel)]="filters.endDate"
+                (dateChange)="onDateChange()" placeholder="Choose a date">
+              <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #endDatePicker></mat-datepicker>
+              <button mat-icon-button matSuffix *ngIf="filters.endDate" (click)="filters.endDate=null; onDateChange()"
+                aria-label="Clear end date">
+                <mat-icon>clear</mat-icon>
+              </button>
             </mat-form-field>
           </div>
           <div class="col-sm-3">
             <br />
-            <button mat-raised-button color="success" style="float:right" *ngIf="trainees?.length > 0" (click)="exportToExcel('MasterSheet')">Export Excel</button>
+            <button mat-raised-button color="success" style="float:right" *ngIf="trainees?.length > 0"
+              (click)="exportToExcel('MasterSheet')">Export Excel</button>
           </div>
-
         </div>
-
-
-
-
-
         <div class="text-center" *ngIf="!trainees">
           <p>No Pending Approval</p>
         </div>
@@ -87,12 +148,13 @@
               <ng-container *ngFor="let r of trainees">
                 <tr>
                   <td>
-                    <button mat-raised-button color="primary" type="button" mat-button (click)="openApprovalDialogue(r)">
+                    <button mat-raised-button color="primary" type="button" mat-button
+                      (click)="openApprovalDialogue(r)">
                       Decision
                     </button>&nbsp;&nbsp;
                     <span class="p-4 text-dark" *ngIf="r.IsApproved">Approved</span>
-                    <a color="primary" matTooltip="Check Trainee current details" *ngIf="!r.IsApproved"
-                       mat-icon-button (click)="GetCurrentTraineeByID(r)">
+                    <a color="primary" matTooltip="Check Trainee current details" *ngIf="!r.IsApproved" mat-icon-button
+                      (click)="GetCurrentTraineeByID(r)">
                       <mat-icon>{{r.currentTrainee ?'remove_circle':'control_point' }}</mat-icon>
                     </a>
                     <a mat-button color="primary" (click)="openHistoryDialogue(r)">History </a>
@@ -109,7 +171,7 @@
                   <td>{{r.DistrictName}}</td>
                   <td>{{r.TehsilName}}</td>
                   <td>{{r.TraineeEmail}}</td>
-                  <td><img [src]="r.TraineechangeImage" alt="" width="50px"srcset=""></td>
+                  <td><img [src]="r.TraineechangeImage" alt="" width="50px" srcset=""></td>
                 </tr>
                 <tr *ngIf="r.currentTrainee">
                   <td colspan="14">
@@ -117,7 +179,7 @@
                       <table class="table table-bordered">
                         <thead>
                           <tr>
-                            <th width="260px"  colspan="4">Status</th>
+                            <th width="260px" colspan="4">Status</th>
                             <th>Trainee Name</th>
                             <th>Father Name</th>
                             <th>Trainee CNIC</th>
@@ -147,7 +209,7 @@
                             <td>{{l.DistrictName}}</td>
                             <td>{{l.TehsilName}}</td>
                             <td>{{l.TraineeEmail}}</td>
-                            <td><img [src]="l.TraineeImg" alt="" width="50px"srcset=""></td>
+                            <td><img [src]="l.TraineeImg" alt="" width="50px" srcset=""></td>
 
                           </tr>
                         </tbody>
@@ -167,4 +229,3 @@
     </mat-card-content>
   </mat-card>
 </div>
-

@@ -59,4 +59,11 @@ namespace DataLayer.Models
         public string SchemeType { get; set; }
         public string KAMName { get; set; }
         public string ProjectName { get; set; }
+        public string AMSName { get; set; }
+        public int KAMID { get; set; }
+        public int FundingCategoryID { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
+
     }}
