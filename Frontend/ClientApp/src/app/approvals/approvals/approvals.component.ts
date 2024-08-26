@@ -717,6 +717,9 @@ export class ApprovalsComponent implements OnInit {
             "BM Price": x.BMPrice,
             "Bid Price": x.BidPrice,
             "Boarding Allowance Per Trainee": x.BoardingAllowancePerTrainee,
+            "EmploymentCommitmentSelf": x.EmploymentCommitmentSelf,
+            "EmploymentCommitmentFormal": x.EmploymentCommitmentFormal,
+            "OverallEmploymentCommitment": x.OverallEmploymentCommitment,
           };
           if (!isAllowFinancial) {
             delete obj["Training Cost Per Trainee Per Month Ex Tax"];

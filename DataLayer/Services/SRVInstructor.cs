@@ -313,7 +313,7 @@ namespace DataLayer.Services
             Instructor.InActive = Convert.ToBoolean(r["InActive"]);
             Instructor.InstrMasterID = Convert.ToInt32(r["InstrMasterID"]);
             Instructor.SchemeID = Convert.ToInt32(r["SchemeID"]);
-            Instructor.ClassID = Convert.ToInt32(r["ClassID"]);
+            //Instructor.ClassID = Convert.ToInt32(r["ClassID"]);
             Instructor.BiometricData1 = r.Field<string>("BiometricData1");
             Instructor.BiometricData2 = r.Field<string>("BiometricData2");
             Instructor.BiometricData3 = r.Field<string>("BiometricData3");

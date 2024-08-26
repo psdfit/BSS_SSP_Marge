@@ -130,7 +130,7 @@
               <mat-form-field>
                 <mat-label>Rows per page</mat-label>
                 <mat-select (selectionChange)="changeRowsPerPage($event.value)" [value]="rowsPerPage">
-                  <mat-option *ngFor="let option of [5, 10, 15, 20,9999999]" [value]="option">
+                  <mat-option *ngFor="let option of [5, 10, 15, 20,'All']" [value]="option">
                     {{option}}
                   </mat-option>
                 </mat-select>

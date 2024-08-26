@@ -453,7 +453,10 @@ namespace DataLayer.Services
         private ClassModel RowOfClass(DataRow r)
         {
             ClassModel Class = new ClassModel();
+
             Class.ClassID = Convert.ToInt32(r["ClassID"]);
+
+
             Class.ClassCode = r["ClassCode"].ToString();
             Class.ClassStatusID = Convert.ToInt32(r["ClassStatusID"]);
             Class.ClassStatusName = r["ClassStatusName"].ToString();
@@ -551,10 +554,20 @@ namespace DataLayer.Services
             {
                 Class.RegistrationAuthorityName = r["RegistrationAuthorityName"].ToString();
             }
-            //if (r.Table.Columns.Contains("ProgramFocusID"))
-            //{
-            //    Class.ProgramFocusID = Convert.ToInt32(r["ProgramFocusID"]);
-            //}
+
+            if (r.Table.Columns.Contains("EmploymentCommitmentSelf"))
+            {
+                Class.EmploymentCommitmentSelf = Convert.ToInt32(r["EmploymentCommitmentSelf"]);
+            }
+            if (r.Table.Columns.Contains("EmploymentCommitmentFormal"))
+            {
+                Class.EmploymentCommitmentFormal = Convert.ToInt32(r["EmploymentCommitmentFormal"]);
+            }
+            if (r.Table.Columns.Contains("OverallEmploymentCommitment"))
+            {
+                Class.OverallEmploymentCommitment = Convert.ToInt32(r["OverallEmploymentCommitment"]);
+            }
+
             //if (r.Table.Columns.Contains("RegistrationAuthorityID"))
             //{
             //    Class.RegistrationAuthorityID = Convert.ToInt32(r["RegistrationAuthorityID"]);
