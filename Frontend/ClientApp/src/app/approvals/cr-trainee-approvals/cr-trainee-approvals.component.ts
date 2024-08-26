@@ -11,118 +11,175 @@ import { GroupByPipe } from 'angular-pipes';
 import { DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-cr-trainee-approvals',
-    templateUrl: './cr-trainee-approvals.component.html',
-    styleUrls: ['./cr-trainee-approvals.component.scss'],
-    providers: [GroupByPipe, DatePipe]
+  selector: 'app-cr-trainee-approvals',
+  templateUrl: './cr-trainee-approvals.component.html',
+  styleUrls: ['./cr-trainee-approvals.component.scss'],
+  providers: [GroupByPipe, DatePipe]
 
 })
 export class TraineeChangeRequestApprovalsComponent implements OnInit {
-    displayedColumnsTSP = ["Action", 'TSPName', 'Address', 'HeadName', 'HeadDesignation', 'HeadLandline', 'HeadEmail', 'CPName', 'CPDesignation', 'CPLandline', 'CPEmail',
-        'BankName', 'BankAccountNumber', 'AccountTitle', 'BankBranch'];
-    //schemes: MatTableDataSource<any>;
-    filters: ICRTraineeListFilter = { SchemeID: 0, ClassID: 0, TSPID: 0, UserID: 0 };
+  displayedColumnsTSP = ["Action", 'TSPName', 'Address', 'HeadName', 'HeadDesignation', 'HeadLandline', 'HeadEmail', 'CPName', 'CPDesignation', 'CPLandline', 'CPEmail',
+    'BankName', 'BankAccountNumber', 'AccountTitle', 'BankBranch'];
+  //schemes: MatTableDataSource<any>;
+  filters: ICRTraineeListFilter = {
+    SchemeID: 0, ClassID: 0, TSPID: 0, UserID: 0, KAMID: 0,
+    startDate: null, endDate: null, FundingCategoryID: 0
+  };
 
-    SearchSchemeList = new FormControl('',);
-    SearchTSPList = new FormControl('',);
-    SearchClassList = new FormControl('',);
+  SearchSchemeList = new FormControl('',);
+  SearchTSPList = new FormControl('',);
+  SearchClassList = new FormControl('',);
 
-    TSPDetail = [];
-    classesArray: any[];
+  TSPDetail = [];
+  classesArray: any[];
 
-    Scheme: any[];
+  Scheme: any[];
 
-    trainees: [];
-    currentTrainee: [];
-    currentUser: UsersModel;
+  trainees: [];
+  currentTrainee: [];
+  currentUser: UsersModel;
 
-    userid: number;
+  userid: number;
+  KAMID: number;
 
-    ActiveFormApprovalID: number;
-    ChosenTradeID: number;
-    title: string;
-    savebtn: string;
-    formrights: UserRightsModel;
-    EnText: string = "";
-    error: String;
-    query = {
-        order: 'TraineeChangeRequestID',
-        limit: 5,
-        page: 1
-    };
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
-    working: boolean;
+  ActiveFormApprovalID: number;
+  ChosenTradeID: number;
+  title: string;
+  savebtn: string;
+  formrights: UserRightsModel;
+  EnText: string = "";
+  error: String;
+  query = {
+    order: 'TraineeChangeRequestID',
+    limit: 5,
+    page: 1
+  };
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  working: boolean;
+
+  kamFilter = new FormControl(0);
+  SearchKam = new FormControl('');
+  Kam = [];
+
+  fundingCategoryFilter = new FormControl();
+  SearchFundingCategory = new FormControl();
+  Project: any[] = [];  // This should be populated by your API call
+
+
+
 
   constructor(private http: CommonSrvService, private dialogue: DialogueService, private _date: DatePipe) {
-        //this.schemes = new MatTableDataSource([]);
-        this.formrights = http.getFormRights();
-    }
+    //this.schemes = new MatTableDataSource([]);
+    this.formrights = http.getFormRights();
+  }
 
-    ngOnInit(): void {
-        this.http.setTitle("Un-Verified Trainee Change Request");
-        this.title = "";
-        this.savebtn = "Approve";
-        this.GetSubmittedTrainees();
-        this.currentUser = this.http.getUserDetails();
-        this.userid = this.currentUser.UserID;
-        //this.GetData();
-        this.getSchemes();
-    }
+  ngOnInit(): void {
+    this.http.setTitle("Un-Verified Trainee Change Request");
+    this.title = "";
+    this.savebtn = "Approve";
+    this.GetSubmittedTrainees();
+    this.currentUser = this.http.getUserDetails();
+    this.userid = this.currentUser.UserID;
+    //this.GetData();
+    this.getSchemes();
+    this.getKam();
+    this.getFundingCategories();
+  }
+
+  ngAfterViewInit(): void {
+    this.kamFilter.valueChanges.subscribe(value => { this.filters.KAMID = value; this.GetSubmittedTrainees(); });
+    this.fundingCategoryFilter.valueChanges.subscribe(value => { this.filters.FundingCategoryID = value; this.GetSubmittedTrainees(); });
+  }
+
+  onDateChange() {
+    this.GetSubmittedTrainees();
+  }
 
 
-    EmptyCtrl() {
-      this.SearchClassList.setValue('');
-      this.SearchTSPList.setValue('');
-      this.SearchSchemeList.setValue('');
-    }
-    //GetSubmittedSchemesForMyID() {
-    //  this.http.getJSON('api/Scheme/GetSubmittedSchemes').subscribe((d: any) => {
-    //    this.schemes = d;
-    //    //this.schemes.paginator = this.paginator;
-    //    //this.schemes.sort = this.sort;
-    //  },
-    //    error => this.error = error // error path
-    //    , () => {
-    //      this.working = false;
-    //    });
-    //  }
-    getSchemes() {
-      this.http.postJSON('api/Scheme/FetchSchemeByUser', this.filters).subscribe(
-        (d: any) => {
-          this.Scheme = d;
-        }, error => this.error = error
-      );
-    }
+  EmptyCtrl() {
+    this.SearchClassList.setValue('');
+    this.SearchTSPList.setValue('');
+    this.SearchSchemeList.setValue('');
+    this.SearchFundingCategory.setValue('');
+  }
+  //GetSubmittedSchemesForMyID() {
+  //  this.http.getJSON('api/Scheme/GetSubmittedSchemes').subscribe((d: any) => {
+  //    this.schemes = d;
+  //    //this.schemes.paginator = this.paginator;
+  //    //this.schemes.sort = this.sort;
+  //  },
+  //    error => this.error = error // error path
+  //    , () => {
+  //      this.working = false;
+  //    });
+  //  }
+  getSchemes() {
+    this.http.postJSON('api/Scheme/FetchSchemeByUser', this.filters).subscribe(
+      (d: any) => {
+        this.Scheme = d;
+      }, error => this.error = error
+    );
+  }
 
-    getTSPDetailByScheme(schemeId: number) {
-      this.classesArray = [];
-      this.http.getJSON(`api/TSPDetail/GetTSPDetailByScheme/` + schemeId)
-        .subscribe(data => {
-          this.TSPDetail = <any[]>data;
-        }, error => {
-          this.error = error;
-        })
-    }
-    getClassesByTsp(tspId: number) {
-      this.http.getJSON(`api/Class/GetClassesByTsp/` + tspId)
-        .subscribe(data => {
-          this.classesArray = <any[]>data;
-        }, error => {
-          this.error = error;
-        })
-    }
+  getTSPDetailByScheme(schemeId: number) {
+    this.classesArray = [];
+    this.http.getJSON(`api/TSPDetail/GetTSPDetailByScheme/` + schemeId)
+      .subscribe(data => {
+        this.TSPDetail = <any[]>data;
+      }, error => {
+        this.error = error;
+      })
+  }
+  getClassesByTsp(tspId: number) {
+    this.http.getJSON(`api/Class/GetClassesByTsp/` + tspId)
+      .subscribe(data => {
+        this.classesArray = <any[]>data;
+      }, error => {
+        this.error = error;
+      })
+  }
 
-    GetSubmittedTrainees() {
-      this.http.postJSON('api/TraineeChangeRequest/GetTraineeChangeRequest/', { Process_Key: "CR_TRAINEE_UNVERIFIED", UserID: this.userid, OID: this.http.OID.value, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID, ClassID: this.filters.ClassID }).subscribe((d: any) => {
-            this.trainees = d[0];
-            //this.tsps.paginator = this.paginator;
-            //this.tsps.sort = this.sort;
-        },
-            error => this.error = error // error path
-            , () => {
-                this.working = false;
-            });
+  // added KAM api endpoint:
+  getKam() {
+    this.http.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe(
+      (d: any) => {
+        this.error = '';
+        this.Kam = d;
+      },
+      error => {
+        this.error = error;
+      }
+    );
+  }
+
+  getFundingCategories() {
+    this.http.getJSON(`api/Scheme/GetScheme?OID=${this.http.OID.value}`).subscribe((d: any) => {
+      this.Project = d[4];
+    },
+      (error) => {
+        this.error = error.error;
+        this.http.ShowError(error.error + '\n' + error.message);
+      } // error path
+    );
+  }
+
+  GetSubmittedTrainees() {
+    this.http.postJSON('api/TraineeChangeRequest/GetTraineeChangeRequest/', {
+      Process_Key: "CR_TRAINEE_UNVERIFIED", UserID: this.userid,
+      OID: this.http.OID.value, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID, ClassID: this.filters.ClassID,
+      KAMID: this.filters.KAMID, StartDate: this.filters.startDate,
+      EndDate: this.filters.endDate, FundingCategoryID: this.filters.FundingCategoryID
+    }).subscribe((d: any) => {
+      this.trainees = d[0];
+
+      //this.tsps.paginator = this.paginator;
+      //this.tsps.sort = this.sort;
+    },
+      error => this.error = error // error path
+      , () => {
+        this.working = false;
+      });
   }
 
   GetCurrentTraineeByID(r) {
@@ -131,8 +188,8 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
 
       return;
     }
-    this.http.postJSON('api/TraineeProfile/RD_TraineeProfileBy/', { TraineeID: r.TraineeID} ).subscribe((d: any) => {
-      r.currentTrainee = d;  
+    this.http.postJSON('api/TraineeProfile/RD_TraineeProfileBy/', { TraineeID: r.TraineeID }).subscribe((d: any) => {
+      r.currentTrainee = d;
     });
   }
 
@@ -179,7 +236,7 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
         // date format change by Umair Nadeem, date: 9 August 2024
         , "CNIC Issue Date": this._date.transform(item.CNICIssueDate, 'dd/MM/yyyy')
         , "Trainee CNIC": item.TraineeCNIC
-        , "Date Of Birth": this._date.transform(item.DateOfBirth, 'MM/dd/yyyy')
+        , "Date Of Birth": this._date.transform(item.DateOfBirth, 'dd/MM/yyyy')
         , "Trainee Address": item.TraineeHouseNumber + " " + item.TraineeStreetMohalla + " " + item.TraineeMauzaTown
         , "Trainee Tehsil": item.TehsilName
         , "Trainee District": item.DistrictName
@@ -195,15 +252,13 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
         , "Permanent District": item.PermanentDistrict
         , "Permanent Tehsil": item.PermanentTehsil
         // newly added items by Umair Nadeem, date: 9 August 2024
-        , "Class Start Date": this._date.transform(item.ClassStartDate, 'dd/MM/yyyy, h:mm:ss a')
-        , "Class End Date": this._date.transform(item.ClassEndDate, 'dd/MM/yyyy, h:mm:ss a')
-        , "Scheme Type": item.SchemeType
+        , "Class Start Date": this._date.transform(item.ClassStartDate, 'dd/MM/yyyy')
+        , "Class End Date": this._date.transform(item.ClassEndDate, 'dd/MM/yyyy')
+        , "Scheme Type": item.AMSName
         , "Project": item.ProjectName
         , "KAM Name": item.KAMName
-        , "Created Date Time": this._date.transform(item.CreatedDate, 'dd/MM/yyyy, h:mm:ss a')
+        , "Created Date Time": this._date.transform(item.CreatedDate, 'dd/MM/yyyy h:mm:ss a')
         , "Ticket Number": item.TraineeChangeRequestID
-
-
       }
     })
   }
@@ -214,14 +269,13 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
   }
 
   openApprovalDialogue(row: any): void {
-      let processKey = EnumApprovalProcess.CR_TRAINEE_UNVERIFIED;
-        
-        this.dialogue.openApprovalDialogue(processKey, row.TraineeChangeRequestID).subscribe(result => {
-          console.log(result);
-          this.GetSubmittedTrainees();
-            //location.reload();
-        });
-    }
+    let processKey = EnumApprovalProcess.CR_TRAINEE_UNVERIFIED;
+
+    this.dialogue.openApprovalDialogue(processKey, row.TraineeChangeRequestID).subscribe(result => {
+      this.GetSubmittedTrainees();
+      //location.reload();
+    });
+  }
 
 }
 
@@ -230,4 +284,8 @@ export interface ICRTraineeListFilter {
   TSPID: number;
   ClassID: number;
   UserID: number;
+  KAMID: number;
+  FundingCategoryID: number;  // Add this line
+  startDate: Date | null;
+  endDate: Date | null;
 }
