@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Xml.Linq;
 
@@ -35,11 +36,11 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
-        
-            public DataTable FetchAnalysisReportFilters(int[] filters)
-            {
+
+        public DataTable FetchAnalysisReportFilters(int[] filters)
+        {
             try
-                {
+            {
                 SqlParameter[] param = new SqlParameter[5];
                 param[0] = new SqlParameter("@UserID", filters[0]);
                 param[1] = new SqlParameter("@ProvinceID", filters[1]);
@@ -48,9 +49,9 @@ namespace DataLayer.Services
                 param[4] = new SqlParameter("@TradeID", filters[4]);
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SSPTSPRegistrationDetailReport", param).Tables[0];
                 return dt;
-                }
-                catch (Exception ex) { throw new Exception(ex.Message); }
             }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
         public DataTable FetchAnalysisReport()
         {
             try
@@ -113,7 +114,7 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@PlanningType", programDesign.PlaningTypeID));
                 param.Add(new SqlParameter("@TentativeProcessStart", programDesign.TentativeProcessSDate));
                 param.Add(new SqlParameter("@ClassStartDate", programDesign.ClassStartDate));
-                param.Add(new SqlParameter("@SelectionMethod",programDesign.SelectionMethodID));
+                param.Add(new SqlParameter("@SelectionMethod", programDesign.SelectionMethodID));
                 param.Add(new SqlParameter("@EmploymentCommitment", programDesign.EmploymentCommitment));
                 param.Add(new SqlParameter("@SchemeDesignOn", programDesign.SchemeDesignOn));
                 param.Add(new SqlParameter("@Province", GetCsvOrEmpty(programDesign.ProvinceID)));
@@ -128,6 +129,17 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@IsSubmitted", programDesign.IsSubmitted));
 
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_SSPProgramDesign]", param.ToArray());
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+        }
+        public void UpdateProgramDesign(ProgramDesignModel _data)
+        {
+            try
+            {
+                string query = $"UPDATE SSPProgramDesign SET PlanningType = {_data.PlaningTypeID},SelectionMethod ={_data.SelectionMethodID} WHERE ProgramID = {_data.ProgramID};";
+                SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.Text, query);
 
             }
             catch (Exception ex)
@@ -164,7 +176,7 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@UserID", data.UserID));
             param.Add(new SqlParameter("@TradeDesignID", data.TradeDesignID));
             param.Add(new SqlParameter("@ProvinceID", GetCsvOrEmpty(data.Province)));
-            param.Add(new SqlParameter("@ClusterID", GetCsvOrEmpty(data.Cluster))); 
+            param.Add(new SqlParameter("@ClusterID", GetCsvOrEmpty(data.Cluster)));
             param.Add(new SqlParameter("@DistrictID", GetCsvOrEmpty(data.District)));
 
             param.Add(new SqlParameter("@ProgramDesignOn", data.ProgramDesignOn));
@@ -204,7 +216,7 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@TraineeCompTarget", data.TraineeCompTarget));
             param.Add(new SqlParameter("@GenderID", data.GenderID));
 
-            
+
 
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTradeDesign", param.ToArray()).Tables[0];
 
@@ -219,13 +231,13 @@ namespace DataLayer.Services
                 TradeDesignID = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["TradeDesignID"]);
             }
 
-            BatchInsert(data.TradeLot, data.ProgramDesignOn, data.Province, data.Cluster, data.District, TradeDesignID, data.UserID,data.Trade,data.TradeLayer);
+            BatchInsert(data.TradeLot, data.ProgramDesignOn, data.Province, data.Cluster, data.District, TradeDesignID, data.UserID, data.Trade, data.TradeLayer);
             return dt;
         }
 
-     
 
-        public int BatchInsert(List<TradeLot> ls,string ProgramDesignOn, int[] Province, int[] Cluster, int[] District, int BatchFkey, int CurUserID,int TradeID,int TradeDetailID)
+
+        public int BatchInsert(List<TradeLot> ls, string ProgramDesignOn, int[] Province, int[] Cluster, int[] District, int BatchFkey, int CurUserID, int TradeID, int TradeDetailID)
         {
             int rowsAffected = 0;
             foreach (var item in ls)
@@ -254,7 +266,7 @@ namespace DataLayer.Services
                 }
 
 
-                param.Add(new SqlParameter("@TraineeSelectedContTarget",Convert.ToInt32(item.TraineeContTarget)));
+                param.Add(new SqlParameter("@TraineeSelectedContTarget", Convert.ToInt32(item.TraineeContTarget)));
 
                 param.Add(new SqlParameter("@CTM", item.CTM));
                 param.Add(new SqlParameter("@Duration", item.Duration));
@@ -264,7 +276,7 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@ExamCost", item.ExamCost));
                 param.Add(new SqlParameter("@TotalCost", item.TotalCost));
 
-         
+
 
                 rowsAffected += SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTradeLot", param.ToArray());
             }
@@ -293,8 +305,8 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@Trade", data.Trade));
             if (data.Duration != "0")
             {
-              param.Add(new SqlParameter("@Duration", data.Duration));
-                
+                param.Add(new SqlParameter("@Duration", data.Duration));
+
             }
             param.Add(new SqlParameter("@Cluster", data.Cluster));
             param.Add(new SqlParameter("@District", data.District));
@@ -325,7 +337,7 @@ namespace DataLayer.Services
             return dt;
         }
 
-    
+
 
         public DataTable FetchHistoryReport(HistoricalReportModel data)
         {
@@ -371,7 +383,7 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@StatusID", data.StatusID));
             param.Add(new SqlParameter("@Remarks", data.Remarks));
             param.Add(new SqlParameter("@UserID", data.UserID));
-         
+
             SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPProgramStatusHistory", param.ToArray());
             return true;
         }
@@ -420,7 +432,7 @@ namespace DataLayer.Services
             try
             {
                 List<SqlParameter> param = new List<SqlParameter>();
-                param.Add(new SqlParameter("@ProgramID",FormId));
+                param.Add(new SqlParameter("@ProgramID", FormId));
 
                 if (transaction != null)
                 {
@@ -463,7 +475,7 @@ namespace DataLayer.Services
             else
             {
                 row[columnName] = Common.GetFileBase64(attachment);
-                var test= Common.GetFileBase64(attachment);
+                var test = Common.GetFileBase64(attachment);
             }
         }
 
@@ -536,9 +548,9 @@ namespace DataLayer.Services
 
         }
 
-        
 
 
 
-        }
+
     }
+}

@@ -366,9 +366,10 @@ export class CommonSrvService {
   getMenuItems(): MenuItem[] {
     // debugger;
     this.userrights = JSON.parse(sessionStorage.getItem(environment.RightsToken));
-    // console.log(this.userrights)
+    console.log(this.userrights)
     this.currentUser = this.getUserDetails();
     // console.log(this.userrights);
+    debugger;
     if (this.currentUser.UserLevel == EnumUserLevel.TSP) {
       this.FormIDRemoveForTSP.forEach(element => {
         this.userrights = this.userrights.filter(item => item.FormID != element);
