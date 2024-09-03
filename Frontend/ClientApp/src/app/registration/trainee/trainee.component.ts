@@ -597,8 +597,10 @@ export class TraineeComponent implements OnInit {
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
         }
-
-        if (scheme.FundingSourceID !== 12) //EDF Scheme
+        if (scheme.SchemeCode == 'STV') {
+          this.EDFScheme = true;
+        }
+        else if (scheme.FundingSourceID !== 12) //EDF Scheme
         {
           this.EDFScheme = false;
         }
