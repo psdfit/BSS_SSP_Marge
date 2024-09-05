@@ -248,13 +248,13 @@ const routes: Routes = [
     },
   },
   {
-    path: "annual-plan-approval",
+    path: "program-design-approval",
     component: AnnualPlanApprovalComponent,
     canActivate: [AuthGuardService],
     data: {
       icon: "verified_user",
       inMenu: true,
-      title: "Annual Plan",
+      title: "Program Design",
     },
   },
   {
@@ -264,7 +264,7 @@ const routes: Routes = [
     data: {
       icon: "verified_user",
       inMenu: true,
-      title: "Criteria Template Approval",
+      title: "Criteria Template",
     },
   },
 ];

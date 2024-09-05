@@ -2,7 +2,7 @@
   <mat-card-content>
     <mat-toolbar color="accent" class=" slim slim">
       <mat-icon class="material-icons"> view_comfy </mat-icon>
-      <span class="spacer">Annual Program</span>
+      <span class="spacer">Program Design</span>
       <input *ngIf="TapIndex==0" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
       <button *ngIf="TapIndex==0" mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
         (click)="DataExcelExport(this.TablesData,'Program Design')">

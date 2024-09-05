@@ -9,6 +9,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace DataLayer.Services
 {
@@ -997,6 +998,11 @@ namespace DataLayer.Services
             {
                 throw new ArgumentException("Data cannot be null or empty", nameof(data));
             }
+
+            //pbte student data truncate 
+              SqlHelper.ExecuteDataset(SqlHelper.GetCon(), "PBTETruncate_StudentData");
+
+
             foreach (var item in data)
             {
                 string jsonString = JsonConvert.SerializeObject(item,Formatting.Indented);

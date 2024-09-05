@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { CommonSrvService } from "../../common-srv.service";
 import { MatPaginator } from "@angular/material/paginator";
@@ -31,6 +32,7 @@ import { Moment } from "moment";
 const moment = _moment;
 import { DatePipe } from "@angular/common";
 import { MatDatepicker } from "@angular/material/datepicker";
+import { debug } from 'console';
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
 export const MY_FORMATS = {
@@ -94,8 +96,6 @@ export class PBTEComponent implements OnInit {
     DistrictID: 0,
   };
 
-
-  
   //exportAsConfig: ExportAsConfig
   displayedColumnsClasses = [
     "SchemeName",
@@ -470,37 +470,32 @@ export class PBTEComponent implements OnInit {
   selectedPbteTrade: any = 0;
   SearchCtr = new FormControl("");
   onSelectionChange(row: any) {
-
-    
-debugger
-    let titleConfirm = 'Confirmation';
+    debugger;
+    let titleConfirm = "Confirmation";
     let messageConfirm = "Are you sure you want to map the selected data?";
     this.ComSrv.confirm(titleConfirm, messageConfirm).subscribe(
       (isConfirm: Boolean) => {
         if (isConfirm == true) {
           this.SavePBTECenterMapping(row);
-        }else{
-       row.selectedPbteCenter=""
+        } else {
+          row.selectedPbteCenter = "";
         }
-      })
+      }
+    );
   }
 
-
-
   onTradeSelectionChange(row: any) {
-
-    let titleConfirm = 'Confirmation';
+    let titleConfirm = "Confirmation";
     let messageConfirm = "Are you sure you want to map the selected data?";
     this.ComSrv.confirm(titleConfirm, messageConfirm).subscribe(
       (isConfirm: Boolean) => {
         if (isConfirm == true) {
           this.SavePBTETradeMapping(row);
-        }else{
-         row.selectedPbteTrade=""
+        } else {
+          row.selectedPbteTrade = "";
         }
-      })
-
-   
+      }
+    );
   }
 
   BSearchCtr = new FormControl("");
@@ -536,6 +531,7 @@ debugger
     }
   }
   pbteTrade: any = [];
+  TraineeUrduData: any = [];
   async GetPbteData(reportName: string = "Scheme") {
     this.hTablesData = new MatTableDataSource([]);
     this.cTablesData = new MatTableDataSource([]);
@@ -571,6 +567,9 @@ debugger
       }
       if (reportName == "Trainee") {
         this.LoadMatTable(this._dataObject.data, "TraineeData");
+        // this.TraineeUrduData = this._dataObject.data.filter(
+        //   (x) => this.containsUrdu(x.TraineeName) == true
+        // );
       }
 
       if (reportName == "ExaminationSqlScript") {
@@ -601,8 +600,7 @@ debugger
           });
           var text = `insert into dbo.Student (ExamId,CollegeId,course_categoryId,Lock,ResultLocked,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To) values(${
             item.ExamId
-          },${item.CollegeId},${item.course_categoryId},1,1,'${
-            item.StudentName
+          },${item.CollegeId},${item.course_categoryId},1,1,'${item.StudentName
           }','${item.FathersName}','${item.DateofBirth}','${
             item.Qualification
           }',${item.Gender},${1},'${item.Class_Code}','${item.NIC}','${
@@ -621,6 +619,12 @@ debugger
       this.ComSrv.ShowError("No data found for the selected month");
     }
   }
+
+  containsUrdu(text: any) {
+    const urduRegex = /[\u0600-\u06FF\u0750-\u077F]/;
+    return urduRegex.test(text);
+  }
+
   mappedPBTEScheme: any = [];
   saveMappedScheme() {
     let _schemeName;
@@ -805,7 +809,13 @@ debugger
       this.examTablesData.paginator = this.exampaginator;
       this.examTablesData.sort = this.examsort;
     }
+    
     if (tableName == "TraineeData") {
+      debugger
+      this.TraineeUrduData =tableData.filter(
+        (x) => this.containsUrdu(x.TraineeName) == true
+      );
+
       const excludeColumnArray = [];
       this.traineeTableColumns = Object.keys(tableData[0]).filter(
         (key) => !excludeColumnArray.includes(key)
@@ -813,6 +823,8 @@ debugger
       this.traineeTablesData = new MatTableDataSource(tableData);
       this.traineeTablesData.paginator = this.traineepaginator;
       this.traineeTablesData.sort = this.traineesort;
+
+    
     }
   }
   getPBTETSPData() {
@@ -1579,7 +1591,7 @@ debugger
       element.SchemeForPBTE.includes("required")
     );
 
-    if(this.examTablesData.filteredData.length==0){
+    if (this.examTablesData.filteredData.length == 0) {
       this.ComSrv.ShowError("no data found");
       return;
     }
@@ -1627,6 +1639,15 @@ debugger
         e.CourseCategoryCode == 0
     );
 
+    if (this.TraineeUrduData.length > 0) {
+      this.ComSrv.ShowError(
+        "conversion required for urdu trainee name into english for " +
+          this.TraineeUrduData.length +
+          " Trainee"
+      );
+      return;
+    }
+
     if (data) {
       if (data.MainCategoryCode == 0) {
         this.ComSrv.ShowError("Scheme mapping required for " + data.Scheme);
@@ -1642,14 +1663,18 @@ debugger
       }
 
       if (data.CollegeCode == 0) {
-        this.ComSrv.ShowError("Center Mapping required for " + data.TrainingLocation);
+        this.ComSrv.ShowError(
+          "Center Mapping required for " + data.TrainingLocation
+        );
         return;
       }
-     
 
       if (data.CourseCategoryCode == 0) {
         this.ComSrv.ShowError(
-          "Course and MainCatogory are not found in PBTE Database"+data.SchemeForPBTE+" || Course: "+data.Trade
+          "Course and MainCatogory are not found in PBTE Database" +
+            data.SchemeForPBTE +
+            " || Course: " +
+            data.Trade
         );
         return;
       }
@@ -1688,6 +1713,58 @@ debugger
     } else {
       this.ComSrv.ShowError("No data found");
     }
+  }
+
+  traineeData: any = [];
+
+  importTraineeData(ev: any) {
+    debugger;
+    this.traineeData = [];
+    let workBook = null;
+    debugger;
+    let jsonData = null;
+    const reader = new FileReader();
+    const file = ev.target.files[0];
+    reader.onload = (event) => {
+      const data = reader.result;
+      workBook = XLSX.read(data, { type: "binary" });
+      jsonData = workBook.SheetNames.reduce((initial, name) => {
+        const sheet = workBook.Sheets[name];
+        initial[name] = XLSX.utils.sheet_to_json(sheet);
+        return initial;
+      }, {});
+    debugger;
+      const dataString = JSON.stringify(jsonData);
+      this.traineeData = JSON.parse(dataString);
+      // console.log(this.traineeData)
+      // console.log(this.)
+      this.urduToEnglishConversion(this.traineeData.Sheet1);
+    };
+    reader.readAsBinaryString(file);
+    ev.target.value = "";
+  }
+
+  urduToEnglishConversion(uploadedData: any) {
+    const _totalTrainee = this.traineeTablesData.filteredData;
+    const _traineeUrduData = this.TraineeUrduData;
+    const _uploadTraineeData = uploadedData;
+
+    if (_traineeUrduData.length != _uploadTraineeData.length) {
+      this.ComSrv.ShowError(
+        "between Urdu trainee data count and imported data count must be same"
+      );
+      return;
+    }
+    debugger
+
+    const _traineeData = _totalTrainee.map((r) => ({
+      ...r,
+      "TraineeName":this.containsUrdu(r.TraineeName)==false?r.TraineeName:_uploadTraineeData.find(x=>x.TraineeCode==r.TraineeCode)?.TraineeName || r.TraineeName,
+      "FatherName":this.containsUrdu(r.FatherName)==false?r.FatherName:_uploadTraineeData.find(x=>x.TraineeCode==r.TraineeCode)?.FatherName || r.FatherName,
+    }));
+    this.LoadMatTable(_traineeData,'TraineeData')
+  
+    
   }
 
   onFileChange(ev: any) {
