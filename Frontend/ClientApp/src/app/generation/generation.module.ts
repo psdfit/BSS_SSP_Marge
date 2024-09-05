@@ -6,15 +6,13 @@ import { GeneratePrnCompletionComponent } from './generate-prn-completion/genera
 import { GeneratePrnFinalComponent } from './generate-prn-final/generate-prn-final.component';
 import { GenerateTrnComponent } from './generate-trn/generate-trn.component';
 import { GenerateSrnCourseraComponent } from './generate-srn-coursera/generate-srn-coursera.component';
-import { GenerateVrnComponent } from './generate-vrn/generate-vrn.component';
 
 @NgModule({
   declarations: [
     GeneratePrnCompletionComponent,
     GeneratePrnFinalComponent,
     GenerateTrnComponent,
-    GenerateSrnCourseraComponent,
-    GenerateVrnComponent
+    GenerateSrnCourseraComponent
   ],
   imports: [
     CommonModule,

@@ -370,6 +370,7 @@
             <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
             <p *ngIf="PendingForm.length>0" class="pt-1"><span style="color: red;" >Please complete the required form:</span> [{{PendingForm.join(", ")}}]</p>
          </fieldset>
+         
          <form (ngSubmit)="SaveContactPersonInfo()" [formGroup]="ContactInfoForm" >
          <fieldset class="border">
             <legend>Head Of Organization Information</legend>

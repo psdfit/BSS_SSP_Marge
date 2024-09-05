@@ -22,6 +22,7 @@ namespace DataLayer.Models
         public string TraineeCNIC { get; set; }
         public string FatherName { get; set; }
         public int GenderID { get; set; }
+        public int TSPID { get; set; }
         public string GenderName { get; set; }
         public int TradeID { get; set; }
         public string TradeName { get; set; }
@@ -34,7 +35,6 @@ namespace DataLayer.Models
         public DateTime? UpdatedDate { get; set; }
         public int SchemeID { get; set; }
         public string SchemeName { get; set; }
-        public int TSPID { get; set; }
         public string TSPName { get; set; }
         public int ClassID { get; set; }
         public string ClassCode { get; set; }
@@ -111,4 +111,5 @@ namespace DataLayer.Models
         public string Disability { get; set; }
         public string TraineeIntrestStatus { get; set; }
         public string Shift { get; set; }
-    }}
+    }
+}

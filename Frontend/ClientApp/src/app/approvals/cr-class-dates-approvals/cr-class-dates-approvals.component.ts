@@ -100,9 +100,9 @@ prevPage() {
 }
 
 // Method to change the number of rows per page dynamically
-changeRowsPerPage(rows) {
+changeRowsPerPage(rows:any) {
   debugger;
-    this.rowsPerPage = parseInt(rows);
+    this.rowsPerPage = parseInt(rows=='All'?'999999':rows);
     this.totalPages = Math.ceil(this.currentData.length / this.rowsPerPage);
     this.currentPage = 1; // Reset to the first page whenever rows per page changes
     this.displayTable();

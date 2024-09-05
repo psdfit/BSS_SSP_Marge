@@ -38,6 +38,7 @@ namespace PSDF_BSS.API.Controllers
                     {
                         var tspDetail = _srvTSPDetail.FetchTSPDataByUser(u.UserID).Select(x => new
                         {
+                            CurrentUserID = u.UserID,
                             x.TSPID,
                             x.TSPName,
                             x.TSPCode,
@@ -128,7 +129,7 @@ namespace PSDF_BSS.API.Controllers
                 });
             }
 
-        } 
+        }
         [AllowAnonymous]
         [HttpPost("~/api/auth/crm/login")]
         //[Route("Login")]

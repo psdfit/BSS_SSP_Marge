@@ -90,7 +90,7 @@ namespace DataLayer.Services
         {
             try
             {
-                SqlParameter[] param = new SqlParameter[58];
+                SqlParameter[] param = new SqlParameter[57];
                 param[0] = new SqlParameter("@ClassID", Class.ClassID);
                 param[1] = new SqlParameter("@ClassCode", Class.ClassCode);
                 param[2] = new SqlParameter("@ClassStatusID", 1);
@@ -154,8 +154,7 @@ namespace DataLayer.Services
                 param[54] = new SqlParameter("@TradeDetailMapID", Class.TradeDetailMapID);
                 param[55] = new SqlParameter("@RegistrationAuthorityID", Class.RegistrationAuthorityID);
                 param[56] = new SqlParameter("@ProgramFocusID", Class.ProgramFocusID);
-                /// Added by Rao Ali Haider on 22-July-2024
-                param[57] = new SqlParameter("@balloonpayment", Class.balloonpayment);
+
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_Class]", param);
                 int k = Convert.ToInt32(param[50].Value);
                 return GetByClassID(k);
@@ -454,7 +453,10 @@ namespace DataLayer.Services
         private ClassModel RowOfClass(DataRow r)
         {
             ClassModel Class = new ClassModel();
+
             Class.ClassID = Convert.ToInt32(r["ClassID"]);
+
+
             Class.ClassCode = r["ClassCode"].ToString();
             Class.ClassStatusID = Convert.ToInt32(r["ClassStatusID"]);
             Class.ClassStatusName = r["ClassStatusName"].ToString();
@@ -552,18 +554,25 @@ namespace DataLayer.Services
             {
                 Class.RegistrationAuthorityName = r["RegistrationAuthorityName"].ToString();
             }
-            //if (r.Table.Columns.Contains("ProgramFocusID"))
-            //{
-            //    Class.ProgramFocusID = Convert.ToInt32(r["ProgramFocusID"]);
-            //}
+
+            if (r.Table.Columns.Contains("EmploymentCommitmentSelf"))
+            {
+                Class.EmploymentCommitmentSelf = Convert.ToInt32(r["EmploymentCommitmentSelf"]);
+            }
+            if (r.Table.Columns.Contains("EmploymentCommitmentFormal"))
+            {
+                Class.EmploymentCommitmentFormal = Convert.ToInt32(r["EmploymentCommitmentFormal"]);
+            }
+            if (r.Table.Columns.Contains("OverallEmploymentCommitment"))
+            {
+                Class.OverallEmploymentCommitment = Convert.ToInt32(r["OverallEmploymentCommitment"]);
+            }
+
             //if (r.Table.Columns.Contains("RegistrationAuthorityID"))
             //{
             //    Class.RegistrationAuthorityID = Convert.ToInt32(r["RegistrationAuthorityID"]);
             //}
-            if (r.Table.Columns.Contains("balloonpayment"))
-            {
-                Class.balloonpayment = r["balloonpayment"] != DBNull.Value ? Convert.ToInt32(r["balloonpayment"]) : 0;
-            }
+
             return Class;
         }
 

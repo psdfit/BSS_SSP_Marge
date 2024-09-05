@@ -279,7 +279,7 @@ namespace DataLayer.Services
             try
             {
                 SqlParameter[] param = new SqlParameter[3];
-                var decPass = Common.DESDecrypt("wQHKp9fdQsBOaNaQd6Ydvg==");
+                var decPass = Common.DESDecrypt("Y2P8/qlRUk2gwXCquqML0Q==");
                 //var decPass1 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 //var decPass2 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 param[0] = new SqlParameter("@UserName", UserName);
@@ -304,7 +304,7 @@ namespace DataLayer.Services
             try
             {
                 SqlParameter[] param = new SqlParameter[3];
-                var decPass = Common.DESDecrypt("Xuw80TlRxPAqKNcRvAFLDQ==");
+                var decPass = Common.DESDecrypt("G0mZkLR0aJlywrU/zxpHuw==");
                 //var decPass1 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 //var decPass2 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 param[0] = new SqlParameter("@UserName", UserName);

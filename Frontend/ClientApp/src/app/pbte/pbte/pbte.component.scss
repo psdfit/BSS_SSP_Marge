@@ -1,161 +1,127 @@
-.group {
-  display: inline-block;
+
+
+.table-responsive {
+  white-space: nowrap !important;
 }
+
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+mat-row, mat-header-row, mat-footer-row {
+  display: table-row !important;
+}
+
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+  border: 1px solid black;
+}
+
+.label {font-size: 100% !important;}
+
+
+table{
+  border: 1px solid #80808029 !important;
+}
+
+// .mat-header-cell {
+//   border: 1px solid #80808029;
+// }
+
+.mat-sort-header-container {
+  align-items: left !important;
+  position: relative !important;
+  right: 8px !important;
+}
+mat-row, mat-header-row, mat-footer-row {
+  display: table-row !important;
+}
+
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+   vertical-align: middle;
+}
+body .mat-tab-label {
+  border-radius: 1px important;
+  color: #000;
+  margin: 2px !important;
+}
+body .mat-tab-label-active {
+  background: #fdb813 !important;
+  color: #000;
+}
+
+mat-row, mat-footer-row {
+min-height: 30px !important;
+}
+
+th {
+  background-color: burlywood
+}
+
+
+.mat-cell {
+  flex: 0 0 220px;
+}
+
+.mat-header-cell {
+  flex: 0 0 220px;
+}
+
 
 .mat-cell, .mat-footer-cell {
   border: 0;
-  /*padding: 7px;*/
+  padding: 7px;
 }
 
-body mat-table mat-header-row mat-header-cell {
-  border: 0;
+.mat-cell {
+  border: 1px solid black;
 }
 
-
-
-.mat-column-SchemeName {
-  flex: 0 0 300px;
+.mat-header-cell {
+  border: 1px solid black;
 }
 
-.mat-column-TSPName {
-  flex: 0 0 200px;
-}.mat-column-TSPID {
-  flex: 0 0 100px;
+mat-row, mat-footer-row {
+  display: table-row !important;
+  min-height: 19px !important;
+  height: 40px !important;
 }
 
-.mat-column-Batch {
-  flex: 0 0 150px;
+mat-header-row {
+  min-height: 23px !important;
+  display: table-row !important;
 }
 
-.mat-column-ClassID {
-  flex: 0 0 100px;
+.table-responsive {
+  white-space: nowrap !important;
 }
 
-.mat-column-ClassCode {
-  flex: 0 0 200px;
-}.mat-column-Education {
-  flex: 0 0 200px;
-}
-
-.mat-column-TrainingAddressLocation {
-  flex: 0 0 200px;
-}
-
-.mat-column-TradeName {
-  flex: 0 0 200px;
-}
-
-.mat-column-TehsilName {
-  flex: 0 0 200px;
-}
-
-.mat-column-DistrictName {
-  flex: 0 0 200px;
-}
-
-.mat-column-CertAuthName {
-  flex: 0 0 200px;
-}
-
-.mat-column-GenderName {
-  flex: 0 0 200px;
-}
-
-.mat-column-Duration {
-  flex: 0 0 200px;
-}
-.mat-column-TraineesPerClass {
-  flex: 0 0 200px;
-}
-
-.mat-column-StartDate {
-  flex: 0 0 200px;
-}
-
-.mat-column-EndDate {
-  flex: 0 0 200px;
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+}
 
-.mat-column-ClassStatusName {
-  flex: 0 0 100px;
+.myAnchor {
+  color: #005b9e;
 }
-.mat-column-ClassID {
-  flex: 0 0 100px;
+
+.myAnchor:hover {
+  color: #fbb417;
 }
-.mat-column-Address {
-  flex: 0 0 200px;
+
+.select-all {
+  margin: 5px 17px;
 }
-.mat-column-HeadName {
-  flex: 0 0 200px;
-}
-.mat-column-HeadDesignation {
-  flex: 0 0 200px;
-}
-.mat-column-HeadEmail {
-  flex: 0 0 200px;
-}
-.mat-column-HeadLandline {
-  flex: 0 0 200px;
-}
-.mat-column-OrgLandline {
-  flex: 0 0 200px;
-}
-.mat-column-Website {
-  flex: 0 0 300px;
-}
-.mat-column-CPName {
-  flex: 0 0 200px;
-}
-.mat-column-CPDesignation {
-  flex: 0 0 200px;
-}
-.mat-column-CPEmail {
-  flex: 0 0 200px;
-}
-.mat-column-CPLandline {
-  flex: 0 0 200px;
-}
-.mat-column-TraineeID {
-  flex: 0 0 100px;
-}
-.mat-column-TraineeName {
-  flex: 0 0 250px;
-}
-.mat-column-TraineeImg {
-  flex: 0 0 250px;
-}
-.mat-column-TSPCode {
-  flex: 0 0 250px;
-}
-.mat-column-FatherName {
-  flex: 0 0 250px;
-}
-.mat-column-DateOfBirth {
-  flex: 0 0 300px;
-}.mat-column-TraineeCNIC {
-  flex: 0 0 300px;
-}.mat-column-TraineeID {
-  flex: 0 0 150px;
-}
-.mat-column-PBTEID {
-  flex: 0 0 150px;
-}.mat-column-CollegeID {
-  flex: 0 0 150px;
-}.mat-column-StatusName {
-  flex: 0 0 200px;
-}
-.mat-column-TraineeCode {
-  flex: 0 0 200px;
-}.mat-column-TradeID {
-  flex: 0 0 200px;
-}.mat-column-TradeName {
-  flex: 0 0 200px;
-}.mat-column-StatusName {
-  flex: 0 0 200px;
-}
-.mat-column-ResultStatusName {
-  flex: 0 0 200px;
-}
+
 

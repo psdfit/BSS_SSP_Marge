@@ -1,6 +1,7 @@
 using DataLayer.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 
 namespace DataLayer.Interfaces
@@ -81,7 +82,7 @@ namespace DataLayer.Interfaces
 
         bool UpdateTraineeCNICImg(TraineeProfileModel model);
 
-        bool SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg);
+        int SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg);
 
         void SaveTraineeProfileDVVResponse(TraineeProfileDVV model);
 
@@ -121,4 +122,6 @@ namespace DataLayer.Interfaces
         List<TraineeProfileModel> FetchSubmittedTraineeDataByTsp(int? TraineeFilter, int? programid, int? districtid, int? tradeid, int UserID, int? trainingLocationID);
         List<TraineeProfileModel> SaveTraineeIntrestProfile(TraineeProfileModel traineeProfile);
         List<TraineeProfileModel> SaveTraineeInterviewSubmission(TraineeProfileModel traineeProfile);
-    }}
+        public DataTable FetchReport(int UserID, string SpName);
+    }
+}
