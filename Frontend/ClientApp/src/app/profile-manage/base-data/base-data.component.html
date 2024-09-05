@@ -471,7 +471,7 @@
                   Certificate Evidence
                 </mat-label>
                 <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="RegistrationCerEvidence"
-                  maxSize="1024" [nopreview]="true" matInput></file-upload>
+                  maxSize="12288" [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
                   *ngFor="let error of Certificate.get('RegistrationCerEvidence').errors | keyvalue">
                   {{
