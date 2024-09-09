@@ -155,8 +155,8 @@ namespace DataLayer.Services
             RolesRights.CanDelete = Convert.ToBoolean(r["CanDelete"]);
             RolesRights.CanView = Convert.ToBoolean(r["CanView"]);
             RolesRights.InActive = Convert.ToBoolean(r["InActive"]);
-            RolesRights.CreatedUserID = Convert.ToInt32(r["CreatedUserID"]);
-            RolesRights.ModifiedUserID = Convert.ToInt32(r["ModifiedUserID"]);
+            RolesRights.CreatedUserID = r["CreatedUserID"] != DBNull.Value ? Convert.ToInt32(r["CreatedUserID"]) : 0;
+            RolesRights.ModifiedUserID = r["ModifiedUserID"] != DBNull.Value ? Convert.ToInt32(r["ModifiedUserID"]) : 0;
             RolesRights.CreatedDate = r["CreatedDate"].ToString().GetDate();
             RolesRights.ModifiedDate = r["ModifiedDate"].ToString().GetDate();
             RolesRights.IsAddible = Convert.ToBoolean(r["IsAddible"]);
