@@ -110,6 +110,7 @@ export class ApprovalsComponent implements OnInit {
         this.GetInstructors();
       }
     } else {
+      if(currentIndex !=0)
       this.http.ShowError("Please select a TSP from the scheme table");
     }
 
@@ -194,6 +195,7 @@ export class ApprovalsComponent implements OnInit {
   camelCaseToWords(input: string): string {
     return input.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
+  
   applyFilter(data: MatTableDataSource<any>, event: any) {
     data.filter = event.trim().toLowerCase();
     if (data.paginator) {
@@ -336,6 +338,8 @@ export class ApprovalsComponent implements OnInit {
 
           this.tsps = d;
           this.LoadMatTable(_tspData, "TSP");
+
+          this.stepper.selectedIndex = 1
           // this.schemes.paginator = this.paginator;
           // this.schemes.sort = this.sort;
         },
@@ -717,6 +721,9 @@ export class ApprovalsComponent implements OnInit {
             "BM Price": x.BMPrice,
             "Bid Price": x.BidPrice,
             "Boarding Allowance Per Trainee": x.BoardingAllowancePerTrainee,
+            "EmploymentCommitmentSelf": x.EmploymentCommitmentSelf,
+            "EmploymentCommitmentFormal": x.EmploymentCommitmentFormal,
+            "OverallEmploymentCommitment": x.OverallEmploymentCommitment,
           };
           if (!isAllowFinancial) {
             delete obj["Training Cost Per Trainee Per Month Ex Tax"];

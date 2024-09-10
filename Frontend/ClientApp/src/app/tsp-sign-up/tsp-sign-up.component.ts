@@ -41,6 +41,7 @@ export class TspSignUpComponent implements OnInit {
       IsHeadOffice: ['Branch Office']
     });
     this.signUp.valueChanges.subscribe((formValues) => {
+   
       this.CheckMatchChanged(formValues);
     });
     this.signUp.get('BusinessName').valueChanges.subscribe((value) => {
@@ -52,16 +53,28 @@ export class TspSignUpComponent implements OnInit {
     this.signUp.get('BusinessNTN').valueChanges.subscribe((value) => {
       this.CheckNTN()
     });
+
+
   }
-  onFormateChange() {
+
+  onFormateChange(){
     debugger;
-    if (this.NTNFormat == 2) {
+    if(this.NTNFormat==2){
       this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
-    } else {
+    }else{
       this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(9)])
     }
     this.signUp.get('BusinessNTN').updateValueAndValidity();
   }
+  // onFormateChange() {
+  //   debugger;
+  //   if (this.NTNFormat == 2) {
+  //     this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
+  //   } else {
+  //     this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(9)])
+  //   }
+  //   this.signUp.get('BusinessNTN').updateValueAndValidity();
+  // }
   CheckMatchChanged(formValues: any) {
     if (formValues.Password != formValues.CPassword) {
       this.signUp.controls.CPassword.setErrors({ customError: 'Password and Confirm Password must be the same' });

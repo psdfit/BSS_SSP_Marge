@@ -1,0 +1,48 @@
+<mat-card>
+  <mat-card-content>
+    <div fxLayoutAlign="space-around space-around" fxLayout="column">
+
+      <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
+        <mat-icon class="material-icons">view_comfy</mat-icon>
+        <span class="spacer">{{SpacerTitle}}</span>
+        <div class="spacer"></div>
+        <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+          (click)="DataExcelExport(this.appLogTableData.filteredData,'Application Log')">
+          <i class="fas fa-file-export"></i> Export Excel</button>
+        <input type="text" placeholder="Search" (keyup)="applyFilter(appLogTableData,$event.target.value)"
+          class="search" />
+      </mat-toolbar>
+
+      <div class="table-responsive">
+        <mat-table [dataSource]="appLogTableData" #appLogSort="matSort" matSort class="table table-bordered">
+          <ng-container *ngFor="let column of appLogTableColumns" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index">
+
+              <ng-container [ngSwitch]="column">
+
+                <ng-container *ngSwitchCase="'SrNo'">
+                  &nbsp; {{i+1}}
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'CreatedDate'">
+                  &nbsp; {{ DatePipe.transform(row[column] , 'yyyy-MM-dd HH:mm:ss') }}
+                </ng-container>
+
+                <ng-container *ngSwitchDefault>
+                  &nbsp; {{ row[column] }}
+                </ng-container>
+
+              </ng-container>
+
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="appLogTableColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: appLogTableColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #appLogPaginator="matPaginator" [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

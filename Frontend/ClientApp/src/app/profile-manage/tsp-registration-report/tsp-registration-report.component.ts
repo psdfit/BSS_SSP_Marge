@@ -159,16 +159,20 @@ export class TspRegistrationReportComponent implements OnInit {
   }
   
   public async generateBarChart(data) {
+
     if (data.registrationDetail.length > 0) {
       this.LoadMatTable(data.registrationDetail, "TspMaster");
     }
+
     const formWiseTSPCount: any[] = data.formWiseTSPCount
     const programWiseRegisteredTSP: any[] = data.programWiseRegisteredTSP
     const registeredTSPCount: any[] = data.registeredTSPCount
+
     this.optionsClassStatus.series = []
     this.programWiseRegChart.series[0].data = []
     this.tspWiseRegChart.series[0].data = []
     this.regCompletionStatusWiseChart.series[0].data = []
+
     formWiseTSPCount.forEach(element => {
       this.optionsClassStatus.series.push({
         name: this.camelCaseToWords(element.Forms),
@@ -187,6 +191,7 @@ export class TspRegistrationReportComponent implements OnInit {
         y: element.Count,
       });
     });
+    debugger;
     const filteredCounts = formWiseTSPCount.filter(element => element.Forms === 'TSPProfile' || element.Forms === 'RegistrationPayment');
     this.regCompletionStatusWiseChart.series[0].data.push(
       {

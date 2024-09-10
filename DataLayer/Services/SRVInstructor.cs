@@ -410,5 +410,13 @@ namespace DataLayer.Services
             }
             return result;
         }
+
+        public DataTable FetchReport(int UserID, string SpName)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@CreatedUserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
+            return dt;
+        }
     }
 }

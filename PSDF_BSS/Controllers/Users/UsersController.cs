@@ -937,5 +937,27 @@ namespace PSDF_BSS.Controllers.Users
 
             return privateIpAddress;
         }
+        [HttpPost]
+        [Route("LoadData")]
+        public IActionResult LoadData(ModelBase User)
+        {
+            try
+            {
+                var _applicationLog = srvUsers.fetchReportBySPName("RD_ApplicationLog");
+                var data = new
+                {
+                    applicationLog = _applicationLog,
+                };
+
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message.ToString());
+            }
+        }
+
     }
+
+
 }

@@ -35,7 +35,7 @@
                       </ng-container>
                       <!-- Display the column data for all columns except 'Action' and 'TSP' -->
                       <ng-container *ngSwitchCase="'Navigate'">
-                        <button matd-button color="primary" type="button" matStepperNext mat-button
+                        <button matd-button color="primary" type="button"  mat-button
                           (click)="GetTsps(row.SchemeID)">
                           TSPs
                         </button>
@@ -58,6 +58,7 @@
                         <span class="p-4 text-dark" *ngIf="row.IsApproved=='YES'">Approved</span>
                         <a mat-button (click)="openApprovalDialogue(row)" *ngIf="row.IsApproved=='NO'">Decision</a>
                       </ng-container>
+                      
                       <!-- Display the column data for all other columns -->
                       <ng-container *ngSwitchDefault>
                         &nbsp; {{ row[column] }}

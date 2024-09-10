@@ -1,4 +1,4 @@
-using DataLayer.Models;using System.Collections.Generic;namespace DataLayer.Interfaces{
+using DataLayer.Models;using System.Collections.Generic;using System.Data;namespace DataLayer.Interfaces{
 
     public interface ISRVInstructor
     {
@@ -20,7 +20,7 @@ using DataLayer.Models;using System.Collections.Generic;namespace DataLayer.I
         public List<InstructorModel> FetchCRInstructorDataByUser(InstructorCRFiltersModel mod);
         public List<CheckInstructorCNICModel> FetchOldInstructorCNICs();
 
-
+        public DataTable FetchReport(int UserID, string SpName);
 
 
     }}

@@ -20,13 +20,14 @@ import { EquipmentToolComponent } from './equipment-tool/equipment-tool.componen
 import { FundingCategoryComponent } from './funding-category/funding-category.component';
 import { FundingSourceComponent } from './funding-source/funding-source.component';
 import { GenderComponent } from './genders/gender.component';
-import { KAMComponent } from './KAM/KAM.component';
+import { KAMComponent } from './KAM/kam.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { OrgConfigComponent } from './orgconfig/orgconfig.component';
 import { OrgnizationsComponent } from './orgnizations/orgnizations.component';
 import { AcademicDisciplineComponent } from './academic-discipline/academic-discipline.component';
 import { InfrastructureComponent } from './infrastructure/infrastructure.component';
 import { tspcolorComponent } from './tspcolor/tspcolor.component';
+import { ApplicationLogComponent } from './application-log/application-log.component';
 // import { PBTEDataSharingTimelinesComponent } from "./pbte-datasharing-timelines/pbte-datasharing-timelines.component";
 // import { ProgramCategoryComponent } from "./program-category/program-category.component";
 // import { ProgramTypeComponent } from "./programtype/programtype.component";
@@ -344,6 +345,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Organizations Configuration',
+    },
+  },
+  {
+    path: 'app-log',
+    component: ApplicationLogComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Application Log',
     },
   },
   {

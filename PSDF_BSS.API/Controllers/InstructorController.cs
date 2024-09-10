@@ -1,5 +1,6 @@
 ﻿using DataLayer.Interfaces;
 using DataLayer.Models;
+using DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using PSDF_BSS.API.Models;
 using System;
@@ -172,6 +173,29 @@ namespace PSDF_BSS.API.Controllers
             errMsg = isValid ? string.Empty : $"Invalid CNIC Format, it should be xxxxx-xxxxxxx-x";
             return isValid;
 
+        }
+
+        [HttpGet("~/api/instructor/attendance")]
+        public IActionResult GetTrainee()
+        {
+
+
+            int userID = Convert.ToInt32(User.Identity.Name);
+
+            var _instructorAttendance = _srvInstructor.FetchReport(userID, "RD_DVVInstructorAttendance");
+
+
+            var Data = new
+            {
+                instructorAttendanceList = _instructorAttendance,
+            };
+
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Success",
+                Data = Data
+            });
         }
     }
 }
