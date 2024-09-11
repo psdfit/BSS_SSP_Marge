@@ -575,13 +575,13 @@ export class PBTEComponent implements OnInit {
       if (reportName == "ExaminationSqlScript") {
         let textarray: any = [];
         this._dataObject.data.forEach((item) => {
-          var text = `insert into dbo.Examination (ExamID,ExamSessionUrdu,ExamSessionenglish,maincategoryid,BatchNo,ExamYear,StartDate,EndDate,Description,Active,ExamSession) values(${
+          var text = `insert into dbo.Examination (ExamID,ExamSessionUrdu,ExamSessionenglish,maincategoryid,BatchNo,ExamYear,StartDate,EndDate,Active,ExamSession,Userid,Entrydate) values(${
             item.examId
           },'${item.ExamSessionUrdu}','${item.ExamSessionenglish}',${
             item.maincategoryid
           },${item.BatchNo},${item.ExamYear},'${item.StartDate}','${
             item.EndDate
-          }',${item.Active == true ? 1 : 0},'${item.ExamSession}');`;
+          }',${item.Active == true ? 1 : 0},'${item.ExamSession}',44,'${this._date.transform( new Date().toISOString(), "yyyy-MM-dd HH:mm")}');`;
           textarray.push(text);
         });
         var blob = new Blob([textarray.join("\r\n")], {
@@ -598,16 +598,16 @@ export class PBTEComponent implements OnInit {
             obj[key] = item[key] || item;
             console.log(item.Batch);
           });
-          var text = `insert into dbo.Student (ExamId,CollegeId,course_categoryId,Lock,ResultLocked,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To) values(${
+          var text = `insert into dbo.Student (ExamId,CollegeId,course_categoryId,Lock,ResultLocked,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To,Userid,Entrydate) values(${
             item.ExamId
-          },${item.CollegeId},${item.course_categoryId},1,1,'${item.StudentName
-          }','${item.FathersName}','${item.DateofBirth}','${
+          },${item.CollegeId},${item.course_categoryId},1,1,'${item.StudentName.trim()
+          }','${item.FathersName.trim()}','${this._date.transform(item.DateofBirth, "dd-MM-yyyy")}','${
             item.Qualification
           }',${item.Gender},${1},'${item.Class_Code}','${item.NIC}','${
             item.Trainee_ID
           }','${item.Shift}','${item.Shift_Time_From}','${
             item.Shift_Time_To
-          }');`;
+          }',44,'${this._date.transform( new Date().toISOString(), "yyyy-MM-dd HH:mm")}');`;
           textarray.push(text);
         });
         var blob = new Blob([textarray.join("\r\n")], {

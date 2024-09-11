@@ -5,7 +5,7 @@
       <span class="spacer">Program Design</span>
       <input *ngIf="TapIndex==0" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
       <button *ngIf="TapIndex==0" mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
-        (click)="DataExcelExport(this.TablesData,'Program Design')">
+        (click)="DataExcelExport(TablesData.filteredData,'Program Design')">
         <i class="fas fa-file-export"></i> Export Excel
       </button>
     </mat-toolbar>
@@ -73,12 +73,15 @@
                       *ngIf="column !='IsInitiated' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart' && column !='ApprovalStatus'">
                       &nbsp; {{ row[column] }}
                     </ng-container>
+
                     <ng-container *ngIf="column =='Action'">
                       <ng-container *ngIf="column === 'Action' && row['IsInitiated'] ===true; else elseBlock1">
                         <a color="primary" (click)="ShowDetail(row, row['ProgramName'])" mat-button>
                           Detail
                           <mat-icon>keyboard_arrow_down</mat-icon>
                         </a>
+
+                        <a color="primary" mat-button (click)="DataExcelExport([row],row.ProgramName+'_Report')"> Export</a>
                         <a color="primary" mat-button (click)="openApprovalDialogue(row)"> Decision</a>
                         <a color="primary" mat-button (click)="updatePlanningType(row)" *ngIf="currentUser.RoleTitle==='Procurement'"> Update </a>
                       </ng-container>
