@@ -67,8 +67,8 @@ export class PBTEComponent implements OnInit {
     this.isAllSelected()
       ? this.selection.clear()
       : this.hTablesData.filteredData.forEach((row) =>
-          this.selection.select(row)
-        );
+        this.selection.select(row)
+      );
     // console.log(numRows)
   }
   _fileUploadForm: FormGroup;
@@ -575,13 +575,10 @@ export class PBTEComponent implements OnInit {
       if (reportName == "ExaminationSqlScript") {
         let textarray: any = [];
         this._dataObject.data.forEach((item) => {
-          var text = `insert into dbo.Examination (ExamID,ExamSessionUrdu,ExamSessionenglish,maincategoryid,BatchNo,ExamYear,StartDate,EndDate,Description,Active,ExamSession) values(${
-            item.examId
-          },'${item.ExamSessionUrdu}','${item.ExamSessionenglish}',${
-            item.maincategoryid
-          },${item.BatchNo},${item.ExamYear},'${item.StartDate}','${
-            item.EndDate
-          }',${item.Active == true ? 1 : 0},'${item.ExamSession}');`;
+          var text = `insert into dbo.Examination (ExamID,ExamSessionUrdu,ExamSessionenglish,maincategoryid,BatchNo,ExamYear,StartDate,EndDate,Active,ExamSession,Userid,Entrydate) values(${item.examId
+            },'${item.ExamSessionUrdu}','${item.ExamSessionenglish}',${item.maincategoryid
+            },${item.BatchNo},${item.ExamYear},'${item.StartDate}','${item.EndDate
+            }',${item.Active == true ? 1 : 0},'${item.ExamSession}',44,'${this._date.transform(new Date().toISOString(), "yyyy-MM-dd HH:mm")}');`;
           textarray.push(text);
         });
         var blob = new Blob([textarray.join("\r\n")], {
@@ -598,16 +595,12 @@ export class PBTEComponent implements OnInit {
             obj[key] = item[key] || item;
             console.log(item.Batch);
           });
-          var text = `insert into dbo.Student (ExamId,CollegeId,course_categoryId,Lock,ResultLocked,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To) values(${
-            item.ExamId
-          },${item.CollegeId},${item.course_categoryId},1,1,'${item.StudentName
-          }','${item.FathersName}','${item.DateofBirth}','${
-            item.Qualification
-          }',${item.Gender},${1},'${item.Class_Code}','${item.NIC}','${
-            item.Trainee_ID
-          }','${item.Shift}','${item.Shift_Time_From}','${
-            item.Shift_Time_To
-          }');`;
+          var text = `insert into dbo.Student (ExamId,CollegeId,course_categoryId,Lock,ResultLocked,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To,Userid,Entrydate) values(${item.ExamId
+            },${item.CollegeId},${item.course_categoryId},1,1,'${item.StudentName.trim()
+            }','${item.FathersName.trim()}','${this._date.transform(item.DateofBirth, "dd-MM-yyyy")}','${item.Qualification
+            }',${item.Gender},${1},'${item.Class_Code}','${item.NIC}','${item.Trainee_ID
+            }','${item.Shift}','${item.Shift_Time_From}','${item.Shift_Time_To
+            }',44,'${this._date.transform(new Date().toISOString(), "yyyy-MM-dd HH:mm")}');`;
           textarray.push(text);
         });
         var blob = new Blob([textarray.join("\r\n")], {
@@ -809,10 +802,10 @@ export class PBTEComponent implements OnInit {
       this.examTablesData.paginator = this.exampaginator;
       this.examTablesData.sort = this.examsort;
     }
-    
+
     if (tableName == "TraineeData") {
       debugger
-      this.TraineeUrduData =tableData.filter(
+      this.TraineeUrduData = tableData.filter(
         (x) => this.containsUrdu(x.TraineeName) == true
       );
 
@@ -824,7 +817,7 @@ export class PBTEComponent implements OnInit {
       this.traineeTablesData.paginator = this.traineepaginator;
       this.traineeTablesData.sort = this.traineesort;
 
-    
+
     }
   }
   getPBTETSPData() {
@@ -1255,20 +1248,15 @@ export class PBTEComponent implements OnInit {
             obj[key] = item[key] || item;
             console.log(item.Batch);
           });
-          var text = `update dbo.Student set ClassCode='${
-            item.ClassCode
-          }',Batch=${item.Batch},TraineeName='${
-            item.TraineeName
-          }',FatherName='${item.FatherName}',TraineeCNIC='${
-            item.TraineeCNIC
-          }',DateOfBirth='${this._date.transform(
-            item.DateOfBirth,
-            "dd/MM/yyyy"
-          )}',Education='${item.Education}',StudentID=${
-            item.PBTEID
-          },CollegeID=${item.CollegeID},TraineeStatus='${
-            item.StatusName
-          }' where TraineeID=${item.TraineeID},`;
+          var text = `update dbo.Student set ClassCode='${item.ClassCode
+            }',Batch=${item.Batch},TraineeName='${item.TraineeName
+            }',FatherName='${item.FatherName}',TraineeCNIC='${item.TraineeCNIC
+            }',DateOfBirth='${this._date.transform(
+              item.DateOfBirth,
+              "dd/MM/yyyy"
+            )}',Education='${item.Education}',StudentID=${item.PBTEID
+            },CollegeID=${item.CollegeID},TraineeStatus='${item.StatusName
+            }' where TraineeID=${item.TraineeID},`;
           //textarray = textarray + text;
           textarray.push(text);
         });
@@ -1286,19 +1274,16 @@ export class PBTEComponent implements OnInit {
             obj[key] = item[key] || item;
             console.log(item.Batch);
           });
-          var text = `insert into dbo.Student (ExamId,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To) values(${
-            item.ExamID
-          },'${item.TraineeName}','${item.FatherName}','${this._date.transform(
-            item.DateOfBirth,
-            "dd/MM/yyyy"
-          )}','${item.Education}',${item.GenderID},${1},'${
-            item.TraineeCNIC
-          }','${item.TraineeCode}','${
-            item.TraineeShift
-          }','${this._date.transform(
-            item.ShiftFrom,
-            "hh:mm a"
-          )}','${this._date.transform(item.ShiftTo, "h:mm a")}');`;
+          var text = `insert into dbo.Student (ExamId,StudentName,FathersName,DateofBirth,Qualification,Gender,active,Class_Code,NIC,Trainee_ID,Shift,Shift_Time_From,Shift_Time_To) values(${item.ExamID
+            },'${item.TraineeName}','${item.FatherName}','${this._date.transform(
+              item.DateOfBirth,
+              "dd/MM/yyyy"
+            )}','${item.Education}',${item.GenderID},${1},'${item.TraineeCNIC
+            }','${item.TraineeCode}','${item.TraineeShift
+            }','${this._date.transform(
+              item.ShiftFrom,
+              "hh:mm a"
+            )}','${this._date.transform(item.ShiftTo, "h:mm a")}');`;
           //textarray = textarray + text;
           textarray.push(text);
         });
@@ -1352,20 +1337,15 @@ export class PBTEComponent implements OnInit {
             obj[key] = item[key] || item;
             console.log(item.Batch);
           });
-          var text = `insert into table1 (SchemeName,Batch,TSPName,ClassCode,TradeName,TrainingAddressLocation,TehsilName,DistrictName,CertAuthName,TraineesPerClass,GenderName,Duration,StartDate,EndDate,ClassStatusName) values('${
-            item.SchemeName
-          }',${item.Batch},'${item.TSPName}','${item.ClassCode}','${
-            item.TradeName
-          }','${item.TrainingAddressLocation}','${item.TehsilName}','${
-            item.TehsilName
-          }','${item.DistrictName}','${item.CertAuthName}',${
-            item.TraineesPerClass
-          },'${item.GenderName}',${item.Duration},${this._date.transform(
-            item.StartDate,
-            "dd/MM/yyyy"
-          )}','${this._date.transform(item.EndDate, "dd/MM/yyyy")}','${
-            item.ClassStatusName
-          }');`;
+          var text = `insert into table1 (SchemeName,Batch,TSPName,ClassCode,TradeName,TrainingAddressLocation,TehsilName,DistrictName,CertAuthName,TraineesPerClass,GenderName,Duration,StartDate,EndDate,ClassStatusName) values('${item.SchemeName
+            }',${item.Batch},'${item.TSPName}','${item.ClassCode}','${item.TradeName
+            }','${item.TrainingAddressLocation}','${item.TehsilName}','${item.TehsilName
+            }','${item.DistrictName}','${item.CertAuthName}',${item.TraineesPerClass
+            },'${item.GenderName}',${item.Duration},${this._date.transform(
+              item.StartDate,
+              "dd/MM/yyyy"
+            )}','${this._date.transform(item.EndDate, "dd/MM/yyyy")}','${item.ClassStatusName
+            }');`;
           //textarray = textarray + text;
           textarray.push(text);
         });
@@ -1391,20 +1371,15 @@ export class PBTEComponent implements OnInit {
             obj[key] = item[key] || item;
             console.log(item.Batch);
           });
-          var text = `update dbo.Student set ClassCode='${
-            item.ClassCode
-          }',Batch=${item.Batch},TraineeName='${
-            item.TraineeName
-          }',FatherName='${item.FatherName}',TraineeCNIC='${
-            item.TraineeCNIC
-          }',DateOfBirth='${this._date.transform(
-            item.DateOfBirth,
-            "dd/MM/yyyy"
-          )}',Education='${item.Education}',StudentID=${
-            item.PBTEID
-          },CollegeID=${item.CollegeID},TraineeStatus='${
-            item.StatusName
-          }' where TraineeID=${item.TraineeID},`;
+          var text = `update dbo.Student set ClassCode='${item.ClassCode
+            }',Batch=${item.Batch},TraineeName='${item.TraineeName
+            }',FatherName='${item.FatherName}',TraineeCNIC='${item.TraineeCNIC
+            }',DateOfBirth='${this._date.transform(
+              item.DateOfBirth,
+              "dd/MM/yyyy"
+            )}',Education='${item.Education}',StudentID=${item.PBTEID
+            },CollegeID=${item.CollegeID},TraineeStatus='${item.StatusName
+            }' where TraineeID=${item.TraineeID},`;
           //textarray = textarray + text;
           textarray.push(text);
         });
@@ -1424,17 +1399,12 @@ export class PBTEComponent implements OnInit {
           //  obj[key] = item[key] || item;
           //  //console.log(item[key]);
           //});
-          var text = `insert into tbl_trainee (traineeid,trainee_name,father_name,gender,disableId,dob,cnic,basic_qualification,pathWayId,mobile,email,address,districtId,instituteId,psdf_traineeId,psdf_ClassCode) values(${traineeid},'${
-            item.TraineeName
-          }','${item.FatherName}','${item.GenderID}','${
-            item.disableId
-          }','${this._date.transform(item.DOB, "dd/MM/yyyy")}','${
-            item.TraineeCNIC
-          }','${item.Education}','${item.pathWayId}','${item.mobile}','${
-            item.email
-          }','${item.address}','${item.instituteId}','${
-            item.psdf_traineeId
-          }','${item.psdf_ClassCode}');`;
+          var text = `insert into tbl_trainee (traineeid,trainee_name,father_name,gender,disableId,dob,cnic,basic_qualification,pathWayId,mobile,email,address,districtId,instituteId,psdf_traineeId,psdf_ClassCode) values(${traineeid},'${item.TraineeName
+            }','${item.FatherName}','${item.GenderID}','${item.disableId
+            }','${this._date.transform(item.DOB, "dd/MM/yyyy")}','${item.TraineeCNIC
+            }','${item.Education}','${item.pathWayId}','${item.mobile}','${item.email
+            }','${item.address}','${item.instituteId}','${item.psdf_traineeId
+            }','${item.psdf_ClassCode}');`;
           //textarray = textarray + text;
           traineeid++;
           textarray.push(text);
@@ -1493,20 +1463,15 @@ export class PBTEComponent implements OnInit {
             obj[key] = item[key] || item;
             console.log(item.Batch);
           });
-          var text = `insert into table1 (SchemeName,Batch,TSPName,ClassCode,TradeName,TrainingAddressLocation,TehsilName,DistrictName,CertAuthName,TraineesPerClass,GenderName,Duration,StartDate,EndDate,ClassStatusName) values('${
-            item.SchemeName
-          }',${item.Batch},'${item.TSPName}','${item.ClassCode}','${
-            item.TradeName
-          }','${item.TrainingAddressLocation}','${item.TehsilName}','${
-            item.TehsilName
-          }','${item.DistrictName}','${item.CertAuthName}',${
-            item.TraineesPerClass
-          },'${item.GenderName}',${item.Duration},${this._date.transform(
-            item.StartDate,
-            "dd/MM/yyyy"
-          )}','${this._date.transform(item.EndDate, "dd/MM/yyyy")}','${
-            item.ClassStatusName
-          }');`;
+          var text = `insert into table1 (SchemeName,Batch,TSPName,ClassCode,TradeName,TrainingAddressLocation,TehsilName,DistrictName,CertAuthName,TraineesPerClass,GenderName,Duration,StartDate,EndDate,ClassStatusName) values('${item.SchemeName
+            }',${item.Batch},'${item.TSPName}','${item.ClassCode}','${item.TradeName
+            }','${item.TrainingAddressLocation}','${item.TehsilName}','${item.TehsilName
+            }','${item.DistrictName}','${item.CertAuthName}',${item.TraineesPerClass
+            },'${item.GenderName}',${item.Duration},${this._date.transform(
+              item.StartDate,
+              "dd/MM/yyyy"
+            )}','${this._date.transform(item.EndDate, "dd/MM/yyyy")}','${item.ClassStatusName
+            }');`;
           //textarray = textarray + text;
           textarray.push(text);
         });
@@ -1542,23 +1507,23 @@ export class PBTEComponent implements OnInit {
         const dataString = JSON.parse(JSON.stringify(jsonData));
         const _exampData =
           dataString[
-            Object.keys(workBook.Sheets).find(
-              (x) =>
-                x.toLowerCase() === PBTESheetNames.ExaminationData.toLowerCase()
-            )
+          Object.keys(workBook.Sheets).find(
+            (x) =>
+              x.toLowerCase() === PBTESheetNames.ExaminationData.toLowerCase()
+          )
           ];
         const _traineeData =
           dataString[
-            Object.keys(workBook.Sheets).find(
-              (x) =>
-                x.toLowerCase() === PBTESheetNames.TraineeData.toLowerCase()
-            )
+          Object.keys(workBook.Sheets).find(
+            (x) =>
+              x.toLowerCase() === PBTESheetNames.TraineeData.toLowerCase()
+          )
           ];
         if (!_exampData || _exampData.length === 0) {
           this.ComSrv.ShowError(
             "Sheet with the name '" +
-              PBTESheetNames.ExaminationData +
-              "' not found in Excel file."
+            PBTESheetNames.ExaminationData +
+            "' not found in Excel file."
           );
         } else {
           console.log(_exampData);
@@ -1567,8 +1532,8 @@ export class PBTEComponent implements OnInit {
         if (!_traineeData || _traineeData.length === 0) {
           this.ComSrv.ShowError(
             "Sheet with the name '" +
-              PBTESheetNames.TraineeData +
-              "' not found in Excel file."
+            PBTESheetNames.TraineeData +
+            "' not found in Excel file."
           );
         } else {
           console.log(_traineeData);
@@ -1642,8 +1607,8 @@ export class PBTEComponent implements OnInit {
     if (this.TraineeUrduData.length > 0) {
       this.ComSrv.ShowError(
         "conversion required for urdu trainee name into english for " +
-          this.TraineeUrduData.length +
-          " Trainee"
+        this.TraineeUrduData.length +
+        " Trainee"
       );
       return;
     }
@@ -1672,9 +1637,9 @@ export class PBTEComponent implements OnInit {
       if (data.CourseCategoryCode == 0) {
         this.ComSrv.ShowError(
           "Course and MainCatogory are not found in PBTE Database" +
-            data.SchemeForPBTE +
-            " || Course: " +
-            data.Trade
+          data.SchemeForPBTE +
+          " || Course: " +
+          data.Trade
         );
         return;
       }
@@ -1733,7 +1698,7 @@ export class PBTEComponent implements OnInit {
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-    debugger;
+      debugger;
       const dataString = JSON.stringify(jsonData);
       this.traineeData = JSON.parse(dataString);
       // console.log(this.traineeData)
@@ -1759,12 +1724,12 @@ export class PBTEComponent implements OnInit {
 
     const _traineeData = _totalTrainee.map((r) => ({
       ...r,
-      "TraineeName":this.containsUrdu(r.TraineeName)==false?r.TraineeName:_uploadTraineeData.find(x=>x.TraineeCode==r.TraineeCode)?.TraineeName || r.TraineeName,
-      "FatherName":this.containsUrdu(r.FatherName)==false?r.FatherName:_uploadTraineeData.find(x=>x.TraineeCode==r.TraineeCode)?.FatherName || r.FatherName,
+      "TraineeName": this.containsUrdu(r.TraineeName) == false ? r.TraineeName : _uploadTraineeData.find(x => x.TraineeCode == r.TraineeCode)?.TraineeName || r.TraineeName,
+      "FatherName": this.containsUrdu(r.FatherName) == false ? r.FatherName : _uploadTraineeData.find(x => x.TraineeCode == r.TraineeCode)?.FatherName || r.FatherName,
     }));
-    this.LoadMatTable(_traineeData,'TraineeData')
-  
-    
+    this.LoadMatTable(_traineeData, 'TraineeData')
+
+
   }
 
   onFileChange(ev: any) {
