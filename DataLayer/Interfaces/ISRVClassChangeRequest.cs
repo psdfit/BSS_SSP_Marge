@@ -17,7 +17,10 @@ namespace DataLayer.Interfaces
         public List<ClassChangeRequestModel> FetchClassesForLocationChangeByUser(int UserID);
         public List<ClassChangeRequestModel> SaveClassDatesChangeRequest(ClassChangeRequestModel ClassChangeRequest);
         public bool CrClassDatesApproveReject(ClassChangeRequestModel model, SqlTransaction transaction = null);
-        public List<ClassChangeRequestModel> FetchClassDatesChangeRequest();
+        public List<ClassChangeRequestModel> FetchClassDatesChangeRequest(int SchemeID, int Status, string batchNo);
+        public List<ClassChangeRequestModel> FetchClassDatesChangeRequestBatch(string batchNo);
+        public List<ClassChangeRequestModel> FetchClassDatesChangeRequestRecommendation(string batchNo);
+        public List<ClassChangeRequestModel> FetchClassesForDatesChangeByUsers(int UserID, int SchemeID);
         public List<ClassChangeRequestModel> FetchClassesForDatesChangeByUser(int UserID);
         public List<ClassChangeRequestModel> FetchClassChangeRequestByFilter(QueryFilters filters);
         public ClassChangeRequestModel GetByClassChangeRequestID_Notification(int ClassChangeRequestID, SqlTransaction transaction = null);

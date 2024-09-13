@@ -18,12 +18,14 @@ namespace PSDF_BSSMaster.Controllers
         ISRVClass srvClass = null;
         ISRVDistrict srvDistrict = null;
         ISRVTehsil srvTehsil = null;
-        public ClassChangeRequestController(ISRVClassChangeRequest srv, ISRVClass srvClass, ISRVDistrict srvDistrict, ISRVTehsil srvTehsil)
+        ISRVScheme srvScheme = null;
+        public ClassChangeRequestController(ISRVClassChangeRequest srv, ISRVClass srvClass, ISRVDistrict srvDistrict, ISRVTehsil srvTehsil, ISRVScheme srvScheme)
         {
             this.srv = srv;
             this.srvClass = srvClass;
             this.srvDistrict = srvDistrict;
             this.srvTehsil = srvTehsil;
+            this.srvScheme = srvScheme;
         }
         // GET: ClassChangeRequest
         [HttpGet]
@@ -54,17 +56,39 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
-        // GET: ClassChangeRequest
+
+        // GET: ClassChangeRequest/SchemeID
         [HttpGet]
-        [Route("GetClassDatesChangeRequest")]
-        public IActionResult GetClassDatesChangeRequest()
+        [Route("GetClassDatesChangeRequest/{SchemeID}/{Status}/{batchNo}")]
+        public IActionResult GetClassDatesChangeRequest(int SchemeID, int Status, string batchNo)
+        {
+            try
+            {
+                if (batchNo == "0")
+                {
+                    batchNo = null;
+                }
+                List<object> ls = new List<object>();
+
+                ls.Add(srv.FetchClassDatesChangeRequest(SchemeID, Status, batchNo));
+                ls.Add(srv.FetchClassDatesChangeRequestBatch(batchNo));
+                ls.Add(srv.FetchClassDatesChangeRequestRecommendation(batchNo));
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+        // GET: ClassScheme
+        [HttpGet]
+        [Route("GetClassScheme")]
+        public IActionResult GetClassScheme()
         {
             try
             {
                 List<object> ls = new List<object>();
-
-                ls.Add(srv.FetchClassDatesChangeRequest());
+                ls.Add(srvScheme.FetchScheme());
 
                 return Ok(ls);
             }
@@ -223,6 +247,32 @@ namespace PSDF_BSSMaster.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        /// <summary> 
+        /// Developed By Rao Ali Haider
+        /// 20-Nov-2023
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="SchemeID"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetClassesByUsers/{id}/{SchemeID}")]
+        public IActionResult GetClassesByUsers(int id, int SchemeID)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+                ls.Add(srv.FetchClassesForDatesChangeByUsers(id, SchemeID));
+                ls.Add(srvTehsil.FetchTehsil(false));
+                ls.Add(srvDistrict.FetchDistrict(false));
+
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return Ok(e);
             }
         }
     }
