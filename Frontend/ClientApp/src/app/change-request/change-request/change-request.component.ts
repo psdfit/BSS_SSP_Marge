@@ -1533,10 +1533,51 @@ export class ChangeRequestDialogComponent implements OnInit {
   checkOnTraineeEmail() {
     this.isEligibleTraineeEmail()
   }
+  checkOnHeadEmail() {
+    let values = this.changerequestTSPform.getRawValue();
+    this.ComSrv.fetchAndValidateTLD(values.HeadEmail)
+    .subscribe(
+      (isValidTLD: boolean) => {
+        if (!isValidTLD) {
+          this.HeadEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+          return;
+        }
+      }, (error) => {
+        this.error = error // error path
+      }
+    );
+
+    }
+
+
+    checkOnCPEmail() {
+      let values = this.changerequestTSPform.getRawValue();
+      this.ComSrv.fetchAndValidateTLD(values.CPEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.CPEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+  
+      }
 
   isEligibleTraineeEmail(): void {
     let values = this.changerequestTraineeform.getRawValue();
     let filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`
+
+    this.ComSrv.fetchAndValidateTLD(values.TraineeEmail)
+  .subscribe(
+    (isValidTLD: boolean) => {
+      if (!isValidTLD) {
+        this.TraineeEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+        return;
+      }
+
     this.ComSrv.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
       (data: any) => {
         //BR (Business Rule)
@@ -1551,6 +1592,8 @@ export class ChangeRequestDialogComponent implements OnInit {
       }, (error) => {
         this.error = error // error path
       }
+    );
+  }
     );
     //}
   }

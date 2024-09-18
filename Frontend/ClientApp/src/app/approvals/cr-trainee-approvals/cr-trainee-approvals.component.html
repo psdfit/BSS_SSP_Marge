@@ -56,7 +56,7 @@
                 matInput required>
                 <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
                     [formControl]="SearchKam" /></mat-optgrp>
-                <mat-option>--Select--</mat-option>
+                <mat-option value="0">--Select--</mat-option>
                 <mat-option *ngFor="let s of Kam | like:['UserName',SearchKam.value]"
                   [value]="s.UserID">{{s.UserName}}</mat-option>
               </mat-select>
@@ -71,7 +71,7 @@
                 <mat-optgrp disabled class="ddlsrchheader">
                   <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchFundingCategory" />
                 </mat-optgrp>
-                <mat-option>--Select--</mat-option>
+                <mat-option value="0">--Select--</mat-option>
                 <mat-option *ngFor="let category of Project | like:['FundingCategoryName', SearchFundingCategory.value]"
                   [value]="category.FundingCategoryID">
                   {{ category.FundingCategoryName }}

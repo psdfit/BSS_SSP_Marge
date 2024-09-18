@@ -237,11 +237,10 @@
                       </td>
                       <td>
                         <mat-form-field fxFlex>
-                          <input type="text" [(ngModel)]="c.ContactPersonName" [ngModelOptions]="{standalone: true}" placeholder="Name" matInput required>
+                          <input type="text" [(ngModel)]="c.ContactPersonName" [ngModelOptions]="{standalone: true}" placeholder="Name" matInput required maxlength="100">
                           <mat-label>Contact Person Name</mat-label>
                           <mat-error *ngIf="c.ContactPersonName.invalid && c.ContactPersonName.errors.required">Name is <strong>required</strong></mat-error>
                           <mat-error *ngIf="c.ContactPersonName==''">Name is required</mat-error>
-
                         </mat-form-field>
                       </td>
 
@@ -255,11 +254,14 @@
                       </td>
                       <td>
                         <mat-form-field fxFlex>
-                          <input type="text" [(ngModel)]="c.ContactPersonEmail" [ngModelOptions]="{standalone: true}" placeholder="Email" matInput maxlength="100" required>
+                          <input type="email" [(ngModel)]="c.ContactPersonEmail" [ngModelOptions]="{standalone: true}"
+                            placeholder="Email" matInput maxlength="100" required
+                            (blur)="checkOnCPEmail(c.ContactPersonEmail)">
                           <mat-label>Contact Person Email</mat-label>
-                          <mat-error *ngIf="c.ContactPersonEmail==''">Email is required</mat-error>
-
+                          <mat-error *ngIf="c.ContactPersonEmail === ''">Email is required</mat-error>
                         </mat-form-field>
+                        <span *ngIf="invalidTLD && c.ContactPersonEmail !== ''" class="mat-error"
+                          style="font-size: 10.5px; padding-top: 0; position: relative; bottom: 15px;">Invalid email address</span>
                       </td>
                       <td><button class="btn btn-warning" type="button" [disabled]="inceptionreportform.disabled" (click)="RemovePerson(c)">Remove</button></td>
                     </tr>

@@ -91,7 +91,7 @@
       <div class="col-sm-6 col-md-3 col-lg-3">
         <mat-form-field>
           <!-- <input matInput placeholder="NTN (XXXXXX-X)" formControlName="NTN" required [readonly]="readOnly" type="text" [imask]="maskNTN" [unmask]="false">-->
-          <input matInput placeholder="NTN" formControlName="NTN" required [readonly]="readOnly" type="text">
+          <input matInput placeholder="NTN" formControlName="NTN" required [readonly]="readOnly" type="text" maxlength="50">
           <mat-error *ngIf="notForm.controls.NTN.invalid && notForm.controls.NTN.errors.required"><strong>required</strong></mat-error>
           <!--  <mat-error *ngIf="notForm.controls.NTN.errors?.duplicateInSameScheme">already exist in the same scheme</mat-error> -->
           <!--<mat-error *ngIf="notForm.controls.NTN.errors?.isNew">found new NTN (considered as new TSP)</mat-error>-->
@@ -102,19 +102,19 @@
       <div class="col-sm-6 col-md-3 col-lg-3">
         <mat-form-field>
           <!--<input matInput placeholder="PNTN (XXXXXXX-X)" formControlName="PNTN" [readonly]="readOnly" type="text" [imask]="maskPNTN" [unmask]="false">-->
-          <input matInput placeholder="PNTN" formControlName="PNTN" [readonly]="readOnly" type="text">
+          <input matInput placeholder="PNTN" formControlName="PNTN" [readonly]="readOnly" type="text" maxlength="50">
         </mat-form-field>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-3">
         <mat-form-field>
           <!-- <input matInput placeholder="GST Number (XXXXXXX-X)" formControlName="GST" [readonly]="readOnly" type="text" [imask]="maskGST" [unmask]="false">-->
-          <input matInput placeholder="GST Number" formControlName="GST" [readonly]="readOnly" type="text">
+          <input matInput placeholder="GST Number" formControlName="GST" [readonly]="readOnly" type="text" maxlength="250">
         </mat-form-field>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-3">
         <mat-form-field>
           <!--<input matInput placeholder="FTN  (XXXXXX-X)" formControlName="FTN" [readonly]="readOnly" type="text" [imask]="maskFTN" [unmask]="false">-->
-          <input matInput placeholder="FTN" formControlName="FTN" [readonly]="readOnly" type="text">
+          <input matInput placeholder="FTN" formControlName="FTN" [readonly]="readOnly" type="text" maxlength="50">
         </mat-form-field>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-3">
@@ -139,9 +139,11 @@
       </div>
       <div class="col-sm-6 col-md-3 col-lg-3">
         <mat-form-field>
-          <input matInput placeholder="Head Email" formControlName="HeadEmail" required type="text" maxlength="80">
+          <input matInput placeholder="Head Email" formControlName="HeadEmail" required type="text" maxlength="80" (blur)="checkOnHeadEmail()">
           <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.email">Invalid Email address</mat-error>
           <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.required">required</mat-error>
+          <mat-error *ngIf="HeadEmail.invalid && !HeadEmail.errors?.isValid"><strong>{{HeadEmail.errors.message}}</strong></mat-error>
+
         </mat-form-field>
       </div>
       <div class="col-sm-6 col-md-3 col-lg-3">
@@ -184,9 +186,10 @@
       </div>
       <div class="col-sm-6 col-md-3 col-lg-3">
         <mat-form-field>
-          <input matInput placeholder="Contact Person Email" formControlName="CPEmail" required type="text" maxlength="80">
+          <input matInput placeholder="Contact Person Email" formControlName="CPEmail" required type="text" maxlength="80" (blur)="checkOnCPEmail()">
           <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.email">Invalid Email address</mat-error>
           <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.required">required</mat-error>
+          <mat-error *ngIf="CPEmail.invalid && !CPEmail.errors?.isValid"><strong>{{CPEmail.errors.message}}</strong></mat-error>
         </mat-form-field>
       </div>
 

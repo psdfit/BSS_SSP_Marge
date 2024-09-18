@@ -144,6 +144,9 @@ export class CommonSrvService {
   getJSON(URL: string, id?: any | null) {
     return this.http.get(this.appConfig.UsersAPIURL + URL + (id == null ? '' : id), { headers: { Authorization: `Bearer ${this.getUserDetails().Token}` } });
   }
+  get(URL: string, options?: any) {
+    return this.http.get(URL, options);
+  }
   getRpt(URL: string, id?: any | null) {
     return this.http.get(this.appConfig.UsersAPIURL + URL + (id == null ? '' : id), { headers: { responseType: 'blob', 'Content-Type': 'application/octet-stream', Authorization: sessionStorage.getItem(environment.AuthToken) == null ? '' : sessionStorage.getItem(environment.AuthToken) } });
   }
@@ -346,6 +349,35 @@ export class CommonSrvService {
       return rights.filter(s => '/' + s.Path == this.route.url.substring(this.route.url.lastIndexOf('/')))[0];
     // return rights.filter(s => s.Path == this.route.url.split('/')[2].split('?')[0])[0];
   }
+
+  // fetch and validate top level domain:
+  fetchAndValidateTLD(email: string): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.http.get('https://data.iana.org/TLD/tlds-alpha-by-domain.txt', { responseType: 'text' })
+        .subscribe(
+          (data: any) => {
+            const validTLDs = data.split('\n').map(tld => tld.trim().toLowerCase());
+            const emailDomain = email.split('@')[1]?.toLowerCase();
+            const emailTLD = emailDomain?.split('.').pop();
+
+            if (!validTLDs.includes(emailTLD)) {
+              observer.next(false);
+              observer.complete();
+              return;
+            }
+
+            observer.next(true);
+            observer.complete();
+          },
+          (error) => {
+            this.error = 'Failed to fetch the TLD list';
+            observer.error('Failed to fetch TLD list');
+          }
+        );
+    });
+  }
+
+
   private initHeaders(): HttpHeaders {
     const token = sessionStorage.getItem(environment.AuthToken);
     let headers;

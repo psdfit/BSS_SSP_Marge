@@ -50,6 +50,7 @@ export class InceptionReportComponent implements OnInit {
   startDateworking = false;
   shiftworking = false;
   dailyHoursworking = false;
+  invalidTLD: boolean = false;
 
   isOpenRegistration: boolean = false;
   isOpenSubmission: boolean = false;
@@ -472,21 +473,66 @@ export class InceptionReportComponent implements OnInit {
       return false;
     }
 
+    // if (this.ContactPerson.length > 0) {
+    //   this.ContactPerson.forEach(x => {
+    //     if (x.ContactPersonType == '' || x.ContactPersonName == '' || x.ContactPersonEmail == '' || x.ContactPersonLandline == '' || x.ContactPersonMobile == '') {
+    //       this.errorContactPerson = "Please enter all required fields of a contact person";
+    //     }
+    //   }
+    //   );
+
+    //   if (this.errorContactPerson) {
+    //     this.ComSrv.ShowError(this.errorContactPerson.toString(), "Error");
+    //     this.errorContactPerson = null;
+    //     this.FinalSubmitted.setValue(false)
+    //     return false;
+    //   }
+
+    // }
+
+
     if (this.ContactPerson.length > 0) {
+      let tldValidationPromises = [];
+    
       this.ContactPerson.forEach(x => {
         if (x.ContactPersonType == '' || x.ContactPersonName == '' || x.ContactPersonEmail == '' || x.ContactPersonLandline == '' || x.ContactPersonMobile == '') {
           this.errorContactPerson = "Please enter all required fields of a contact person";
+        } else if (x.ContactPersonEmail.length > 0) {
+          // Validate TLD only when email is provided
+          const tldPromise = new Promise<void>((resolve, reject) => {
+            this.ComSrv.fetchAndValidateTLD(x.ContactPersonEmail)
+              .subscribe(
+                (isValidTLD: boolean) => {
+                  if (!isValidTLD) {
+                    this.errorContactPerson = "Invalid email address: " + x.ContactPersonEmail;
+                    this.invalidTLD = true;
+                  }
+                  resolve();  // Call resolve to indicate the promise is done
+                },
+                (error) => {
+                  this.errorContactPerson = "Error while validating TLD: " + error;
+                  reject(error);  // Call reject if there's an error
+                }
+              );
+          });
+    
+          tldValidationPromises.push(tldPromise);
         }
-      }
-      );
-
-      if (this.errorContactPerson) {
-        this.ComSrv.ShowError(this.errorContactPerson.toString(), "Error");
-        this.errorContactPerson = null;
-        this.FinalSubmitted.setValue(false)
-        return false;
-      }
-
+      });
+    
+      // Handle the results of all TLD validations
+      Promise.all(tldValidationPromises).then(() => {
+        if (this.errorContactPerson) {
+          this.ComSrv.ShowError(this.errorContactPerson.toString(), "Error");
+          this.errorContactPerson = null;
+          this.FinalSubmitted.setValue(false);
+        } else {
+          // Proceed if no errors
+          this.FinalSubmitted.setValue(true);
+        }
+      }).catch(error => {
+        console.error("Error during TLD validation:", error);
+      });
     }
 
     if (!this.inceptionreportform.valid)
@@ -596,6 +642,24 @@ export class InceptionReportComponent implements OnInit {
     }, error => this.error = error// error path
     );
   }
+
+
+  checkOnCPEmail(email: any) {
+   
+    this.ComSrv.fetchAndValidateTLD(email)
+    .subscribe(
+      (isValidTLD: boolean) => {
+        if (isValidTLD) {
+          this.invalidTLD = false;  // Set to false if TLD is valid
+        } else {
+          this.invalidTLD = true;  // Set to true if TLD is invalid
+        }
+      }, (error) => {
+        this.error = error // error path
+      }
+    );
+
+    }
 
   formatTimeToHHMM(date: Date): string {
     const hours = date.getHours();

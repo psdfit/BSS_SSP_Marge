@@ -269,6 +269,43 @@ export class TSPComponent implements OnInit {
     // );
     return form;
   }
+
+  get HeadEmail() { return this.notForm.get("HeadEmail"); }
+  get CPEmail() { return this.notForm.get("CPEmail"); }
+
+  checkOnHeadEmail() {
+    let values = this.notForm.getRawValue();
+    this.http.fetchAndValidateTLD(values.HeadEmail)
+    .subscribe(
+      (isValidTLD: boolean) => {
+        if (!isValidTLD) {
+          this.HeadEmail.setErrors({ isValid: false, message: 'Invalid email Address' });
+          return;
+        }
+      }, (error) => {
+        this.error = error // error path
+      }
+    );
+
+    }
+
+    checkOnCPEmail() {
+      let values = this.notForm.getRawValue();
+      this.http.fetchAndValidateTLD(values.CPEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.CPEmail.setErrors({ isValid: false, message: 'Invalid email Address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+  
+      }
+
+
   removeTsp(ind, r: any) {
     this.Tsps.removeAt(ind);
     //let id = r.controls.TSPID.value
