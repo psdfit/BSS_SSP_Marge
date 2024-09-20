@@ -193,7 +193,7 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@Description", model[1].Description.ToString()));
                 //param.Add(new SqlParameter("@OrderStatus", "PAID"));
                 param.Add(new SqlParameter("@OrderStatus", "UNPAID"));
-                param.Add(new SqlParameter("@Click2Pay", model[1].Click2Pay.ToString()));
+                param.Add(new SqlParameter("@Click2Pay", "http://"));
 
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPPayPro_PaymentDetail", param.ToArray()).Tables[0];
                 return dt;

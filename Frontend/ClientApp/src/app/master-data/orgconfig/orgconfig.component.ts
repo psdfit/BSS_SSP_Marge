@@ -197,6 +197,7 @@ export class OrgConfigComponent implements OnInit {
         'TCR OPENING DAYS': item.TSROpeningDays,
         'Employment Deadline': item.EmploymentDeadline,
         'Extra Trainees % age': item.TraineesPerClassThershold,
+        'Class Configurable Counter': item.TSPConfigurationCounter, //Develop by Rao ALI
         'DVV Class': item.ISDVV
       }));
   }
@@ -257,5 +258,5 @@ export class OrgConfigModel {
   StipNoteGenLTMonth: number;
   MPRDenerationDay: number;
   BusinessRuleTypeForGetPreviousList:string;
-
+  TSPConfigurationCounter: number;
 }

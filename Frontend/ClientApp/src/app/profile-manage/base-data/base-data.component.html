@@ -385,7 +385,7 @@
                   <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID" matInput
                     required>
                     <mat-option *ngFor="let s of TrainingLocation"
-                      [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
+                      [value]="s.TrainingLocationID"  [matTooltip] ="s.TrainingLocationName">{{s.TrainingLocationName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of Certificate.get('TrainingLocationID').errors | keyvalue">
                     {{
@@ -471,7 +471,7 @@
                   Certificate Evidence
                 </mat-label>
                 <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="RegistrationCerEvidence"
-                  maxSize="1024" [nopreview]="true" matInput></file-upload>
+                  maxSize="12288" [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
                   *ngFor="let error of Certificate.get('RegistrationCerEvidence').errors | keyvalue">
                   {{
@@ -581,7 +581,7 @@
                   <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID" matInput
                     required>
                     <mat-option *ngFor="let s of TrainingLocation"
-                      [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
+                      [value]="s.TrainingLocationID" [matTooltip] ="s.TrainingLocationName">{{s.TrainingLocationName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TradeForm.get('TrainingLocationID').errors | keyvalue">
                     {{

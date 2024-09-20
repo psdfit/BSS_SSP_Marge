@@ -171,13 +171,42 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
 
         }
-        
-        public List<ClassChangeRequestModel> FetchClassDatesChangeRequest()
+
+        public List<ClassChangeRequestModel> FetchClassDatesChangeRequest(int SchemeID, int Status, string BatchNo)
         {
             try
             {
-                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassDatesChangeRequest").Tables[0];
+                SqlParameter[] param = new SqlParameter[3];
+                param[0] = new SqlParameter("@SchemeID", SchemeID);
+                param[1] = new SqlParameter("@Status", Status);
+                param[2] = new SqlParameter("@BatchNo", BatchNo);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassDatesChangeRequest", param).Tables[0];
                 return LoopinClassForDatesChange(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+
+        }
+
+        public List<ClassChangeRequestModel> FetchClassDatesChangeRequestBatch(string BatchNo)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[3];
+                param[0] = new SqlParameter("@BatchNo", BatchNo);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassDatesChangeRequestBatchNo", param).Tables[0];
+                return LoopinClassForDatesChange(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+
+        }
+        public List<ClassChangeRequestModel> FetchClassDatesChangeRequestRecommendation(string BatchNo)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[3];
+                param[0] = new SqlParameter("@BatchNo", BatchNo);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Class_Reschedule", param).Tables[0];
+                return LoopinClassForDatesChangeRecomm(dt);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
 
@@ -228,6 +257,20 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<ClassChangeRequestModel> FetchClassesForDatesChangeByUsers(int UserID, int SchemeID)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@UserID", UserID));
+                param.Add(new SqlParameter("@SchemeID", SchemeID));
+
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassesForDatesChangeByUser", param.ToArray()).Tables[0];
+                return LoopinClassForLocationChange(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
         public List<ClassChangeRequestModel> GetByClusterID(int ClusterID)
         {
             try
@@ -308,7 +351,7 @@ namespace DataLayer.Services
             try
             {
                 List<SqlParameter> param = new List<SqlParameter>();
-                param.Add(new SqlParameter("@ClassDatesChangeRequestID", model.ClassDatesChangeRequestID));
+                param.Add(new SqlParameter("@ClassDatesChangeRequestID", model.ClassChangeRequestID));
                 param.Add(new SqlParameter("@IsApproved", model.IsApproved));
                 param.Add(new SqlParameter("@IsRejected", model.IsRejected));
                 param.Add(new SqlParameter("@CurUserID", model.CurUserID));
@@ -434,9 +477,46 @@ namespace DataLayer.Services
             ClassChangeRequest.ModifiedUserID = Convert.ToInt32(r["ModifiedUserID"]);
             ClassChangeRequest.CreatedDate = r["CreatedDate"].ToString().GetDate();
             ClassChangeRequest.ModifiedDate = r["ModifiedDate"].ToString().GetDate();
+            if (r.Table.Columns.Contains("BatchNo"))
+            {
+                ClassChangeRequest.BatchNo = r["BatchNo"].ToString();
+            }            if (r.Table.Columns.Contains("TSPName"))
+            {
+                ClassChangeRequest.TSPName = r["TSPName"].ToString();
+            }
+            if (r.Table.Columns.Contains("SchemeName"))
+            {
+                ClassChangeRequest.SchemeName = r["SchemeName"].ToString();
+            }
+            if (r.Table.Columns.Contains("TradeName"))
+            {
+                ClassChangeRequest.TradeName = r["TradeName"].ToString();
+            }
+            if (r.Table.Columns.Contains("TrainingAddressLocation"))
+            {
+                ClassChangeRequest.TrainingAddressLocation = r["TrainingAddressLocation"].ToString();
+            }
             return ClassChangeRequest;
         }
-        
+
+        private List<ClassChangeRequestModel> LoopinClassForDatesChangeRecomm(DataTable dt)
+        {
+            List<ClassChangeRequestModel> ClassChangeRequestL = new List<ClassChangeRequestModel>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                ClassChangeRequestL.Add(RowOfClassForDatesChangeRecom(r));
+
+            }
+            return ClassChangeRequestL;
+        }
+        private ClassChangeRequestModel RowOfClassForDatesChangeRecom(DataRow r)
+        {
+            ClassChangeRequestModel ClassChangeRequest = new ClassChangeRequestModel();
+
+            ClassChangeRequest.TotalTSPCount = Convert.ToInt32(r["TotalTSPCount"]);            ClassChangeRequest.NumberOfClasses = Convert.ToInt32(r["NumberOfClasses"]);            ClassChangeRequest.NumberOfTrades = Convert.ToInt32(r["NumberOfTrades"]);            ClassChangeRequest.ContractingTraineeNumber = Convert.ToInt32(r["ContractingTraineeNumber"]);            ClassChangeRequest.TotalTraineeCost = Convert.ToInt32(r["TotalTraineeCost"]);            return ClassChangeRequest;
+        }
+
         private ClassChangeRequestModel RowOfClassChangeRequest(DataRow r)
         {
             ClassChangeRequestModel ClassChangeRequest = new ClassChangeRequestModel();

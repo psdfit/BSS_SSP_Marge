@@ -510,7 +510,7 @@ namespace DataLayer.Services
                                             case EnumApprovalProcess.CR_CLASS_DATES:
                                                 srvCrClass.CrClassDatesApproveReject(new ClassChangeRequestModel()
                                                 {
-                                                    ClassDatesChangeRequestID = model.FormID,
+                                                    ClassChangeRequestID = model.FormID,
                                                     IsApproved = true,
                                                     IsRejected = false,
                                                     CurUserID = model.CurUserID

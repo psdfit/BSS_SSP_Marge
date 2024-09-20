@@ -440,7 +440,7 @@ export class ChangeRequestDialogComponent implements OnInit {
 
   }
   getClassData() {
-    this.ComSrv.getJSON('api/ClassChangeRequest/GetClassesByUser/' + this.userid).subscribe((d: any) => {
+    this.ComSrv.getJSON('api/ClassChangeRequest/GetClassesByUsers/' + this.userid + '/' + this.filters.SchemeID).subscribe((d: any) => {
       this.classArray = new MatTableDataSource(d[0]);
       this.classArrayForDateChange = new MatTableDataSource(d[0]);
       this.classTehsils = d[1];

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { CommonSrvService } from '../../common-srv.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -19,10 +19,13 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
     displayedColumnsClass = ['ClassCode',
         'TradeName', 'SourceOfCurriculumName', 'EntryQualification', 'CertAuthName',
         'StartDate', 'EndDate', "Action"];
-
-    classes: any;
+  SearchSch = new FormControl('',);
+  SearchStatus = new FormControl('',);
+    classes: [];
     currentClassDates: [];
-
+    Scheme = [];
+    schemeFilter = new FormControl(0);
+    searchFilter = new FormControl(0);
     ActiveFormApprovalID: number;
     ChosenTradeID: number;
     title: string;
@@ -47,67 +50,34 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
     ngOnInit(): void {
         this.http.setTitle("Class Dates Change Request");
         this.title = "";
-        this.savebtn = "Approve";
+      this.savebtn = "Approve";
+      this.GetSchemes();
       this.GetClassDatesCRs();
     }
 
-    currentPage: number = 1;
-    rowsPerPage: number = 5;
-    totalPages: number = 1;
-
-    currentData: any[] = [];
-    
-   // Method to fetch class dates and set up pagination
-   GetClassDatesCRs() {
-    this.http.getJSON('api/ClassChangeRequest/GetClassDatesChangeRequest').subscribe(
-        (response: any) => {
-            this.classes = response[0];
-            this.totalPages = Math.ceil(this.classes.length / this.rowsPerPage);
-            this.currentData = [...this.classes];  // Keep a copy of the full dataset
-            this.displayTable();  // Display the first page of data
+    GetClassDatesCRs() {
+        this.http.getJSON('api/ClassChangeRequest/GetClassDatesChangeRequest/' + this.schemeFilter.value + '/' + this.searchFilter.value + '/' + null).subscribe((d: any) => {
+          this.classes = d[0];
+            //this.tsps.paginator = this.paginator;
+            //this.tsps.sort = this.sort;
         },
-        (error) => {
-            this.error = error;
-            this.working = false;  // Ensure the working flag is reset
-        },
-        () => {
-            this.working = false;  // Finalize the process
-        }
-    );
-}
-
-// Method to display the data for the current page
-displayTable() {
-    const start = (this.currentPage - 1) * this.rowsPerPage;
-    const end = start + this.rowsPerPage;
-    this.classes = this.currentData.slice(start, end);
-}
-
-// Method to move to the next page
-nextPage() {
-    if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-        this.displayTable();
-    }
-}
-
-// Method to move to the previous page
-prevPage() {
-    if (this.currentPage > 1) {
-        this.currentPage--;
-        this.displayTable();
-    }
-}
-
-// Method to change the number of rows per page dynamically
-changeRowsPerPage(rows:any) {
-  debugger;
-    this.rowsPerPage = parseInt(rows=='All'?'999999':rows);
-    this.totalPages = Math.ceil(this.currentData.length / this.rowsPerPage);
-    this.currentPage = 1; // Reset to the first page whenever rows per page changes
-    this.displayTable();
-}
-
+            error => this.error = error // error path
+            , () => {
+                this.working = false;
+            });
+  }
+  GetSchemes() {
+    this.http.getJSON('api/ClassChangeRequest/GetClassScheme').subscribe((d: any) => {
+     this.Scheme = d[0];
+      //this.tsps.paginator = this.paginator;
+      //this.tsps.sort = this.sort;
+    },
+      error => this.error = error // error path
+      , () => {
+        this.working = false;
+      });
+  }
+  
   GetCurrentClassDatesByID(r) {
     if (r.currentClassDates) {
       r.currentClassDates = null;
@@ -118,7 +88,12 @@ changeRowsPerPage(rows:any) {
       r.currentClassDates = d;
     });
   }
+  /// Develop by Rao Ali Haider 20-Nov-2023
 
+  EmptyCtrl() {
+    this.SearchSch.setValue('');
+    this.SearchStatus.setValue('');
+  }
     openApprovalDialogue(row: any): void {
         let processKey = EnumApprovalProcess.CR_CLASS_DATES;
         
@@ -127,12 +102,17 @@ changeRowsPerPage(rows:any) {
             //location.reload();
           this.GetClassDatesCRs();
         });
-    }
+  }
     openClassJourneyDialogue(data: any): void 
     {
       debugger;
       this.dialogue.openClassJourneyDialogue(data);
     }
-  
+  openApprovalDialogueBatch(): void {
+    debugger;
+    this.dialogue.openApprovalDialogueBatch().subscribe(result => {
+      this.GetClassDatesCRs();
+    });
+  }
 
 }

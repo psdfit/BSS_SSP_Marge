@@ -67,4 +67,5 @@ namespace DataLayer.Models
 
         public string GenderName { get; set; }
         public string Education { get; set; }
+        public int TSPConfigurationCounter { get; set; }
     }}
