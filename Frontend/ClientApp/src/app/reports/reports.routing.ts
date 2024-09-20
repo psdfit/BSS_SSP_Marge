@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from '../../app/security/auth-guard.service';
 import { ViewReportsComponent } from './view-reports/view-reports.component';
 import { ViewAmsReportsComponent } from './view-ams-reports/view-ams-reports.component';
+import { ViewSspReportsComponent } from './view-ssp-reports/view-ssp-reports.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'View Reports',
+    },
+  },
+  {
+    path: 'view-ssp-reports',
+    component: ViewSspReportsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'SSP Reports',
     },
   },
 ];

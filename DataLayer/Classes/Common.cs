@@ -504,7 +504,7 @@ namespace DataLayer.Classes
             mail.To.Add(MailTo);
             mail.Subject = Subject;
             mail.IsBodyHtml = false;
-                mail.Body = Body;
+            mail.Body = Body;
             
             SmtpClient SmtpServer = new SmtpClient(mailServer)
             {

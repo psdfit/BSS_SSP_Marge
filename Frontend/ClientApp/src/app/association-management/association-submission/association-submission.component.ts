@@ -320,6 +320,7 @@ export class AssociationSubmissionComponent implements OnInit {
       this.updateTrainerData(selectedTradeLotData.TradeID);
     }
   }
+  
   TrainerProfile: any = []
   GetParamString(SPName: string, paramObject: any) {
     let ParamString = SPName;
@@ -349,6 +350,7 @@ export class AssociationSubmissionComponent implements OnInit {
       this.ComSrv.ShowError(error.error)
     }
   }
+
   EmptyCtrl(ev: any) {
     this.TSearchCtr.setValue('');
   }

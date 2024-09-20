@@ -188,14 +188,25 @@ namespace PSDF_BSS.Controllers.Users
                 if (dt.Rows.Count > 0)
                 {
                     dt.Rows[0]["UserPassword"] = Common.DESDecrypt(dt.Rows[0]["UserPassword"].ToString());
+                  
                     string subject = "Email Verification";
                     string msg = $@"Your Email has been verified.UserName is: {dt.Rows[0]["UserName"].ToString()}.";
+                    
+                   
+
                     if (dt.Rows != null)
                     {
                         await SendSMS(dt.Rows[0]["TspContact"].ToString(), msg);
-
                     }
+
                     Common.SendEmail(dt.Rows[0]["TspEmail"].ToString(), subject, msg);
+
+                    string subject1 = "New TSP Registration";
+                    string msg1 = $@"({dt.Rows[0]["BusinessName"].ToString()}) has been registered.";
+
+                    Common.SendEmail("rizwan.akhtar@psdf.org.pk", subject1, msg1);
+                    //Common.SendEmail("samiullah@psdf.org.pk", subject1, msg1);
+
                     return Ok(dt.Rows[0].Table);
 
                 }

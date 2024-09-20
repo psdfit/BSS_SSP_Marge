@@ -111,7 +111,7 @@ export class CommonSrvService {
 
       },
       (error: string) => {
-        this.ShowError(`${error}`, "Close", 500000);
+        this.ShowError(`${error}`, "Close", 2000);
       }
     )
   }
@@ -496,9 +496,11 @@ export class CommonSrvService {
     const Data = ExportDataObject.map(obj => {
       const newObj = {};
       for (const key in obj) {
-        if (!key.toLowerCase().includes('id')) {
-          newObj[key] = obj[key];
-        }
+        if (!key.toLowerCase().includes('id') && 
+        !key.toLowerCase().includes('attachment') && 
+        !key.toLowerCase().includes('evidence')) {
+      newObj[key] = obj[key];
+    }
       }
       return newObj;
     });
