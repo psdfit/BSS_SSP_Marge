@@ -27,10 +27,7 @@ import { startWith, switchMap } from 'rxjs/operators';
 export class InceptionReportListComponent implements OnInit, AfterViewInit {
   title: string; savebtn: string;
   displayedColumns = ['SchemeName', 'TSPName', 'ClassCode',
-    'CenterName', 'AddressOfTrainingCenterTheoratical', 'InchargeNameTheoratical',
-    'InchargeContactTheoratical', 'AddressOfTrainingCenterPractical', 'InchargeNamePractical',
-    'InchargeContactPractical', 'NameOfAuthorizedPerson', 'MobileContactOfAuthorizedPerson',
-    'EmailOfAuthorizedPerson', 'TehsilName', 'DistrictName',
+    'CenterName', 'TehsilName', 'DistrictName',
     'TradeName', 'Batch', 'ClassStartTime','ClassEndTime',
     'StartDate', 'EndDate','EnrolledTrainees',
     'Shift', 'GenderName', 'TrainingDaysNo','TrainingDays',
@@ -181,12 +178,12 @@ export class InceptionReportListComponent implements OnInit, AfterViewInit {
         , TSP: item.TSPName
         , 'Class Code': item.ClassCode
         , 'Center Name': item.CenterName
-        , 'Address Training Center (Theoratical)': item.AddressOfTrainingCenterTheoratical
-        , 'Incharge Name (Theoratical)': item.InchargeNameTheoratical
-        , 'Incharge Name Contact (Theoratical)': item.InchargeContactTheoratical
-        , 'Address Training Center (Practical)': item.AddressOfTrainingCenterPractical
-        , 'Incharge Name (Practical)': item.InchargeNamePractical
-        , 'Incharge Contact (Pratical)': item.InchargeContactPractical
+        //, 'Address Training Center (Theoratical)': item.AddressOfTrainingCenterTheoratical
+        //, 'Incharge Name (Theoratical)': item.InchargeNameTheoratical
+        //, 'Incharge Name Contact (Theoratical)': item.InchargeContactTheoratical
+        //, 'Address Training Center (Practical)': item.AddressOfTrainingCenterPractical
+        //, 'Incharge Name (Practical)': item.InchargeNamePractical
+        //, 'Incharge Contact (Pratical)': item.InchargeContactPractical
         , 'Tehsil (Practical)': item.TehsilName
         , 'District (Pratical)': item.DistrictName
         , Trade: item.TradeName
@@ -198,9 +195,9 @@ export class InceptionReportListComponent implements OnInit, AfterViewInit {
         , Shift: item.Shift
         , 'Class Start Time': this._date.transform(item.ClassStartTime, 'h:mm a')
         , 'Class End Time': this._date.transform(item.ClassEndTime, 'h:mm a')
-        , 'Name of Authorized Person': item.NameOfAuthorizedPerson
-        , 'Mobile Contact of Authorized Person': item.MobileContactOfAuthorizedPerson
-        , 'Email of Authorized Person': item.EmailOfAuthorizedPerson
+        //, 'Name of Authorized Person': item.NameOfAuthorizedPerson
+        //, 'Mobile Contact of Authorized Person': item.MobileContactOfAuthorizedPerson
+        //, 'Email of Authorized Person': item.EmailOfAuthorizedPerson
         , 'Training Days No': item.TrainingDaysNo
         , 'Training Days': item.TrainingDays
         , 'Instructor Info': item.InstructorInfo
