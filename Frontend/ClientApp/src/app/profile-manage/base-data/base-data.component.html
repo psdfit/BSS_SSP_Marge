@@ -385,7 +385,7 @@
                   <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID" matInput
                     required>
                     <mat-option *ngFor="let s of TrainingLocation"
-                      [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
+                      [value]="s.TrainingLocationID"  [matTooltip] ="s.TrainingLocationName">{{s.TrainingLocationName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of Certificate.get('TrainingLocationID').errors | keyvalue">
                     {{
