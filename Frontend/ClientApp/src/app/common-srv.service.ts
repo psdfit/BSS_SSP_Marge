@@ -159,6 +159,36 @@ export class CommonSrvService {
   postJSONPromisis(URL: string, data: any) {
     return this.http.post(this.appConfig.UsersAPIURL + URL, JSON.stringify(data), { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.getUserDetails().Token}` } });
   }
+  get(URL: string, options?: any) {
+    return this.http.get(URL, options);
+  }
+  // fetch and validate top level domain:
+  fetchAndValidateTLD(email: string): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.http.get('https://data.iana.org/TLD/tlds-alpha-by-domain.txt', { responseType: 'text' })
+        .subscribe(
+          (data: any) => {
+            const validTLDs = data.split('\n').map(tld => tld.trim().toLowerCase());
+            const emailDomain = email.split('@')[1]?.toLowerCase();
+            const emailTLD = emailDomain?.split('.').pop();
+
+            if (!validTLDs.includes(emailTLD)) {
+              observer.next(false);
+              observer.complete();
+              return;
+            }
+
+            observer.next(true);
+            observer.complete();
+          },
+          (error) => {
+            this.error = 'Failed to fetch the TLD list';
+            observer.error('Failed to fetch TLD list');
+          }
+        );
+    });
+  }
+
   openSnackBar(message: string, action?: string | null, Duration?: number | 3000) {
     // return this.snackBar.open(message, action, {
     return this.snackBar.openFromComponent(SnackBarComponent, {

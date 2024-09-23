@@ -1537,23 +1537,35 @@ export class ChangeRequestDialogComponent implements OnInit {
   isEligibleTraineeEmail(): void {
     let values = this.changerequestTraineeform.getRawValue();
     let filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`
-    this.ComSrv.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
-      (data: any) => {
-        //BR (Business Rule)
-        if (!data.isValid) {
-          this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
+
+    this.ComSrv.fetchAndValidateTLD(values.TraineeEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.TraineeEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+
+          this.ComSrv.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
+            (data: any) => {
+              //BR (Business Rule)
+              if (!data.isValid) {
+                this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
+              }
+              else {
+                this.TraineeEmail.setErrors(null);
+                this.TraineeEmail.setValidators([Validators.email, Validators.required]);
+                this.TraineeEmail.updateValueAndValidity();
+              }
+            }, (error) => {
+              this.error = error // error path
+            }
+          );
         }
-        else {
-          this.TraineeEmail.setErrors(null);
-          this.TraineeEmail.setValidators([Validators.email, Validators.required]);
-          this.TraineeEmail.updateValueAndValidity();
-        }
-      }, (error) => {
-        this.error = error // error path
-      }
-    );
+      );
     //}
   }
+
 
   checkZipFile(ev: Event) {
     let file = (ev.target as HTMLInputElement).files[0];
@@ -1587,6 +1599,39 @@ export class ChangeRequestDialogComponent implements OnInit {
     debugger;
     this.dialogueService.openClassJourneyDialogue(data);
   }
+
+  checkOnHeadEmail() {
+    let values = this.changerequestTSPform.getRawValue();
+    this.ComSrv.fetchAndValidateTLD(values.HeadEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.HeadEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+
+  }
+
+  checkOnCPEmail() {
+    let values = this.changerequestTSPform.getRawValue();
+    this.ComSrv.fetchAndValidateTLD(values.CPEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.CPEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+
+  }
+
   get TSPChangeRequestID() { return this.changerequestTSPform.get("TSPChangeRequestID"); }
   get TSPID() { return this.changerequestTSPform.get("TSPID"); }
   get Type() { return this.changerequestTSPform.get("Type"); }
