@@ -198,7 +198,7 @@
                              <mat-label>Select Trade</mat-label>
                              <mat-select (openedChange)="EmptyCtrl()" (ngModelChange)="LoadTradeLayer($event)" formControlName="Trade" matInput required>
                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
-                             <mat-option *ngFor="let s of trade | like:['TradeName',BSearchCtr.value]" [value]="s.TradeID">{{s.TradeName}}</mat-option>
+                             <mat-option [matTooltip]="s.TradeName" *ngFor="let s of trade | like:['TradeName',BSearchCtr.value]" [value]="s.TradeID">{{s.TradeName}}</mat-option>
                              </mat-select>
                              <mat-error *ngFor="let error of TradeDesignInfoForm.get('Trade').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
                           </mat-form-field>
@@ -208,7 +208,7 @@
                              <mat-label>Trade Layer</mat-label>
                              <mat-select (openedChange)="EmptyCtrl()" (ngModelChange)="LoadTradeLayerData($event)" formControlName="TradeLayer" matInput required>
                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /></mat-optgrp>
-                             <mat-option *ngFor="let s of tradeLayer | like:['TradeName',BSearchCtr.value]" [value]="s.TradeDetailMapID">( {{s.Duration}}-month | {{s.SourceOfCurriculum}} ) {{s.TradeName}}</mat-option>
+                             <mat-option [matTooltip]="s.Duration+'-month|'+ s.SourceOfCurriculum+'-'+s.TradeName" *ngFor="let s of tradeLayer | like:['TradeName',BSearchCtr.value]" [value]="s.TradeDetailMapID">( {{s.Duration}}-month | {{s.SourceOfCurriculum}} ) {{s.TradeName}}</mat-option>
                              </mat-select>
                              <mat-error *ngFor="let error of TradeDesignInfoForm.get('TradeLayer').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
                           </mat-form-field>
