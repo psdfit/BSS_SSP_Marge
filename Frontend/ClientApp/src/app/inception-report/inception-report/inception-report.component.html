@@ -256,7 +256,7 @@
                         <mat-form-field fxFlex>
                           <input type="email" [(ngModel)]="c.ContactPersonEmail" [ngModelOptions]="{standalone: true}"
                                  placeholder="Email" matInput maxlength="100" required
-                                 (blur)="fetchAndValidateTLD(c.ContactPersonEmail)">
+                                 (blur)="checkOnCPEmail(c.ContactPersonEmail)">
                           <mat-label>Contact Person Email</mat-label>
                           <mat-error *ngIf="c.ContactPersonEmail === ''">Email is required</mat-error>
                         </mat-form-field>
