@@ -81,6 +81,28 @@ namespace PSDF_BSS.Controllers.Users
 
         }
 
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("Password")]
+        public IActionResult Password([FromQuery] string Password)
+        {
+            try
+            {
+                string data = Password.Replace(" ","+");
+
+
+                return Ok(Common.DESDecrypt(data));
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message.ToString());
+            }
+
+
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("CheckEmail")]

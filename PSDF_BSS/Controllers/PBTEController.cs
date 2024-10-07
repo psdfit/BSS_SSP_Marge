@@ -113,7 +113,7 @@ namespace PSDF_BSSMaster.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e.InnerException.ToString());
+                return BadRequest(e.Message.ToString());
             }
         }
         [HttpPost]

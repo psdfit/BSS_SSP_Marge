@@ -279,10 +279,9 @@ namespace DataLayer.Services
             try
             {
                 SqlParameter[] param = new SqlParameter[3];
-                var decPass = Common.DESDecrypt("Y2P8/qlRUk2gwXCquqML0Q==");
+                var decPass = Common.DESDecrypt("A92dyzD+8DrlELlMy3CfgA==");
                 //var decPass1 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 //var decPass2 = Common.DESDecrypt("ruPQL8Dq2iY=");
-                param[0] = new SqlParameter("@UserName", UserName);
                 param[0] = new SqlParameter("@UserName", UserName);
                 param[1] = new SqlParameter("@UserPassword", Common.DESEncrypt(UserPassword));
                 // Define the output parameter
