@@ -58,7 +58,7 @@
               <div class="col-sm-4">
                 <mat-form-field fxFlex>
 
-                  <mat-select placeholder="Employment Status" formControlName="EmploymentStatus" id="employmentstatus" matInput required>
+                  <mat-select placeholder="Employment Status" formControlName="EmploymentStatus" (ngModelChange)="GetEmploymentType()" id="employmentstatus" matInput required>
                     <!--<mat-option *ngFor="let s of PlacementStatusDrp" [value]="s.EmploymentStatusID">{{s.EmploymentStatusName}}</mat-option>-->
                     <mat-option value="Employed">Employed</mat-option>
                     <mat-option value="Unemployed">Unemployed </mat-option>
