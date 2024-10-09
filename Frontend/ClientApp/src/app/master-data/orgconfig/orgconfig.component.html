@@ -20,7 +20,7 @@
 
                 <div class="col-sm-6 col-md-4 col-lg-3">
                   <mat-form-field>
-                    <mat-select [(ngModel)]="OrganizationID" placeholder="Organization" name="Organization" (ngModelChange)="GetConfig()" required>
+                    <mat-select [(ngModel)]="OrganizationID" placeholder="Organization" name="Organization" required>
                       <mat-option *ngFor="let o of Organizations" [value]="o.OID">
                         {{o.OName}}
                       </mat-option>
@@ -30,7 +30,7 @@
                 <div class="col-sm-6 col-md-4 col-lg-3">
                   <mat-form-field>
                     <!--<input matInput placeholder="Business Rule Type" formControlName="BusinessRuleType" required>-->
-                    <mat-select placeholder="Business Rule Type" name="BusinessRuleType" [(ngModel)]="BusinessRuleType" (ngModelChange)="GetDataScheme();GetConfig()" required [disabled]="!OrganizationID">
+                    <mat-select placeholder="Business Rule Type" name="BusinessRuleType" [(ngModel)]="BusinessRuleType" (ngModelChange)="GetDataScheme()" required [disabled]="!OrganizationID">
                       <mat-option value="FTI">FTI</mat-option>
                       <mat-option value="Community">Community</mat-option>
                       <mat-option value="Industry">Industry</mat-option>
