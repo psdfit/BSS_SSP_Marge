@@ -34,6 +34,7 @@ import { BehaviorSubject } from "rxjs";
 import { geoJSON } from "leaflet";
 import { FeatureCollection } from "geojson";
 import { ChangePasswordComponent } from "../master-data/change-password/change-password.component";
+import { SelectionModel } from "@angular/cdk/collections";
 var map, greenIcon, markers, districtLayer, provinceLayer, tehsilLayer;
 declare const provinceGeojson: FeatureCollection;
 declare const districtGeojson: FeatureCollection;
@@ -44,6 +45,29 @@ declare const tehsilsGeojson: FeatureCollection;
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit, AfterViewInit {
+  selection = new SelectionModel<any>(true, []);
+  getTraineeProfileRegistration_Report() {
+    debugger;
+    let ids = this.selection.selected.map((x) => x.TraineeID).join(",");
+    this.ComSRV.getReportJSON(
+      "TraineeProfile/GetRegistrationReport/" + ids
+    ).subscribe(
+      (data: any) => {
+        let file = this.ComSRV.base64ToFile(data.Response);
+        const fileURL = window.URL.createObjectURL(file);
+        // if (window.navigator.msSaveOrOpenBlob) {
+        //   window.navigator.msSaveOrOpenBlob(file, fileURL.split(':')[1] + '.pdf');
+        // } else {
+        //   window.open(fileURL);
+        // }
+        window.open(fileURL);
+      },
+      (error) => {
+        this.error = error; // error path
+        this.ComSRV.ShowError(error.error + "\n" + error.message, "", 5000);
+      }
+    );
+  }
   error: String;
   Role: String;
   UnverifiedTraineeEmail: any;
@@ -377,7 +401,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     );
   }
-
   getSchemes() {
     this.ComSRV.postJSON(
       "api/Scheme/FetchSchemeByUser",

@@ -917,16 +917,19 @@ export class TraineeComponent implements OnInit {
 
 
   getTraineeProfileRegistration_Report() {
+    debugger;
     let ids = this.selection.selected.map(x => x.TraineeID).join(',')
     this.http.getReportJSON('TraineeProfile/GetRegistrationReport/' + ids).subscribe(
       (data: any) => {
         let file = this.base64ToFile(data.Response);
         const fileURL = window.URL.createObjectURL(file);
-        if (window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(file, fileURL.split(':')[1] + '.pdf');
-        } else {
-          window.open(fileURL);
-        }
+        // if (window.navigator.msSaveOrOpenBlob) {
+        //   window.navigator.msSaveOrOpenBlob(file, fileURL.split(':')[1] + '.pdf');
+        // } else {
+          //   window.open(fileURL);
+          // }
+            window.open(fileURL);
+
       },
       (error) => {
         this.error = error // error path

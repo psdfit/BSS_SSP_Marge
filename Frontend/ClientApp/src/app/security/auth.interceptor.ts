@@ -66,17 +66,35 @@ export class AuthInterceptor implements HttpInterceptor {
     // Clone the request to set security headers
     req = req.clone({
       setHeaders: {
-        'Content-Security-Policy': "default-src 'self'; script-src 'self' https://trustedscripts.com; object-src 'none';",
-        'X-Frame-Options': 'DENY',
-        'X-Content-Type-Options': 'nosniff',
-        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-        'Cache-Control': 'no-store, no-cache, must-revalidate',
-        'Referrer-Policy': 'no-referrer',
-        'Permissions-Policy': "geolocation=(), microphone=(), camera=()",
-        'X-XSS-Protection': '1; mode=block',
-        'X-Permitted-Cross-Domain-Policies': 'none'
+        // Enable Content-Security-Policy allowing self and localhost
+        // 'Content-Security-Policy': "default-src",
+    
+        // Deny embedding in frames or iframes
+        // 'X-Frame-Options': 'DENY',
+    
+        // Prevent content sniffing (important for security)
+        // 'X-Content-Type-Options': 'nosniff',
+    
+        // // Force HTTPS for the next 1 year and include subdomains
+        // 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    
+        // // No caching for this request (useful for sensitive data)
+        // 'Cache-Control': 'no-store, no-cache, must-revalidate',
+    
+        // Disallow referrer data from being sent
+        // 'Referrer-Policy': 'no-referrer',
+    
+        // // Disable geolocation, microphone, and camera access
+        // 'Permissions-Policy': "geolocation=(), microphone=(), camera=()",
+    
+        // // Block cross-site scripting attacks
+        // 'X-XSS-Protection': '1;',
+    
+        // Disallow cross-domain Flash or other plugin usage
+        // 'X-Permitted-Cross-Domain-Policies': 'none'
       },
     });
+    
 
     // Check if the request has the No-Auth header
     if (req.headers.get('No-Auth') === 'True') {
