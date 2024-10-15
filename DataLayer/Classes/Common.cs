@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DataLayer.Classes
 {
@@ -81,19 +82,19 @@ namespace DataLayer.Classes
             }
         }
 
-        public static string AddFile(string Base64, string folder,string FileExtension="")
+        public static string AddFile(string Base64, string folder, string FileExtension = "")
         {
             if (!IsBase64(Base64)) return Base64;
 
             string appRoot;
             var fname = "";
-            if (FileExtension=="")
+            if (FileExtension == "")
             {
-            fname = Guid.NewGuid() + "." + GetExtension(Base64.Substring(5, Base64.IndexOf(";") - 5));
+                fname = Guid.NewGuid() + "." + GetExtension(Base64.Substring(5, Base64.IndexOf(";") - 5));
             }
             else
             {
-                fname = "PBTE-"+DateTime.Now.ToString("yyyyMMdd-HHmmss_") + Guid.NewGuid() + "." + FileExtension;
+                fname = "PBTE-" + DateTime.Now.ToString("yyyyMMdd-HHmmss_") + Guid.NewGuid() + "." + FileExtension;
                 //fname = Guid.NewGuid() + "." + FileExtension;
             }
 
@@ -121,7 +122,7 @@ namespace DataLayer.Classes
             {
                 return fname;
             }
-           
+
         }
 
         public static string GetFileBase64(string path)
@@ -465,7 +466,7 @@ namespace DataLayer.Classes
             //}
             //else
             //{
-                mail.Body = Body;
+            mail.Body = Body;
             //}
             //SMTP
             //now attached the file
@@ -505,7 +506,7 @@ namespace DataLayer.Classes
             mail.Subject = Subject;
             mail.IsBodyHtml = false;
             mail.Body = Body;
-            
+
             SmtpClient SmtpServer = new SmtpClient(mailServer)
             {
                 DeliveryMethod = SmtpDeliveryMethod.Network,
@@ -900,7 +901,7 @@ namespace DataLayer.Classes
             switch (extension.ToLower())
             {
                 #region Big freaking list of mime types
-                case "bak":return "application/octet-stream";
+                case "bak": return "application/octet-stream";
                 case "323": return "text/h323";
                 case "3g2": return "video/3gpp2";
                 case "3gp": return "video/3gpp";
@@ -1466,5 +1467,44 @@ namespace DataLayer.Classes
                 default: return "application/octet-stream";
             }
         }
+
+        public static DataTable GetReportBySPNameAndParam(string storedProcName, string paramName, dynamic paramValue)
+        {
+            if (string.IsNullOrEmpty(storedProcName) || string.IsNullOrEmpty(paramName))
+            {
+                throw new ArgumentException("Stored Procedure name , Parameter name and  Parameter value cannot be null or empty.");
+            }
+
+            try
+            {
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter(paramName, paramValue)
+                };
+
+                var connection = SqlHelper.GetCon();
+                var dataTable = SqlHelper.ExecuteDataset(connection, CommandType.StoredProcedure, storedProcName, parameters.ToArray()).Tables[0];
+
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public static DataTable GetReportBySPName(string SPNName, string ParamName, dynamic ParamValue)
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SPNName).Tables[0];
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

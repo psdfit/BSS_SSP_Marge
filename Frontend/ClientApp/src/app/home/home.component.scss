@@ -1,193 +1,314 @@
-.mat-column-SchemeName {
-  flex: 0 0 200px;
+// .mat-column-SchemeName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-SchemeCode {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-SchemeName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-PTypeName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-PCategoryName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-Gender {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-FundingSourceName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-GenderName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-MinAge {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-MaxAge {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-StipendMode {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-BusinessRuleType {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-Action1 {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TSPName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TSPCode {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-Address {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-NTN {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-PNTN {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-GST {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-FTN {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-HeadName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-CPName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-CPLandline {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-ClassCode {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-ClassStatusName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-Duration {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TrainingAddressLocation {
+//   flex: 0 0 300px;
+// }
+
+// .mat-column-StartDate {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-EndDate {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TradeName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TraineesPerClass {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-CertAuthName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-RTP {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TraineeName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TraineeCode {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-StatusName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TraineeCNIC {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-GuardianName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-FatherName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-GenderName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TraineeAge {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-ContactNumber1 {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TehsilName {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-NTPStatus {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-InceptionReportDueOn {
+//   flex: 0 0 200px;
+// }
+
+// .mat-column-TraineeRegistrationDueOn {
+//   flex: 0 0 230px;
+// }
+
+// .mat-column-Action {
+//   flex: 0 0 100px;
+// }
+
+// .mat-column-ClassBatch {
+//   flex: 0 0 200px;
+// }
+
+// .mat-cell {
+//   border: 1px solid black;
+// }
+
+// .mat-header-cell {
+//   border: 1px solid black;
+// }
+
+// mat-row, mat-footer-row {
+//   min-height: 19px !important;
+// }
+
+// mat-header-row {
+//   min-height: 23px !important;
+// }
+
+// .table-responsive {
+//   white-space: nowrap !important;
+// }
+
+// body .mat-table {
+//   display: table;
+//   width: 100%;
+//   border-collapse: collapse;
+// }
+
+// mat-row, mat-header-row, mat-footer-row {
+//   display: table-row !important;
+// }
+
+// mat-cell, mat-header-cell, mat-footer-cell {
+//   display: table-cell !important;
+//   vertical-align: middle;
+// }
+
+.block {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: #808080;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
 }
 
-.mat-column-SchemeCode {
-  flex: 0 0 200px;
+.tableSetting {
+  margin-right: 0;
+  padding-right: 0
 }
 
-.mat-column-SchemeName {
-  flex: 0 0 200px;
+.nextButton {
+  margin: 0;
+  padding: 0;
+  height: 110px;
+  border-radius: 0
 }
 
-.mat-column-PTypeName {
-  flex: 0 0 200px;
+
+
+
+table{
+  border: 1px solid #80808029 !important;
 }
 
-.mat-column-PCategoryName {
-  flex: 0 0 200px;
+// .mat-header-cell {
+//   border: 1px solid #80808029;
+// }
+
+.mat-sort-header-container {
+  align-items: left !important;
+  position: relative !important;
+  right: 8px !important;
+}
+mat-row, mat-header-row, mat-footer-row {
+  display: table-row !important;
 }
 
-.mat-column-Gender {
-  flex: 0 0 200px;
+
+mat-cell, mat-header-cell, mat-footer-cell {
+  display: table-cell !important;
+   vertical-align: middle;
+}
+body .mat-tab-label {
+  border-radius: 1px important;
+  color: #000;
+  margin: 2px !important;
+}
+body .mat-tab-label-active {
+  background: #fdb813 !important;
+  color: #000;
 }
 
-.mat-column-FundingSourceName {
-  flex: 0 0 200px;
+mat-row, mat-footer-row {
+min-height: 30px !important;
+}
+.select-all {
+margin: 5px 17px;
 }
 
-.mat-column-GenderName {
-  flex: 0 0 200px;
+
+mat-header-cell {
+  // background-color: #fdb813;
+  font-size: 13px;
 }
 
-.mat-column-MinAge {
-  flex: 0 0 200px;
+
+.mat-cell {
+  flex: 0 0 220px;
 }
 
-.mat-column-MaxAge {
-  flex: 0 0 200px;
+.mat-header-cell {
+  flex: 0 0 220px;
 }
 
-.mat-column-StipendMode {
-  flex: 0 0 200px;
-}
 
-.mat-column-BusinessRuleType {
-  flex: 0 0 200px;
-}
-
-.mat-column-Action1 {
-  flex: 0 0 200px;
-}
-
-.mat-column-TSPName {
-  flex: 0 0 200px;
-}
-
-.mat-column-TSPCode {
-  flex: 0 0 200px;
-}
-
-.mat-column-Address {
-  flex: 0 0 200px;
-}
-
-.mat-column-NTN {
-  flex: 0 0 200px;
-}
-
-.mat-column-PNTN {
-  flex: 0 0 200px;
-}
-
-.mat-column-GST {
-  flex: 0 0 200px;
-}
-
-.mat-column-FTN {
-  flex: 0 0 200px;
-}
-
-.mat-column-HeadName {
-  flex: 0 0 200px;
-}
-
-.mat-column-CPName {
-  flex: 0 0 200px;
-}
-
-.mat-column-CPLandline {
-  flex: 0 0 200px;
-}
-
-.mat-column-ClassCode {
-  flex: 0 0 200px;
-}
-
-.mat-column-ClassStatusName {
-  flex: 0 0 200px;
-}
-
-.mat-column-Duration {
-  flex: 0 0 200px;
-}
-
-.mat-column-TrainingAddressLocation {
-  flex: 0 0 300px;
-}
-
-.mat-column-StartDate {
-  flex: 0 0 200px;
-}
-
-.mat-column-EndDate {
-  flex: 0 0 200px;
-}
-
-.mat-column-TradeName {
-  flex: 0 0 200px;
-}
-
-.mat-column-TraineesPerClass {
-  flex: 0 0 200px;
-}
-
-.mat-column-CertAuthName {
-  flex: 0 0 200px;
-}
-
-.mat-column-RTP {
-  flex: 0 0 200px;
-}
-
-.mat-column-TraineeName {
-  flex: 0 0 200px;
-}
-
-.mat-column-TraineeCode {
-  flex: 0 0 200px;
-}
-
-.mat-column-StatusName {
-  flex: 0 0 200px;
-}
-
-.mat-column-TraineeCNIC {
-  flex: 0 0 200px;
-}
-
-.mat-column-GuardianName {
-  flex: 0 0 200px;
-}
-
-.mat-column-FatherName {
-  flex: 0 0 200px;
-}
-
-.mat-column-GenderName {
-  flex: 0 0 200px;
-}
-
-.mat-column-TraineeAge {
-  flex: 0 0 200px;
-}
-
-.mat-column-ContactNumber1 {
-  flex: 0 0 200px;
-}
-
-.mat-column-TehsilName {
-  flex: 0 0 200px;
-}
-
-.mat-column-NTPStatus {
-  flex: 0 0 200px;
-}
-
-.mat-column-InceptionReportDueOn {
-  flex: 0 0 200px;
-}
-
-.mat-column-TraineeRegistrationDueOn {
-  flex: 0 0 230px;
-}
-
-.mat-column-Action {
-  flex: 0 0 100px;
-}
-
-.mat-column-ClassBatch {
-  flex: 0 0 200px;
+.mat-cell, .mat-footer-cell {
+  border: 0;
+  padding: 7px;
 }
 
 .mat-cell {
@@ -199,11 +320,14 @@
 }
 
 mat-row, mat-footer-row {
+  display: table-row !important;
   min-height: 19px !important;
+  height: 40px !important;
 }
 
 mat-header-row {
-  min-height: 23px !important;
+  min-height: 30px !important;
+  display: table-row !important;
 }
 
 .table-responsive {
@@ -216,11 +340,23 @@ body .mat-table {
   border-collapse: collapse;
 }
 
-mat-row, mat-header-row, mat-footer-row {
-  display: table-row !important;
-}
 
 mat-cell, mat-header-cell, mat-footer-cell {
   display: table-cell !important;
   vertical-align: middle;
 }
+
+.myAnchor {
+  color: #005b9e;
+}
+
+.myAnchor:hover {
+  color: #fbb417;
+}
+
+.select-all {
+  margin: 5px 17px;
+}
+
+
+

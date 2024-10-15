@@ -722,9 +722,7 @@ export class PBTEComponent implements OnInit {
 
   openedTradeSelection(row: any) {
     this.pbteTrade = [];
-    const data = this.GetDataObject.trade.filter(
-      (x) => x.CategoryName == row.PBTESchemeName
-    );
+    const data = this.GetDataObject.trade.filter((x) => x.CategoryName == row.PBTESchemeName);
     this.pbteTrade = data;
     if (this.pbteTrade.length == 0) {
       this.ComSrv.ShowError(

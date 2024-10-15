@@ -180,29 +180,38 @@ export class AnnualPlanApprovalComponent implements OnInit {
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
   LoadMatTable(tableData: any, dataType: string) {
+    console.log(this.currentUser.RoleTitle)
     this.cdr.detectChanges();
     switch (dataType) {
       case "Program":
-        const excludeColumnArray = [
-          "WorkflowRemarks",
-          "SSPWorkflow",
-          "IsSubmitted",
-          "ProcessStatus",
-          "AssociationStartDate",
-          "AssociationEndDate",
-          "IsWorkflowAttached",
-          "Workflow",
-          "IsCriteriaAttached",
-          "Criteria",
-          "CriteriaRemarks",
-          "StartDate",
-          "EndDate",
-          "StatusRemarks",
-          "IsFinalApproved",
-        ];
+
+      let excludeColumnArray = [
+        "WorkflowRemarks",
+        "SSPWorkflow",
+        "IsSubmitted",
+        "ProcessStatus",
+        "AssociationStartDate",
+        "AssociationEndDate",
+        "IsWorkflowAttached",
+        "Workflow",
+        "IsCriteriaAttached",
+        "Criteria",
+        "CriteriaRemarks",
+        "StartDate",
+        "EndDate",
+        "StatusRemarks",
+        "IsFinalApproved",
+      ]
+      
+      if(this.currentUser.RoleTitle=="Program Development")
+      {
+        excludeColumnArray=[...excludeColumnArray,'PlaningType','SelectionMethod']
+      }
+
         this.TableColumns = Object.keys(tableData[0]).filter(
           (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
         );
+
         this.TableColumns.unshift("Action");
         this.TablesData = new MatTableDataSource(tableData);
         this.TablesData.paginator = this.Paginator;

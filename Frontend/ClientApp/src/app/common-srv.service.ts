@@ -37,6 +37,27 @@ export class MenuItem {
 
 
 export class CommonSrvService {
+
+
+  base64ToFile(res: string, mimeType: string = 'application/pdf') {
+    let byteCharacters = atob(res);
+
+    let byteNumbers = new Array(byteCharacters.length);
+
+    for (var i = 0; i < byteCharacters.length; i++)
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+
+    let byteArray = new Uint8Array(byteNumbers);
+    let file = new Blob([byteArray], { type: 'application/pdf' });
+    //return this.domSanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(file));
+    return file;
+  }
+  dateFilter = (d: Date | null): boolean => {
+    const date = (d || new Date());
+    // Prevent after current date selection .
+    return date <= new Date();
+  }
+  
   // appSettings: any = (appSettings as any).default;
   appConfig: any;
   userrights: any;

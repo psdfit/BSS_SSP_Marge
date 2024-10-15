@@ -126,23 +126,23 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
     }
   }
   // -----------------//Checking login for every click.
-  @HostListener('document:click', ['$event'])
-  documentClick(event: MouseEvent) {
-    //Checking session is logout or not
-    if (this.IsTspUser) {
-      if (this.router.url !== "/profile-manage/profile" && this.router.url !== "/profile-manage/base-data") {
-        this.common.getJSON('api/Users/GetSession?SessionID=' + sessionStorage.getItem("SessionID") + '&UserID=' + sessionStorage.getItem("UserID")).subscribe((d: any) => {
-          this.userSessionDetail = d;
-          if (this.userSessionDetail === null) {
-            if (this.IsTspUser) {
-              this.logout();
-            }
-          }
-        }, error => this.error = error);
-      }
+  // @HostListener('document:click', ['$event'])
+  // documentClick(event: MouseEvent) {
+  //   //Checking session is logout or not
+  //   if (this.IsTspUser) {
+  //     if (this.router.url !== "/profile-manage/profile" && this.router.url !== "/profile-manage/base-data") {
+  //       this.common.getJSON('api/Users/GetSession?SessionID=' + sessionStorage.getItem("SessionID") + '&UserID=' + sessionStorage.getItem("UserID")).subscribe((d: any) => {
+  //         this.userSessionDetail = d;
+  //         if (this.userSessionDetail === null) {
+  //           if (this.IsTspUser) {
+  //             this.logout();
+  //           }
+  //         }
+  //       }, error => this.error = error);
+  //     }
 
-    }
-  }
+  //   }
+  // }
   ngOnInit(): void {
     // debugger;
     this.Notification();

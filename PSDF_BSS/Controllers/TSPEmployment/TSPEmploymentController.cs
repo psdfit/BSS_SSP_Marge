@@ -468,7 +468,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                     if (model.TraineeID != 0 && model.TraineeID != null)
                     {
                         Parallel.Invoke(() => ls.Add("Class", srvClass.GetByClassID(Classid)),
-                                        //() => ls.Add("TraineeProfile", new SRVTraineeProfile().FetchTraineeProfile()),
+                                        () => ls.Add("ClassDetail", Common.GetReportBySPNameAndParam("RD_EmplomentDetail","ClassID",model.ClassID)),
                                         () => ls.Add("PlacementStatus", Common.FilterPlacementDropdown(srvEmploymentStatus.FetchEmploymentStatus(false))),
                                         () => ls.Add("PlacementTypes", srvPlacementType.FetchPlacementType(false)),
                                         () => ls.Add("District", srvDistrict.FetchAllPakistanDistrict(false)),
