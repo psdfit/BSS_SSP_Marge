@@ -378,6 +378,7 @@ export class PBTEComponent implements OnInit {
     this.initForm();
 
     this.getPBTEClassData();
+    this.getPBTEExamResultTraineeData();
     // this.GetPbteData("Scheme")
     // this.GetPbteData("Class")
     // this.GetPbteData("CenterLocation")
