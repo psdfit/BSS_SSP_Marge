@@ -43,9 +43,11 @@ export class TspTraineePortalComponent implements OnInit {
   error = '';
   selectedOption: number;
   selectedProgramName: string;
+  registrationError: string = "";
   selectedProgram: any;
   showButtons: boolean = false;
   isSubmitButtonDisabled: boolean = false;
+  isSubmitButtonDisabledGrid: boolean = false;
   selectedTrainingLocationID: number | null = null;
   selectedTradeID: number | null = null;
   buttonText: string = 'Submit for Interview';
@@ -97,7 +99,7 @@ export class TspTraineePortalComponent implements OnInit {
   }
 
   openDialog(row: any): void {
-    if (this.isSubmitButtonDisabled) {
+    if (this.isSubmitButtonDisabledGrid) {
       return;
     }
     const dialogRef = this.dialog.open(TspDialogueComponent, {
@@ -118,6 +120,7 @@ export class TspTraineePortalComponent implements OnInit {
     this.programFilter.setValue(programId);
     this.getdistrictbyTSP();
     this.isSubmitButtonDisabled = this.selectedProgram?.isLocked ?? false;
+    this.isSubmitButtonDisabledGrid = this.selectedProgram?.isLocked ?? false;
   }
   onDistrictSelectionChange(district: number) {
     // Update the value of programFilter
@@ -131,6 +134,7 @@ export class TspTraineePortalComponent implements OnInit {
     this.selectedTradeID = tradeID;
     this.selectedTrainingLocationID = locationID;
     this.getTraineeProfileTSP();
+    this.getTSPCritetia();
   }
   getprogrambyTSP() {
     this.commonService.getJSON(`api/Scheme/SSPFetchSchemeByUser`)
@@ -177,6 +181,31 @@ export class TspTraineePortalComponent implements OnInit {
         this.commonService.ShowError(error.error + '\n' + error.message);
       })
   }
+
+  getTSPCritetia() {
+    const programid = this.programFilter.value;
+    const districtid = this.districtFilter.value;
+    const tradeid = this.tradeFilter.value;
+
+    this.commonService.getJSON(`api/TraineeProfile/GetTSPTradeCriteria/` + this.programFilter.value + '/' + this.selectedTradeID)
+      .subscribe((response: any[]) => {
+        if (response.length > 0) {
+          if (response[0].ErrorTypeID == 10 && response[0].ErrorTypeName == 'TSP Criteria') {
+            this.registrationError = response[0].ErrorMessage;
+            this.isSubmitButtonDisabled = true;
+            if (this.selectedProgram?.isLocked ?? false) {
+              this.isSubmitButtonDisabledGrid = true;
+            }
+            else {
+              this.isSubmitButtonDisabledGrid = false;
+            }
+          }
+        }
+      }, error => {
+        this.commonService.ShowError(error.error + '\n' + error.message);
+      })
+  }
+
   getTraineeProfileTSP() {
     const programid = this.programFilter.value;
     const districtid = this.districtFilter.value;

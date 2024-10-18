@@ -68,14 +68,17 @@
             <button mat-flat-button color="primary" (click)="onSubmit('Submit')" [disabled]="isSubmitButtonDisabled" id="btnSubmit">{{ buttonText }}</button>
           </div>
         </div>
-        <div class="col-sm-6" *ngIf="selectedProgram">
+        <div class="col-sm-9" *ngIf="selectedProgram">
           <p>
+            &nbsp; &nbsp;
             <span>Start Date: {{ selectedProgram.ProcessStartDate | date: 'yyyy-MM-dd'}}</span> &nbsp;
             <span>End Date: {{ selectedProgram.ProcessEndDate | date: 'yyyy-MM-dd'}}</span>&nbsp;
             <span [ngClass]="{'locked': selectedProgram.isLocked, 'opened': !selectedProgram.isLocked}">
               Assessment is {{ selectedProgram.isLocked ? 'Closed' : 'Open' }}
             </span>
-          </p>
+          </p> &nbsp; &nbsp;
+          <h5 class="text-danger" *ngIf="registrationError !='' "> {{registrationError}}</h5>
+
         </div>
       </div>
       <br />
@@ -182,7 +185,7 @@
                 <mat-checkbox [(ngModel)]="row.isChecked" [checked]="selection.isSelected(row)" (change)="onCheckboxChange(row)"></mat-checkbox>
               </ng-container>
               <ng-container *ngIf="traineelistFilter.value === '2'">
-                <a mat-button color="primary" title="Update Status" *ngIf="isTSPUser || (isInternalUser)" [disabled]="isSubmitButtonDisabled" (click)="openDialog(row)">Update Status</a>
+                <a mat-button color="primary" title="Update Status" *ngIf="isTSPUser || (isInternalUser)" [disabled]="isSubmitButtonDisabledGrid" (click)="openDialog(row)">Update Status</a>
               </ng-container>
               <ng-container *ngIf="traineelistFilter.value === '3'">
               </ng-container>

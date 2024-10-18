@@ -1929,6 +1929,45 @@ namespace DataLayer.Services
 
             return TraineeProfile;
         }
+
+        public List<CheckRegistrationCriteriaModel> checkTSPTradeCriteria(int programid, int tradeid)
+
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[2];
+                param[0] = new SqlParameter("@ProgramID", programid);
+                param[1] = new SqlParameter("@TradeID", tradeid);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SSPTradeTSPTargetcheck", param).Tables[0];
+                if (dt.Rows.Count > 0)
+                {
+                    return LoopinCheckRegistrationCriteria(dt);
+                }
+                else
+                    return new List<CheckRegistrationCriteriaModel>();
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        private List<CheckRegistrationCriteriaModel> LoopinCheckRegistrationCriteria(DataTable dt)
+        {
+            List<CheckRegistrationCriteriaModel> list = new List<CheckRegistrationCriteriaModel>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                list.Add(RowOfheckRegistrationCriteria(r));
+            }
+            return list;
+        }
+
+        private CheckRegistrationCriteriaModel RowOfheckRegistrationCriteria(DataRow r)
+        {
+            CheckRegistrationCriteriaModel model = new CheckRegistrationCriteriaModel();
+            model.ErrorMessage = r.Field<string>("ErrorMessage");
+            model.ErrorTypeID = r.Field<int>("ErrorTypeID");
+            model.ErrorTypeName = r.Field<string>("ErrorTypeName");
+            return model;
+        }
         public List<TraineeProfileModel> SaveTraineeIntrestProfile(TraineeProfileModel traineeProfile)
         {
             string errMsg = string.Empty;
