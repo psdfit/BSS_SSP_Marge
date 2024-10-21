@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using DataLayer.Interfaces;
 using DataLayer.Models.SSP;
 using Microsoft.AspNetCore.Mvc;
@@ -128,6 +129,44 @@ namespace PSDF_BSSMaster.Controllers
         }
 
 
+            [HttpPost]
+            [Route("FetchReport")]
+            public IActionResult FetchReport([FromBody] dynamic param)
+            {
+                
+                string[] split = HttpContext.Request.Path.Value.Split("/");
+                bool isAuthorized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), split[2], split[3]);
 
-    }
+                if (isAuthorized)
+                {
+                    try
+                    {
+                    string spName = param.SpName.Value; 
+                    int value = Convert.ToInt32(param.TspAssociationMaster.Value); 
+                    
+                    DataTable dataTable = srvAssociation.FetchReportBySPNameAndParam(spName, "TspAssociationMaster", value);
+                    string[] attachments = new string[] { "Evidence" };
+                    var dataWithAttachment = srvAssociation.LoopingData(dataTable, attachments);
+                    return Ok(dataWithAttachment);
+                    }
+                    catch (Exception e)
+                    {
+                        return BadRequest($"Error: {e.Message}");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Access Denied. You are not authorized for this activity");
+                }
+            }
+
+            private object ProcessRequest(string param)
+            {
+                return new { Message = "Processed successfully", ParamReceived = param };
+            }
+        }
+
+
+
+    
 }
