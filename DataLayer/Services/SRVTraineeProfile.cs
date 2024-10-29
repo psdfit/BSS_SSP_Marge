@@ -1930,14 +1930,15 @@ namespace DataLayer.Services
             return TraineeProfile;
         }
 
-        public List<CheckRegistrationCriteriaModel> checkTSPTradeCriteria(int programid, int tradeid)
+        public List<CheckRegistrationCriteriaModel> checkTSPTradeCriteria(int programid, int tradeid, int userid)
 
         {
             try
             {
-                SqlParameter[] param = new SqlParameter[2];
+                SqlParameter[] param = new SqlParameter[3];
                 param[0] = new SqlParameter("@ProgramID", programid);
                 param[1] = new SqlParameter("@TradeID", tradeid);
+                param[2] = new SqlParameter("@TSPID", userid);
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SSPTradeTSPTargetcheck", param).Tables[0];
                 if (dt.Rows.Count > 0)
                 {
@@ -1966,6 +1967,9 @@ namespace DataLayer.Services
             model.ErrorMessage = r.Field<string>("ErrorMessage");
             model.ErrorTypeID = r.Field<int>("ErrorTypeID");
             model.ErrorTypeName = r.Field<string>("ErrorTypeName");
+            model.TSPCapacity = r.Field<int>("TSPCapacity");
+            model.TradeCapicity = r.Field<int>("TradeCapacity");
+            model.EnrolledTraineesTSP = r.Field<int>("RemainingCapacity");
             return model;
         }
         public List<TraineeProfileModel> SaveTraineeIntrestProfile(TraineeProfileModel traineeProfile)

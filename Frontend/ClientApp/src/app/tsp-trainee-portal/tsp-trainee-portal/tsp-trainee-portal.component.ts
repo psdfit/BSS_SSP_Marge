@@ -50,6 +50,9 @@ export class TspTraineePortalComponent implements OnInit {
   isSubmitButtonDisabledGrid: boolean = false;
   selectedTrainingLocationID: number | null = null;
   selectedTradeID: number | null = null;
+  TSPCapacity: number = 0;
+  TradeCapicity: number = 0;
+  EnrolledTraineesTSP: number = 0;
   buttonText: string = 'Submit for Interview';
   currentUser: UsersModel;
   enumUserLevel = EnumUserLevel;
@@ -108,6 +111,7 @@ export class TspTraineePortalComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe(result => {
       this.getTraineeProfileTSP();
+      this.getTSPCritetia();
       console.log(result);
       // this.updateTraineeStatus(result);
     })
@@ -168,7 +172,7 @@ export class TspTraineePortalComponent implements OnInit {
     const districtid = this.districtFilter.value;
     this.commonService.getJSON(`api/Trade/SSPRD_TradebyTSP/` + programid + '/' + districtid)
       .subscribe(data => {
-        this.tradeArray = (data as any[]);
+        this.tradeArray = (data as any[]);        
       }, error => {
         this.commonService.ShowError(error.error + '\n' + error.message);
       })
@@ -187,9 +191,15 @@ export class TspTraineePortalComponent implements OnInit {
     const districtid = this.districtFilter.value;
     const tradeid = this.tradeFilter.value;
 
+    if (tradeid == 0) {
+      return;
+    }
     this.commonService.getJSON(`api/TraineeProfile/GetTSPTradeCriteria/` + this.programFilter.value + '/' + this.selectedTradeID)
       .subscribe((response: any[]) => {
         if (response.length > 0) {
+          this.TSPCapacity = response[0].TSPCapacity;
+          this.TradeCapicity = response[0].TradeCapicity;
+          this.EnrolledTraineesTSP = response[0].EnrolledTraineesTSP;
           if (response[0].ErrorTypeID == 10 && response[0].ErrorTypeName == 'TSP Criteria') {
             this.registrationError = response[0].ErrorMessage;
             this.isSubmitButtonDisabled = true;
@@ -244,14 +254,46 @@ export class TspTraineePortalComponent implements OnInit {
     this.getTraineeProfileTSP();
   }
 
-  onSelectAllChange(): void {
-    // Toggle selection for all rows
-    this.TraineeDatasource.data.forEach(row => this.selection.toggle(row));
+  onSelectAllChange(event: any): void {
+    // Step 1: Ensure TSPCapacity does not exceed TradeCapacity
+    if (this.TSPCapacity > this.TradeCapicity) {
+      this.TSPCapacity = this.TradeCapicity; // Set TSPCapacity equal to TradeCapacity if it exceeds it
+    }
 
-    // Update selectAll based on whether all rows are selected
+    // Step 2: Calculate the remaining capacity for selection
+   // const remainingCapacity = this.TSPCapacity - this.EnrolledTraineesTSP;
+    const remainingCapacity =  this.EnrolledTraineesTSP;
+
+    // Step 3: Get the current selection count
+    const currentSelectedCount = this.selection.selected.length;
+
+    // Step 4: Determine how many more can be selected
+    const canSelectCount = Math.max(0, remainingCapacity - currentSelectedCount);
+
+    // Step 5: Select items based on the "Select All" checkbox state
+    if (event.checked) {
+      // Get all rows that are not currently selected
+      const rowsToSelect = this.TraineeDatasource.data.filter(row => !this.selection.isSelected(row));
+
+      // Select only up to the remaining capacity
+      const rowsToActuallySelect = rowsToSelect.slice(0, canSelectCount);
+
+      // Select the rows within capacity
+      rowsToActuallySelect.forEach(row => this.selection.select(row));
+    } else {
+      // If the checkbox is unchecked, clear the selection
+      this.selection.clear();
+    }
+
+    // Update selectAll checkbox state based on the current selection
     this.selectAll = this.TraineeDatasource.data.length > 0 && this.TraineeDatasource.data.every(row => this.selection.isSelected(row));
+
+    // Trigger any other selection-related logic
+    this.selectionChanged();
   }
   selectionChanged(): void {
+    console.log(this.selection)
+    
     // Check if TraineeDatasource is not null and has length greater than 0
     if (this.TraineeDatasource.data && this.TraineeDatasource.data && this.TraineeDatasource.data.length > 0) {
       // Update selectAll based on whether all rows are selected
@@ -261,13 +303,42 @@ export class TspTraineePortalComponent implements OnInit {
       this.selectAll = false;
     }
   }
+  //selectionCheck() {
+  //  debugger;
+  //  console.log(this.selection.selected.length)
 
+  //  if (this.selection.selected.length + 1) {
+  //    this
+  //  }
 
-  onCheckboxChange(checkedItem: any): void {
-    // Toggle selection for the clicked row
+  //}
+
+  onCheckboxChange(checkedItem: any, event: any): void {
+    // Step 1: Ensure TSPCapacity does not exceed TradeCapacity
+    this.getTSPCritetia();
+    debugger;
+    if (this.TSPCapacity > this.TradeCapicity) {
+      this.TSPCapacity = this.TradeCapicity; // Set TSPCapacity equal to TradeCapacity if it exceeds it
+    }
+    // Step 2: Calculate the remaining capacity for selection
+   // const remainingCapacity = this.TSPCapacity - this.EnrolledTraineesTSP;
+    const remainingCapacity = this.EnrolledTraineesTSP;
+
+    // Step 3: Check if the number of selected trainees exceeds the remaining capacity
+   
+    if (this.selection.selected.length >= remainingCapacity && !this.selection.isSelected(checkedItem)) {
+    // If already at capacity and the item is not already selected, prevent further selection
+      alert('Your capacity is filled. No further selection is available.');
+      event.source.checked = false;
+      event.preventDefault();
+      return;
+    }
+ // Toggle selection for the clicked row
     this.selection.toggle(checkedItem);
     // Update selectAll based on whether all rows are selected
     this.selectAll = this.TraineeDatasource.data.length > 0 && this.TraineeDatasource.data.every(row => this.selection.isSelected(row));
+
+
     this.selectionChanged();
   }
   clearSelection(): void {
@@ -330,6 +401,7 @@ export class TspTraineePortalComponent implements OnInit {
             this.commonService.openSnackBar('Data submitted for Interview successfully!');
             //this.TraineeDatasource = null;
             this.getTraineeProfileTSP();
+            this.getTSPCritetia();
             //this.clearSelection();
           } catch (error) {
             console.error('Error submitting data:', error);

@@ -26,6 +26,7 @@ namespace DataLayer.Models
         public string SAPID { get; set; }
 
         public int TrainingLocationID { get; set; }
+
         //public int TraineeEducationTypeID { get; set; }
         ////public int Duration	{ get; set; }
         //public int TotalTrainingHours { get; set; }

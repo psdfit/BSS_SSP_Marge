@@ -822,8 +822,8 @@ namespace PSDF_BSSRegistration.Controllers
         {
             try
             {
-
-                var criteria = srvTraineeProfile.checkTSPTradeCriteria(programid, tradeid);
+                int CurUserID = Convert.ToInt32(User.Identity.Name);
+                var criteria = srvTraineeProfile.checkTSPTradeCriteria(programid, tradeid, CurUserID);
                    
                    
                 return Ok(criteria);
