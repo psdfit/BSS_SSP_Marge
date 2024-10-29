@@ -72,7 +72,7 @@
               <div class="col-sm-3" hidden>
                 <mat-form-field>
                   <mat-label>Select Registration Authority</mat-label>
-                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority"
+                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority" 
                     matInput required>
                     <mat-option *ngFor="let s of registrationAuthority"
                       [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
@@ -397,7 +397,7 @@
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Registration Authority</mat-label>
-                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority"
+                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority" (ngModelChange)="onChangeRegistration()"
                     matInput required>
                     <mat-option *ngFor="let s of registrationAuthority"
                       [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
@@ -436,7 +436,7 @@
                   </mat-error>
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-3" *ngIf="Certificate.get('RegistrationAuthority').value != 5">
                 <mat-form-field>
                   <mat-label>Issuance Date</mat-label>
                   <input formControlName="IssuanceDate" [max]="maxDate" [matDatepicker]="IssuanceDate" readonly matInput
@@ -450,7 +450,7 @@
                   </mat-error>
                 </mat-form-field>
               </div>
-              <div class="col-sm-3" *ngIf="Certificate.get('RegistrationStatus').value != 3">
+              <div class="col-sm-3" *ngIf="Certificate.get('RegistrationStatus').value != 3 && Certificate.get('RegistrationAuthority').value != 5">
                 <mat-form-field>
                   <mat-label>Expiry Date</mat-label>
                   <input formControlName="ExpiryDate" [max]="maxDate" [matDatepicker]="ExpiryDate" readonly matInput
@@ -533,8 +533,12 @@
                   </span>
                 </ng-container>
 
-                <ng-container *ngIf="column =='IssuanceDate'">
+            
+                <ng-container *ngIf="column =='IssuanceDate' && row[column] !='---'">
                   &nbsp; {{ row[column] | date:environment.DateFormat }}
+                </ng-container>
+                <ng-container *ngIf="column =='IssuanceDate' && row[column] =='---'">
+                  &nbsp; {{ row[column] }}
                 </ng-container>
                 <ng-container *ngIf="column =='ExpiryDate' && row[column] !='---'">
                   &nbsp; {{ row[column] | date:environment.DateFormat }}

@@ -111,20 +111,20 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
   //Author: Ali Haider
   //Date: 20-Jun-2023
   //Specification: Logout triggred on closing of browser or tab.
-  @HostListener('window:beforeunload', ['$event'])
-  unloadHandler(event: Event) {
-    var inFormOrLink;
-    $('a').on('click', function () { inFormOrLink = true; });
-    $('form').bind('submit', function () { inFormOrLink = true; });
-    // Remove the event listeners for 'click' on 'a' elements and 'submit' on 'form' elements
-    $('a').off('click');
-    $('form').off('submit');
-    if (this.IsTspUser) {
-      if (!inFormOrLink) {
-        this.logout();
-      }
-    }
-  }
+  // @HostListener('window:beforeunload', ['$event'])
+  // unloadHandler(event: Event) {
+  //   var inFormOrLink;
+  //   $('a').on('click', function () { inFormOrLink = true; });
+  //   $('form').bind('submit', function () { inFormOrLink = true; });
+  //   // Remove the event listeners for 'click' on 'a' elements and 'submit' on 'form' elements
+  //   $('a').off('click');
+  //   $('form').off('submit');
+  //   if (this.IsTspUser) {
+  //     if (!inFormOrLink) {
+  //       this.logout();
+  //     }
+  //   }
+  // }
   // -----------------//Checking login for every click.
   // @HostListener('document:click', ['$event'])
   // documentClick(event: MouseEvent) {
