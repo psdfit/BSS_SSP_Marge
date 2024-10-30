@@ -47,7 +47,6 @@ declare const tehsilsGeojson: FeatureCollection;
 export class HomeComponent implements OnInit, AfterViewInit {
   selection = new SelectionModel<any>(true, []);
   getTraineeProfileRegistration_Report() {
-    
     debugger;
     let ids = this.selection.selected.map((x) => x.TraineeID).join(",");
     this.ComSRV.getReportJSON(
@@ -56,7 +55,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       (data: any) => {
         let file = this.ComSRV.base64ToFile(data.Response);
         const fileURL = window.URL.createObjectURL(file);
-        this.selection.clear()
         // if (window.navigator.msSaveOrOpenBlob) {
         //   window.navigator.msSaveOrOpenBlob(file, fileURL.split(':')[1] + '.pdf');
         // } else {
