@@ -382,6 +382,7 @@ export class PBTEComponent implements OnInit {
     // this.GetPbteData("Scheme")
     // this.GetPbteData("Class")
     // this.GetPbteData("CenterLocation")
+    this.getPBTEExamResultTraineeData();
   }
   getSelectedTabData() {
     switch (this.tabGroup?.selectedIndex ?? 0) {
@@ -425,6 +426,7 @@ export class PBTEComponent implements OnInit {
     );
   }
   getPBTESelectedSubTabData() {
+    debugger
     switch (this.tabGroupS?.selectedIndex ?? 0) {
       case 0:
         this.getPBTEClassData();

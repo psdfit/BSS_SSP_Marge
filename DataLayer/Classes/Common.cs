@@ -832,9 +832,10 @@ namespace DataLayer.Classes
             }
             catch (Exception exception)
             {
-                throw exception.InnerException;
+                Console.WriteLine(exception.Message); // Example: Log the exception message
 
-                //etP.con
+                // Optionally, throw the original exception to preserve the stack trace
+                throw;  // This preserves the original exception and its stack trace
             }
         }
 
