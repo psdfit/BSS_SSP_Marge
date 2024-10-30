@@ -70,11 +70,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     );
   }
-
-  onCheckboxChange(event: any, row: any) {
-    this.selection.toggle(row);
-  }
-
   error: String;
   Role: String;
   UnverifiedTraineeEmail: any;

@@ -92,13 +92,9 @@ export class AssociationSubmissionComponent implements OnInit {
     this.AssociationForm.get('TradeLot').valueChanges.subscribe(Id => {
       this.TrainerProfile = []
       this.AssociationForm.get('TrainerDetailID').setValue('')
-      
       if (this.TradeLot != undefined) {
         const TradeLot = this.TradeLot.filter(d => d.TradeLotID == Id)
-        const TSPAssociationSubmission: any[] = this.TSPAssociationSubmission.filter(d => 
-          d.TradeLot == Id && 
-          d.TradeLot != this.selectedTradeLot && 
-          d.TrainingLocation == this.AssociationForm.value.TrainingLocation)
+        const TSPAssociationSubmission: any[] = this.TSPAssociationSubmission.filter(d => d.TradeLot == Id && d.TradeLot != this.selectedTradeLot && d.TrainingLocation == this.AssociationForm.value.TrainingLocation)
         if (TSPAssociationSubmission.length > 0) {
           this.IsExistedTradeLot = true
         } else {
@@ -106,7 +102,6 @@ export class AssociationSubmissionComponent implements OnInit {
         }
         console.log(this.IsExistedTradeLot)
         if (TradeLot.length > 0) {
-         
           this.LotNo = TradeLot[0].LotNo
           console.log(this.LotNo)
           this.updateTrainerData(TradeLot[0].ParentTrade)
@@ -126,7 +121,6 @@ export class AssociationSubmissionComponent implements OnInit {
     }
   }
   Save() {
-    debugger;
     if (this.IsExistedTradeLot == true) {
       this.ComSrv.ShowError('TradeLot is already existed with this selected location')
       return
@@ -134,21 +128,7 @@ export class AssociationSubmissionComponent implements OnInit {
     if (this.associationDetail.length > 0) {
       if (this.AssociationForm.valid && this.associationDetail.valid) {
         this.AssociationForm.get("ProgramID").setValue(this.ProgramID)
-        
-        const lot = this.TradeLot.find(x => x.TradeLotID === this.AssociationForm.get("TradeLot").value);
-
-        if (lot) {
-        const lotTitle = lot.LotNo.split("|")[1];
-        this.AssociationForm.get("TradeLotTitle").setValue(lotTitle);
-        }
-
-        // if(this.LotNo==""){
-          
-        // const Lot=this.TradeLot.find(x=>x.TradeLotID==this.AssociationForm.get("TradeLot").value)
-        // this.AssociationForm.get("TradeLotTitle").setValue((Lot.LotNo).split("|")[1])
-        // }else{
-        //   this.AssociationForm.get("TradeLotTitle").setValue(this.LotNo)
-        // }
+        this.AssociationForm.get("TradeLotTitle").setValue(this.LotNo)
         this.ComSrv.postJSON("api/Association/SaveAssociationSubmission", this.AssociationForm.getRawValue()).subscribe(
           (response) => {
             this.savebtn = ' Save '
@@ -282,9 +262,6 @@ export class AssociationSubmissionComponent implements OnInit {
       TspAssociationMaster: TspAssociationMasterID
     }
     this.AssociationData = await this.FetchData(this.SPName, this.paramObject)
-
-
-    
   }
   async GetTrainingLocation() {
     this.SPName = "RD_SSPTSPTrainingLocation"
@@ -404,24 +381,6 @@ export class AssociationSubmissionComponent implements OnInit {
       this.ComSrv.ShowError(error.error)
     }
   }
-
-  // async TSPAssociationDetail(TspAssociationMasterID) {
-  //   this.SPName = "RD_SSPTSPAssociationDetail";
-  //   this.paramObject = {
-  //     TspAssociationMaster: TspAssociationMasterID,
-  //     SpName: this.SPName,
-  //   };
-  //   try {
-  //     const response = await this.ComSrv.postJSON(
-  //       "api/Association/FetchReport",
-  //       this.paramObject
-  //     ).toPromise();
-  //     this.AssociationData = response;
-  //   } catch (error) {
-  //     this.ComSrv.ShowError(`${error.error}`, "Close", 5000);
-  //   }
-  // }
-
 
   EmptyCtrl(ev: any) {
     this.TSearchCtr.setValue('');
