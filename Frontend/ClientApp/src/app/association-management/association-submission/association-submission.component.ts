@@ -104,25 +104,20 @@ export class AssociationSubmissionComponent implements OnInit {
         if (TradeLot.length > 0) {
           this.LotNo = TradeLot[0].LotNo
           console.log(this.LotNo)
-          this.updateTrainerData(TradeLot[0].ParentTrade)
+          this.updateTrainerData(TradeLot[0].TradeID)
         }
       }
     })
   }
-  async updateTrainerData(ParentTrade: any) {
-    // this.TrainerProfile = this.TrainerDetailByUserID.filter(t => t.TrainerTradeID == TradeId)
-    debugger
-    this.TrainerProfile = this.TrainerDetailByUserID.filter(t =>  
-      t.ParentTrade !="Parent Trade Not Found" && 
-      t.ParentTrade === ParentTrade 
-    )
+  async updateTrainerData(TradeId: any) {
+    this.TrainerProfile = this.TrainerDetailByUserID.filter(t => t.TrainerTradeID == TradeId)
     if (this.TrainerProfile.length == 0) {
       this.ComSrv.ShowError("system couldn't find a trainer for selected trade lot.")
     }
   }
   Save() {
     if (this.IsExistedTradeLot == true) {
-      this.ComSrv.ShowError('TradeLot is already existed with this selected location')
+      this.ComSrv.ShowError('TradeLot is already existed with selected location')
       return
     }
     if (this.associationDetail.length > 0) {
@@ -310,45 +305,19 @@ export class AssociationSubmissionComponent implements OnInit {
     }
   }
   updateTradeLotStatus(TradeLot) {
-    debugger;
-    // const updatedTradeLot = TradeLot.map(item => {
-    //   // const matchedTrade = this.TspTrade.find(trade => trade.TradeID === item.TradeID &&  trade.ParentTrade === item.ParentTrade  && trade.ApprovalStatus === "Accepted" && trade.TrainingLocationID === this.AssociationForm.get('TrainingLocation').value);
-    //   const matchedTrade = this.TspTrade.find(trade =>   trade.ApprovalStatus == "Accepted" &&  trade.ParentTrade === item.ParentTrade  && trade.TrainingLocationID === this.AssociationForm.get('TrainingLocation').value);
-    //   const tradeLotDisabled = matchedTrade ? false : true;
-    //   return {
-    //     ...item,
-    //     tradeLotDisabled: tradeLotDisabled
-    //   };
-    // });
-
     const updatedTradeLot = TradeLot.map(item => {
-      const matchedTrade = this.TspTrade.find(trade => 
-        trade.ApprovalStatus === "Accepted" &&
-        trade.ParentTrade !== "Parent Trade Not Found" &&
-        trade.ParentTrade === item.ParentTrade &&
-        trade.TrainingLocationID === this.AssociationForm.get('TrainingLocation').value
-      );
-    
-      const tradeLotDisabled = !matchedTrade;
-    
-      if (!tradeLotDisabled) {
-        const LotNo = matchedTrade.TradeName + " | " + item.LotNo;
-        item.LotNo = LotNo;
-      }
-    
+      const matchedTrade = this.TspTrade.find(trade => trade.TradeID === item.TradeID && trade.ApprovalStatus === "Accepted" && trade.TrainingLocationID === this.AssociationForm.get('TrainingLocation').value);
+      const tradeLotDisabled = matchedTrade ? false : true;
       return {
         ...item,
-        tradeLotDisabled
+        tradeLotDisabled: tradeLotDisabled
       };
     });
-    
-
-    
     this.TradeLot = updatedTradeLot;
     const selectedTradeLot = this.AssociationForm.get('TradeLot').value;
     const selectedTradeLotData = TradeLot.find(d => d.TradeLotID === selectedTradeLot);
     if (selectedTradeLotData) {
-      this.updateTrainerData(selectedTradeLotData.ParentTrade);
+      this.updateTrainerData(selectedTradeLotData.TradeID);
     }
   }
   
@@ -433,9 +402,7 @@ export class AssociationSubmissionComponent implements OnInit {
     await this.PopulateAssociationDetail(this.AssociationData)
     await this.AssociationForm.get('TrainerDetailID').setValue(row.TrainerDetailID)
   }
-
   isOptionDisabled(item: any): boolean {
-  
     if (this.EditCheck) {
       const selectedValue = this.AssociationForm.get('TrainingLocation').value;
       const isOptionActive = selectedValue == item.TrainingLocationID;
