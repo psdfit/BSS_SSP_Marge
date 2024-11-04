@@ -15,6 +15,7 @@ import { EnumProgramCategory, EnumApprovalProcess } from '../../shared/Enumerati
 import { merge } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { DialogueService } from 'src/app/shared/dialogue.service';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-change-request',
@@ -28,6 +29,8 @@ export class ChangeRequestDialogComponent implements OnInit {
   TraineeDisplayImg: any = "";
   SearchSch = new FormControl('',);
   SearchCls = new FormControl('',);
+  SearchCI = new FormControl('',);
+  SearchRI = new FormControl('',);
   SearchTrainee = new FormControl('',);
   SearchTradeList = new FormControl('',);
   SearchDistrict = new FormControl('',);
@@ -64,6 +67,7 @@ export class ChangeRequestDialogComponent implements OnInit {
 
   displayedColumnsNewInstructor = ['Sr#', 'InstructorName', 'TradeName', 'InstructorCNIC', 'ClassCode', 'NewInstructorCRComments', 'NewInstructorCrStatus'
   ];
+  displayedColumnsReplaceInstructor = ['Sr#', 'InstructorName', 'TradeName', 'ClassCode', 'NewInstructorCrStatus'];
   displayedColumnsInceptionReport = ['ClassCode', 'TradeName', 'ClassStartTime', 'ClassEndTime'
     , 'InceptionCrStatus'
     , "Action"];
@@ -103,6 +107,7 @@ export class ChangeRequestDialogComponent implements OnInit {
   traineeFilter: any[];
   ActiveClassTiming: any;
   doOverlap: Boolean = true;
+  doOverlapRI: Boolean = false;
   GetStartDateI: string;
   GetEndDateI: string;
   GetCurrentStartDateI: Date;
@@ -131,6 +136,10 @@ export class ChangeRequestDialogComponent implements OnInit {
     limit: 5,
     page: 1
   };
+  replaceInstructorForm: FormGroup;
+  currentInstructors: any[] = [];
+  replacementInstructors: any[] = [];
+
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild('SortScheme') SortScheme: MatSort;
@@ -143,6 +152,8 @@ export class ChangeRequestDialogComponent implements OnInit {
   @ViewChild('PageTrainee') PageTrainee: MatPaginator;
   @ViewChild('SortInstructor') SortInstructor: MatSort;
   @ViewChild('PageInstructor') PageInstructor: MatPaginator;
+  @ViewChild('SortReplaceInstructor') SortReplaceInstructor: MatSort;
+  @ViewChild('PageReplaceInstructor') PageReplaceInstructor: MatPaginator;
   @ViewChild('SortClassesForTimeChange') SortClassesForTimeChange: MatSort;
   @ViewChild('PageClassesForTimeChange') PageClassesForTimeChange: MatPaginator;
   @ViewChild('SortClassesForDatesChange') SortClassesForDatesChange: MatSort;
@@ -159,9 +170,18 @@ export class ChangeRequestDialogComponent implements OnInit {
   maskCNIC = {
     mask: '00000-0000000-0'
   }
+  replaceInstructorsCRs: MatTableDataSource<unknown>;
+  classCodeByInstructorID: any;
+  GetCurrentStartDateforReplacementI: any;
+  GetCurrentEndDateforReplacementI: any;
+  GetActiveStartDateforReplacementI: any;
+  GetActiveEndDateforReplacementI: any;
+  IncepReportIDRI: any[];
+  InceptionReportIDRI: any;
 
   constructor(private fb: FormBuilder,
-    private ComSrv: CommonSrvService, public dialogueService: DialogueService
+    private ComSrv: CommonSrvService, public dialogueService: DialogueService,
+
     //public dialogRef: MatDialogRef<ChangeRequestDialogComponent>,
     //@Inject(MAT_DIALOG_DATA) public data: any
 
@@ -311,6 +331,13 @@ export class ChangeRequestDialogComponent implements OnInit {
     this.instructor = new MatTableDataSource([]);
 
     this.formrights = ComSrv.getFormRights();
+
+    this.replaceInstructorForm = this.fb.group({
+      SchemeID: ['', Validators.required],
+      ClassID: ['', Validators.required],
+      CurrentInstructorID: ['', Validators.required],
+      ReplacementInstructorID: ['', Validators.required]
+    });
   }
 
 
@@ -321,6 +348,8 @@ export class ChangeRequestDialogComponent implements OnInit {
     this.SearchTrainee.setValue('');
     this.SearchDistrict.setValue('');
     this.SearchTehsil.setValue('');
+    this.SearchCI.setValue('');
+    this.SearchRI.setValue('');
   }
 
 
@@ -337,8 +366,9 @@ export class ChangeRequestDialogComponent implements OnInit {
     this.userid = this.currentUser.UserID;
     this.GetData();
     this.getSchemes();
-    //this.getSelectedTabData();
-
+    this.getReplaceInstructorFormData();
+    // this.getClassCodeByInstructorID(86082);
+    //this.getSelectedTabData()
   }
 
   ngAfterViewInit() {
@@ -414,7 +444,6 @@ export class ChangeRequestDialogComponent implements OnInit {
       this.tspDistricts = d[1];
 
       this.editTSPData(this.tsp.filteredData[0]);
-
       //this.TSPID.setValue(this.tsp.filteredData['TSPID'])
       //this.TSPName.setValue(this.tsp.filteredData['TSPName'])
       //this.HeadName.setValue(this.tsp.filteredData['HeadName'])
@@ -523,7 +552,6 @@ export class ChangeRequestDialogComponent implements OnInit {
       this.traineetehsils = d[2];
       this.trainee.paginator = this.PageTrainee;
       this.trainee.sort = this.SortTrainee;
-
     }, error => this.error = error // error path
     );*/
     this.initTraineePagedData();
@@ -779,7 +807,6 @@ export class ChangeRequestDialogComponent implements OnInit {
         error => this.error = error // error path
         , () => {
           this.working = false;
-
         });
   }
 
@@ -829,7 +856,6 @@ export class ChangeRequestDialogComponent implements OnInit {
         (error) => {
           this.error = error.error;
           this.ComSrv.ShowError(error.error);
-
         });
   }
 
@@ -1002,6 +1028,112 @@ export class ChangeRequestDialogComponent implements OnInit {
         });
   }
 
+
+
+  // SubmitReplaceInstructor() {
+  //   if (!this.replaceInstructorForm.valid)
+  //     return;
+  //   this.working = true;
+
+  //   console.log(this.addInstructorform.value, 'this.addInstructorform.value')
+
+  //  // if (this.InstrID.value == '') {
+  //  //   this.error = "Only Instructor Profile Change Request is allowed";
+  //  //   this.ComSrv.ShowError(this.error.toString(), "Error");
+  //  //   return;
+  // // }
+
+  // let processKey = EnumApprovalProcess.CR_INSTRUCTOR_REPLACE;
+  // this.replaceInstructorForm.value["ProcessKey"] = processKey;
+
+  // this.ComSrv.postJSON('api/InstructorReplaceChangeRequest/Save', this.replaceInstructorForm.value)
+  //   .subscribe((d: any) => {
+  //  //this.instructor = new MatTableDataSource(d);
+  //  //this.instructor.paginator = this.paginator;
+  //  //this.instructor.sort = this.sort;
+  //       if (d) {
+  //         this.alert = 'yes';
+  //       }
+  //       this.ComSrv.openSnackBar(this.InstructorChangeRequestID.value > 0 ? environment.UpdateMSG.replace("${Name}", this.EnTextNewInstructor) : environment.SaveMSG.replace("${Name}", this.EnTextNewInstructor));
+  //       this.resetInstructorForm();
+  //       this.title = "Add New ";
+  //       this.savebtn = "Save ";
+  //       this.working = false;
+  //     },
+  //       (error) => {
+  //         this.error = error.error;
+  //         this.ComSrv.ShowError(error.error);
+  //       });
+  // }
+
+
+  getReplaceInstructorFormData() {
+    this.ComSrv.getJSON('api/InstructorReplaceChangeRequest/GetInstructorReplaceChangeRequest/' + this.userid).subscribe((d: any) => {
+      this.replaceInstructorsCRs = new MatTableDataSource(d);
+      console.log(this.replaceInstructorsCRs, 'replaceInstructorsCRs');
+      this.replaceInstructorsCRs.paginator = this.PageReplaceInstructor;
+      this.replaceInstructorsCRs.sort = this.SortReplaceInstructor;
+    }, error => this.error = error // error path
+    );
+  }
+
+  SubmitReplaceInstructor() {
+    if (!this.replaceInstructorForm.valid)
+      return;
+
+    this.working = true;
+
+    // Creating a copy of the form values to avoid mutations
+    const formValues = { ...this.replaceInstructorForm.value };
+
+    // Ensure InstrIDs is a string and split it into an array
+    let instructorIdsArray = this.currentInstructors ? this.currentInstructors.map((instructor: any) => instructor.InstrID) : [];
+
+    // Fetch the current instructor to be replaced
+    const currentInstructorId = formValues.CurrentInstructorID;
+    const replacementInstructorId = formValues.ReplacementInstructorID;
+
+    // Remove the current instructor from the list (ensure it's actually being removed)
+    instructorIdsArray = instructorIdsArray.filter(id => id !== currentInstructorId);
+
+    // Add the replacement instructor (ensuring it's not already in the array)
+    if (!instructorIdsArray.includes(replacementInstructorId)) {
+      instructorIdsArray.push(replacementInstructorId);
+    }
+
+    // Join the array back into a comma-separated string
+    formValues.InstrIDs = instructorIdsArray.join(',');
+
+    formValues["IncepReportID"] = this.InceptionReportIDRI;
+
+    // Add additional form values, e.g., process key
+    formValues["ProcessKey"] = EnumApprovalProcess.CR_INSTRUCTOR_REPLACE;
+
+    // Update the form value
+    this.replaceInstructorForm.patchValue({ InstrIDs: formValues.InstrIDs });
+
+    // Submit to backend
+    this.ComSrv.postJSON('api/InstructorReplaceChangeRequest/Save', formValues)
+      .subscribe((d: any) => {
+        if (d) {
+          this.alert = 'yes';
+        }
+        this.ComSrv.openSnackBar(this.InstructorChangeRequestID.value > 0 ?
+          environment.UpdateMSG.replace("${Name}", this.EnTextNewInstructor) :
+          environment.SaveMSG.replace("${Name}", this.EnTextNewInstructor));
+        this.resetReplacementInstructorForm();
+        this.title = "Add New ";
+        this.savebtn = "Save ";
+        this.working = false;
+        this.getReplaceInstructorFormData()
+      },
+        (error) => {
+          this.error = error.error;
+          this.ComSrv.ShowError(error.error);
+        });
+  }
+
+
   SubmitNewInstructor() {
     if (!this.addInstructorform.valid)
       return;
@@ -1033,10 +1165,8 @@ export class ChangeRequestDialogComponent implements OnInit {
         (error) => {
           this.error = error.error;
           this.ComSrv.ShowError(error.error);
-
-
         });
-  }
+      }
 
 
 
@@ -1136,7 +1266,6 @@ export class ChangeRequestDialogComponent implements OnInit {
               (error) => {
                 this.error = error.error;
                 this.ComSrv.ShowError(error.error);
-
               });
         }
       }
@@ -1188,13 +1317,10 @@ export class ChangeRequestDialogComponent implements OnInit {
             (error) => {
               this.error = error.error;
               this.ComSrv.ShowError(error.error);
-
             });
       }
     }, error => this.error = error// error path
     );
-
-
   }
 
 
@@ -1261,6 +1387,10 @@ export class ChangeRequestDialogComponent implements OnInit {
     this.CRNewInstructorID.setValue(0);
     this.title = "Add New ";
     this.savebtn = "Save ";
+  }
+  resetReplacementInstructorForm() {
+    this.replaceInstructorForm.reset();
+    //myform.resetFrom();
   }
   resetInceptionReportForm() {
     this.changerequestInceptionReportform.reset();
@@ -1339,9 +1469,7 @@ export class ChangeRequestDialogComponent implements OnInit {
     this.ClassCodeForDate.setValue(row.ClassCode);
     this.StartDate.setValue(row.StartDate);
     this.EndDate.setValue(row.EndDate);
-
     this.Duration.setValue(row.Duration);
-
     //this.SetEndDate();
   }
 
@@ -1475,11 +1603,16 @@ export class ChangeRequestDialogComponent implements OnInit {
   GetPopulateClassTrade(classid: number) {
     var trade = this.activeClassesArrayForNewTrainer.filter(x => x.ClassID == classid).map(y => y.TradeID);
     var location = this.activeClassesArrayForNewTrainer.filter(x => x.ClassID == classid).map(y => y.TrainingAddressLocation);
+    var classCode = this.activeClassesArrayForNewTrainer.filter(x => x.ClassID == classid).map(y => y.ClassCode);
     this.tradeid = trade[0];
     this.newInstructorAddress = location[0];
     this.addInstructorform.controls.TradeID.setValue(this.tradeid);
     //this.addInstructorform.controls.LocationAddress.setValue(location[0]);
     this.addInstructorform.controls.LocationAddress.setValue(this.newInstructorAddress);
+
+    this.getReplacementInstructors(classid);
+    this.getInstructorsByClassId(classid);
+    this.getCurrentClassTiming(classCode);
   }
   //Pagination\\
   resultsTraineeLength: number;
@@ -1536,23 +1669,23 @@ export class ChangeRequestDialogComponent implements OnInit {
   checkOnHeadEmail() {
     let values = this.changerequestTSPform.getRawValue();
     this.ComSrv.fetchAndValidateTLD(values.HeadEmail)
-    .subscribe(
-      (isValidTLD: boolean) => {
-        if (!isValidTLD) {
-          this.HeadEmail.setErrors({ isValid: false, message: 'Invalid email address' });
-          return;
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.HeadEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
         }
-      }, (error) => {
-        this.error = error // error path
-      }
-    );
+      );
 
-    }
+  }
 
 
-    checkOnCPEmail() {
-      let values = this.changerequestTSPform.getRawValue();
-      this.ComSrv.fetchAndValidateTLD(values.CPEmail)
+  checkOnCPEmail() {
+    let values = this.changerequestTSPform.getRawValue();
+    this.ComSrv.fetchAndValidateTLD(values.CPEmail)
       .subscribe(
         (isValidTLD: boolean) => {
           if (!isValidTLD) {
@@ -1563,39 +1696,182 @@ export class ChangeRequestDialogComponent implements OnInit {
           this.error = error // error path
         }
       );
-  
-      }
+
+  }
 
   isEligibleTraineeEmail(): void {
     let values = this.changerequestTraineeform.getRawValue();
     let filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`
 
     this.ComSrv.fetchAndValidateTLD(values.TraineeEmail)
-  .subscribe(
-    (isValidTLD: boolean) => {
-      if (!isValidTLD) {
-        this.TraineeEmail.setErrors({ isValid: false, message: 'Invalid email address' });
-        return;
-      }
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.TraineeEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
 
-    this.ComSrv.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
+          this.ComSrv.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
+            (data: any) => {
+              //BR (Business Rule)
+              if (!data.isValid) {
+                this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
+              }
+              else {
+                this.TraineeEmail.setErrors(null);
+                this.TraineeEmail.setValidators([Validators.email, Validators.required]);
+                this.TraineeEmail.updateValueAndValidity();
+              }
+            }, (error) => {
+              this.error = error // error path
+            }
+          );
+        }
+      );
+    //}
+  }
+
+  getInstructorsByClassId(classId: any): void {
+    const url = `api/Instructor/RD_Instructor_ByClassID_InceptionReport/${classId}`;
+    this.ComSrv.getJSON(url).subscribe(
       (data: any) => {
-        //BR (Business Rule)
-        if (!data.isValid) {
-          this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
-        }
-        else {
-          this.TraineeEmail.setErrors(null);
-          this.TraineeEmail.setValidators([Validators.email, Validators.required]);
-          this.TraineeEmail.updateValueAndValidity();
-        }
-      }, (error) => {
-        this.error = error // error path
+        this.currentInstructors = data; // Assuming data is an array of instructors
+      },
+      (error) => {
+        console.error('Error occurred:', error);
       }
     );
   }
+
+  getReplacementInstructors(tradeId: any): void {
+    const url = `api/Instructor/RD_Instructor_ByTradeID/${tradeId}`;
+    this.ComSrv.getJSON(url).subscribe(
+      (data: any) => {
+        // Assuming 'data' is an array of replacement instructors
+        this.replacementInstructors = data;
+
+
+        // Filter out the instructors that are also in the currentInstructors array
+        this.replacementInstructors = this.replacementInstructors.filter(replacementInstr => {
+          return !this.currentInstructors.some(currentInstr => currentInstr.InstrID === replacementInstr.InstrID);
+        });
+
+        this.IncepReportIDRI = this.replacementInstructors.filter(replacementInstr => {
+          return !this.currentInstructors.some(currentInstr => currentInstr.InstrID === replacementInstr.InstrID);
+        });
+      },
+      (error) => {
+        console.error('Error occurred while fetching replacement instructors:', error);
+      }
     );
-    //}
+  }
+
+
+  onInstructorSelect(instructorID: any): void {
+    if (instructorID && instructorID !== '0') {
+      this.getClassCodeByInstructorID(instructorID);
+    }
+  }
+
+  getClassCodeByInstructorID(instructorID: any): void {
+    const url = `api/Instructor/GetClassCodeByInstrID/${instructorID}`;
+    this.ComSrv.getJSON(url).subscribe(
+      (data: any) => {
+        this.classCodeByInstructorID = data;
+        console.log(this.classCodeByInstructorID, 'this.classCodeByInstructorID')
+
+
+        if (this.classCodeByInstructorID && this.classCodeByInstructorID.length > 0) {
+          // Assuming classCode is the first element, adjust as needed
+          this.checkClassCodesForActiveTiming(this.classCodeByInstructorID);
+        } else {
+          console.log('No class code found for the selected instructor.');
+          this.doOverlapRI = false;
+        }
+      },
+      (error) => {
+        console.error('Error occurred while fetching class code:', error);
+      }
+    );
+  }
+
+  getCurrentClassTiming(classCode: any): void {
+    this.ComSrv.getJSON('api/InceptionReport/GetActiveClassTimingCR/' + classCode).subscribe((d: any) => {
+      let CurrentClassTimingList = d[0];
+      console.log(CurrentClassTimingList, 'CurrentClassTimingList')
+      this.InceptionReportIDRI = CurrentClassTimingList[0].IncepReportID;
+      this.GetCurrentStartDateforReplacementI = CurrentClassTimingList[0].ActualStartDate;
+      this.GetCurrentEndDateforReplacementI = CurrentClassTimingList[0].ActualEndDate;
+    }, (error) => {
+      console.error('Error occurred while fetching active class timing:', error);
+    });
+  }
+
+  checkClassCodesForActiveTiming(classCodes: any[]): void {
+    for (let i = 0; i < classCodes.length; i++) {
+      const classCode = classCodes[i];
+      console.log(`Checking class code: ${classCode.ClassCode}`);
+      
+      this.getActiveClassTiming(classCode);
+  
+      if (this.doOverlapRI) {
+        // Stop the loop if overlap is found
+        break;
+      }
+    }
+  }
+
+  getActiveClassTiming(classCode: any): void {
+    console.log(classCode, classCode.ClassCode, 'ClassTimingList');
+    this.ComSrv.getJSON('api/InceptionReport/GetActiveClassTimingCR/' + classCode.ClassCode).subscribe((d: any) => {
+      let ActiveClassTimingList = d[0];
+      console.log(ActiveClassTimingList, 'ActiveClassTimingList')
+      this.GetActiveStartDateforReplacementI = ActiveClassTimingList[0]?.ActualStartDate;
+      this.GetActiveEndDateforReplacementI = ActiveClassTimingList[0]?.ActualEndDate;
+
+      if (ActiveClassTimingList.length > 0) {
+
+        const currentClassStartTime = this.GetCurrentStartDateforReplacementI;
+        const currentClassEndTime = this.GetCurrentEndDateforReplacementI;
+
+        const otherClassStartTime = this.GetActiveStartDateforReplacementI;
+        const otherClassEndTime = this.GetActiveEndDateforReplacementI;
+
+
+        console.log(currentClassStartTime, currentClassEndTime, otherClassStartTime, otherClassEndTime, 'timeeeee');
+
+        this.doOverlapRI = doClassTimesOverlapRI(
+          currentClassStartTime,
+          currentClassEndTime,
+          otherClassStartTime,
+          otherClassEndTime
+        );
+
+        console.log(this.doOverlapRI, 'timeee')
+        if (this.doOverlapRI) {
+          console.log('Instructor already assigned to another class in the same time bracket!');
+          this.error = "Instructor already assigned to another class in the same time bracket!";
+          this.ComSrv.ShowError(this.error.toString(), "Error");
+          this.FinalSubmitted.setValue(false);
+          return;
+        }
+      } else {
+        console.log('No active class timing found for the class code.');
+        this.doOverlapRI = false;
+      }
+    }, (error) => {
+      console.error('Error occurred while fetching active class timing:', error);
+    });
+  }
+
+  onCurrentInstructorChange(event: MatSelectChange): void {
+    const selectedValue = event.value;
+    this.replaceInstructorForm.get('CurrentInstructorID').setValue(selectedValue);
+  }
+
+  onReplacementInstructorChange(event: MatSelectChange): void {
+    const selectedValue = event.value;
+    this.replaceInstructorForm.get('ReplacementInstructorID').setValue(selectedValue);
   }
 
   checkZipFile(ev: Event) {
@@ -1800,6 +2076,31 @@ function doClassTimesOverlap(currentStartTime: string, currentEndTime: string, o
 
   // Check if the current class falls within another class (i.e., instructor already assigned to another class)
   const fallsWithinOtherClass = (currentStart >= otherStart && currentEnd <= otherEnd);
+
+  // If there's an overlap with another class or if the current class falls within another class, return true
+  return overlapWithOtherClass || fallsWithinOtherClass;
+}
+
+
+function doClassTimesOverlapRI(currentStartTime: string, currentEndTime: string, otherStartTime: string, otherEndTime: string): boolean {
+  // Convert string times to Date objects for comparison
+  const currentStart = new Date(currentStartTime);
+  const currentEnd = new Date(currentEndTime);
+  const otherStart = new Date(otherStartTime);
+  const otherEnd = new Date(otherEndTime);
+
+
+  console.log(currentStart, currentEnd, 'lllllllllll');
+  console.log(otherStart, otherEnd, 'lllllllllll');
+
+
+  // Check if the current class overlaps with another class
+  const overlapWithOtherClass = (currentStart < otherEnd && currentEnd > otherStart);
+
+  // Check if the current class falls within another class (i.e., instructor already assigned to another class)
+  const fallsWithinOtherClass = (currentStart >= otherStart && currentEnd <= otherEnd);
+
+  console.log(overlapWithOtherClass, fallsWithinOtherClass, 'statusssss')
 
   // If there's an overlap with another class or if the current class falls within another class, return true
   return overlapWithOtherClass || fallsWithinOtherClass;

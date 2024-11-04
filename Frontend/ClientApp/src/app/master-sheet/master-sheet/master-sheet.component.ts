@@ -41,7 +41,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     'FundingSourceName', 'TrainingAddressLocation',
     'Province'
     , 'Tehsil', 'District', 'WhoIsDeliveringTraining',
-    'Certification_Authority','RegistrationAuthorityName','ProgramFocusName', 'TraineesPerClass', 'Gender',
+    'Certification_Authority','RegistrationAuthorityName','ProgramFocusName', 'TraineesPerClass', 'OnRollTraineesPerClass', 'Gender',
     'Duration', 'TotalTrainingHours', 'StartDate', 'EndDate', 'ClassStartTime', 'ClassEndTime',
     'InceptionReportDueOn', 'StudentProfileOverDueOn', 'CompletionReportDue',
     'InceptionReportReceived', 'InceptionReportDeliveredToTPM',
@@ -237,7 +237,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         'Class', 'TradeGroup', 'Trade',
         'TrainingAddressLocation', 'Province',
         'Tehsil', 'District', 'WhoIsDeliveringTraining',
-        'Certification_Authority', 'TraineesPerClass', 'Gender',
+        'Certification_Authority', 'TraineesPerClass', 'OnRollTraineesPerClass', 'Gender',
         'Duration', 'TotalTrainingHours', 'StartDate', 'EndDate', 'ClassStartTime', 'ClassEndTime',
         'InceptionReportDueOn', 'StudentProfileOverDueOn', 'CompletionReportDue',
         'InceptionReportReceived',
@@ -308,6 +308,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
           , 'Who is Delivering Training?': item.WhoIsDeliveringTraining
           , 'Testing/Certify Authority': item.Certification_Authority
           , 'Contractual Trainees per Class': item.TraineesPerClass
+          , 'OnRoll Trainees per Class': item.OnRollTraineesPerClass
           , 'Class Gender Male/Female/Mix': item.Gender
           , 'Training Duration (Months)': item.Duration
           , 'Total Training Hours': item.TotalTrainingHours
@@ -487,6 +488,7 @@ export class MasterSheetModel extends ModelBase {
   ClassStatusID: number;
   Duration: number;
   TraineesPerClass: number;
+  OnRollTraineesPerClass: number;
   MinHoursPerMonth: number;
   CertAuthID: number;
   CertAuthName: string;

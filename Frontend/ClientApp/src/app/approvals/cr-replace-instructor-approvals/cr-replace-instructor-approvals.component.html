@@ -72,9 +72,7 @@
                       <table class="table table-bordered">
                         <thead>
                           <tr>
-                            <th>
-
-                            </th>
+                            <th></th>
                             <th>Scheme</th>
                             <th>TSP</th>
                             <th>Class Code</th>
@@ -85,7 +83,7 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let l of r.currentMappedInstructor">
-                            <td></td>
+                            <td>Existing</td>
                             <td>{{l.SchemeName}}</td>
                             <td>{{l.TSPName}}</td>
                             <td  style="color: #005b9e;"> <a class="myAnchor" target="_blank" (click)="openClassJourneyDialogue(r.ClassID)"> <strong>{{r.ClassCode}}</strong> </a></td>

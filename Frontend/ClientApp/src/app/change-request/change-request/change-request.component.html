@@ -698,145 +698,102 @@
 
 
     <mat-tab label="Replace an Instructor">
-
       <mat-card>
         <mat-card-content>
           <div>
             <fieldset class="border">
               <legend>Replace an Instructor</legend>
-
-              <form novalidate [formGroup]="addInstructorform" (submit)="SubmitNewInstructor()">
+    
+              <form novalidate [formGroup]="replaceInstructorForm" (submit)="SubmitReplaceInstructor()">
                 <div class="row">
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <mat-select #scheme placeholder="Scheme" formControlName="SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="getClassesByInstructorSchemes($event.value)" id="SchemeId" matInput required>
-                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                      <mat-select #scheme placeholder="Scheme" formControlName="SchemeID" (openedChange)="EmptyCtrl()"
+                        (selectionChange)="getClassesByInstructorSchemes($event.value)" id="SchemeId" matInput required>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                            [formControl]="SearchSch" /></mat-optgrp>
                         <mat-option value="0">--Select--</mat-option>
-                        <mat-option *ngFor="let s of SchemeFilter | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                        <mat-option *ngFor="let s of SchemeFilter | like:['SchemeName',SearchSch.value]"
+                          [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
                       </mat-select>
-                      <mat-error *ngIf="this.NewInstructorSchemeID.invalid && this.NewInstructorSchemeID.errors.required">required</mat-error>
+                      <mat-error
+                        *ngIf="this.NewInstructorSchemeID.invalid && this.NewInstructorSchemeID.errors.required">required</mat-error>
                     </mat-form-field>
                   </div>
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <mat-select #class placeholder="Class" formControlName="ClassID" (selectionChange)="GetPopulateClassTrade($event.value)" (openedChange)="EmptyCtrl()" id="ClassId" matInput required>
-                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" /></mat-optgrp>
+                      <mat-select #class placeholder="Class" formControlName="ClassID"
+                        (selectionChange)="GetPopulateClassTrade($event.value)" (openedChange)="EmptyCtrl()" id="ClassId"
+                        matInput required>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                            [formControl]="SearchCls" /></mat-optgrp>
                         <mat-option value="0">--Select--</mat-option>
-                        <mat-option *ngFor="let item of activeClassesArrayForNewTrainer | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                        <mat-option
+                          *ngFor="let item of activeClassesArrayForNewTrainer | like:['ClassCode',SearchCls.value]"
+                          [value]="item.ClassID">{{item.ClassCode}}</mat-option>
                       </mat-select>
                       <mat-hint>Active Classes</mat-hint>
-                      <mat-error *ngIf="this.NewInstructorClassID.invalid && this.NewInstructorClassID.errors.required">required</mat-error>
+                      <mat-error
+                        *ngIf="this.NewInstructorClassID.invalid && this.NewInstructorClassID.errors.required">required</mat-error>
                     </mat-form-field>
                   </div>
-
-                </div>
-                <div class="row">
-
+                  <!-- Current Instructor Dropdown -->
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <input type="text" formControlName="InstructorName" placeholder="Name" matInput maxlength="250" required />
-                      <mat-label>Instructor Name</mat-label>
-                      <mat-error *ngIf="this.NewInstructorName.invalid && this.NewInstructorName.errors.required">required</mat-error>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-sm-3">
-                    <mat-form-field>
-                      <input matInput formControlName="CNICofInstructor" placeholder="_____-_______-_" [imask]="{mask:'00000-0000000-0'}" [unmask]="false" required>
-                      <mat-label>Instructor CNIC</mat-label>
-                      <mat-error *ngIf="this.NewCNICofInstructor.invalid && this.NewCNICofInstructor.errors.required"><strong>required</strong></mat-error>
-                      <mat-error *ngIf="this.NewCNICofInstructor.invalid && this.NewCNICofInstructor.errors.minlength"><strong>invalid length</strong></mat-error>
-                      <mat-error *ngIf="this.NewCNICofInstructor.invalid && this.NewCNICofInstructor.errors.maxlength"><strong>invalid length</strong></mat-error>
-                      <mat-error *ngIf="cnicExists">CNIC Already Exists</mat-error>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-sm-3">
-                    <mat-form-field>
-                      <mat-select formControlName="GenderID" placeholder="Gender" required>
-                        <mat-option *ngFor="let g of genders" [value]="g.GenderID">
-                          {{g.GenderName}}
+                      <mat-select placeholder="Current Instructors" formControlName="CurrentInstructorID"
+                        (openedChange)="EmptyCtrl()" id="CurrentInstructorId" matInput required>
+                        <mat-optgrp disabled class="ddlsrchheader">
+                          <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCI" />
+                        </mat-optgrp>
+                        <mat-option value="0">--Select--</mat-option>
+                        <mat-option *ngFor="let instructor of currentInstructors" [value]="instructor.InstrID">
+                          {{instructor.InstructorName}}
                         </mat-option>
                       </mat-select>
-                      <mat-error *ngIf="this.NewCNICofInstructor.invalid && this.NewCNICofInstructor.errors.required"><strong>required</strong></mat-error>
+                      <mat-hint>Current Instructors</mat-hint>
+                      <mat-error
+                        *ngIf="replaceInstructorForm.controls['CurrentInstructorID'].invalid && replaceInstructorForm.controls['CurrentInstructorID'].errors.required">
+                        Current instructor is required.
+                      </mat-error>
                     </mat-form-field>
                   </div>
+    
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <input type="text" formControlName="QualificationHighest" placeholder="Qualification" matInput maxlength="30" required />
-                      <mat-label>Qualification</mat-label>
-                      <mat-error *ngIf="this.NewInstructorQualificationHighest.invalid && this.NewInstructorQualificationHighest.errors.required"><strong>required</strong></mat-error>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-sm-3">
-                    <mat-form-field fxFlex>
-                      <input type="text" formControlName="TotalExperience" placeholder="Experience" matInput required />
-                      <mat-label>Total Experience</mat-label>
-                      <mat-error *ngIf="this.NewInstructorTotalExperience.invalid && this.NewInstructorTotalExperience.errors.required"><strong>required</strong></mat-error>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-sm-3">
-                    <mat-form-field>
-                      <input type="text" matInput placeholder="Training Location Address" formControlName="LocationAddress" readonly required maxlength="250">
-                      <mat-error *ngIf="this.NewInstructorLocationAddress.invalid && this.NewInstructorLocationAddress.errors.required">required</mat-error>
-                    </mat-form-field>
-                  </div>
-
-                  <div class="col-sm-3">
-                    <mat-form-field>
-                      <mat-select formControlName="TradeID" placeholder="Trade" [disabled]="true" required readonly>
-                        <mat-option *ngFor="let t of trade" [value]="t.TradeID">
-                          {{t.TradeName}}
-                        </mat-option>
+                      <mat-select placeholder="Replace Instructor" formControlName="ReplacementInstructorID" (openedChange)="EmptyCtrl()"
+                        (selectionChange)="onInstructorSelect($event.value)" id="ReplacementInstructorID" matInput required>
+                        <mat-optgrp disabled class="ddlsrchheader">
+                          <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchRI" />
+                        </mat-optgrp>
+                        <mat-option value="0">--Select--</mat-option>
+                        <mat-option *ngFor="let instructor of replacementInstructors"
+                          [value]="instructor.InstrID">{{instructor.InstructorName}}</mat-option>
                       </mat-select>
-                      <mat-error *ngIf="this.NewInstructorTradeID.invalid && this.NewInstructorTradeID.errors.required"><strong>required</strong></mat-error>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-sm-3">
-                    <mat-form-field fxFlex>
-                      <input type="text" formControlName="NewInstructorCRComments" placeholder="Comments" matInput />
-                      <mat-label>Comments</mat-label>
-                      <mat-error *ngIf="this.NewInstructorCRComments.invalid && this.NewInstructorCRComments.errors.required">required</mat-error>
+                      <mat-hint>Replacement Instructors</mat-hint>
+                      <mat-error
+                        *ngIf="replaceInstructorForm.controls['ReplacementInstructorID'].invalid && replaceInstructorForm.controls['ReplacementInstructorID'].errors.required">
+                        Replacement instructor is required.
+                      </mat-error>
                     </mat-form-field>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-sm-3">
-                    <h6>Image </h6>
-                    <file-upload formControlName="PicturePath" [pattren]="'image.*'" accept="image/*" maxSize="1024‬‬"></file-upload>
-                  </div>
-                  <div class="col-sm-4">
-                    <label><h6>Attachment</h6></label>
-                    <br />
-                    <br />
-                    <!--//(change)="checkZipFile($event)-->
-                    <file-upload [nopreview]="true" matInput accept="'.zip'"  maxSize="25600‬‬" formControlName="FilePath" (change)="checkZipFile($event)"></file-upload>
-                    <mat-hint>Only zip file is allowed</mat-hint>
-                    <mat-error *ngIf="this.FilePath.invalid && this.FilePath.errors.required"><strong>required</strong></mat-error>
-                    <mat-error *ngIf="FilePath.invalid && !FilePath.errors?.isValid"><strong>{{FilePath.errors.message}}</strong></mat-error>
-                    <!--<mat-error *ngIf="this.FilePath.invalid"><strong>invalid file</strong></mat-error>-->
-                  </div>
-
-
-                </div>
-
                 <div class="row">
                   &nbsp;&nbsp;
-                  <button mat-raised-button color="primary" [disabled]="!formrights.CanAdd" matTooltip="Click to {{title}}"
+                  <button mat-raised-button color="primary" [disabled]="!formrights.CanAdd || doOverlapRI"
                           attr.aria-label="Click to  " type="submit">
-                    <mat-icon>done</mat-icon>Submit
+                    <mat-icon>done</mat-icon> Replace Instructor
                   </button>&nbsp;&nbsp;
                   <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
-                          attr.aria-label="Click to Reset form data" type="button" (click)="resetaddInstructorForm()">
+                          attr.aria-label="Click to Reset form data" type="button" (click)="resetReplacementInstructorForm()">
                     <mat-icon>close</mat-icon> Reset
                   </button>
                 </div>
+              <mat-error *ngIf="doOverlapRI">
+                {{ error }}
+              </mat-error>
               </form>
             </fieldset>
-
-
-
-
           </div>
-
         </mat-card-content>
       </mat-card>
       <mat-card>
@@ -845,11 +802,11 @@
             <fieldset class="border">
               <legend> Replace Instructor Requests Information</legend>
               <div class="table-responsive">
-                <mat-table [dataSource]="newInstructorsCRs" #SortInstructor="matSort" matSort>
+                <mat-table [dataSource]="replaceInstructorsCRs" #SortReplaceInstructor="matSort" matSort>
 
                   <ng-container matColumnDef="Sr#">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Sr#</mat-header-cell>
-                    <mat-cell *matCellDef="let Row"> {{Row.CRNewInstructorID}} </mat-cell>
+                    <mat-cell *matCellDef="let Row"> {{Row.InstructorReplaceChangeRequestID}} </mat-cell>
                   </ng-container>
                   <ng-container matColumnDef="InstructorName">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Instructor Name</mat-header-cell>
@@ -872,16 +829,12 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell> 
                     <mat-cell *matCellDef="let Row"> {{Row.EndDate}} </mat-cell>
                   </ng-container>
-                  <ng-container matColumnDef="NewInstructorCRComments">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Comments</mat-header-cell>
-                    <mat-cell *matCellDef="let Row"> {{Row.NewInstructorCRComments}} </mat-cell>
-                  </ng-container>
                   <ng-container matColumnDef="NewInstructorCrStatus">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
                     <mat-cell *matCellDef="let Row">
-                      <span *ngIf="Row.CrNewInstructorIsApproved">Approved</span>
-                      <span *ngIf="Row.CrNewInstructorIsRejected">Rejected</span>
-                      <span *ngIf="(!Row.CrNewInstructorIsRejected && !Row.CrNewInstructorIsApproved)">In Progress</span>
+                      <span *ngIf="Row.IsApproved">Approved</span>
+                      <span *ngIf="Row.IsRejected">Rejected</span>
+                      <span *ngIf="(!Row.IsApproved && !Row.IsRejected)">In Progress</span>
                       <!--{{Row.IsApproved}}-->
                     </mat-cell>
                   </ng-container>
@@ -894,10 +847,10 @@
                       </button>
                     </mat-cell>
                   </ng-container>
-                  <mat-header-row *matHeaderRowDef="displayedColumnsNewInstructor"></mat-header-row>
-                  <mat-row *matRowDef="let row; columns: displayedColumnsNewInstructor;"></mat-row>
+                  <mat-header-row *matHeaderRowDef="displayedColumnsReplaceInstructor"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumnsReplaceInstructor;"></mat-row>
                 </mat-table>
-                <mat-paginator #PageInstructor [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                <mat-paginator #PageReplaceInstructor [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
               </div>
             </fieldset>
           </div>
@@ -911,21 +864,14 @@
 <!-- Replace Instructor Ends -->
 
 
-
-
-
-
     <mat-tab label="Trainee">
-
       <mat-card>
         <mat-card-content>
-
           <div>
             <fieldset class="border">
               <legend>Change Request</legend>
               <form novalidate (keydown.enter)="onEnterKey($event)"  [formGroup]="changerequestTraineeform" (submit)="SubmitTrainee()">
                 <div class="row">
-
                   <div class="col-sm-6">
                     <mat-form-field fxFlex>
                       <input matInput type="text" formControlName="TraineeName" placeholder="TraineeName" maxlength="100" TitleCase required />
@@ -983,8 +929,6 @@
                     <h6>Change Image</h6>
                     <file-upload formControlName="TraineechangeImage" [pattren]="'image.*'"  accept="image/*" maxSize="1024‬‬"></file-upload>
                   </div>
-
-    
                     <div  class="col-sm-3"   *ngIf="TraineeDisplayImg">
                     <h6 class="center">Trainee's Image </h6>
                     <img [src]="TraineeDisplayImg" alt="" width="120" srcset="">
@@ -1029,7 +973,6 @@
                     </div>
                   </div>
                 </fieldset>
-
                 <div class="row">
                   &nbsp;&nbsp;
                   <button mat-raised-button color="primary" [disabled]="!formrights.CanAdd" matTooltip="Click to {{title}}"
@@ -1043,18 +986,15 @@
                 </div>
               </form>
             </fieldset>
-
           </div>
         </mat-card-content>
       </mat-card>
-
       <div>
         <mat-card>
           <mat-card-content>
             <div>
               <fieldset class="border">
                 <legend>Trainees Information</legend>
-
                 <div class="row">
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
@@ -1083,17 +1023,13 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-
                 </div>
                 <div fxLayout="column" class="mat-elevation-z8">
                   <mat-table [dataSource]="trainee" #SortTrainee="matSort" matSort>
-
                     <ng-container matColumnDef="TraineeName">
                       <mat-header-cell *matHeaderCellDef mat-sort-header>Trainee Name</mat-header-cell>
                       <mat-cell *matCellDef="let Row"><a class="myAnchor" (click)="openTraineeJourneyDialogue(Row.TraineeCode)" style="color: #005b9e;"> {{Row.TraineeName}}  </a> </mat-cell>
                     </ng-container>
-
-
                     <ng-container matColumnDef="FatherName">
                       <mat-header-cell *matHeaderCellDef mat-sort-header>Father Name</mat-header-cell>
                       <mat-cell *matCellDef="let Row"> {{Row.FatherName}} </mat-cell>
@@ -1138,15 +1074,12 @@
                   <mat-paginator #PageTrainee [pageSize]="5" [length]="resultsTraineeLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
                 </div>
               </fieldset>
-
             </div>
           </mat-card-content>
         </mat-card>
       </div>
-
     </mat-tab>
     <mat-tab label="Class Timings">
-
       <mat-card>
         <mat-card-content>
           <div>
@@ -1154,15 +1087,12 @@
               <legend>Change Request</legend>
               <form novalidate [formGroup]="changerequestInceptionReportform" (submit)="SubmitInceptionReport()">
                 <div class="row">
-
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
                       <input type="text" formControlName="ClassCode" placeholder="ClassCode" id="classid" matInput maxlength="250" required readonly />
                       <mat-label>Class</mat-label>
                     </mat-form-field>
-
                   </div>
-
                   <div class="col-sm-3 col-md-3">
                     <mat-form-field>
                       <ngx-material-timepicker #picker1></ngx-material-timepicker>

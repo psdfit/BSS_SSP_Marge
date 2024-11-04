@@ -39,24 +39,24 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
 
         }
-        //public List<InstructorReplaceChangeRequestModel> SaveInstructorReplaceChangeRequest(InstructorReplaceChangeRequestModel InstructorReplaceChangeRequest)
-        //{
-        //    try
-        //    {
-        //        SqlParameter[] param = new SqlParameter[5];
-        //        param[0] = new SqlParameter("@InstructorReplaceChangeRequestID", InstructorReplaceChangeRequest.InstructorReplaceChangeRequestID);
-        //        param[1] = new SqlParameter("@IncepReportID", InstructorReplaceChangeRequest.IncepReportID);
-        //        param[2] = new SqlParameter("@ClassID", InstructorReplaceChangeRequest.ClassID);
+        public List<InstructorReplaceChangeRequestModel> SaveInstructorReplaceChangeRequest(InstructorReplaceChangeRequestModel InstructorReplaceChangeRequest)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[5];
+                param[0] = new SqlParameter("@InstructorReplaceChangeRequestID", InstructorReplaceChangeRequest.InstructorReplaceChangeRequestID);
+                param[1] = new SqlParameter("@IncepReportID", InstructorReplaceChangeRequest.IncepReportID);
+                param[2] = new SqlParameter("@ClassID", InstructorReplaceChangeRequest.ClassID);
               
-        //        param[3] = new SqlParameter("@InstrIDs", InstructorReplaceChangeRequest.InstrIDs);
+                param[3] = new SqlParameter("@InstrIDs", InstructorReplaceChangeRequest.InstrIDs);
 
-        //        param[4] = new SqlParameter("@CurUserID", InstructorReplaceChangeRequest.CurUserID);
-        //        SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_InstructorReplaceChangeRequest]", param);
-        //        return FetchInstructorReplaceChangeRequest();
-        //    }
-        //    catch (Exception ex)
-        //    { throw new Exception(ex.Message); }
-        //}
+                param[4] = new SqlParameter("@CurUserID", InstructorReplaceChangeRequest.CurUserID);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_InstructorReplaceChangeRequest]", param);
+                return FetchInstructorReplaceChangeRequest();
+            }
+            catch (Exception ex)
+            { throw new Exception(ex.Message); }
+        }
         private List<InstructorReplaceChangeRequestModel> LoopinData(DataTable dt)
         {
             List<InstructorReplaceChangeRequestModel> InstructorReplaceChangeRequestL = new List<InstructorReplaceChangeRequestModel>();
@@ -73,6 +73,16 @@ namespace DataLayer.Services
             try
             {
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_InstructorReplaceChangeRequest", Common.GetParams(mod)).Tables[0];
+                return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<InstructorReplaceChangeRequestModel> FetchInstructorReplaceChangeRequestByUserID(int userID)
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_InstructorReplaceChangeRequest", new SqlParameter("userID", userID)).Tables[0];
                 return LoopinData(dt);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }

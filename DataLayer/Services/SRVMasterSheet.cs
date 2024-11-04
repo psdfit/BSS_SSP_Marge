@@ -290,6 +290,7 @@ namespace DataLayer.Services
             MasterSheet.TrainingAddressLocation = r["TrainingAddressLocation"].ToString();
             MasterSheet.TehsilID = Convert.ToInt32(r["TehsilID"]);
             MasterSheet.TraineesPerClass = Convert.ToInt32(r["TraineesPerClass"]);
+            MasterSheet.OnRollTraineesPerClass = Convert.ToInt32(r["OnRollTraineesPerClass"]);
             MasterSheet.Tehsil = r["Tehsil"].ToString();
             //MasterSheet.DeliveringTrainer = r["DeliveringTrainer"].ToString();
             MasterSheet.SchemeCode = r["SchemeCode"].ToString();

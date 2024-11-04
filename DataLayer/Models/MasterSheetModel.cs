@@ -29,6 +29,7 @@ namespace DataLayer.Models
         public decimal Duration { get; set; }
         public int TotalTrainingHours { get; set; }
         public int TraineesPerClass { get; set; }
+        public int OnRollTraineesPerClass { get; set; }
         public int EmploymentCommitment { get; set; }
         public int TotalTraineeProfilesReceived { get; set; }
         public int EnrolledTrainees { get; set; }

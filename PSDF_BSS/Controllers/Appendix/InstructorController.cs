@@ -140,6 +140,36 @@ namespace PSDF_BSSMasterDataModule.Controllers
                 return BadRequest(e.Message);
             }
         }
+        
+        // RD: Instructor
+        [HttpGet]
+        [Route("RD_Instructor_ByClassID_InceptionReport/{id}")]
+        public IActionResult RD_Instructor_ByClassID_InceptionReport(int id)
+        {
+            try
+            {
+                return Ok(srvInstructor.GetIRInstructorByClassID(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        // RD: Instructor
+        [HttpGet]
+        [Route("RD_Instructor_ByTradeID/{id}")]
+        public IActionResult RD_Instructor_ByTrade(int id)
+        {
+            try
+            {
+                return Ok(srvInstructor.GetInstructorByTradeID(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         // RD: Instructor
         [HttpPost]
@@ -211,5 +241,22 @@ namespace PSDF_BSSMasterDataModule.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetClassCodeByInstrID/{instrID}")]
+        public IActionResult GetClassCodeByInstrID(int instrID)
+        {
+            try
+            {
+                // Call the service method to get the ClassCode
+                var classCodes = srvInstructor.GetClassCodeByInstrID(instrID);
+                return Ok(classCodes);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }

@@ -53,4 +53,22 @@ namespace DataLayer.Models
 		//public int InstrID { get; set; }
 		public string CNICofInstructor { get; set; }
 
-	}}
+	}
+	
+	public class InstructorInceptionReportCRModel 
+	{
+        public int InstrID { get; set; }             
+        public string InstructorName { get; set; }
+		public int GenderID { get; set; }            
+		public string GenderName { get; set; }     
+        public int TradeID { get; set; }    
+        public string TradeName { get; set; }
+
+    }
+	
+	
+	public class ClassCodeByInstrID 
+	{
+        public string ClassCode { get; set; }
+
+    }}

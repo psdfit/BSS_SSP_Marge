@@ -133,6 +133,10 @@
                   <mat-header-cell *matHeaderCellDef mat-sort-header>Contractual Trainees</mat-header-cell>
                   <mat-cell *matCellDef="let Row ; let index=index"> {{Row.TraineesPerClass}} </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="OnRollTraineesPerClass">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>On Roll Trainees</mat-header-cell>
+                  <mat-cell *matCellDef="let Row ; let index=index"> {{Row.OnRollTraineesPerClass}} </mat-cell>
+                </ng-container>
 
                 <ng-container matColumnDef="Gender">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>Class Gender Male/Female/Mix</mat-header-cell>

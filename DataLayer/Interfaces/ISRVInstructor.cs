@@ -17,8 +17,12 @@ using DataLayer.Models;using System.Collections.Generic;namespace DataLayer.I
         public List<InstructorModel> GetByClassID(int ClassID);
         public List<InstructorModel> GetByTSPUserID(int userid);
         public List<InstructorModel> GetByInstructorID(int InstrID);
+        public List<InstructorModel> GetInstructorByTradeID(int ClassID);
+        public List<InstructorInceptionReportCRModel> GetIRInstructorByClassID(int ClassID);
         public List<InstructorModel> FetchCRInstructorDataByUser(InstructorCRFiltersModel mod);
         public List<CheckInstructorCNICModel> FetchOldInstructorCNICs();
+        public List<ClassCodeByInstrID> GetClassCodeByInstrID(int instrID);
+
 
 
 

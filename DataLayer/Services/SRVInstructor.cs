@@ -36,6 +36,31 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+
+        public List<ClassCodeByInstrID> GetClassCodeByInstrID(int InstrID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@InstrID", InstrID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GetClassCodesByInstrID", param).Tables[0];
+
+                List<ClassCodeByInstrID> classCodes = new List<ClassCodeByInstrID>();
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        classCodes.Add(RowOfClassCode(row));
+                    }
+                }
+
+                return classCodes;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public List<InstructorModel> GetByInstructorID(int InstrID)
         {
             try
@@ -43,6 +68,28 @@ namespace DataLayer.Services
                 SqlParameter param = new SqlParameter("@InstrID", InstrID);
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Instructor", param).Tables[0];
                 return LoopinData(dt);
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }         
+        public List<InstructorModel> GetInstructorByTradeID(int ClassID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@ClassID", ClassID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Instructor_ByTradeID", param).Tables[0];
+                return LoopinData(dt);
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+public List<InstructorInceptionReportCRModel> GetIRInstructorByClassID(int ClassID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@ClassID", ClassID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Instructor_ByClassID_InceptionReport", param).Tables[0];
+                return LoopinInstructorDataInceptionReport(dt);
 
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
@@ -110,6 +157,17 @@ namespace DataLayer.Services
             foreach (DataRow r in dt.Rows)
             {
                 InstructorL.Add(RowOfInstructor(r));
+            }
+            return InstructorL;
+        }
+
+        private List<InstructorInceptionReportCRModel> LoopinInstructorDataInceptionReport(DataTable dt)
+        {
+            List<InstructorInceptionReportCRModel> InstructorL = new List<InstructorInceptionReportCRModel>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                InstructorL.Add(RowOfInstructorInceptionReport(r));
             }
             return InstructorL;
         }
@@ -344,6 +402,51 @@ namespace DataLayer.Services
 
             return Instructor;
         }
+
+        private InstructorInceptionReportCRModel RowOfInstructorInceptionReport(DataRow r)
+        {
+            InstructorInceptionReportCRModel instructor = new InstructorInceptionReportCRModel();
+
+            // Map InstrID
+            instructor.InstrID = Convert.ToInt32(r["InstrID"]);
+
+            // Map InstructorName
+            instructor.InstructorName = r["InstructorName"].ToString();
+
+            // Map GenderID
+            instructor.GenderID = Convert.ToInt32(r["GenderID"]);
+
+            // Map GenderName, checking if the column exists
+            if (r.Table.Columns.Contains("GenderName"))
+            {
+                instructor.GenderName = r["GenderName"].ToString();
+            }
+
+            // Map TradeID
+            instructor.TradeID = Convert.ToInt32(r["TradeID"]);
+
+            // Map TradeName, checking if the column exists
+            if (r.Table.Columns.Contains("TradeName"))
+            {
+                instructor.TradeName = r["TradeName"].ToString();
+            }
+
+            return instructor;
+        }
+
+        private ClassCodeByInstrID RowOfClassCode(DataRow r)
+        {
+            ClassCodeByInstrID classCode = new ClassCodeByInstrID();
+
+            if (r.Table.Columns.Contains("ClassCode"))
+            {
+                classCode.ClassCode = r["ClassCode"].ToString();
+            }
+
+            return classCode;
+        }
+
+
         private CheckInstructorCNICModel RowOfInstructorCNIC(DataRow r)
         {
             CheckInstructorCNICModel Instructor = new CheckInstructorCNICModel();
