@@ -929,13 +929,17 @@ namespace DataLayer.Services
 
         public bool savePBTEDBFile(string attachment, int CurUser)
         {
+           
+                string _dbFile = SaveAttachment("PBTE-DB-BAK-File", attachment);
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@DBFile", _dbFile));
+                param.Add(new SqlParameter("@CreatedUserID", CurUser));
+                SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTEDBRestorationLog", param.ToArray());
+                return true;
+            
+            
 
-            string _dbFile = SaveAttachment("PBTE-DB-BAK-File", attachment);
-            List<SqlParameter> param = new List<SqlParameter>();
-            param.Add(new SqlParameter("@DBFile", _dbFile));
-            param.Add(new SqlParameter("@CreatedUserID", CurUser));
-            SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PBTEDBRestorationLog", param.ToArray());
-            return true;
+           
         }
 
 

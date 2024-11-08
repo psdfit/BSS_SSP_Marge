@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.Threading.Tasks;
-using DataLayer.Classes;
 using DataLayer.Interfaces;
 using DataLayer.Models.SSP;
-using DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using Newtonsoft.Json;
 using PSDF_BSS.Logging;
-using Newtonsoft;
-using System.Text.Json;
-using System.Dynamic;
 
 namespace PSDF_BSSMaster.Controllers
 {
@@ -208,9 +199,9 @@ namespace PSDF_BSSMaster.Controllers
             {
                 return BadRequest("Access Denied. you are not authorized for this activity");
             }
-        }      
-        
-        
+        }
+
+
         [HttpPost("GetDashboardData")]
         public IActionResult GetDashboardData([FromBody] dynamic data)
         {
@@ -231,12 +222,12 @@ namespace PSDF_BSSMaster.Controllers
                     var _programWiseRegisteredTSP = srvprofile.FetchData(data, "RD_SSPProgramWiseRegisteredTSP");
                     var _registeredTSPCount = srvprofile.FetchData(data, "RD_SSPRegisteredTSPCount");
                     var _registrationDetail = srvprofile.FetchDropDownList("RD_SSPTSPRegistrationDetail");
-                    return Ok(new 
-                    { 
-                        formWiseTSPCount = _formWiseTSPCount ,
-                        programWiseRegisteredTSP= _programWiseRegisteredTSP,
-                        registeredTSPCount= _registeredTSPCount,
-                        registrationDetail= _registrationDetail
+                    return Ok(new
+                    {
+                        formWiseTSPCount = _formWiseTSPCount,
+                        programWiseRegisteredTSP = _programWiseRegisteredTSP,
+                        registeredTSPCount = _registeredTSPCount,
+                        registrationDetail = _registrationDetail
                     });
                 }
                 catch (Exception e)
@@ -250,7 +241,7 @@ namespace PSDF_BSSMaster.Controllers
             }
         }
 
-     
+
         [HttpPost]
         [Route("GetStatus")]
         public IActionResult GetStatus()

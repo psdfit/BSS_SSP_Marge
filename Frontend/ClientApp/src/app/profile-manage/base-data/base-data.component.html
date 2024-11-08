@@ -166,7 +166,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Front Main
                     Entrance Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="FrontMainEntrancePhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="FrontMainEntrancePhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('FrontMainEntrancePhoto').errors | keyvalue">
@@ -179,7 +179,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Class Room
                     Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="ClassroomPhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="ClassroomPhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('ClassroomPhoto').errors | keyvalue">
@@ -192,7 +192,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Practical
                     Area Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="PracticalAreaPhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="PracticalAreaPhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('PracticalAreaPhoto').errors | keyvalue">
@@ -205,7 +205,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Computer Lab
                     Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="ComputerLabPhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="ComputerLabPhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('ComputerLabPhoto').errors | keyvalue">
