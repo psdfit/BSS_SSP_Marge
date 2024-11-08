@@ -143,11 +143,10 @@
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
-            <input matInput placeholder="Head Email" formControlName="HeadEmail" required type="text" maxlength="80">
-            <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.email">Invalid Email
-              address</mat-error>
-            <mat-error
-              *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.required">required</mat-error>
+            <input matInput placeholder="Head Email" formControlName="HeadEmail" required type="text" maxlength="80" (blur)="checkOnHeadEmail()">
+            <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.email">Invalid Email address</mat-error>
+            <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.required">required</mat-error>
+            <mat-error *ngIf="HeadEmail.invalid && !HeadEmail.errors?.isValid"><strong>{{HeadEmail.errors.message}}</strong></mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -200,13 +199,12 @@
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
-            <input matInput placeholder="Contact Person Email" formControlName="CPEmail" required type="text"
-              maxlength="80">
-            <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.email">Invalid Email
-              address</mat-error>
-            <mat-error
-              *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.required">required</mat-error>
+            <input matInput placeholder="Contact Person Email" formControlName="CPEmail" required type="text" maxlength="80" (blur)="checkOnCPEmail()">
+            <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.email">Invalid Email address</mat-error>
+            <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.required">required</mat-error>
+            <mat-error *ngIf="CPEmail.invalid && !CPEmail.errors?.isValid"><strong>{{CPEmail.errors.message}}</strong></mat-error>
           </mat-form-field>
+
         </div>
   
         <div class="col-sm-6 col-md-3 col-lg-3">

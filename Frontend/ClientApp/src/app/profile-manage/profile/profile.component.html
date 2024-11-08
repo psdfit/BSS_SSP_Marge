@@ -429,7 +429,7 @@
                <div class="col-sm-3">
                   <mat-form-field fxFlex>
                      <mat-label>Email</mat-label>
-                     <input formControlName="HeadofOrgEmail" [readonly]="COPreadonly" matInput placeholder="Email" required >
+                     <input formControlName="HeadofOrgEmail"  matInput placeholder="Email" required >
                      <mat-error *ngFor="let error of ContactInfoForm.get('HeadofOrgEmail').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
                   </mat-form-field>
                </div>

@@ -123,5 +123,7 @@ namespace DataLayer.Interfaces
         List<TraineeProfileModel> SaveTraineeIntrestProfile(TraineeProfileModel traineeProfile);
         List<TraineeProfileModel> SaveTraineeInterviewSubmission(TraineeProfileModel traineeProfile);
         public DataTable FetchReport(int UserID, string SpName);
+
+        List<CheckRegistrationCriteriaModel> checkTSPTradeCriteria(int programid, int tradeid, int UserID);
     }
 }

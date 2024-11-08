@@ -12,7 +12,6 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Microsoft.AspNetCore.Components.Routing;
-using System.Data.Common;
 
 
 namespace DataLayer.Services
@@ -34,7 +33,7 @@ namespace DataLayer.Services
             }
         }
 
-        public DataTable LoopingData(DataTable dt, string[] attachmentColumns)
+        public DataTable LoopinData(DataTable dt, string[] attachmentColumns)
         {
             DataTable modifiedDataTable = dt.Clone();
 
@@ -134,30 +133,22 @@ namespace DataLayer.Services
 
         public int BatchInsert(List<AssociationDetail> ls, int BatchFkey, int CurUserID, string TSPName, SqlTransaction transaction = null)
         {
-            try
+            int rowsAffected = 0;
+            foreach (var item in ls)
             {
-                int rowsAffected = 0;
-                foreach (var item in ls)
-                {
-                    string AssociationEvidence = SaveAttachment("TSPName", "AssociationEvidence", item.Evidence);
+                string AssociationEvidence = SaveAttachment("TSPName", "AssociationEvidence", item.Evidence);
 
-                    List<SqlParameter> param = new List<SqlParameter>();
-                    param.Add(new SqlParameter("@UserID", CurUserID));
-                    param.Add(new SqlParameter("@TspAssociationDetailID", item.TspAssociationDetailID));
-                    param.Add(new SqlParameter("@TspAssociationMasterID", BatchFkey));
-                    param.Add(new SqlParameter("@CriteriaMainCategoryID", item.CriteriaMainCategoryID));
-                    param.Add(new SqlParameter("@Attachment", AssociationEvidence));
-                    param.Add(new SqlParameter("@Remarks", item.Remarks));
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@UserID", CurUserID));
+                param.Add(new SqlParameter("@TspAssociationDetailID", item.TspAssociationDetailID));
+                param.Add(new SqlParameter("@TspAssociationMasterID", BatchFkey));
+                param.Add(new SqlParameter("@CriteriaMainCategoryID", item.CriteriaMainCategoryID));
+                param.Add(new SqlParameter("@Attachment", AssociationEvidence));
+                param.Add(new SqlParameter("@Remarks", item.Remarks));
 
-                    rowsAffected += SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "AU_SSPTSPAssociationDetail", param.ToArray());
-                }
-                return rowsAffected;
+                rowsAffected += SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "AU_SSPTSPAssociationDetail", param.ToArray());
             }
-            catch(Exception ex)
-            {
-                throw ex;
-
-            }
+            return rowsAffected;
         }
 
         public DataTable SaveAssociationEvaluation(AssociationEvaluationModel data)
@@ -278,12 +269,5 @@ namespace DataLayer.Services
 
         }
 
-        public DataTable FetchReportBySPNameAndParam(string spName, string parameter, int value)
-        {
-            List<SqlParameter> param = new List<SqlParameter>();
-            param.Add(new SqlParameter("@" + parameter, value));
-            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, spName, param.ToArray()).Tables[0];
-            return dt;
-        }
     }
 }

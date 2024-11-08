@@ -21,7 +21,8 @@ import { UserRightsModel } from 'src/app/master-data/users/users.component';
 })
 export class TSPComponent implements OnInit {
   environment = environment;
-
+  get HeadEmail() { return this.notForm.get("HeadEmail"); }
+  get CPEmail() { return this.notForm.get("CPEmail"); }
   tableList: any[] = [];
   populatedTableList: any[] = [];
   inlineForm: FormGroup = this.getTSPInlineForm();
@@ -227,6 +228,39 @@ export class TSPComponent implements OnInit {
   reset(nform: FormGroupDirective) {
     nform.resetForm();
   }
+
+  checkOnHeadEmail() {
+    let values = this.notForm.getRawValue();
+    this.http.fetchAndValidateTLD(values.HeadEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.HeadEmail.setErrors({ isValid: false, message: 'Invalid email Address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+
+  }
+
+  checkOnCPEmail() {
+    let values = this.notForm.getRawValue();
+    this.http.fetchAndValidateTLD(values.CPEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.CPEmail.setErrors({ isValid: false, message: 'Invalid email Address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+
+  }
+
   getNewRow(): FormGroup {
     //debugger;
     let form = this._formBuilder.group({

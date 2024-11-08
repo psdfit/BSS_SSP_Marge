@@ -781,30 +781,69 @@ export class TraineeComponent implements OnInit {
     );
     //}
   }
+  //isEligibleTraineeEmail(): void {
+  //  let values = this.traineeProfileForm.getRawValue();
+  //  if (values.TraineeEmail == '') {
+  //    return;
+  //  }
+  //  //if (values.TraineeCNIC.length == 15) {
+  //  let filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`
+  //  this.http.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
+  //    (data: any) => {
+  //      //BR (Business Rule)
+  //      if (!data.isValid) {
+  //        this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
+  //      }
+  //      else {
+  //        this.TraineeEmail.setErrors(null);
+  //        this.TraineeEmail.setValidators([Validators.email, Validators.required]);
+  //        this.TraineeEmail.updateValueAndValidity();
+  //      }
+  //    }, (error) => {
+  //      this.error = error // error path
+  //    }
+  //  );
+  //  //}
+  //}
   isEligibleTraineeEmail(): void {
     let values = this.traineeProfileForm.getRawValue();
+
     if (values.TraineeEmail == '') {
       return;
     }
-    //if (values.TraineeCNIC.length == 15) {
-    let filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`
-    this.http.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
-      (data: any) => {
-        //BR (Business Rule)
-        if (!data.isValid) {
-          this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
+
+    const filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`;
+
+    this.http.fetchAndValidateTLD(values.TraineeEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.TraineeEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+
+          // If TLD is valid, proceed with your existing validation
+          this.http.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
+            (data: any) => {
+              if (!data.isValid) {
+                this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
+              } else {
+                this.TraineeEmail.setErrors(null);
+                this.TraineeEmail.setValidators([Validators.email, Validators.required]);
+                this.TraineeEmail.updateValueAndValidity();
+              }
+            },
+            (error) => {
+              this.error = error; // Handle error
+            }
+          );
+        },
+        (error) => {
+          this.error = 'Failed to fetch the TLD list'; // Handle fetch error
         }
-        else {
-          this.TraineeEmail.setErrors(null);
-          this.TraineeEmail.setValidators([Validators.email, Validators.required]);
-          this.TraineeEmail.updateValueAndValidity();
-        }
-      }, (error) => {
-        this.error = error // error path
-      }
-    );
-    //}
+      );
   }
+
   calculateAgeEligibility() {
     let dateOfBirth: Date = typeof (this.DateOfBirth.value) === 'string' ? new Date(this.DateOfBirth.value) : this.DateOfBirth.value;
     let classID: number = this.ClassID.value;

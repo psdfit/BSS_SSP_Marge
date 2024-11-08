@@ -10,13 +10,11 @@ namespace DataLayer.Interfaces
     public interface ISRVAssociation
     {
       
-        DataTable SaveAssociationSubmission(AssociationSubmissionModel data);
-        DataTable SaveAssociationEvaluation(AssociationEvaluationModel data);
-        void SaveTSPAssignment(TSPAssignmentModel data);
-        DataTable FetchDataListBySPName(string spName);
-        
-        DataTable FetchReportBySPNameAndParam(string spName, string param, int value);
-        DataTable LoopingData(DataTable dt, string[] attachmentColumns);
+        public DataTable SaveAssociationSubmission(AssociationSubmissionModel data);
+        public DataTable SaveAssociationEvaluation(AssociationEvaluationModel data);
+        public void SaveTSPAssignment(TSPAssignmentModel data);
+        public DataTable FetchDataListBySPName(string spName);
+        public DataTable LoopinData(DataTable dt, string[] attachmentColumns);
 
     }
 }

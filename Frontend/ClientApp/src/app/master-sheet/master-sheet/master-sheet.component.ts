@@ -284,13 +284,13 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   }
   populateData(data: any) {
     const dataWithLatestInstructorName = [...data];
-    dataWithLatestInstructorName.forEach(entry => {
-      if (entry.InstructorName) {
-        // Split the names by comma and take the last element
-        const names = entry.InstructorName.split(',');
-        entry.InstructorName = names[names.length - 1].trim();
-      }
-    });
+    //dataWithLatestInstructorName.forEach(entry => {
+    //  if (entry.InstructorName) {
+    //    // Split the names by comma and take the last element
+    //    const names = entry.InstructorName.split(',');
+    //    entry.InstructorName = names[names.length - 1].trim();
+    //  }
+    //});
     return dataWithLatestInstructorName.map(item => {
         return {
           'Scheme Code': item.SchemeCode
@@ -386,13 +386,13 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
           return this.getPagedData(pagedModel, this.filters);
         })).subscribe((data: any) => {
           const dataWithLatestInstructorName = [...data];
-          dataWithLatestInstructorName[0].forEach((entry: any) => {
-            if (entry.InstructorName) {
-              // Split the names by comma and take the last element
-              const names = entry.InstructorName.split(',');
-              entry.InstructorName = names[names.length - 1].trim();
-            }
-          });
+          //dataWithLatestInstructorName[0].forEach((entry: any) => {
+          //  if (entry.InstructorName) {
+          //    // Split the names by comma and take the last element
+          //    const names = entry.InstructorName.split(',');
+          //    entry.InstructorName = names[names.length - 1].trim();
+          //  }
+          //});
           this.mastersheet = new MatTableDataSource(dataWithLatestInstructorName[0]);
 
           this.Scheme = data[1];

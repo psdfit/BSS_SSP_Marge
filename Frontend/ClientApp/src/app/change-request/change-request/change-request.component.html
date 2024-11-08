@@ -355,14 +355,14 @@
                   </div>
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <input type="text" formControlName="TotalExperience" placeholder="Experience" matInput />
+                      <input type="text" formControlName="TotalExperience" placeholder="Experience" matInput maxlength="250" />
                       <mat-label>Total Experience</mat-label>
                       <mat-error *ngIf="changerequestInstructorform.controls.TotalExperience.invalid && changerequestInstructorform.controls.TotalExperience.errors.required">required</mat-error>
                     </mat-form-field>
                   </div>
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <input type="text" formControlName="InstructorCRComments" placeholder="Comments" matInput />
+                      <input type="text" formControlName="InstructorCRComments" placeholder="Comments" matInput maxlength="1000" />
                       <mat-label>Comments</mat-label>
                       <mat-error *ngIf="changerequestInstructorform.controls.InstructorCRComments.invalid && changerequestInstructorform.controls.InstructorCRComments.errors.required">required</mat-error>
                     </mat-form-field>
@@ -553,7 +553,7 @@
                   </div>
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <input type="text" formControlName="TotalExperience" placeholder="Experience" matInput required />
+                      <input type="text" formControlName="TotalExperience" placeholder="Experience" matInput required maxlength="250" />
                       <mat-label>Total Experience</mat-label>
                       <mat-error *ngIf="this.NewInstructorTotalExperience.invalid && this.NewInstructorTotalExperience.errors.required"><strong>required</strong></mat-error>
                     </mat-form-field>
@@ -577,7 +577,7 @@
                   </div>
                   <div class="col-sm-3">
                     <mat-form-field fxFlex>
-                      <input type="text" formControlName="NewInstructorCRComments" placeholder="Comments" matInput />
+                      <input type="text" formControlName="NewInstructorCRComments" placeholder="Comments" matInput  maxlength="1000" />
                       <mat-label>Comments</mat-label>
                       <mat-error *ngIf="this.NewInstructorCRComments.invalid && this.NewInstructorCRComments.errors.required">required</mat-error>
                     </mat-form-field>
@@ -1409,11 +1409,13 @@
                     </div>
                     <div class="col-sm-6">
                       <mat-form-field fxFlex>
-                        <input type="text" formControlName="HeadEmail" placeholder="Head Email" matInput maxlength="80" />
+                        <input type="text" formControlName="HeadEmail" placeholder="Head Email" matInput maxlength="80" (blur)="checkOnHeadEmail()" />
                         <mat-label>Head Email</mat-label>
                         <mat-error *ngIf="changerequestTSPform.controls.HeadEmail.invalid && changerequestTSPform.controls.HeadEmail.errors.email">Invalid Email address</mat-error>
                         <mat-error *ngIf="changerequestTSPform.controls.HeadEmail.invalid && changerequestTSPform.controls.HeadEmail.errors.required">required</mat-error>
+                        <mat-error *ngIf="HeadEmail.invalid && !HeadEmail.errors?.isValid"><strong>{{HeadEmail.errors.message}}</strong></mat-error>
                       </mat-form-field>
+
                     </div>
 
                     <div class="col-sm-6">

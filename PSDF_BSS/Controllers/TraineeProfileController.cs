@@ -816,6 +816,24 @@ namespace PSDF_BSSRegistration.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetTSPTradeCriteria/{programid}/{tradeid}")]
+        public IActionResult GetTSPTradeCriteria(int programid, int tradeid)
+        {
+            try
+            {
+                int CurUserID = Convert.ToInt32(User.Identity.Name);
+                var criteria = srvTraineeProfile.checkTSPTradeCriteria(programid, tradeid, CurUserID);
+                   
+                   
+                return Ok(criteria);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         // POST: TraineeProfile/SaveSubmitted
         [HttpPost]
         [Route("SaveSubmitted")]

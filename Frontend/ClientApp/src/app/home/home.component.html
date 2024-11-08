@@ -624,8 +624,8 @@
                       <ng-container matColumnDef="sn">
                         <mat-header-cell *matHeaderCellDef mat-sort-header>Sr#</mat-header-cell>
                         <mat-cell *matCellDef="let Row; let i = index;">
-                          <mat-checkbox (click)="$event.stopPropagation()" (change)="onCheckboxChange($event, Row)" 
-                             [checked]="selection.isSelected(Row)">
+                          <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(Row) : null" [checked]="selection.isSelected(Row)">
                           </mat-checkbox>|{{ (PageTrainee.pageIndex * PageTrainee.pageSize) + i+1}}</mat-cell>
                       </ng-container>
                       <ng-container matColumnDef="TraineeName">

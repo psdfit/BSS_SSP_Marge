@@ -96,12 +96,17 @@
                           </div>
                           <div class="col-6">
                             <mat-form-field fxFlex>
-                              <input type="email" formControlName="TraineeEmail" placeholder="TraineeEmail" matInput maxlength="50" (blur)="checkOnTraineeEmail()" />
+                              <input type="email" formControlName="TraineeEmail" placeholder="TraineeEmail" matInput
+                                     maxlength="50" (blur)="checkOnTraineeEmail()" />
                               <mat-label>Trainee Email</mat-label>
-                              <mat-error *ngIf="TraineeEmail.invalid && TraineeEmail.errors.email">Invalid Email address</mat-error>
+                              <mat-error *ngIf="TraineeEmail.invalid && TraineeEmail.errors.email">
+                                Invalid Email
+                                address
+                              </mat-error>
                               <mat-error *ngIf="TraineeEmail.invalid && TraineeEmail.errors.required">required</mat-error>
                               <mat-error *ngIf="TraineeEmail.invalid && !TraineeEmail.errors?.isValid"><strong>{{TraineeEmail.errors.message}}</strong></mat-error>
                             </mat-form-field>
+
                           </div>
                         </div>
                         </div>
@@ -316,8 +321,14 @@
                       <div class="col-sm-6" *ngIf="VoucherHolder && VoucherOrganization">
                         <mat-form-field fxFlex>
                           <mat-label>Voucher Organization</mat-label>
-                          <input type="text" formControlName="VoucherOrganization" placeholder="Voucher Organization" matInput required />
-                          <mat-error *ngIf="VoucherOrganization.invalid && VoucherOrganization.errors.required"><strong>required</strong></mat-error>
+                          <input type="text" formControlName="VoucherOrganization" placeholder="Voucher Organization"
+                                 matInput required maxlength="250" />
+                          <mat-error *ngIf="VoucherOrganization.invalid && VoucherOrganization.errors.required">
+                            <strong>required</strong>
+                          </mat-error>
+                          <mat-error *ngIf="VoucherOrganization.errors?.maxlength">
+                            <strong>Maximum length is 250 characters</strong>
+                          </mat-error>
                         </mat-form-field>
                       </div>
                     </div>

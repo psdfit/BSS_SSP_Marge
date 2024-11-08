@@ -378,10 +378,10 @@ export class PBTEComponent implements OnInit {
     this.initForm();
 
     this.getPBTEClassData();
+    this.getPBTEExamResultTraineeData();
     // this.GetPbteData("Scheme")
     // this.GetPbteData("Class")
     // this.GetPbteData("CenterLocation")
-    this.getPBTEExamResultTraineeData();
   }
   getSelectedTabData() {
     switch (this.tabGroup?.selectedIndex ?? 0) {
@@ -425,7 +425,6 @@ export class PBTEComponent implements OnInit {
     );
   }
   getPBTESelectedSubTabData() {
-    debugger
     switch (this.tabGroupS?.selectedIndex ?? 0) {
       case 0:
         this.getPBTEClassData();
@@ -670,7 +669,7 @@ export class PBTEComponent implements OnInit {
           }
         },
         (error) => {
-          this.ComSrv.ShowError(`${error.message}`, "Close", 5000);
+          this.ComSrv.ShowError(`${error.error}`, "Close", 5000);
         }
       );
     } else {
@@ -738,6 +737,7 @@ export class PBTEComponent implements OnInit {
     return input.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
   DataExcelExport(Data: any, ReportName: string) {
+    console.log(Data)
     if (ReportName === "PBTE_MSR") {
       const Error = Data.find((element) =>
         element.PBTESchemeName.includes("Required")

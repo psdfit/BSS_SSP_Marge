@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using DataLayer.Classes;
 using DataLayer.Interfaces;
 using DataLayer.Models;
 using Newtonsoft.Json;
@@ -161,40 +160,5 @@ namespace DataLayer.Services
         //}
 
         //#endregion Dashborad
-
-
-        public DataTable LoopingData(DataTable dt, string[] attachmentColumns)
-        {
-            DataTable modifiedDataTable = dt.Clone();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                // Update all attachments in one go using the passed attachment columns array
-                foreach (string attachmentColumn in attachmentColumns)
-                {
-                    UpdateAttachment(row, attachmentColumn);
-                }
-
-                modifiedDataTable.ImportRow(row);
-            }
-
-            return modifiedDataTable;
-        }
-
-
-        private void UpdateAttachment(DataRow row, string columnName)
-        {
-            string attachment = row[columnName].ToString();
-
-            if (string.IsNullOrEmpty(attachment))
-            {
-                row[columnName] = "";
-            }
-            else
-            {
-                row[columnName] = Common.GetFileBase64(attachment);
-            }
-        }
-
     }
 }
