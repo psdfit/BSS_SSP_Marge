@@ -153,7 +153,7 @@ namespace DataLayer.Services
                     ""MerchantId"": ""PSDF"",
                     ""MerchantPassword"": ""Live@psdf21""
                     }},{{
-                    ""OrderNumber"": ""{orderNumber+999777}"",
+                    ""OrderNumber"": ""{orderNumber}"",
                     ""OrderAmount"": ""{TotalFee}"",
                     ""OrderDueDate"": ""{dueDate.Day}/{dueDate.Month}/{dueDate.Year}"",
                     ""OrderAmountWithinDueDate"": ""{TotalFee}"",
