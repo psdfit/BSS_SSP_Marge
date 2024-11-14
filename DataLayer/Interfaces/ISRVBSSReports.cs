@@ -13,5 +13,6 @@ namespace DataLayer.Interfaces
         public DataTable FetchReport(String Param);
 
         public DataTable FetchDropDownList(String Param);
+        DataTable LoopingData(DataTable dt, string[] attachmentColumns);
     }
 }
