@@ -130,11 +130,11 @@
                   <fieldset class="border" formArrayName="associationDetail">
                     <legend>{{associationDetail.value[i].CategoryTitle}}</legend>
                     <form *ngIf="associationDetail.length > 0" [formGroupName]="i">
-                      
-                      <!-- <div class="row">
+                      <div class="row">
                         <div class="col-sm-4">
                           <mat-label>Attachment for Evidence</mat-label>
-                          <file-upload formControlName="Evidence" accept="application/pdf,image/jpeg,image/png" required maxSize="1024" [nopreview]="true" matInput></file-upload>
+                          <file-upload formControlName="Evidence" accept="application/pdf,image/jpeg,image/png" required
+                                       maxSize="1024" [nopreview]="true" matInput></file-upload>
                         </div>
                         <div class="col-sm-8">
                           <mat-form-field>
@@ -142,22 +142,8 @@
                             <input formControlName="Remarks" placeholder="Enter Remarks" matInput required />
                           </mat-form-field>
                         </div>
-                      </div> -->
-
+                      </div>
                       <ng-container *ngFor="let item of CriteriaSubCategory">
-                        <div class="row">
-                          <div class="col-sm-4">
-                            <mat-label>Attachment for Evidence</mat-label>
-                            <file-upload formControlName="Evidence" accept="application/pdf,image/jpeg,image/png" required maxSize="12288" [nopreview]="true" matInput></file-upload>
-                          </div>
-                          <div class="col-sm-8">
-                            <mat-form-field>
-                              <mat-label>Remarks</mat-label>
-                              <input formControlName="Remarks" placeholder="Enter Remarks" matInput required />
-                            </mat-form-field>
-                          </div>
-                        </div>
-                        
                         <div class="row border-bottom"
                              *ngIf="item.CriteriaMainCategoryID == CriteriaMainCategory[i].CriteriaMainCategoryID">
                           <div class="col-sm-4">
