@@ -136,8 +136,8 @@ export class ClassComponent implements OnInit {
       //StipendMode: ['Digital', Validators.required],
       TotalCostPerClass: [0, Validators.required],
       //TradeDetailMapID: ['']
-      BalloonPayment: [0],
-      GuruPayment: [0],
+      balloonpayment: 0,
+      GuruPayment: 0,
     }
     this.notForm = this._formBuilder.group({ ...this.classFormGroup, TotalClasses: [0, Validators.required] });
 
@@ -519,7 +519,7 @@ export class ClassComponent implements OnInit {
               this.tableList['TotalCostPerClass'] = this.notForm.controls.TotalCostPerClass.value,
               this.tableList['TradeDetailMapID'] = tradeDetailID,
               this.tableList['IsEditable'] = false,
-              this.tableList['BalloonPayment'] = this.notForm.controls.BalloonPayment.value,
+              this.tableList['balloonpayment'] = this.notForm.controls.balloonpayment.value,
               this.tableList['GuruPayment'] = this.notForm.controls.GuruPayment.value
             this.populatedTableList.push(this.tableList);
             this.tableList = [];
@@ -564,7 +564,7 @@ export class ClassComponent implements OnInit {
               OverallEmploymentCommitment: this.notForm.controls.OverallEmploymentCommitment.value,
               Stipend: this.notForm.controls.Stipend.value,
               TotalCostPerClass: TotalCost_temp,
-              BalloonPayment: this.notForm.controls.BalloonPayment.value,
+              balloonpayment: this.notForm.controls.balloonpayment.value,
               GuruPayment: this.notForm.controls.GuruPayment.value
               
             }, { emitEvent: true });
@@ -989,8 +989,8 @@ export class ClassComponent implements OnInit {
             this.tableList['OverallEmploymentCommitment'] = Math.round(f['Employment Commitment Self'] + f['Employment Commitment Formal']),
             this.tableList['Stipend'] = Math.round(f['Stipend']),
             this.tableList['TotalCostPerClass'] = Math.round(TotalCost_temp),
-            this.tableList['BalloonPayment'] = Math.round(f['On Job Training (OJT)']),
-            this.tableList['GuruPayment'] = Math.round(f['Guru Payment']),
+            this.tableList['balloonpayment'] = f['On Job Training (OJT)'] ?? 0,
+            this.tableList['GuruPayment'] = f['Guru Payment'] ?? 0, 
 
             this.tableList['IsEditable'] = false
           
@@ -1056,7 +1056,7 @@ export class ClassComponent implements OnInit {
             EmploymentCommitmentFormal: Math.round(f['Employment Commitment Formal']),
             OverallEmploymentCommitment: Math.round(f['Employment Commitment Self'] + f['Employment Commitment Formal']),
             Stipend: Math.round(f['Stipend']),
-            BalloonPayment: Math.round(f['On Job Training (OJT)']),
+            balloonpayment: Math.round(f['On Job Training (OJT)']), 
             GuruPayment: Math.round(f['Guru Payment']),          
             TotalCostPerClass: Math.round(TotalCost_temp)
           }, { emitEvent: true });
@@ -1257,6 +1257,8 @@ export class ClassComponent implements OnInit {
       (!row['TrainingCostPerTraineePerMonthInTax'] && row['TrainingCostPerTraineePerMonthInTax'] != 0) ||
       (isNaN(row.UniformBagCost)) ||
       (isNaN(row.Stipend)) ||
+      (!row['balloonpayment'] && row['balloonpayment'] != 0) ||
+      (!row['GuruPayment'] && row['GuruPayment'] != 0) ||
       (!row['PerTraineeTestCertCost'] && row['PerTraineeTestCertCost'] != 0) ||
       (!row['EmploymentCommitmentSelf'] && row['EmploymentCommitmentSelf'] != 0) ||
       (!row['EmploymentCommitmentFormal'] && row['EmploymentCommitmentFormal'] != 0) ||
@@ -1415,8 +1417,8 @@ export class ClassComponent implements OnInit {
       TotalCostPerClass: [0, Validators.required],
       TradeDetailMapID: ['', Validators.required],
       RequiredLocationGeoTag: ['', Validators.required],
-      BalloonPayment: [''],
-      GuruPayment: ['']
+      balloonpayment: 0,
+      GuruPayment: 0
     },
       { updateOn: "change" }
 
@@ -1475,7 +1477,7 @@ export class ClassModel extends ModelBase {
   OrganizationID: number;
   MinAge: number;
   MaxAge: number;
-  BalloonPayment: number;
+  balloonpayment: number;
   GuruPayment: number;
 }
 

@@ -437,7 +437,7 @@
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
-            <input matInput placeholder="On Job Training (OJT)" formControlName="BalloonPayment" required type="text"
+            <input matInput placeholder="On Job Training (OJT)" formControlName="balloonpayment" required type="text"
                    DecimelOnly>
           </mat-form-field>
         </div>
@@ -1478,14 +1478,8 @@
                   </td>
 
                   <td>
-                    <ng-container *ngIf="row.IsEditable">
-                      <mat-form-field>
-                        <input matInput type="text"
-                               formControlName="BalloonPayment"
-                               [ngModel]="row.BalloonPayment" />
-                      </mat-form-field>
-                    </ng-container>
-                    <ng-container *ngIf="!row.IsEditable">{{row.BalloonPayment}}</ng-container>
+                    <ng-container *ngIf="row.IsEditable"> <mat-form-field><input matInput type="text" formControlName="balloonpayment" [ngModel]="row.balloonpayment" /></mat-form-field></ng-container>
+                    <ng-container *ngIf="!row.IsEditable">{{row.balloonpayment}}</ng-container>
                     <br />
 
                     <!--<mat-form-field>
@@ -1493,6 +1487,11 @@
       <mat-error *ngIf="row.controls.Stipend.invalid && row.controls.Stipend.errors.required">required</mat-error>
     </mat-form-field>-->
                   </td>
+
+                  <!--<mat-form-field>
+    <mat-form-field><input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly maxlength="15">
+    <mat-error *ngIf="row.controls.Stipend.invalid && row.controls.Stipend.errors.required">required</mat-error>
+  </mat-form-field>-->
                   <td>
                     <ng-container *ngIf="row.IsEditable">
                       <mat-form-field>
