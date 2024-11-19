@@ -166,6 +166,7 @@ export class AssociationPaymentComponent implements OnInit {
     if (this.selection.selected.length > 0) {
       this.ComSrv.postJSON("api/Payment/SaveAssociationPayment", data).subscribe(
         (response) => {
+          this.selection.clear()
           this.GetTSPTradelot();
         },
         (error) => {
