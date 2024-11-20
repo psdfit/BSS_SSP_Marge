@@ -396,7 +396,8 @@ export class ApprovalsComponent implements OnInit {
             "Employment Commitment Formal": r.EmploymentCommitmentFormal,
             "Overall Employment Commitment": r.OverallEmploymentCommitment,
             Stipend: this.decimalPipe.transform(r.Stipend,"1.2-2"),
-            "Balloon Payment": this.decimalPipe.transform(r.balloonpayment,"1.2-2"),
+            "On Job Training (OJT)": this.decimalPipe.transform(r.balloonpayment, "1.2-2"),
+            "Guru Payment": this.decimalPipe.transform(r.GuruPayment, "1.2-2"),
             "Total Cost": this.decimalPipe.transform(r.TotalCostPerClass,"1.2-2"),
           }));
 
@@ -706,7 +707,8 @@ export class ApprovalsComponent implements OnInit {
             // ,"Employment Commitment Self	Employment Commitment Formal": x.
             // ,"Overall Employment Commitment": x.
             Stipend: x.Stipend,
-            "Baloon Payment": x.balloonpayment,
+            "On Job Training (OJT)": x.balloonpayment,
+            "Guru Payment": x.GuruPayment,
             // ,"Total Cost": x.
             "Training Cost Per Trainee Per Month Ex Tax":
               x.TrainingCostPerTraineePerMonthExTax,

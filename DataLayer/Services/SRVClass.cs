@@ -580,7 +580,7 @@ namespace DataLayer.Services
             }
             if (r.Table.Columns.Contains("GuruPayment"))
             {
-                Class.balloonpayment = r["GuruPayment"] != DBNull.Value ? Convert.ToInt32(r["GuruPayment"]) : 0;
+                Class.GuruPayment = r["GuruPayment"] != DBNull.Value ? Convert.ToInt32(r["GuruPayment"]) : 0;
             }
             return Class;
         }
