@@ -90,7 +90,7 @@ namespace DataLayer.Services
         {
             try
             {
-                SqlParameter[] param = new SqlParameter[59];
+                SqlParameter[] param = new SqlParameter[60];
                 param[0] = new SqlParameter("@ClassID", Class.ClassID);
                 param[1] = new SqlParameter("@ClassCode", Class.ClassCode);
                 param[2] = new SqlParameter("@ClassStatusID", 1);
@@ -157,6 +157,7 @@ namespace DataLayer.Services
                 /// Added by Rao Ali Haider on 22-July-2024
                 param[57] = new SqlParameter("@balloonpayment", Class.balloonpayment);
                 param[58] = new SqlParameter("@GuruPayment", Class.GuruPayment);
+                param[59] = new SqlParameter("@Transportation", Class.Transportation);
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_Class]", param);
                 int k = Convert.ToInt32(param[50].Value);
                 return GetByClassID(k);
@@ -581,6 +582,10 @@ namespace DataLayer.Services
             if (r.Table.Columns.Contains("GuruPayment"))
             {
                 Class.GuruPayment = r["GuruPayment"] != DBNull.Value ? Convert.ToInt32(r["GuruPayment"]) : 0;
+            }
+            if (r.Table.Columns.Contains("Transportation"))
+            {
+                Class.Transportation = r["Transportation"] != DBNull.Value ? Convert.ToInt32(r["Transportation"]) : 0;
             }
             return Class;
         }

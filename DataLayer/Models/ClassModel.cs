@@ -108,5 +108,6 @@ namespace DataLayer.Models
         /// Added by Rao Ali Haider on 22-July-2024 for VRN Payment
         public int balloonpayment { get; set; }
         public int GuruPayment { get; set; }
+        public int Transportation { get; set; }
     }
 }

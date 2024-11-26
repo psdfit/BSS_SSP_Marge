@@ -390,7 +390,7 @@
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
-            <input matInput placeholder="Boarding Other Allowances Per trainee/Transportation"
+            <input matInput placeholder="Boarding Other Allowances Per trainee"
                    formControlName="BoardingAllowancePerTrainee" required type="text" DecimelOnly maxlength="15">
           </mat-form-field>
         </div>
@@ -438,6 +438,12 @@
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="On Job Training (OJT)" formControlName="balloonpayment" required type="text"
+                   DecimelOnly>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Transportation" formControlName="Transportation" required type="text"
                    DecimelOnly>
           </mat-form-field>
         </div>
@@ -837,12 +843,13 @@
                 <th>Training Cost per Trainee per Month (Inclusive of Taxes)</th>
                 <th>Uniform & Bag Cost per Trainee</th>
                 <th>Testing & Certification Fee per Trainee</th>
-                <th>Boarding & Other Allowances per trainee/Transportation</th>
+                <th>Boarding & Other Allowances per trainee</th>
                 <th>Self Employment Commitment</th>
                 <th>Formal Employment Commitment</th>
                 <th>Overall Employment Commitment</th>
                 <th>Stipend</th>
                 <th>On Job Training (OJT)</th>
+                <th>Transportation</th>
                 <th>Guru Payment</th>
                 <th>Total Cost</th>
                 <th *ngIf="!scheme[0]?.FinalSubmitted">Action</th>
@@ -1492,6 +1499,22 @@
     <mat-form-field><input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly maxlength="15">
     <mat-error *ngIf="row.controls.Stipend.invalid && row.controls.Stipend.errors.required">required</mat-error>
   </mat-form-field>-->
+                  <td>
+                    <ng-container *ngIf="row.IsEditable">
+                      <mat-form-field>
+                        <input matInput type="text"
+                               formControlName="Transportation"
+                               [ngModel]="row.Transportation" />
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="!row.IsEditable">{{row.Transportation}}</ng-container>
+                    <br />
+
+                    <!--<mat-form-field>
+      <mat-form-field><input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly maxlength="15">
+      <mat-error *ngIf="row.controls.Stipend.invalid && row.controls.Stipend.errors.required">required</mat-error>
+    </mat-form-field>-->
+                  </td>
                   <td>
                     <ng-container *ngIf="row.IsEditable">
                       <mat-form-field>
