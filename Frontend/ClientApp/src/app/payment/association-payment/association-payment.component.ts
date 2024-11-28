@@ -166,11 +166,12 @@ export class AssociationPaymentComponent implements OnInit {
     if (this.selection.selected.length > 0) {
       this.ComSrv.postJSON("api/Payment/SaveAssociationPayment", data).subscribe(
         (response) => {
+          this.selection.clear()
           this.GetTSPTradelot();
         },
         (error) => {
           console.log(error.error[1].Description)
-          this.ComSrv.ShowError(`TSP ${error.error[1].Description}`, "Close", 500000);
+          this.ComSrv.ShowError(`TSP ${error.error[1].Description}`, "Close", 5000);
         }
       )
     } else {

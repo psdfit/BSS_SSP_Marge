@@ -33,7 +33,9 @@ export class TspAssociationEvaluationDialogueComponent implements OnInit {
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef,
     public dialogRef: MatDialogRef<TspAssociationEvaluationDialogueComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+    @Inject(MAT_DIALOG_DATA) 
+    public data: any) {
+      
     dialogRef.disableClose = true;
   }
   ngOnInit(): void {
@@ -57,6 +59,7 @@ export class TspAssociationEvaluationDialogueComponent implements OnInit {
       Program: [""],
       TspName: [""],
       TradeLot: [""],
+      Trainer: [""],
       Status: ['', [Validators.required]],
       VerifiedCapacityMorning: ['', [Validators.required]],
       VerifiedCapacityEvening: ['', [Validators.required]],

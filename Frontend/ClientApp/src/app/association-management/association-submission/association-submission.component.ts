@@ -66,7 +66,6 @@ export class AssociationSubmissionComponent implements OnInit {
     this.GetTspTrade();
     this.InitAssociationForm();
   }
-
   PageTitle(): void {
     this.ComSrv.setTitle(this.ActiveRoute.snapshot.data.title);
     this.SpacerTitle = this.ActiveRoute.snapshot.data.title;
@@ -116,7 +115,6 @@ export class AssociationSubmissionComponent implements OnInit {
         } else {
           this.IsExistedTradeLot = false;
         }
-
         if (TradeLot.length > 0) {
           this.LotNo = TradeLot[0].LotNo;
           this.updateTrainerData(TradeLot[0].ParentTrade);
@@ -126,7 +124,6 @@ export class AssociationSubmissionComponent implements OnInit {
   }
   async updateTrainerData(ParentTrade: any) {
     // this.TrainerProfile = this.TrainerDetailByUserID.filter(t => t.TrainerTradeID == TradeId)
-    debugger;
     this.TrainerProfile = this.TrainerDetailByUserID.filter(
       (t) =>
         t.ParentTrade != "Parent Trade Not Found" &&
@@ -145,10 +142,19 @@ export class AssociationSubmissionComponent implements OnInit {
       );
       return;
     }
+    if (this.ProgramStatus != "Active") {
+      this.ComSrv.ShowError(
+        "The association submission is locked because the selected program is closed."
+      );
+      return;
+    }
     if (this.associationDetail.length > 0) {
       if (this.AssociationForm.valid && this.associationDetail.valid) {
         this.AssociationForm.get("ProgramID").setValue(this.ProgramID);
-        this.AssociationForm.get("TradeLotTitle").setValue(this.LotNo);
+        const tradeLot = this.TradeLot.find(
+          (d) => d.TradeLotID == this.AssociationForm.get("TradeLot").value
+        ).LotNo;
+        this.AssociationForm.get("TradeLotTitle").setValue(tradeLot);
         this.ComSrv.postJSON(
           "api/Association/SaveAssociationSubmission",
           this.AssociationForm.getRawValue()
@@ -309,7 +315,6 @@ export class AssociationSubmissionComponent implements OnInit {
   }
   TspTrade: any = [];
   async GetTspTrade() {
-    debugger;
     this.SPName = "RD_SSPTSPTradeManage";
     this.paramObject = {
       UserID: this.currentUser.UserID,
@@ -353,8 +358,6 @@ export class AssociationSubmissionComponent implements OnInit {
     }
   }
   updateTradeLotStatus(TradeLot) {
-    debugger;
-
     // const updatedTradeLot = TradeLot.map(item => {
     //   // const matchedTrade = this.TspTrade.find(trade => trade.TradeID === item.TradeID &&  trade.ParentTrade === item.ParentTrade  && trade.ApprovalStatus === "Accepted" && trade.TrainingLocationID === this.AssociationForm.get('TrainingLocation').value);
     //   const matchedTrade = this.TspTrade.find(trade =>   trade.ApprovalStatus == "Accepted" &&  trade.ParentTrade === item.ParentTrade  && trade.TrainingLocationID === this.AssociationForm.get('TrainingLocation').value);
@@ -363,10 +366,8 @@ export class AssociationSubmissionComponent implements OnInit {
     //     ...item,
     //     tradeLotDisabled: tradeLotDisabled
     //   };
-    // });
-
+    // });d
     // const updatedTradeLot = TradeLot.map(item => {
-
     //   const matchedTrade = this.TspTrade.find(trade =>
     //     trade.ApprovalStatus === "Accepted" &&
     //     trade.ParentTrade !== "Parent Trade Not Found" &&
@@ -375,52 +376,43 @@ export class AssociationSubmissionComponent implements OnInit {
     //   );
     // console.log(matchedTrade)
     //   const tradeLotDisabled = !matchedTrade;
-
     //   if (!tradeLotDisabled) {
     //     const LotNo = matchedTrade.TradeName + " | " + item.LotNo;
     //     item.LotNo = LotNo;
     //   }
-
     //   return {
     //     ...item,
     //     tradeLotDisabled
     //   };
     // });
-
     // for parent trade extension implementation
     const tspTrade = this.TspTrade.filter(
       (x) =>
         x.ApprovalStatus === "Accepted" &&
         x.ParentTrade !== "Parent Trade Not Found" &&
-        x.TrainingLocationID === this.AssociationForm.get("TrainingLocation").value
+        x.TrainingLocationID ===
+          this.AssociationForm.get("TrainingLocation").value
     );
-    
     const updatedTradeLot = TradeLot.map((item) => {
       const matchedTrade = tspTrade.find(
-        (collegeItem) => collegeItem.ParentTrade.trim() === item.ParentTrade.trim()
+        (collegeItem) =>
+          collegeItem.ParentTrade.trim() === item.ParentTrade.trim()
       );
-    
       if (matchedTrade) {
         item.LotNo = `${matchedTrade.TradeName} | ${item.LotNo}`;
       }
-    
       return { ...item, tradeLotDisabled: !matchedTrade };
     });
-    
-
     // console.log(updatedTradeLot);
-
     this.TradeLot = updatedTradeLot;
     const selectedTradeLot = this.AssociationForm.get("TradeLot").value;
     const selectedTradeLotData = TradeLot.find(
       (d) => d.TradeLotID === selectedTradeLot
     );
-
     if (selectedTradeLotData) {
       this.updateTrainerData(selectedTradeLotData.ParentTrade);
     }
   }
-
   TrainerProfile: any = [];
   GetParamString(SPName: string, paramObject: any) {
     let ParamString = SPName;
@@ -452,7 +444,6 @@ export class AssociationSubmissionComponent implements OnInit {
       this.ComSrv.ShowError(error.error);
     }
   }
-
   EmptyCtrl(ev: any) {
     this.TSearchCtr.setValue("");
   }
@@ -467,7 +458,6 @@ export class AssociationSubmissionComponent implements OnInit {
         this.TableColumns = Object.keys(tableData[0]).filter(
           (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
         );
-        this.TableColumns.unshift("Action");
         this.TablesData = new MatTableDataSource(tableData);
         this.TablesData.paginator = this.Paginator;
         this.TablesData.sort = this.Sort;
@@ -482,6 +472,7 @@ export class AssociationSubmissionComponent implements OnInit {
         this.AssociationTableColumns = Object.keys(tableData[0]).filter(
           (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
         );
+        this.AssociationTableColumns.unshift("Action");
         this.AssociationTablesData = new MatTableDataSource(tableData);
         this.AssociationTablesData.paginator = this.AssociationPaginator;
         this.AssociationTablesData.sort = this.AssociationSort;
@@ -518,26 +509,12 @@ export class AssociationSubmissionComponent implements OnInit {
       row.TrainerDetailID
     );
   }
-
   isOptionDisabled(item: any): boolean {
     if (this.EditCheck) {
       const selectedValue = this.AssociationForm.get("TrainingLocation").value;
       const isOptionActive = selectedValue == item.TrainingLocationID;
       return !isOptionActive;
     }
-  }
-  OpenDialogue(row) {
-    const data = [row, [1]];
-    const dialogRef = this.Dialog.open(InitiateAssociationDialogComponent, {
-      width: "40%",
-      data: data,
-      disableClose: true,
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === true) {
-        this.GetData();
-      }
-    });
   }
   applyFilter(data: MatTableDataSource<any>, event: any) {
     data.filter = event.target.value.trim().toLowerCase();
