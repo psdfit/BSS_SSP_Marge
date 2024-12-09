@@ -306,9 +306,11 @@
               <span class="spacer">Classes</span>
               <div class="spacer"></div>
               <input type="text" placeholder="Search" (keyup)="applyFilter(classTableData,$event.target.value)"
-                class="search" />
+                     class="search" />
               <button class="ml-2" mat-raised-button color="accent" mat-button matStepperNext
-                (click)="GetInstructors()">Instructors</button>
+                      (click)="GetInstructors()">
+                Instructors
+              </button>
             </mat-toolbar>
             <div class="table-responsive">
               <mat-table [dataSource]="classTableData" #classSort="matSort" matSort class="table table-bordered">
@@ -318,28 +320,28 @@
                     <ng-container [ngSwitch]="column">
                       <!-- Display the column data for all columns except 'Action' and 'TSP' -->
                       <!-- <ng-container *ngSwitchCase="'TSP'">
-                        <button matd-button color="primary" type="button" matStepperNext mat-button (click)="GetTsps(row.SchemeID)">
-                          TSPs
-                        </button>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'Action'">
-                        <a mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)">
-                          Export <mat-icon>keyboard_arrow_down</mat-icon>
-                        </a>
-                        <mat-menu #menu="matMenu">
-                          <button mat-menu-item (click)="ExportToExcel(row)">
-                            <span>FactSheet.xlsx</span>
-                          </button>
-                          <button mat-menu-item (click)="exportExcel(row.SchemeID, false)">
-                            <span>Appendix.xlsx</span>
-                          </button>
-                          <button mat-menu-item (click)="exportExcel(row.SchemeID, true)">
-                            <span>Appendix (with Financial Information).xlsx</span>
-                          </button>
-                        </mat-menu>
-                        <span class="p-4 text-dark" *ngIf="row.IsApproved">Approved</span>
-                        <a mat-button (click)="openApprovalDialogue(row)" *ngIf="!row.IsApproved">Decision</a>
-                      </ng-container> -->
+              <button matd-button color="primary" type="button" matStepperNext mat-button (click)="GetTsps(row.SchemeID)">
+                TSPs
+              </button>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Action'">
+              <a mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)">
+                Export <mat-icon>keyboard_arrow_down</mat-icon>
+              </a>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="ExportToExcel(row)">
+                  <span>FactSheet.xlsx</span>
+                </button>
+                <button mat-menu-item (click)="exportExcel(row.SchemeID, false)">
+                  <span>Appendix.xlsx</span>
+                </button>
+                <button mat-menu-item (click)="exportExcel(row.SchemeID, true)">
+                  <span>Appendix (with Financial Information).xlsx</span>
+                </button>
+              </mat-menu>
+              <span class="p-4 text-dark" *ngIf="row.IsApproved">Approved</span>
+              <a mat-button (click)="openApprovalDialogue(row)" *ngIf="!row.IsApproved">Decision</a>
+            </ng-container> -->
                       <ng-container *ngSwitchCase="'No.'">
                         &nbsp; {{i+1}}
                       </ng-container>
@@ -354,113 +356,116 @@
                 <mat-row *matRowDef="let row; columns: classTableColumns;"></mat-row>
               </mat-table>
               <mat-paginator #classPaginator="matPaginator" [pageSize]="5"
-                [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
+                             [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
             </div>
             <!-- <div class="row">
-              <div class="col-lg-11 col-md-11 tableSetting">
-                <div *ngIf="classes" class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>No.</th>
-                        <th>Class Code</th>
-                        <th>TSP Code</th>
-                        <th>Sector</th>
-                        <th>Trade</th>
-                        <th>Duration (Months)</th>
-                        <th>Source of Curriculum</th>
-                        <th>Entry Qualification</th>
-                        <th>Certification Authority</th>
-                        <th>Registration Authority</th>
-                        <th>Program Focus</th>
-                        
-                        <th>Contractual Trainees</th>
-                        <th>Batch Number</th>
-                        <th>Min training hours/month</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Trainee Gender</th>
-                        <th>Training Location Address</th>
-                        <th>Geo Tagging (Lat,Long)</th>
-                        <th>Province</th>
-                        <th>District</th>
-                        <th>Tehsil</th>
-                        <th>Cluster</th>
-                        <th>Total Trainee Bid Price</th>
-                        <th>Total Trainee BM Price</th>
-                        <th>Total Trainee Cost</th>
-                        <th> Sales Tax Rate</th>
-                        <th>Training Cost per Trainee per Month (Exclusive of Taxes)</th>
-                        <th>Sales Tax</th>
-                        <th>Training Cost per Trainee per Month (Inclusive of Taxes)</th>
-                        <th>Uniform & Bag Cost per Trainee</th>
-                        <th>Testing & Certification Fee per Trainee</th>
-                        <th>Boarding & Other Allowances per trainee</th>
-                        <th>Employment Commitment Self</th>
-                        <th>Employment Commitment Formal</th>
-                        <th>Overall Employment Commitment</th>
-                        <th>Stipend</th>
-                        <th>Baloon Payment</th>
-                        <th>Total Cost</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let r of classes; let i=index">
-                        <td>{{i+1}}</td>
-                        <td>{{r.ClassCode}}</td>
-                        <td>{{r.TSPCode}}</td>
-                        <td>{{r.SectorName}}</td>
-                        <td>{{r.TradeName}}</td>
-                        <td class="number-align-center">{{r.Duration}}</td>
-                        <td>{{r.SourceOfCurriculum}}</td>
-                        <td>{{r.EntryQualificationName}}</td>
-                        <td>{{r.CertAuthName}}</td>
-                        <td>{{r.RegistrationAuthorityName}}</td>
-                        <td>{{r.ProgramFocusName}}</td>
-                        <td>{{r.TraineesPerClass}}</td>
-                        <td class="number-align-center">{{r.Batch}}</td>
-                        <td class="number-align-center">{{r.MinHoursPerMonth}}</td>
-                        <td class="number-align-center">{{r.StartDate | date: environment.DateFormat}}</td>
-                        <td class="number-align-center">{{r.EndDate | date: environment.DateFormat}}</td>
-                        <td>{{r.GenderName}}</td>
-                        <td>{{r.TrainingAddressLocation}}</td>
-                        <td class="number-align-center">{{r.GeoTagging}}</td>
-                        <td>{{r.ProvinceName}}</td>
-                        <td>{{r.DistrictName}}</td>
-                        <td>{{r.TehsilName}}</td>
-                        <td>{{r.ClusterName}}</td>
-                        <td class="decimal-align-right">{{r.BidPrice | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.BMPrice | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.SalesTaxRate | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthExTax | number:
-                          environment.Decimal}}
-                        </td>
-                        <td class="decimal-align-right">{{r.SalesTax | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthInTax | number:
-                          environment.Decimal}}
-                        </td>
-                        <td class="decimal-align-right">{{r.UniformBagCost | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.PerTraineeTestCertCost | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.BoardingAllowancePerTrainee | number: environment.Decimal}}
-                        </td>
-                        <td>{{r.EmploymentCommitmentSelf}}</td>
-                        <td>{{r.EmploymentCommitmentFormal}}</td>
-                        <td>{{r.OverallEmploymentCommitment}}</td>
-                        <td class="decimal-align-right">{{r.Stipend | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.balloonpayment | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="col-lg-1 col-md-1 nextButton">
-                <button class="btn-warning block" mat-button matStepperNext (click)="GetInstructors()">
-                  Instructors
-                </button>
-              </div>
-            </div> -->
+    <div class="col-lg-11 col-md-11 tableSetting">
+      <div *ngIf="classes" class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Class Code</th>
+              <th>TSP Code</th>
+              <th>Sector</th>
+              <th>Trade</th>
+              <th>Duration (Months)</th>
+              <th>Source of Curriculum</th>
+              <th>Entry Qualification</th>
+              <th>Certification Authority</th>
+              <th>Registration Authority</th>
+              <th>Program Focus</th>
+
+              <th>Contractual Trainees</th>
+              <th>Batch Number</th>
+              <th>Min training hours/month</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Trainee Gender</th>
+              <th>Training Location Address</th>
+              <th>Geo Tagging (Lat,Long)</th>
+              <th>Province</th>
+              <th>District</th>
+              <th>Tehsil</th>
+              <th>Cluster</th>
+              <th>Total Trainee Bid Price</th>
+              <th>Total Trainee BM Price</th>
+              <th>Total Trainee Cost</th>
+              <th> Sales Tax Rate</th>
+              <th>Training Cost per Trainee per Month (Exclusive of Taxes)</th>
+              <th>Sales Tax</th>
+              <th>Training Cost per Trainee per Month (Inclusive of Taxes)</th>
+              <th>Uniform & Bag Cost per Trainee</th>
+              <th>Testing & Certification Fee per Trainee</th>
+              <th>Boarding & Other Allowances per trainee</th>
+              <th>Employment Commitment Self</th>
+              <th>Employment Commitment Formal</th>
+              <th>Overall Employment Commitment</th>
+              <th>Stipend</th>
+              <th>On Job Training (OJT)</th>
+              <th>Guru Payment</th>
+              <th>Total Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of classes; let i=index">
+              <td>{{i+1}}</td>
+              <td>{{r.ClassCode}}</td>
+              <td>{{r.TSPCode}}</td>
+              <td>{{r.SectorName}}</td>
+              <td>{{r.TradeName}}</td>
+              <td class="number-align-center">{{r.Duration}}</td>
+              <td>{{r.SourceOfCurriculum}}</td>
+              <td>{{r.EntryQualificationName}}</td>
+              <td>{{r.CertAuthName}}</td>
+              <td>{{r.RegistrationAuthorityName}}</td>
+              <td>{{r.ProgramFocusName}}</td>
+              <td>{{r.TraineesPerClass}}</td>
+              <td class="number-align-center">{{r.Batch}}</td>
+              <td class="number-align-center">{{r.MinHoursPerMonth}}</td>
+              <td class="number-align-center">{{r.StartDate | date: environment.DateFormat}}</td>
+              <td class="number-align-center">{{r.EndDate | date: environment.DateFormat}}</td>
+              <td>{{r.GenderName}}</td>
+              <td>{{r.TrainingAddressLocation}}</td>
+              <td class="number-align-center">{{r.GeoTagging}}</td>
+              <td>{{r.ProvinceName}}</td>
+              <td>{{r.DistrictName}}</td>
+              <td>{{r.TehsilName}}</td>
+              <td>{{r.ClusterName}}</td>
+              <td class="decimal-align-right">{{r.BidPrice | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.BMPrice | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.SalesTaxRate | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthExTax | number:
+                environment.Decimal}}
+              </td>
+              <td class="decimal-align-right">{{r.SalesTax | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthInTax | number:
+                environment.Decimal}}
+              </td>
+              <td class="decimal-align-right">{{r.UniformBagCost | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.PerTraineeTestCertCost | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.BoardingAllowancePerTrainee | number: environment.Decimal}}
+              </td>
+              <td>{{r.EmploymentCommitmentSelf}}</td>
+              <td>{{r.EmploymentCommitmentFormal}}</td>
+              <td>{{r.OverallEmploymentCommitment}}</td>
+              <td class="decimal-align-right">{{r.Stipend | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.balloonpayment | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.Transportation | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.GuruPayment | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-1 nextButton">
+      <button class="btn-warning block" mat-button matStepperNext (click)="GetInstructors()">
+        Instructors
+      </button>
+    </div>
+  </div> -->
           </mat-step>
           <mat-step>
             <ng-template matStepLabel>Instructors</ng-template>

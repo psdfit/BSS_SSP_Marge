@@ -45,7 +45,7 @@ export class AppendixComponent implements OnInit {
   educationTypes: any;
   age: any[] = [];
   minAge = 18;
-  maxAge = 45;
+  maxAge = 75;
   formrights: UserRightsModel;
   enText: string = "Scheme";
   error: String;
