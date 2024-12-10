@@ -7,6 +7,7 @@ import { SharedModule } from "../shared/shared.module";
 import { TraineeVarificationComponent } from "./trainee-verification/trainee-verification.component";
 import { TraineeVerificationDialogComponent } from "./trainee-verification-dialog/trainee-verification-dialog.component";
 import { TraineeUpdationComponent } from "./trainee-updation/trainee-updation.component";
+import { TraineeGuruDialogComponent } from './trainee-guru-dialog/trainee-guru-dialog.component';
 //import { NgxMaskModule, IConfig } from 'ngx-mask'
 
 //export const options: Partial<IConfig> | (() => Partial<IConfig>);
@@ -16,6 +17,7 @@ import { TraineeUpdationComponent } from "./trainee-updation/trainee-updation.co
     TraineeVarificationComponent,
     TraineeVerificationDialogComponent,
     TraineeUpdationComponent,
+    TraineeGuruDialogComponent,
   ],
   imports: [
     //NgxMaskModule.forRoot()

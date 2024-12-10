@@ -1,0 +1,120 @@
+<mat-toolbar color="accent" class=" slim slim mb-0">
+  <mat-icon class="material-icons"> add_circle </mat-icon>
+  <span class="spacer">Guru Profiles Detail</span>
+</mat-toolbar>
+<mat-card-content>
+  <div class="row" style="padding: 10px !important;">
+    <div class="col-sm-4">
+      <form (ngSubmit)="Save()" [formGroup]="traineeGuruForm">
+        <fieldset class="border">
+          <legend>Create Guru Profiles</legend>
+          <div class="row">
+            <div class="col-12" *ngIf="FullName">
+              <mat-form-field>
+                <mat-label>Full Name</mat-label>
+                <input type="text" formControlName="FullName" placeholder="Full Name" matInput maxlength="256"
+                  required />
+                <mat-error *ngIf="FullName.invalid && FullName.errors.required"><strong>required</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="col-12" *ngIf="ContactNumber">
+              <mat-form-field>
+                <mat-label>Contact Number</mat-label>
+                <input type="text" formControlName="ContactNumber" placeholder="____-_______"
+                  [imask]="{mask:'0000-0000000'}" matInput required />
+                <mat-error
+                  *ngIf="ContactNumber.invalid && ContactNumber.errors.required"><strong>required</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="col-12" *ngIf="CNIC">
+              <mat-form-field>
+                <mat-label>CNIC #</mat-label>
+                <input type="text" formControlName="CNIC" placeholder="_____-_______-_"
+                  [imask]="{mask:'00000-0000000-0'}" matInput required />
+                <mat-error *ngIf="CNIC.invalid && CNIC.errors.required"><strong>required</strong></mat-error>
+                <mat-error *ngIf="CNIC.invalid && CNIC.errors.minlength"><strong>invalid
+                    length</strong></mat-error>
+                <mat-error *ngIf="CNIC.invalid && CNIC.errors.maxlength"><strong>invalid
+                    length</strong></mat-error>
+                <mat-error
+                  *ngIf="CNIC.invalid && !CNIC.errors?.isValid"><strong>{{CNIC.errors.message}}</strong></mat-error>
+
+              </mat-form-field>
+            </div>
+            <div class="col-12" *ngIf="CNICIssuedDate">
+              <mat-form-field>
+                <mat-label>CNIC Issued Date</mat-label>
+                <input matInput [matDatepicker]="gCNICIssuedDate" [matDatepickerFilter]="dateFilter"
+                  placeholder="Choose a date" formControlName="CNICIssuedDate" readonly required>
+                <mat-datepicker-toggle matSuffix [for]="gCNICIssuedDate"></mat-datepicker-toggle>
+                <mat-datepicker #gCNICIssuedDate></mat-datepicker>
+                <mat-error
+                  *ngIf="CNICIssuedDate.invalid && CNICIssuedDate.errors.required"><strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+
+          </div>
+          <div class="row" style="float:right;margin-bottom: 5px;">
+            <div class="col-12">
+              <button color="accent" mat-raised-button matDialogClose> <i class="fas fa-close"></i> Close </button> |
+              <button color="primary" mat-raised-button><i class="fas fa-check"></i> Save </button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <div class="col-sm-8">
+      <mat-toolbar color="accent" class=" slim slim mt-3 mb-0">
+        <mat-icon class="material-icons"> view_comfy </mat-icon>
+        <span class="spacer">Guru Profiles</span>
+      </mat-toolbar>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="table-responsive">
+            <mat-table [dataSource]="TablesData" #sort="matSort" matSort class="table table-bordered  card ml-0 pl-0 mr-0 pr-0 border ">
+              <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                  <ng-container *ngIf="column != 'CNICIssuedDate '">
+                    {{ camelCaseToWords(column) }}
+                  </ng-container>
+                  <ng-template *ngIf="column == 'CNICIssuedDate '";>
+                    CNIC Issued Date
+                  </ng-template>
+                </mat-header-cell>
+
+                <mat-cell *matCellDef="let row">
+                  
+                  <ng-container *ngIf=" column !='Action' &&   column!='Evidence' && column !='CNICIssuedDate'">
+                    &nbsp;{{ row[column] }}
+                  </ng-container>
+
+                  <ng-container *ngIf=" column =='Action'">
+                    <a  color="primary" (click)="editRecord(row)" mat-button
+                    matTooltip="update Guru profile."> Update </a>
+                  </ng-container>
+
+                  <ng-container *ngIf=" column =='CNICIssuedDate'">
+                    &nbsp;{{ row[column] | date }}
+                  </ng-container>
+
+                  <ng-container *ngIf="column =='Evidence'">
+                    &nbsp; <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
+                      matTooltip="Preview document" class="file-lable">
+                      <mat-icon>get_app</mat-icon>
+                    </a>
+                  </ng-container>
+
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #paginator="matPaginator" [pageSize]="5" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

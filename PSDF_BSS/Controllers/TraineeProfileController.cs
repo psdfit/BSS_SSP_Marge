@@ -1,6 +1,6 @@
 using DataLayer.Interfaces;
 using DataLayer.Models;
-using DataLayer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -36,6 +36,8 @@ namespace PSDF_BSSRegistration.Controllers
         private readonly ISRVScheme srvScheme;
         private readonly ISRVReferralSource srvReferralSource;
         private readonly ISRVProvinces sRVProvinces;
+        
+        private readonly ISRVTraineeGuruProfile _srvGuru;
 
         public TraineeProfileController(ISRVTraineeProfile srvTraineeProfile
             , ISRVOrgConfig srvOrgConfig
@@ -57,6 +59,7 @@ namespace PSDF_BSSRegistration.Controllers
             , ISRVScheme srvScheme
             , ISRVReferralSource srvReferralSource
             , ISRVProvinces sRVProvinces
+            , ISRVTraineeGuruProfile sRVGuru
             )
         {
             this.srvTraineeProfile = srvTraineeProfile;
@@ -79,7 +82,19 @@ namespace PSDF_BSSRegistration.Controllers
             this.srvScheme = srvScheme;
             this.srvReferralSource = srvReferralSource;
             this.sRVProvinces = sRVProvinces;
+            this._srvGuru = sRVGuru;
         }
+
+        //[AllowAnonymous]
+        [HttpGet]
+        [Route("GetTraineeGuru")]
+        public IActionResult GetTraineeGuru(int UserID)
+        
+        {
+            var profiles = _srvGuru.GetByTraineeProfileID(729);
+            return Ok(profiles);
+        }
+
 
         // GET: TraineeProfile
         [HttpGet]

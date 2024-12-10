@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Reflection;
 
 namespace DataLayer.Services
 {
@@ -194,13 +195,32 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@ReferralSourceID", traineeProfile.ReferralSourceID));
                 param.Add(new SqlParameter("@TraineeEmail", traineeProfile.TraineeEmail));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
+            
+                
+            
             }
             catch (Exception ex)
             {
                 throw;
             }
 
-            return FetchTraineeProfileByClass(traineeProfile.ClassID);// new List<TraineeProfileModel>();
+
+            if (traineeProfile.IsReferredByGuru)
+            {
+                var trainees= FetchTraineeProfileByClass(traineeProfile.ClassID).FirstOrDefault(t=>t.TraineeCNIC==traineeProfile.TraineeCNIC && t.TraineeName==traineeProfile.TraineeName);
+                SaveTraineeGuru(traineeProfile, trainees.TraineeID);
+            }
+            return FetchTraineeProfileByClass(traineeProfile.ClassID);
+        }
+
+        public void SaveTraineeGuru(TraineeProfileModel traineeData,int traineeID)
+        {
+
+            List<SqlParameter> param = new List<SqlParameter>();
+               param.Add(new SqlParameter("@GuruProfileID", traineeData.GuruProfileID));
+               param.Add(new SqlParameter("@TraineeID", traineeID));
+               param.Add(new SqlParameter("@UserID", traineeData.CurUserID));    
+            SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeGuruProfile", param.ToArray());
         }
 
         public List<TraineeProfileModel> FetchTraineeProfile(TraineeProfileModel model)

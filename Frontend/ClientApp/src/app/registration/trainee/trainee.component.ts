@@ -17,7 +17,9 @@ import { SchemeModel } from '../../appendix-module/appendix/appendix.component';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import * as JSZip from 'jszip';
+import { TraineeGuruDialogComponent } from '../trainee-guru-dialog/trainee-guru-dialog.component';
 
 @Component({
   selector: 'app-trainee',
@@ -57,7 +59,6 @@ export class TraineeComponent implements OnInit {
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${1}`;
   }
-  ///Mat-Table checkbox Config - End
 
   traineeProfileArray: any[] = [];
   orgConfig: IOrgConfig;
@@ -113,7 +114,7 @@ export class TraineeComponent implements OnInit {
   //working: boolean;
   isValidForm: boolean = true;
   registrationReport: any;
-  constructor(private fb: FormBuilder, private https: HttpClient, private http: CommonSrvService, private router: Router, private domSanitizer: DomSanitizer, private route: ActivatedRoute) {
+  constructor(    private Dialog: MatDialog, private fb: FormBuilder, private https: HttpClient, private http: CommonSrvService, private router: Router, private domSanitizer: DomSanitizer, private route: ActivatedRoute) {
     this.createTraineeProfileForm();
     route.params.subscribe(
       params => { this.paramClassId = params["id"]; });
@@ -165,12 +166,17 @@ export class TraineeComponent implements OnInit {
       this.setFormIsDisabled(true);
       this.ControlProvince();
       this.ControlDocumentUploading();
+  
     });
 
   }
 
   ControlDocumentUploading() {
     if (this.IsSkillsScholrship) {
+      this.TraineeDoc.setValue('');
+      this.TraineeDoc.setValidators([Validators.required]);
+      this.TraineeDoc.updateValueAndValidity();
+    } else if(this.SchemeCode=="STV"){
       this.TraineeDoc.setValue('');
       this.TraineeDoc.setValidators([Validators.required]);
       this.TraineeDoc.updateValueAndValidity();
@@ -234,6 +240,7 @@ export class TraineeComponent implements OnInit {
       TraineeAge: ['', [Validators.required]],
       ReligionID: ['', [Validators.required]],
       VoucherHolder: new FormControl(false),
+      IsReferredByGuru: new FormControl(false),
       ReferralSourceID: ['', [Validators.required]],
       TraineeIndividualIncomeID: ['', [Validators.required]],
       HouseHoldIncomeID: ['', [Validators.required]],
@@ -279,7 +286,19 @@ export class TraineeComponent implements OnInit {
       }
       this.traineeProfileForm.updateValueAndValidity();
     })
+
+    this.IsReferredByGuru.valueChanges.subscribe(checked => {
+      
+      if (checked) {
+        this.traineeProfileForm.addControl('GuruProfileID', this.fb.control('', [Validators.required]));
+      } else {
+        this.traineeProfileForm.removeControl('GuruProfileID');
+      }
+      this.traineeProfileForm.updateValueAndValidity();
+    })
   }
+
+ 
   setFormIsDisabled(isDisabled: boolean, errMsg = '') {
     this.saveBtnTitle = "Save";
     //this.isFormDisabled = state == 'enabled' ? false : state == 'disabled' ? true : true;
@@ -340,7 +359,7 @@ export class TraineeComponent implements OnInit {
         //this.reset();
         //this.http.openSnackBar("Saved Successfully");
         let titleConfirm = 'Success';
-        let messageConfirm = `Trainee profile ${item.IsSubmitted ? "submitted" : "saved"} successfully, Press 'Yes' for forther registration.`;
+        let messageConfirm = `Trainee profile ${item.IsSubmitted ? "submitted" : "saved"} successfully, Press 'Yes' for farther registration.`;
 
         this.http.confirm(titleConfirm, messageConfirm).subscribe(
           (isConfirm: Boolean) => {
@@ -418,10 +437,17 @@ export class TraineeComponent implements OnInit {
     this.createTraineeProfileForm();
 
     this.getSetDataByClass();
+
+  
   }
   onEditTrainee(row) {
     //this.registrationError = '';
 
+    if(this.SchemeCode.toUpperCase()=="STV"){
+      this.getTraineeGuru(row.TraineeID)
+    }
+    
+    // this.traineeGuruList.find(g=>g.TraineeID)
     if (sessionStorage.getItem('potentialTrainee')) {
       sessionStorage.removeItem('potentialTrainee')
     }
@@ -429,6 +455,15 @@ export class TraineeComponent implements OnInit {
     this.CheckRegistrationCriteria(this.classId).subscribe(
       (response: any[]) => {
         this.traineeProfileForm.patchValue(row);
+        
+        if(this.SchemeCode.toUpperCase()=="STV" && this.traineeGuruDetailList.length>0){
+         const sTraineeGuru= this.traineeGuruDetailList.find(tg=>tg.TraineeID==row.TraineeID)
+         if(sTraineeGuru){
+          this.IsReferredByGuru.setValue(true)
+          this.GuruProfileID.setValue(sTraineeGuru.GuruProfileID)
+         }
+          
+        }
         if (!row.IsManual) {
           //this.traineeProfileForm.controls.IsManual.setValue(false);
           this.TraineeName.disable();
@@ -495,6 +530,8 @@ export class TraineeComponent implements OnInit {
       this.ControlProvince();
     }
     this.ControlDocumentUploading();
+
+  
   }
 
   checkOnTraineeCNIC() {
@@ -517,6 +554,53 @@ export class TraineeComponent implements OnInit {
   CheckRegistrationCriteria(classid: number) {
     return this.http.getJSON(`api/TraineeProfile/CheckRegistrationCriteria?classId=${classid}`);
   }
+  traineeGuruList:any;
+  getGuruProfiles() {
+    const userID = this.http.getUserDetails().UserID;
+    this.http.getJSON(`api/traineeGuruProfile/getTraineeGuru?UserID=${userID}`).subscribe(
+      (response) => {
+        this.traineeGuruList = response;
+      },
+      (error) => {
+        console.error('Error fetching trainee guru data:', error);
+      }
+    );
+  }
+  traineeGuruDetailList:any=[]
+
+  async getTraineeGuru(traineeID:number): Promise<void> {
+    try {
+      this.traineeGuruDetailList = await this.http.getJSON(`api/traineeGuruProfile/getTraineeGuruDetail?traineeID=${traineeID}`).toPromise();
+    } catch (error) {
+      console.error('Error fetching trainee guru data:', error);
+    }
+  }
+  
+
+  getGuruDetail(GuruDetail:any){
+    if(GuruDetail==0){
+      this.addTraineeGuru()
+    }
+  }
+  
+
+  addTraineeGuru() {
+    const dialogRef = this.Dialog.open(TraineeGuruDialogComponent, {
+      width: '80%',
+      // height: '90%',
+      data: [],
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.GuruProfileID.setValue("")
+      this.getGuruProfiles()
+      if(this.traineeGuruList.length>0){
+      this.GuruProfileID.setValue(this.traineeGuruList[0].GuruProfileID)
+      }
+    });
+  }
+
+
   getData() {
     this.http.getJSON(`api/TraineeProfile/GetData?OID=${this.http.OID.value}`).subscribe(
       (d: any) => {
@@ -544,6 +628,7 @@ export class TraineeComponent implements OnInit {
       }, error => this.error = error // error path
     );
   }
+  SchemeCode:string=""
   getSetDataByClass() {
     if (this.isTspUser && !this.paramClassId) {
       this.isFormDisabled = true;
@@ -572,6 +657,12 @@ export class TraineeComponent implements OnInit {
         this.TraineeProfile_seqNextVal = response.NextTraineeCode;
         let scheme: SchemeModel = response.Schemes;
 
+        // this.SchemeCode="STV"
+        this.SchemeCode=response.Schemes.SchemeCode
+      if(this.SchemeCode.toUpperCase()=="STV"){
+        this.getGuruProfiles()
+      }
+      
 
         ///
         if (inceptionReportList.length <= 0) {
@@ -956,7 +1047,6 @@ export class TraineeComponent implements OnInit {
 
 
   getTraineeProfileRegistration_Report() {
-    debugger;
     let ids = this.selection.selected.map(x => x.TraineeID).join(',')
     this.http.getReportJSON('TraineeProfile/GetRegistrationReport/' + ids).subscribe(
       (data: any) => {
@@ -1067,6 +1157,11 @@ export class TraineeComponent implements OnInit {
   get TraineeAge() { return this.traineeProfileForm.get("TraineeAge"); }
   get ReligionID() { return this.traineeProfileForm.get("ReligionID"); }
   get VoucherHolder() { return this.traineeProfileForm.get("VoucherHolder"); }
+
+  get IsReferredByGuru() { return this.traineeProfileForm.get("IsReferredByGuru"); }
+  get GuruProfileID() { return this.traineeProfileForm.get("GuruProfileID"); }
+
+
   get VoucherNumber() { return this.traineeProfileForm.get("VoucherNumber"); }
   get VoucherOrganization() { return this.traineeProfileForm.get("VoucherOrganization"); }
   get ReferralSourceID() { return this.traineeProfileForm.get("ReferralSourceID"); }
