@@ -542,10 +542,20 @@ export class PBTEComponent implements OnInit {
     this.traineeTablesData = new MatTableDataSource([]);
     const _month = moment(this.date.value).format("YYYY-MM");
     const data = { month: _month, report: reportName };
-    const response = await this.ComSrv.postJSON(
-      "api/PBTE/GetPbteData",
-      data
-    ).toPromise();
+    // const response = await this.ComSrv.postJSON(
+    //   "api/PBTE/GetPbteData",
+    //   data
+    // ).toPromise();
+
+
+    try {
+      var response = await this.ComSrv.postJSON("api/PBTE/GetPbteData", data).toPromise();
+    } catch (error) {
+      debugger;
+      this.ComSrv.ShowError(error.error,"Close",15000);
+      return;
+    }
+
     this._dataObject = response;
 
     if (response && this._dataObject.data.length > 0) {
@@ -705,6 +715,7 @@ export class PBTEComponent implements OnInit {
       },
       (error) => {
         this.error = error;
+        this.ComSrv.ShowError(error)
         // Optionally, handle the error (e.g., show a message to the user)
       }
     );
