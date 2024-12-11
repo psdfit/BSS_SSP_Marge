@@ -166,6 +166,7 @@ namespace PSDF_BSSMasterDataModule.Controllers
                 return Ok(srvInstructor.GetInstructorByTradeID(id));
             }
             catch (Exception e)
+
             {
                 return BadRequest(e.Message);
             }

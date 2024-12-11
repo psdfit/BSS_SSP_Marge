@@ -62,7 +62,10 @@ namespace DataLayer.Models
 		public int GenderID { get; set; }            
 		public string GenderName { get; set; }     
         public int TradeID { get; set; }    
+        public int? IncepReportID { get; set; }    
         public string TradeName { get; set; }
+
+
 
     }
 	

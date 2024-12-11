@@ -425,6 +425,8 @@ public List<InstructorInceptionReportCRModel> GetIRInstructorByClassID(int Class
             // Map TradeID
             instructor.TradeID = Convert.ToInt32(r["TradeID"]);
 
+            instructor.IncepReportID = Convert.ToInt32(r["IncepReportID"]);
+
             // Map TradeName, checking if the column exists
             if (r.Table.Columns.Contains("TradeName"))
             {

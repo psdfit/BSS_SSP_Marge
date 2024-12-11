@@ -716,9 +716,7 @@ export class ChangeRequestDialogComponent implements OnInit {
     var IStime = Stime[0];
     var FStime = Number(IStime);
     if (FStime < 12) {
-      console.log(this.ClassStartTime.value);
       this.Shift.setValue('1st');
-
     }
     else {
       this.Shift.setValue('2nd');
@@ -1070,7 +1068,6 @@ export class ChangeRequestDialogComponent implements OnInit {
   getReplaceInstructorFormData() {
     this.ComSrv.getJSON('api/InstructorReplaceChangeRequest/GetInstructorReplaceChangeRequest/' + this.userid).subscribe((d: any) => {
       this.replaceInstructorsCRs = new MatTableDataSource(d);
-      console.log(this.replaceInstructorsCRs, 'replaceInstructorsCRs');
       this.replaceInstructorsCRs.paginator = this.PageReplaceInstructor;
       this.replaceInstructorsCRs.sort = this.SortReplaceInstructor;
     }, error => this.error = error // error path
@@ -1104,7 +1101,8 @@ export class ChangeRequestDialogComponent implements OnInit {
     // Join the array back into a comma-separated string
     formValues.InstrIDs = instructorIdsArray.join(',');
 
-    formValues["IncepReportID"] = this.InceptionReportIDRI;
+    let inceptionReportID = this.currentInstructors[0].IncepReportID
+    formValues["IncepReportID"] = inceptionReportID;
 
     // Add additional form values, e.g., process key
     formValues["ProcessKey"] = EnumApprovalProcess.CR_INSTRUCTOR_REPLACE;
@@ -1166,7 +1164,7 @@ export class ChangeRequestDialogComponent implements OnInit {
           this.error = error.error;
           this.ComSrv.ShowError(error.error);
         });
-      }
+  }
 
 
 
@@ -1750,7 +1748,6 @@ export class ChangeRequestDialogComponent implements OnInit {
         // Assuming 'data' is an array of replacement instructors
         this.replacementInstructors = data;
 
-
         // Filter out the instructors that are also in the currentInstructors array
         this.replacementInstructors = this.replacementInstructors.filter(replacementInstr => {
           return !this.currentInstructors.some(currentInstr => currentInstr.InstrID === replacementInstr.InstrID);
@@ -1778,8 +1775,6 @@ export class ChangeRequestDialogComponent implements OnInit {
     this.ComSrv.getJSON(url).subscribe(
       (data: any) => {
         this.classCodeByInstructorID = data;
-        console.log(this.classCodeByInstructorID, 'this.classCodeByInstructorID')
-
 
         if (this.classCodeByInstructorID && this.classCodeByInstructorID.length > 0) {
           // Assuming classCode is the first element, adjust as needed
@@ -1811,9 +1806,9 @@ export class ChangeRequestDialogComponent implements OnInit {
     for (let i = 0; i < classCodes.length; i++) {
       const classCode = classCodes[i];
       console.log(`Checking class code: ${classCode.ClassCode}`);
-      
+
       this.getActiveClassTiming(classCode);
-  
+
       if (this.doOverlapRI) {
         // Stop the loop if overlap is found
         break;
@@ -2089,18 +2084,11 @@ function doClassTimesOverlapRI(currentStartTime: string, currentEndTime: string,
   const otherStart = new Date(otherStartTime);
   const otherEnd = new Date(otherEndTime);
 
-
-  console.log(currentStart, currentEnd, 'lllllllllll');
-  console.log(otherStart, otherEnd, 'lllllllllll');
-
-
   // Check if the current class overlaps with another class
   const overlapWithOtherClass = (currentStart < otherEnd && currentEnd > otherStart);
 
   // Check if the current class falls within another class (i.e., instructor already assigned to another class)
   const fallsWithinOtherClass = (currentStart >= otherStart && currentEnd <= otherEnd);
-
-  console.log(overlapWithOtherClass, fallsWithinOtherClass, 'statusssss')
 
   // If there's an overlap with another class or if the current class falls within another class, return true
   return overlapWithOtherClass || fallsWithinOtherClass;
