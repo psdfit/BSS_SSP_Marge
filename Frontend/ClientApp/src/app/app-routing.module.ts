@@ -424,6 +424,14 @@ const routes: Routes = [
           ),
         canLoad: [AuthGuardService],
       },
+      {
+        path: 'device-management',
+        loadChildren: () =>
+          import('./device-management/device-management.module').then(
+            (m) => m.DeviceManagementModule
+          ),
+        canLoad: [AuthGuardService],
+      },
     ],
   },
 ];

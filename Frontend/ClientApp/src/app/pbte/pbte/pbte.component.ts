@@ -721,6 +721,7 @@ export class PBTEComponent implements OnInit {
     );
   }
   openedSelection(row: any) {
+  debugger
     this.pbtecourse = [];
     const data = this.GetDataObject.pbte.filter(
       (x) => x.College_Name == row.BSSTSP && x.District_Name == row.BSSDistrict
