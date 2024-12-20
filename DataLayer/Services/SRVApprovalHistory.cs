@@ -1881,8 +1881,6 @@ namespace DataLayer.Services
             TradeTarget.TradeName = row.Field<string>("TradeName");
             TradeTarget.ClusterName = row.Field<string>("ClusterName");
             TradeTarget.ClusterID = row.Field<int>("ClusterID");
-            TradeTarget.DistrictName = row.Field<string>("DistrictName");
-            TradeTarget.DistrictID = row.Field<int>("DistrictID");
             if (row.Table.Columns.Contains("TradeTarget"))
             {
                 int val = row.Field<int>("TradeTarget");
@@ -1916,7 +1914,6 @@ namespace DataLayer.Services
                         param.Add(new SqlParameter("@TradeID", data.TradeID));
                         param.Add(new SqlParameter("@TradeTarget", data.TradeTarget));
                         param.Add(new SqlParameter("@ClusterID", data.ClusterID));
-                        param.Add(new SqlParameter("@DistrictID", data.DistrictID));
                         SqlHelper.ExecuteNonQuery(_transaction, CommandType.StoredProcedure, "[Save_TradeTarget]", param.ToArray());
                     }
                     _transaction.Commit();
@@ -1946,7 +1943,6 @@ namespace DataLayer.Services
                         param.Add(new SqlParameter("@TradeID", data.TradeID));
                         param.Add(new SqlParameter("@TradeTarget", data.TradeTarget));
                         param.Add(new SqlParameter("@ClusterID", data.ClusterID));
-                        param.Add(new SqlParameter("@DistrictID", data.DistrictID));
                         SqlHelper.ExecuteNonQuery(_transaction, CommandType.StoredProcedure, "[Update_TradeTarget]", param.ToArray());
                     }
                     _transaction.Commit();
