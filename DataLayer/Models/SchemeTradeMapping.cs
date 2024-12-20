@@ -15,6 +15,8 @@ namespace DataLayer.Models
         public string TradeName { get; set; }
         public string ClusterName { get; set; }
         public int ClusterID { get; set; }
+        public string DistrictName { get; set; }
+        public int DistrictID { get; set; }
     }
 
 
