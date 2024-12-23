@@ -455,7 +455,7 @@ export class TraineeComponent implements OnInit {
   onEditTrainee(row) {
     //this.registrationError = '';
 
-    if(this.SchemeCode.toUpperCase()=="STV"){
+    if (this.IsSkillsScholrship){
       this.getTraineeGuru(row.TraineeID)
     }
     
@@ -468,7 +468,7 @@ export class TraineeComponent implements OnInit {
       (response: any[]) => {
         this.traineeProfileForm.patchValue(row);
         
-        if(this.SchemeCode.toUpperCase()=="STV" && this.traineeGuruDetailList.length>0){
+        if (this.IsSkillsScholrship && this.traineeGuruDetailList.length>0){
          const sTraineeGuru= this.traineeGuruDetailList.find(tg=>tg.TraineeID==row.TraineeID)
          if(sTraineeGuru){
           this.IsReferredByGuru.setValue(true)
