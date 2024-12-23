@@ -17,15 +17,15 @@ import { DeviceStatusUpdateDialogComponent } from "../device-status-update-dialo
 })
 export class DeviceRegistrationComponent implements OnInit {
   matSelectArray: MatSelect[] = [];
-  // @ViewChild('Applicability') Applicability: MatSelect;
-  // SelectedAll_Applicability: string;
-  // @ViewChild('Province') Province: MatSelect;
-  // SelectedAll_Province: string;
-  // @ViewChild('Cluster') Cluster: MatSelect;
-  // SelectedAll_Cluster: string;
-  // @ViewChild('District') District: MatSelect;
-  // SelectedAll_District: string;
-  currentUser: any = {}
+  @ViewChild('Applicability') Applicability: MatSelect;
+  SelectedAll_Applicability: string;
+  @ViewChild('Province') Province: MatSelect;
+  SelectedAll_Province: string;
+  @ViewChild('Cluster') Cluster: MatSelect;
+  SelectedAll_Cluster: string;
+  @ViewChild('District') District: MatSelect;
+  SelectedAll_District: string;
+  currentUser: any ={}
   DeviceRegistration: any[];
   SelectAll(event: any, dropDownNo, controlName, formGroup) {
     const matSelect = this.matSelectArray[(dropDownNo - 1)];
@@ -74,6 +74,8 @@ export class DeviceRegistrationComponent implements OnInit {
   error: any;
   displayedColumns: string[] = []
   SelectionMethods: any[];
+  TraineeSupportItems: any[];
+  PlaningType: any[];
   GetDataObject: any = {}
   SpacerTitle: string;
   SearchCtr = new FormControl('');
@@ -84,14 +86,22 @@ export class DeviceRegistrationComponent implements OnInit {
   BSearchCtr = new FormControl('');
   TapTTitle: string = "Profile"
   Data: any = []
+  Gender: any = []
+  GenderData: any = []
+  ProvinceData: any = []
+  FinancialYearData: any = []
+  ProgramTypeData: any = []
+  FundingSourceData: any = []
+  EducationData: any = []
+  ApplicabilityData: any = []
+  PaymentStructureData: any = []
+  TraineeSupportItemsData: any = []
+  ClusterData: any = []
+  DistrictData: any = []
+  TehsilData: any = []
   TableColumns = [];
   maxDate: Date;
   SaleGender: string = "Sales Tax Evidence"
-  TSPNames: string[] = ['TSP A', 'TSP B', 'TSP C'];
-  TSPLocations: string[] = ['Location 1', 'Location 2', 'Location 3'];
-  DeviceTypes: string[] = ['Type 1', 'Type 2', 'Type 3'];
-
-
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser)
@@ -107,18 +117,12 @@ export class DeviceRegistrationComponent implements OnInit {
       UserID: [this.currentUser.UserID],
       Brand: ['', Validators.required],
       Model: ['', Validators.required],
-      TSPName: ['', Validators.required],
-      TSPLocation: ['', Validators.required],
-      DeviceType: ['', Validators.required],
-      DeviceSerialNo: ['', Validators.required]
+      SerialNumber: ['', Validators.required],
     });
   }
-
-
+  
   IsDisabled = false;
   SaveFormData() {
-
-    console.log(this.DeviceRegistrationForm.getRawValue(), 'tttttttttt')
     this.IsDisabled = true
     if (this.DeviceRegistrationForm.valid) {
       this.http.postJSON('api/DeviceManagement/Save', this.DeviceRegistrationForm.getRawValue()).subscribe(
@@ -138,17 +142,17 @@ export class DeviceRegistrationComponent implements OnInit {
     }
   }
 
-  activationRequest(row: any) {
+  activationRequest(row:any){
     console.log(row)
-    this.OpenDialogue(row, 'Activate')
+    this.OpenDialogue(row,'Activate')
   }
 
-  deActivationRequest(row: any) {
+  deActivationRequest(row:any){
     console.log(row)
-    this.OpenDialogue(row, 'DeActivate')
+    this.OpenDialogue(row,'DeActivate')
 
   }
-
+  
   FinalSubmit: boolean = false;
   UpdateRecord(row: any) {
     this.tabGroup.selectedIndex = 0;
@@ -175,13 +179,13 @@ export class DeviceRegistrationComponent implements OnInit {
   LoadMatTable(tableData: any[]) {
     const excludeColumnArray: string[] = [];
     if (tableData.length > 0) {
-      this.TableColumns = ['Action', 'Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
+      this.TableColumns = ['Action','Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
       this.TablesData = new MatTableDataSource(tableData);
       this.TablesData.paginator = this.paginator;
       this.TablesData.sort = this.sort;
     }
   }
-
+  
   EmptyCtrl() {
     this.PSearchCtr.setValue('');
     this.CSearchCtr.setValue('');
@@ -218,21 +222,22 @@ export class DeviceRegistrationComponent implements OnInit {
     }
     this.DeviceRegistration = []
     this.DeviceRegistration = await this.FetchData(this.SPName, this.paramObject)
-    if (this.DeviceRegistration.length > 0) {
+    if(this.DeviceRegistration.length>0){
       this.LoadMatTable(this.DeviceRegistration)
 
     }
   }
-
+ 
   async FetchData(SPName: string, paramObject: any) {
     try {
       const Param = this.GetParamString(SPName, paramObject);
-      const data: any = await this.ComSrv.postJSON('api/BSSReports/FetchReport', Param).toPromise();
+      const data: any = await this.ComSrv.postJSON('api/BSSReports/FetchReport',Param).toPromise();
       if (data.length > 0) {
         return data;
       } else {
-        if (SPName != 'RD_SSPTSPAssociationSubmission') {
+        if(SPName !='RD_SSPTSPAssociationSubmission'){
           this.ComSrv.ShowWarning(' No Record Found', 'Close');
+
         }
       }
     } catch (error) {
@@ -250,7 +255,7 @@ export class DeviceRegistrationComponent implements OnInit {
     return ParamString;
   }
 
-  OpenDialogue(row, DeviceStatus) {
+  OpenDialogue(row,DeviceStatus) {
     const data = [row, DeviceStatus];
 
     const dialogRef = this.Dialog.open(DeviceStatusUpdateDialogComponent, {
@@ -281,7 +286,7 @@ export class DeviceRegistrationComponent implements OnInit {
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
   ngAfterViewInit() {
-    // this.matSelectArray = [this.Applicability, this.Province, this.Cluster, this.District];
+    this.matSelectArray = [this.Applicability, this.Province, this.Cluster, this.District];
     if (this.tabGroup) {
       this.tabGroup.selectedTabChange.subscribe((event) => {
         this.TapIndex = event.index
