@@ -105,6 +105,7 @@ export class TraineeComponent implements OnInit {
   EnText: string = "";
   error: string;
   EDFScheme: boolean = false;
+  SearchPro = new FormControl('');
   IsSkillsScholrship: boolean = false;
   IsSkillsScholrshipProgram: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -166,7 +167,7 @@ export class TraineeComponent implements OnInit {
       this.setFormIsDisabled(true);
       this.ControlProvince();
       this.ControlDocumentUploading();
-  
+      
     });
 
   }
@@ -240,7 +241,7 @@ export class TraineeComponent implements OnInit {
       TraineeAge: ['', [Validators.required]],
       ReligionID: ['', [Validators.required]],
       VoucherHolder: new FormControl(false),
-      IsReferredByGuru: new FormControl(false),
+      IsReferredByGuru: ['', [Validators.required]],
       ReferralSourceID: ['', [Validators.required]],
       TraineeIndividualIncomeID: ['', [Validators.required]],
       HouseHoldIncomeID: ['', [Validators.required]],
@@ -287,15 +288,26 @@ export class TraineeComponent implements OnInit {
       this.traineeProfileForm.updateValueAndValidity();
     })
 
-    this.IsReferredByGuru.valueChanges.subscribe(checked => {
-      
-      if (checked) {
-        this.traineeProfileForm.addControl('GuruProfileID', this.fb.control('', [Validators.required]));
+    //this.IsReferredByGuru.valueChanges.subscribe(checked => {
+
+    //  if (checked) {
+    //    this.traineeProfileForm.addControl('GuruProfileID', this.fb.control('', [Validators.required]));
+    //  } else {
+    //    this.traineeProfileForm.removeControl('GuruProfileID');
+    //  }
+    //  this.traineeProfileForm.updateValueAndValidity();
+    //})
+    this.traineeProfileForm.get('IsReferredByGuru').valueChanges.subscribe((isReferred) => {
+      if (isReferred) {
+        this.traineeProfileForm.addControl(
+          'GuruProfileID',
+          this.fb.control('', [Validators.required])
+        );
       } else {
         this.traineeProfileForm.removeControl('GuruProfileID');
       }
       this.traineeProfileForm.updateValueAndValidity();
-    })
+    });
   }
 
  
@@ -443,7 +455,7 @@ export class TraineeComponent implements OnInit {
   onEditTrainee(row) {
     //this.registrationError = '';
 
-    if(this.SchemeCode.toUpperCase()=="STV"){
+    if (this.IsSkillsScholrship){
       this.getTraineeGuru(row.TraineeID)
     }
     
@@ -456,7 +468,7 @@ export class TraineeComponent implements OnInit {
       (response: any[]) => {
         this.traineeProfileForm.patchValue(row);
         
-        if(this.SchemeCode.toUpperCase()=="STV" && this.traineeGuruDetailList.length>0){
+        if (this.IsSkillsScholrship && this.traineeGuruDetailList.length>0){
          const sTraineeGuru= this.traineeGuruDetailList.find(tg=>tg.TraineeID==row.TraineeID)
          if(sTraineeGuru){
           this.IsReferredByGuru.setValue(true)
@@ -657,11 +669,6 @@ export class TraineeComponent implements OnInit {
         this.TraineeProfile_seqNextVal = response.NextTraineeCode;
         let scheme: SchemeModel = response.Schemes;
 
-        // this.SchemeCode="STV"
-        this.SchemeCode=response.Schemes.SchemeCode
-      if(this.SchemeCode.toUpperCase()=="STV"){
-        this.getGuruProfiles()
-      }
       
 
         ///
@@ -703,6 +710,7 @@ export class TraineeComponent implements OnInit {
           this.IsSkillsScholrship = false;
         }
         else {
+          this.getGuruProfiles();
           this.IsSkillsScholrship = true;
         }
         if (scheme.ProgramTypeID == 10) {  //Skills Scolarship Program
@@ -791,8 +799,17 @@ export class TraineeComponent implements OnInit {
   toggleGenderState(genderID: Number) {
     switch (genderID) {
       case EnumGender.Both:
-        this.ddlGender = this.Gender.filter(x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female);
-        this.GenderID.enable()
+          if (this.IsSkillsScholrship) {
+                this.ddlGender = this.Gender.filter(
+                  x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female || x.GenderID == EnumGender.Transgender
+                );
+                this.GenderID.enable();
+              } else {
+                this.ddlGender = this.Gender.filter(
+                  x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female
+                );
+                this.GenderID.enable();
+        }
         break;
       case EnumGender._3way:
         this.ddlGender = this.Gender.filter(x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female || x.GenderID == EnumGender.Transgender);

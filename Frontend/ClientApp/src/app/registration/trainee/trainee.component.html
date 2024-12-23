@@ -404,27 +404,35 @@
                       </div>
                     </div>
                   </fieldset>
-                  <ng-container *ngIf="SchemeCode.toUpperCase() =='STV'">
+                  <ng-container *ngIf="IsSkillsScholrship">
                     <fieldset class="border" [disabled]="isFormDisabled">
-                      <legend><mat-checkbox formControlName="IsReferredByGuru"
-                          [disabled]="isFormDisabled"></mat-checkbox>Referred By Guru</legend>
-
+                      <!--<mat-checkbox formControlName="IsReferredByGuru"
+  [disabled]="isFormDisabled"></mat-checkbox>Referred By Guru-->
+                      <div class="col-sm-3">
+                          <mat-form-field fxFlex>
+                            <mat-select placeholder="Referred By Guru" formControlName="IsReferredByGuru" [disabled]="isFormDisabled">
+                              <mat-option [value]="true">Yes</mat-option>
+                              <mat-option [value]="false">No</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                      </div>
                       <div class="row">
                         <div class="col-sm-6" *ngIf="IsReferredByGuru && GuruProfileID">
                           <mat-form-field fxFlex>
                             <mat-label>Select Guru</mat-label>
 
-                              <mat-select placeholder="Select Guru" formControlName="GuruProfileID" (valueChange)="getGuruDetail($event)" matInput>
-                                <mat-option value="0">Create Guru Profile </mat-option>
-                                <mat-option *ngFor="let s of traineeGuruList" [value]="s.GuruProfileID">{{s.FullName | uppercase}} | {{s.ContactNumber}} | {{s.CNIC}} </mat-option>
-                              </mat-select>
+                            <mat-select placeholder="Select Guru" formControlName="GuruProfileID" (valueChange)="getGuruDetail($event)" matInput>
+                              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchPro" autofocus /></mat-optgrp>
+                              <mat-option value="0">Create Guru Profile </mat-option>
+                              <mat-option *ngFor="let s of traineeGuruList | like:['FullName',SearchPro.value]" [value]="s.GuruProfileID">{{s.FullName | uppercase}} | {{s.ContactNumber}} | {{s.CNIC}} </mat-option>
+                            </mat-select>
                               <mat-error *ngIf="GuruProfileID.invalid && GuruProfileID.errors.required"><strong>required</strong></mat-error>
 
                           </mat-form-field>
 
-                          
+
                         </div>
-                        
+
                       </div>
 
                     </fieldset>
@@ -557,6 +565,16 @@
                         may take legal action against me. I authorise PSDF to check my data through NADRA Verisys and
                         share my CV with potential employers through various mediums without any liability.
                       </p>
+                      <div *ngIf="IsSkillsScholrship">
+                        <p>
+                          I hereby solemnly affirm that I belong to the transgender community.
+                          I further affirm that I have voluntarily selected the associate partner of PSDF to receive training
+                          in that trade. I understand that this is a provisional registration with the associate partner, and
+                          I will be eligible for the scholarship if my class enrolment number is 10 or above. I hereby also
+                          give PSDF the consent to pay my scholarship fee to the associate partner once I complete the training
+                          according to the terms and conditions.
+                        </p>
+                      </div>
                       <mat-checkbox formControlName="Undertaking" [disabled]="isFormDisabled">Undertaking</mat-checkbox>
                       <mat-error *ngIf="Undertaking.invalid && Undertaking.errors.required"><strong>It must be
                           checked.</strong></mat-error>

@@ -78,6 +78,7 @@ export class TraineeGuruDialogComponent implements OnInit {
   get ContactNumber() { return this.traineeGuruForm.get("ContactNumber"); }
   get CNIC() { return this.traineeGuruForm.get("CNIC"); }
   get CNICIssuedDate() { return this.traineeGuruForm.get("CNICIssuedDate"); }
+  get UserID() { return this.traineeGuruForm.get("CreatedByUserID"); }
 
   camelCaseToWords(input: string): string {
     return input.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -118,7 +119,8 @@ export class TraineeGuruDialogComponent implements OnInit {
     debugger;
     const isExisted = this.isEditable
       ? this.traineeGuruList.find(
-          g => g.CNIC === this.CNIC.value && g.GuruProfileID != this.traineeGuruForm.get("GuruProfileID").value
+        g => g.CNIC === this.CNIC.value && g.GuruProfileID != this.traineeGuruForm.get("GuruProfileID").value
+          && g.CurUserID === this.traineeGuruForm.get("CreatedByUserID").value
         )
       : this.traineeGuruList.find(g => g.CNIC === this.CNIC.value);
     if (isExisted) {
