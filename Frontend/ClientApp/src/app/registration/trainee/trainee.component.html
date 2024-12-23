@@ -565,6 +565,16 @@
                         may take legal action against me. I authorise PSDF to check my data through NADRA Verisys and
                         share my CV with potential employers through various mediums without any liability.
                       </p>
+                      <div *ngIf="IsSkillsScholrship">
+                        <p>
+                          I hereby solemnly affirm that I belong to the transgender community.
+                          I further affirm that I have voluntarily selected the associate partner of PSDF to receive training
+                          in that trade. I understand that this is a provisional registration with the associate partner, and
+                          I will be eligible for the scholarship if my class enrolment number is 10 or above. I hereby also
+                          give PSDF the consent to pay my scholarship fee to the associate partner once I complete the training
+                          according to the terms and conditions.
+                        </p>
+                      </div>
                       <mat-checkbox formControlName="Undertaking" [disabled]="isFormDisabled">Undertaking</mat-checkbox>
                       <mat-error *ngIf="Undertaking.invalid && Undertaking.errors.required"><strong>It must be
                           checked.</strong></mat-error>
