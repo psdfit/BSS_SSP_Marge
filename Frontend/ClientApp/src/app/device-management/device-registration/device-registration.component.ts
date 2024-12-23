@@ -9,7 +9,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
-import { DeviceStatusUpdateDialogComponent } from "../device-status-update-dialog/device-status-update-dialog.component";
+import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
 @Component({
   selector: 'app-device-registration',
   templateUrl: './device-registration.component.html',
@@ -253,7 +253,7 @@ export class DeviceRegistrationComponent implements OnInit {
   OpenDialogue(row, DeviceStatus) {
     const data = [row, DeviceStatus];
 
-    const dialogRef = this.Dialog.open(DeviceStatusUpdateDialogComponent, {
+    const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {
       width: '40%',
       data: data,
       disableClose: true,
