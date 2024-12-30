@@ -10,6 +10,7 @@ import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
 import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
+
 @Component({
   selector: 'app-device-registration',
   templateUrl: './device-registration.component.html',
@@ -107,10 +108,10 @@ export class DeviceRegistrationComponent implements OnInit {
       UserID: [this.currentUser.UserID],
       Brand: ['', Validators.required],
       Model: ['', Validators.required],
-      TSPName: ['', Validators.required],
+      // TSPName: ['', Validators.required],
       TSPLocation: ['', Validators.required],
-      DeviceType: ['', Validators.required],
-      DeviceSerialNo: ['', Validators.required]
+      // DeviceType: ['', Validators.required],
+      SerialNumber: ['', Validators.required]
     });
   }
 
@@ -118,7 +119,6 @@ export class DeviceRegistrationComponent implements OnInit {
   IsDisabled = false;
   SaveFormData() {
 
-    console.log(this.DeviceRegistrationForm.getRawValue(), 'tttttttttt')
     this.IsDisabled = true
     if (this.DeviceRegistrationForm.valid) {
       this.http.postJSON('api/DeviceManagement/Save', this.DeviceRegistrationForm.getRawValue()).subscribe(
@@ -175,7 +175,7 @@ export class DeviceRegistrationComponent implements OnInit {
   LoadMatTable(tableData: any[]) {
     const excludeColumnArray: string[] = [];
     if (tableData.length > 0) {
-      this.TableColumns = ['Action', 'Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
+      this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
       this.TablesData = new MatTableDataSource(tableData);
       this.TablesData.paginator = this.paginator;
       this.TablesData.sort = this.sort;
@@ -212,15 +212,22 @@ export class DeviceRegistrationComponent implements OnInit {
   ExportReportName: string = ""
   SPName: string = ""
   async GetDeviceRegistration() {
-    this.SPName = "RD_DVVDeviceRegistration"
+    this.SPName = "RD_DVVDeviceRegistration";
     this.paramObject = {
       UserID: this.currentUser.UserID,
-    }
-    this.DeviceRegistration = []
-    this.DeviceRegistration = await this.FetchData(this.SPName, this.paramObject)
-    if (this.DeviceRegistration.length > 0) {
-      this.LoadMatTable(this.DeviceRegistration)
+    };
 
+    try {
+      const deviceData: any = await this.ComSrv.getJSON('api/DeviceManagement/GetDeviceRegistration').toPromise();
+      console.log(deviceData, 'Fetched Device Data');
+      if (deviceData && deviceData.length > 0) {
+        this.LoadMatTable(deviceData); // Load the fetched data into the table
+      } else {
+        this.ComSrv.ShowWarning('No records found', 'Close');
+      }
+    } catch (error) {
+      console.error('Error fetching device registration data:', error);
+      this.ComSrv.ShowError('Error fetching data', 'error', 5000);
     }
   }
 

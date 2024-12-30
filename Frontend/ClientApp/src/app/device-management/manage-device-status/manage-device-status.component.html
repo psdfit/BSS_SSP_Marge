@@ -1,1 +1,57 @@
-<p>manage-device-status works!</p>
+<mat-card>
+   <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> add_circle </mat-icon>
+      <span class="spacer">{{SpacerTitle}}</span>
+   </mat-toolbar>
+   <mat-toolbar *ngIf="TapIndex==1" color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> view_comfy </mat-icon>
+      <span class="spacer">Manage and View All</span>
+      <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
+      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
+         <i class="fas fa-file-export"></i> Export Excel</button>
+   </mat-toolbar>
+
+   <mat-card-content>
+
+      <mat-toolbar color="accent" class=" slim slim">
+         <mat-icon class="material-icons"> view_comfy </mat-icon>
+         <span class="spacer">Manage and View All</span>
+         <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
+         <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
+            <i class="fas fa-file-export"></i> Export Excel</button>
+      </mat-toolbar>
+      <div class="table-responsive">
+         <mat-table [dataSource]="TablesData" matSort>
+            <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+               <mat-cell *matCellDef="let row; let i = index">
+                  <ng-container *ngIf="column !== 'RequestDate' && column !== 'StatusRequest'">
+                     &nbsp;{{ row[column] }}
+                  </ng-container>
+                  <ng-container *ngIf="column === 'Sr#'">
+                     &nbsp;{{ i + 1 }}
+                  </ng-container>
+                  <ng-container *ngIf="column === 'Action'">
+                     <a color="primary" *ngIf="!row['StatusRequest']" mat-button (click)="activationRequest(row)">
+                        Activate
+                     </a>
+                     <a color="accent" *ngIf="row['StatusRequest']" mat-button (click)="deActivationRequest(row)">
+                        Deactivate
+                     </a>
+                  </ng-container>
+                  <ng-container *ngIf="column === 'StatusRequest'">
+                     &nbsp;{{ row[column] ? 'Active' : 'Deactive' }}
+                  </ng-container>
+                  <ng-container *ngIf="column === 'RequestDate'">
+                     &nbsp;{{ row[column] | date }}
+                  </ng-container>
+               </mat-cell>
+
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+         </mat-table>
+         <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+      </div>
+   </mat-card-content>
+</mat-card>
