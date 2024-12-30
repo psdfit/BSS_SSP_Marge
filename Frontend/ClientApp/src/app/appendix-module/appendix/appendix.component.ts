@@ -126,7 +126,7 @@ export class AppendixComponent implements OnInit {
       BusinessRuleType: ['', Validators.required],
       Stipend: ['', Validators.required],
       StipendMode: ['', Validators.required],
-      UniformAndBag: ['', Validators.required],
+      //UniformAndBag: ['', Validators.required],
       MinimumEducation: ['', Validators.required],
       MaximumEducation: ['', Validators.required],
       MinAge: ['', Validators.required],
@@ -145,7 +145,7 @@ export class AppendixComponent implements OnInit {
     let programTypeIDControl = this.schemeForm.get('ProgramTypeID');
     let maximumEducationControl = this.schemeForm.get('MaximumEducation');
     let stipendControl = this.schemeForm.get('Stipend');
-    let uniformAndBagControl = this.schemeForm.get('UniformAndBag');
+   // let uniformAndBagControl = this.schemeForm.get('UniformAndBag');
     debugger;
     schemeNameControl.valueChanges.subscribe(
       value => {
@@ -194,9 +194,9 @@ export class AppendixComponent implements OnInit {
     stipendControl.valueChanges.subscribe(value => {
       this.childClass.onChangeStipend(value);
     })
-    uniformAndBagControl.valueChanges.subscribe(value => {
-      this.childClass.onChangeUniformBag(value);
-    })
+    //uniformAndBagControl.valueChanges.subscribe(value => {
+    // // this.childClass.onChangeUniformBag(value);
+    //})
     this.schemeFileForm = this._formBuilder.group({
       SchemeExcel: ['', Validators.required]
     });
@@ -304,7 +304,7 @@ export class AppendixComponent implements OnInit {
       //BusinessRuleType: _schemData['Business Rules'],
       Stipend: _schemData['Stipend'],
       StipendMode: _schemData['Stipend Mode'],
-      UniformAndBag: _schemData['Uniform and Bag'],
+      //UniformAndBag: _schemData['Uniform and Bag'],
       MinimumEducation: this.educationTypes.find(x => _schemData['Minimum Education'].toLowerCase() == x.Education.toLowerCase())?.EducationTypeID || '',
       MaximumEducation: this.educationTypes.find(x => _schemData['Maximum Education'].toLowerCase() == x.Education.toLowerCase())?.EducationTypeID || '',
       MinAge: parseInt(_schemData['Minimum Age(Years)']),
@@ -582,7 +582,7 @@ export class AppendixComponent implements OnInit {
         , "Program Category": scheme.PCategoryName
         , "Stipend": scheme.Stipend
         , "Stipend Mode": scheme.StipendMode
-        , "Uniform and Bag": scheme.UniformAndBag
+        //, "Uniform and Bag": scheme.UniformAndBag
         , "Minimum Education": scheme.MinimumEducationName
         , "Maximum Education": scheme.MaximumEducationName
         , "Minimum Age(Years)": scheme.MinAge
@@ -746,7 +746,7 @@ export class SchemeModel extends ModelBase {
   BusinessRuleType: string;
   Stipend: number;
   StipendMode: string;
-  UniformAndBag: number;
+  //UniformAndBag: number;
   MinimumEducation: number;
   MaximumEducation: number;
   MinAge: number;

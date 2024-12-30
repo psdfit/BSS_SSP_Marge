@@ -239,7 +239,7 @@ export class ClassComponent implements OnInit {
 
     this.populatedTableList.forEach(rowForm => {
       rowForm.Stipend = schemeList[0].Stipend;
-      rowForm.UniformBagCost = schemeList[0].UniformAndBag;
+      //rowForm.UniformBagCost = schemeList[0].UniformAndBag;
       //rowForm.controls.ClassCode.patchValue(`${this.scheme[0]?.SchemeCode}-${foundItem.TSPCode ?? ''}-${seq}`)
     }
     );
@@ -262,12 +262,12 @@ export class ClassComponent implements OnInit {
       rowForm.controls.Stipend.patchValue(value);
     });
   }
-  onChangeUniformBag(value: any) {
-    this.notForm.controls.UniformBagCost.patchValue(value);
-    this.Class.controls.forEach((rowForm: FormGroup) => {
-      rowForm.controls.UniformBagCost.patchValue(value);
-    });
-  }
+  //onChangeUniformBag(value: any) {
+  //  this.notForm.controls.UniformBagCost.patchValue(value);
+  //  this.Class.controls.forEach((rowForm: FormGroup) => {
+  //    rowForm.controls.UniformBagCost.patchValue(value);
+  //  });
+  //}
   getData() {
     this.http.getJSON('api/Class/GetClass').subscribe((d: any) => {
       // console.log(d);
@@ -910,8 +910,8 @@ export class ClassComponent implements OnInit {
               //parseInt(f['Stipend']),
               parseInt(this.notForm.controls.Stipend.value),
               parseInt(f['Testing & Certification Fee per Trainee']),
-              //parseInt(f['Uniform & Bag Cost per Trainee']),
-              parseInt(this.notForm.controls.UniformBagCost.value),
+              parseInt(f['Uniform & Bag Cost per Trainee']),
+              //parseInt(this.notForm.controls.UniformBagCost.value),
               parseInt(f['On Job Training (OJT)']),
               parseInt(f['Guru Payment']),
               parseInt(f['Transportation']),
@@ -989,7 +989,7 @@ export class ClassComponent implements OnInit {
             this.tableList['TrainingCostPerTraineePerMonthExTax'] = TrainingCostPerTraineePerMonthExTaxes_temp,
             this.tableList['SalesTax'] = Math.round(SalesTax_temp),
             this.tableList['TrainingCostPerTraineePerMonthInTax'] = TrainingCostPerTraineePerMonthIncTaxes_temp,
-            this.tableList['UniformBagCost'] = Math.round(f['Uniform & Bag Cost per Trainee']),
+            this.tableList['UniformBagCost'] = f['Uniform & Bag Cost per Trainee'],
             this.tableList['PerTraineeTestCertCost'] = Math.round(f['Testing & Certification Fee per Trainee']),
             this.tableList['BoardingAllowancePerTrainee'] = Math.round(f['Boarding & Other Allowances per trainee']),
             this.tableList['EmploymentCommitmentSelf'] = Math.round(f['Employment Commitment Self']),
@@ -1057,7 +1057,7 @@ export class ClassComponent implements OnInit {
             TrainingCostPerTraineePerMonthExTax: TrainingCostPerTraineePerMonthExTaxes_temp,
             SalesTax: Math.round(SalesTax_temp),
             TrainingCostPerTraineePerMonthInTax: TrainingCostPerTraineePerMonthIncTaxes_temp,
-            UniformBagCost: Math.round(f['Uniform & Bag Cost per Trainee']),
+            UniformBagCost: f['Uniform & Bag Cost per Trainee'],
             PerTraineeTestCertCost: Math.round(f['Testing & Certification Fee per Trainee']),
             BoardingAllowancePerTrainee: Math.round(f['Boarding & Other Allowances per trainee']),
             EmploymentCommitmentSelf: Math.round(f['Employment Commitment Self']),
@@ -1264,7 +1264,8 @@ export class ClassComponent implements OnInit {
       (row['SalesTaxRate'] >= 1) ||
       (!row['SalesTax'] && row['SalesTax'] != 0) ||
       (!row['TrainingCostPerTraineePerMonthInTax'] && row['TrainingCostPerTraineePerMonthInTax'] != 0) ||
-      (isNaN(row.UniformBagCost)) ||
+      (!row['UniformBagCost'] && row['UniformBagCost'] != 0) ||
+      //(isNaN(row.UniformBagCost)) ||
       (isNaN(row.Stipend)) ||
       (!row['balloonpayment'] && row['balloonpayment'] != 0) ||
       (!row['GuruPayment'] && row['GuruPayment'] != 0) ||
