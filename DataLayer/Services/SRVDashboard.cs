@@ -48,6 +48,30 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public DataTable FetchSchemesGSR()
+        {
+            try
+            {
+                string query = @"
+            SELECT SchemeID, SchemeName
+            FROM Scheme
+            WHERE IsApproved = 1
+              AND InActive = 0
+              AND IsMigrated = 0
+              AND ProgramTypeID = 7
+            ORDER BY SchemeID";
+
+                // Execute query
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);
+                return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
         public DataTable FetchTSPs()
         {
             try
@@ -129,6 +153,37 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+
+        public DataTable FetchSchemesByGSRUsers(int UserID)
+        {
+            try
+            {
+                // Validate and ensure UserID is a valid integer
+                if (UserID <= 0)
+                    throw new ArgumentException("Invalid UserID");
+
+                string query = @"
+            SELECT s.SchemeID, s.SchemeName
+            FROM Scheme s
+            INNER JOIN dbo.TSPDetail td ON s.SchemeID = td.SchemeID
+            INNER JOIN dbo.TSPMaster tm ON td.TSPMasterID = tm.TSPMasterID
+            WHERE s.IsApproved = 1
+              AND s.IsMigrated = 0
+              AND tm.UserID = " + UserID + @"
+              AND s.ProgramTypeID = 7
+            GROUP BY s.SchemeID, s.SchemeName;";
+
+                // Execute query
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);
+                return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
         public DataTable FetchClassesBySchemeUser(int SchemeID, int UserID)
         {
             try

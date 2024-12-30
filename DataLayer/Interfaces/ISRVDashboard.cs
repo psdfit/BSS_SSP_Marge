@@ -13,6 +13,7 @@ namespace DataLayer.Interfaces
         public DataTable FetchClusters();
         public DataTable FetchDistricts();
         public DataTable FetchSchemes();
+        public DataTable FetchSchemesGSR();
         public DataTable FetchTSPs();
         public DataTable FetchTSPDetail();
         public DataTable FetchTSPsByScheme(int SchemeID);
@@ -22,6 +23,7 @@ namespace DataLayer.Interfaces
         public DataTable FetchSchemesByKam(int KamID);
         public DataTable FetchTSPsByKamScheme(int KamID, int SchemeID);
         public DataTable FetchSchemesByUsers(int UserID);
+        public DataTable FetchSchemesByGSRUsers(int UserID);
         public DataTable FetchClassesBySchemeUser(int SchemeID, int UserID);
         public DataTable FetchSchemesByProgramCategory(int PCategoryID);
         public DataTable FetchClasses();

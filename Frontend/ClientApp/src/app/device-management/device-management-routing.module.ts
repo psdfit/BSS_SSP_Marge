@@ -5,6 +5,7 @@ import { AuthGuardService } from '../security/auth-guard.service';
 import { DeviceRegistrationComponent } from './device-registration/device-registration.component';
 import { TraineeAttendanceComponent } from './trainee-attendance/trainee-attendance.component';
 import { DeviceStatusUpdateDialogComponent } from './device-status-update-dialog/device-status-update-dialog.component';
+import { ManageDeviceStatusComponent } from './manage-device-status/manage-device-status.component';
 
 
 const routes: Routes = [
@@ -20,7 +21,7 @@ const routes: Routes = [
   },
   {
     path: "manage-device-status",
-    component:DeviceStatusUpdateDialogComponent ,
+    component: ManageDeviceStatusComponent ,
     canActivate: [AuthGuardService],
     data: {
       icon: "verified_user",

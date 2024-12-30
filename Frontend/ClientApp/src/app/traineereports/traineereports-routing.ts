@@ -8,6 +8,7 @@ import { TraineeCompletionReportComponent } from './trainee-completion-report/tr
 import { TraineeStatusReportComponent } from './trainee-status-report/trainee-status-report.component';
 import { PrnReportComponent } from './prn-report/prn-report.component';
 import { ClassStatusUpdateComponent } from './class-status-update/class-status-update/class-status-update.component';
+import { GuruRportsComponent } from './gsr/gsr.component';
 
 const routes: Routes = [
   {
@@ -59,7 +60,7 @@ const routes: Routes = [
       , title: 'Trainee Status Update'
     }
   }
-    , {
+  , {
     path: 'prn-report'
     , component: PrnReportComponent
     , canActivate: [AuthGuardService]
@@ -77,6 +78,17 @@ const routes: Routes = [
       icon: 'verified_user'
       , inMenu: true
       , title: 'Class Status Update'
+    }
+  },
+  {
+    // path: 'administration', component: AppLayoutComponent, children: [{
+    path: 'gsr'
+    , component: GuruRportsComponent
+    , canActivate: [AuthGuardService]
+    , data: {
+      icon: 'verified_user'
+      , inMenu: true
+      , title: 'Guru Status Report'
     }
   }
 
