@@ -1102,8 +1102,8 @@ export class ClassComponent implements OnInit {
   }
   calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend, testingCert, uniformBag, ojt, Guru, transportation, trainees) {
     let val = 0
-    if (duration < 1) { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru)) * trainees); }
-    else { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru)) * trainees); }
+    if (duration < 1) { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)) * trainees); }
+    else { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)) * trainees); }
     return parseFloat(val.toFixed(this.decimalPlaces));
   }
   emptyClass() {
