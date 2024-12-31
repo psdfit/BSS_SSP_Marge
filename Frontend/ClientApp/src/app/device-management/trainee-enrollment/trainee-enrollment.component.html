@@ -1,104 +1,111 @@
 <mat-card>
-    <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
-       <mat-icon class="material-icons"> add_circle </mat-icon>
-       <span class="spacer">{{SpacerTitle}}</span>
-    </mat-toolbar>
-    <mat-toolbar *ngIf="TapIndex==1" color="accent" class=" slim slim">
-       <mat-icon class="material-icons"> view_comfy </mat-icon>
-       <span class="spacer">Manage and View All</span>
-       <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
-       <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
-          <i class="fas fa-file-export"></i> Export Excel</button>
-    </mat-toolbar>
-    
-    <mat-card-content>
-       <form (ngSubmit)="SaveFormData()" [formGroup]="DeviceRegistrationForm">
-          <fieldset class="border">
-             <legend>Device Registration Form</legend>
-             <div class="row">
-                <div class="col-sm-4">
- 
-                   <mat-form-field>
-                      <mat-label>Select Brand</mat-label>
-                      <mat-select formControlName="Brand" matInput required>
-                         <mat-option  value="Suprema">Suprema </mat-option>
-                         <mat-option  value="Digital Persona">Digital Persona</mat-option>
-                         <mat-option  value="ZKTeco">ZKTeco</mat-option>
-                         <mat-option  value="Virdi">Virdi</mat-option>
-                      </mat-select>
- 
-                      <mat-error *ngFor="let error of DeviceRegistrationForm.get('Brand').errors | keyvalue">{{getErrorMessage(error.key, error.value) }}</mat-error>
-                   </mat-form-field>
- 
-                </div>
-                <div class="col-sm-4">
-                   <mat-form-field>
-                      <mat-label>Model Name</mat-label>
-                      <input formControlName="Model" matInput required />
-                      <mat-error *ngFor="let error of DeviceRegistrationForm.get('Model').errors | keyvalue">{{
-                         getErrorMessage(error.key, error.value) }}</mat-error>
-                   </mat-form-field>
-                </div>
-                <div class="col-sm-4">
-                   <mat-form-field>
-                      <mat-label>Serial Number </mat-label>
-                      <input formControlName="SerialNumber" matInput required />
-                      <mat-error *ngFor="let error of DeviceRegistrationForm.get('SerialNumber').errors | keyvalue">{{
-                         getErrorMessage(error.key, error.value) }}</mat-error>
-                   </mat-form-field>
-                </div>
-             </div>
-             <div class="row" style="float:right" *ngIf="FinalSubmit==false">
-                <div class="col-sm-12">
-                   <a color="warn" matTooltip="Click to Reset form data" (click)="ResetFrom()" mat-raised-button> <i
-                         class="fas fa-times"></i> Reset </a>
-                   | <button color="primary" mat-raised-button ><i class="fas fa-check"></i> Save
-                      Record </button>
-                </div>
-             </div>
-          </fieldset>
-       </form>
-       <mat-toolbar color="accent" class=" slim slim">
-          <mat-icon class="material-icons"> view_comfy </mat-icon>
-          <span class="spacer">Manage and View All</span>
-          <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
-          <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
-             <i class="fas fa-file-export"></i> Export Excel</button>
-       </mat-toolbar>
-       <div class="table-responsive">
-          <mat-table [dataSource]="TablesData" matSort>
-             <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
-                <mat-cell *matCellDef="let row;let i = index">
-                   
-                   <ng-container *ngIf="column !== 'RequestDate'">
-                      &nbsp;{{ row[column] }}
-                   </ng-container>
- 
-                   <ng-container *ngIf="column == 'Sr#'">
-                      &nbsp; {{i+1}}
-                   </ng-container>
- 
-                   
-                      <ng-container *ngIf="column == 'Action'">
- 
-                         <a color="primary" *ngIf="row['DeviceStatus']=='InActive'" mat-button (click)="activationRequest(row)">Activate</a> 
-                         <a color="accent" *ngIf="row['DeviceStatus']=='Active'" mat-button (click)="deActivationRequest(row)">DeActivate</a>
- 
-                       </ng-container>
-                   
- 
-                   <ng-container *ngIf="column == 'RequestDate'">
-                      &nbsp; {{row[column]|date}}
-                   </ng-container>
- 
-                   
-                </mat-cell>
-             </ng-container>
-             <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
-             <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
-          </mat-table>
-          <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
-       </div>
-    </mat-card-content>
- </mat-card>
+   <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> add_circle </mat-icon>
+      <span class="spacer">{{SpacerTitle}}</span>
+   </mat-toolbar>
+   <mat-toolbar *ngIf="TapIndex==1" color="accent" class=" slim slim">
+      <mat-icon class="material-icons"> view_comfy </mat-icon>
+      <span class="spacer">Manage and View All</span>
+      <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
+      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
+         <i class="fas fa-file-export"></i> Export Excel</button>
+   </mat-toolbar>
+
+   <mat-card-content>
+      <form (ngSubmit)="SaveFormData()" [formGroup]="DeviceRegistrationForm">
+         <fieldset class="border">
+            <legend>Biometric Trainees Enrollment</legend>
+            <div class="row">
+               <div class="col-sm-4">
+                  <mat-form-field fxFlex>
+                     <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()"
+                        matInput>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text"
+                              (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+                        <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]"
+                           [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                     </mat-select>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-4" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+                  <mat-form-field fxFlex>
+                     <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl()" matInput>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text"
+                              (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                        <mat-option value="0" selected>--All--</mat-option>
+
+                        <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]"
+                           [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                     </mat-select>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-4">
+                  <mat-form-field fxFlex>
+                     <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl()" matInput>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text"
+                              (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+                        <mat-option value="0" selected>--All--</mat-option>
+                        <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]"
+                           [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                     </mat-select>
+                  </mat-form-field>
+               </div>
+            </div>
+            <div class="row" style="float:right" *ngIf="FinalSubmit==false">
+               <div class="col-sm-12">
+                  <a color="warn" matTooltip="Click to Reset form data" (click)="ResetFrom()" mat-raised-button> <i
+                        class="fas fa-times"></i> Reset </a>
+                  | <button color="primary" mat-raised-button><i class="fas fa-check"></i> Save
+                     Record </button>
+               </div>
+            </div>
+         </fieldset>
+      </form>
+      <mat-toolbar color="accent" class=" slim slim">
+         <mat-icon class="material-icons"> view_comfy </mat-icon>
+         <span class="spacer">Manage and View All</span>
+         <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
+         <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
+            <i class="fas fa-file-export"></i> Export Excel</button>
+      </mat-toolbar>
+      <div class="table-responsive">
+         <mat-table [dataSource]="TablesData" matSort>
+            <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+               <mat-cell *matCellDef="let row;let i = index">
+
+                  <ng-container *ngIf="column !== 'RequestDate' && column !== 'BiometricEnrollment' && column !== 'Sr#'">
+                     &nbsp;{{ row[column] }}
+                  </ng-container>
+
+                  <ng-container *ngIf="column == 'Sr#'">
+                     &nbsp; {{i+1}}
+                  </ng-container>
+
+
+                  <ng-container *ngIf="column == 'BiometricEnrollment'">
+
+                     <ng-container *ngIf="row['BiometricEnrollment'] == 'Pending'">
+                        <a  color="primary" mat-button (click)="activationRequest(row)"> <i class="fas fa-fingerprint"></i> Enroll Trainee</a>
+                     </ng-container>
+
+                     <ng-container *ngIf="row['BiometricEnrollment'] == 'Completed'">
+                        <a  color="accent" mat-button> <i class="fas fa-check"></i>Enrolled</a>
+                     </ng-container>
+
+                  </ng-container>
+
+                  <ng-container *ngIf="column == 'RequestDate'">
+                     &nbsp; {{row[column]|date}}
+                  </ng-container>
+
+
+               </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+         </mat-table>
+         <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+      </div>
+   </mat-card-content>
+</mat-card>

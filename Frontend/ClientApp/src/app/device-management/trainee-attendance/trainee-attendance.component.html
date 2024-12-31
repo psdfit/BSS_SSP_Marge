@@ -74,7 +74,7 @@
                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                <mat-cell *matCellDef="let row;let i = index">
 
-                  <ng-container *ngIf="column !== 'RequestDate'">
+                  <ng-container *ngIf="column !== 'RequestDate' && column !== 'BiometricEnrollment' && column !== 'Sr#'">
                      &nbsp;{{ row[column] }}
                   </ng-container>
 
@@ -83,17 +83,17 @@
                   </ng-container>
 
 
-                  <ng-container *ngIf="column == 'Enrollment'">
+                  <ng-container *ngIf="column == 'BiometricEnrollment'">
 
-                     <a color="primary" mat-button (click)="activationRequest(row)">Click to enroll</a>
+                     <ng-container *ngIf="row['BiometricEnrollment'] == 'Pending'">
+                        <a  color="accent"  > <i class="fas fa-fingerprint"></i> Marked</a>
+                     </ng-container>
+
+                     <ng-container *ngIf="row['BiometricEnrollment'] == 'Completed'" >
+                        <a  color="primary" mat-button (click)="activationRequest(row)">  <i class="fas fa-fingerprint"></i>  Mark Attendance</a>
+                     </ng-container>
 
                   </ng-container>
-
-                  <ng-container *ngIf="column == 'Enrollment Status'">
-
-
-                  </ng-container>
-
 
                   <ng-container *ngIf="column == 'RequestDate'">
                      &nbsp; {{row[column]|date}}

@@ -1,5 +1,6 @@
 using DataLayer.Interfaces;
 using DataLayer.Models;
+using DataLayer.Models.DVV;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -36,7 +37,7 @@ namespace PSDF_BSSRegistration.Controllers
         private readonly ISRVScheme srvScheme;
         private readonly ISRVReferralSource srvReferralSource;
         private readonly ISRVProvinces sRVProvinces;
-        
+
         private readonly ISRVTraineeGuruProfile _srvGuru;
 
         public TraineeProfileController(ISRVTraineeProfile srvTraineeProfile
@@ -89,7 +90,7 @@ namespace PSDF_BSSRegistration.Controllers
         [HttpGet]
         [Route("GetTraineeGuru")]
         public IActionResult GetTraineeGuru(int UserID)
-        
+
         {
             var profiles = _srvGuru.GetByTraineeProfileID(729);
             return Ok(profiles);
@@ -839,8 +840,8 @@ namespace PSDF_BSSRegistration.Controllers
             {
                 int CurUserID = Convert.ToInt32(User.Identity.Name);
                 var criteria = srvTraineeProfile.checkTSPTradeCriteria(programid, tradeid, CurUserID);
-                   
-                   
+
+
                 return Ok(criteria);
             }
             catch (Exception e)
@@ -903,5 +904,32 @@ namespace PSDF_BSSRegistration.Controllers
                 return BadRequest("Access Denied. you are not authorized for this activity");
             }
         }
+
+
+        [HttpPost]
+        [Route("SaveBiometricAttendance")]
+        public IActionResult SaveBiometricAttendance(BiometricTraineeDataModel model)
+        {
+            string[] SplitPath = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthorized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), SplitPath[2], SplitPath[3], model.TraineeID);
+            if (IsAuthorized == true)
+            {
+                try
+                {
+                    model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                    var list = srvTraineeProfile.SaveBiometricAttendance(model);
+                    return Ok(list);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }
+
     }
 }
