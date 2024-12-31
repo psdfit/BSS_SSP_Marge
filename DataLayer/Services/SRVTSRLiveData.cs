@@ -236,6 +236,29 @@ namespace DataLayer.Services
             }
             return list;
         }
+         public List<GSRLiveDataModel> GetFilteredGSRData(SearchFilter filters)
+        {
+            List<GSRLiveDataModel> list = new List<GSRLiveDataModel>();
+            if (filters != null)
+            {
+                try
+                {
+                    SqlParameter[] param = new SqlParameter[10];
+                    param[0] = new SqlParameter("@SchemeID", filters.SchemeID);
+                    param[1] = new SqlParameter("@TSPID", filters.TSPID);
+                    param[2] = new SqlParameter("@ClassID", filters.ClassID);
+                    param[3] = new SqlParameter("@TraineeID", filters.TraineeID);
+
+                    DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GSRData", param).Tables[0];
+                    list = LoopinGSRData(dt);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return list;
+        }
 
         public List<TSRLiveDataModel> FetchTCRLiveDataByFilters(int[] filters)
         {
@@ -276,6 +299,15 @@ namespace DataLayer.Services
                 tsrLiveModel.Add(RowOfTSRData(r));
             }
             return tsrLiveModel;
+        }
+        private List<GSRLiveDataModel> LoopinGSRData(DataTable dt)
+        {
+            List<GSRLiveDataModel> gsrLiveModel = new List<GSRLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                gsrLiveModel.Add(RowOfGSRData(r));
+            }
+            return gsrLiveModel;
         }
 
         private List<TSRLiveDataModel> LoopinTCRLiveData(DataTable dt)
@@ -403,6 +435,21 @@ namespace DataLayer.Services
             return tsr;
         }
 
+        private GSRLiveDataModel RowOfGSRData(DataRow row)
+        {
+            GSRLiveDataModel gsr = new GSRLiveDataModel();
+            gsr.TraineeCode = row.Field<string>("TraineeCode");
+            gsr.TraineeName = row.Field<string>("TraineeName");
+            gsr.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            gsr.FatherName = row.Field<string>("FatherName");
+            gsr.TSPName = row.Field<string>("TSPName");
+            gsr.GuruContactNumber = row.Field<string>("GuruContactNumber");
+            gsr.ClassCode = row.Field<string>("ClassCode");
+            gsr.GuruCNIC = row.Field<string>("GuruCNIC");
+            gsr.GuruName = row.Field<string>("GuruName");
+            return gsr;
+        }
+
         public List<TSRLiveDataModel> UpdateTraineeStatusExpell(TSRLiveDataModel traineestatus)
         {
 
@@ -520,6 +567,25 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        
+        public List<GSRLiveDataModel> FetchGSRPaged(PagingModel pagingModel, SearchFilter filterModel)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
+                param.AddRange(Common.GetPagingParams(pagingModel));
+
+                DataTable dt = new DataTable();
+                dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GSRDataPaged", param.ToArray()).Tables[0];
+
+                return LoopinGSRLiveDataPaged(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
 
         private List<TSRLiveDataModel> LoopinTSRLiveDataPaged(DataTable dt)
@@ -530,6 +596,16 @@ namespace DataLayer.Services
                 tsrLiveModel.Add(RowOfTSRLiveDatapaged(r));
             }
             return tsrLiveModel;
+        } 
+        
+        private List<GSRLiveDataModel> LoopinGSRLiveDataPaged(DataTable dt)
+        {
+            List<GSRLiveDataModel> gsrLiveModel = new List<GSRLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                gsrLiveModel.Add(RowOfGSRLiveDatapaged(r));
+            }
+            return gsrLiveModel;
         }
 
         private TSRLiveDataModel RowOfTSRLiveDatapaged(DataRow row)
@@ -555,6 +631,21 @@ namespace DataLayer.Services
             tsr.ReligionName = row.Field<string>("ReligionName");
             tsr.CertAuthName = row.Field<string>("CertAuthName");
             return tsr;
+        }
+        
+        private GSRLiveDataModel RowOfGSRLiveDatapaged(DataRow row)
+        {
+            GSRLiveDataModel gsr = new GSRLiveDataModel();
+            gsr.TraineeCode = row.Field<string>("TraineeCode");
+            gsr.TraineeName = row.Field<string>("TraineeName");
+            gsr.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            gsr.FatherName = row.Field<string>("FatherName");
+            gsr.TSPName = row.Field<string>("TSPName");
+            gsr.GuruContactNumber = row.Field<string>("GuruContactNumber");
+            gsr.ClassCode = row.Field<string>("ClassCode");
+            gsr.GuruCNIC = row.Field<string>("GuruCNIC");
+            gsr.GuruName = row.Field<string>("GuruName");
+            return gsr;
         }
 
         public List<TSRLiveDataModel> FetchTSULiveData(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)
