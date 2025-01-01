@@ -907,6 +907,31 @@ namespace PSDF_BSSRegistration.Controllers
 
 
         [HttpPost]
+        [Route("SaveBiometricData")]
+        public IActionResult SaveBiometricData(BiometricTraineeDataModel model)
+        {
+            string[] SplitPath = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthorized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), SplitPath[2], SplitPath[3], model.TraineeID);
+            if (IsAuthorized == true)
+            {
+                try
+                {
+                    model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                    var list = srvTraineeProfile.SaveTraineeBiometricData(model);
+                    return Ok(list);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }
+
+        [HttpPost]
         [Route("SaveBiometricAttendance")]
         public IActionResult SaveBiometricAttendance(BiometricTraineeDataModel model)
         {

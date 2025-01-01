@@ -25,7 +25,8 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   error: any;
   screenWidth: any;
   requestData: { Fingerprint: any; Index: number; CNIC: string };
-  imgUrl = "";
+  
+  imgUrl ="https://miro.medium.com/v2/resize:fit:679/1*9EBHIOzhE1XfMYoKz1JcsQ.gif";
   TemplateImgData: any;
   Token: any;
   urlStr = "https://localhost";
@@ -62,6 +63,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   isProcessing = false; // Tracks whether a request is ongoing
   IsMarked: boolean=false
   templateData: any=""
+  IsVerified: boolean=false
   Name: any;
   TraineeCode: any;
   ClassCode: any;
@@ -96,6 +98,12 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       LeftMiddleFinger: [false],
       AttendanceType: ["CheckIn"],
     });
+
+    if(this.data[0].CheckedIn=="Not Checked In"){
+      this.fingerprintForm.controls["AttendanceType"].setValue("CheckIn");
+    }else{
+      this.fingerprintForm.controls["AttendanceType"].setValue("CheckOut");
+    }
   }
   async ngOnInit() {
     await this.InitPage();
@@ -144,7 +152,6 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   
      this.templateData =this.data[0][fingerPrintIndex];
     var templateLength = this.templateData.length;
-
     const url = `${this.urlStr}/db/verifyTemplate`;
     const cb_EncryptOpt = 0;
     const txt_EncryptKey = "";
@@ -156,7 +163,8 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       .set("id", this.pageID.toString())
       .set("tempLen", templateLength.toString())
       .set("tempData", this.templateData)
-      .set("securitylevel", "3")
+      .set("securitylevel", "2")
+      .set("templateType", "2002")
       .set("encrypt", cb_EncryptOpt.toString())
       .set("encryptKey", txt_EncryptKey)
       .set("extractEx", extractEx.toString())
@@ -171,9 +179,9 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       const response: any = await this.http.get(url, requestOptions).toPromise();
       
       console.log(response);
-
+      this.IsVerified=response.retVerify == "Success" ? true : false;
       if(response.retVerify == "Success") {
-         this.ComSrv.openSnackBar("Attendance Marked Successfully", "Close", 5000);
+        
          this.IsMarked = true;
          if(this.IsMarked){
             this.saveBiometricData();
@@ -188,10 +196,9 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   }
   saveBiometricData() {
   
-    const traineeData:{ [key: string]: string } = {
+    const traineeData = {
       TraineeID: this.data[0].TraineeID,
       ClassID: this.data[0].ClassID,
-      Date: new Date().toISOString(),
       AttendanceType: this.fingerprintForm.value.AttendanceType,
       FingerImpression: this.templateData,
     };
@@ -206,8 +213,10 @@ export class BiometricAttendanceDialogComponent implements OnInit {
         traineeData
       ).subscribe((response: any) => {
         if (response) {
+          this.IsMarked = false;
           this.ComSrv.openSnackBar("Attendance marked Successfully", "Close", 5000);
-         setTimeout(() => {
+          this.statusLoopSubscription.unsubscribe();
+          setTimeout(() => {
           this.closeDialog();
          }, 2000);
         } else {
@@ -272,7 +281,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
     this.IsDeviceConnected = connection === "Up";
     console.log("Device Connection:" + connection);
     if(connection === "Down") {
-      this.ComSrv.ShowError("Device Connection Lost", "Close", 5000);
+      this.ComSrv.ShowError("Device Connection Lost", "Close", 2000);
       this.closeDialog();
     }
   }
@@ -337,8 +346,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
     if (!this.isExistScannerHandle()) {
       return;
     }
-    this.imgUrl =
-      "https://miro.medium.com/v2/resize:fit:679/1*9EBHIOzhE1XfMYoKz1JcsQ.gif";
+    this.imgUrl ="https://miro.medium.com/v2/resize:fit:679/1*9EBHIOzhE1XfMYoKz1JcsQ.gif";
     this.gIsCaptureEnd = false;
     this.printFlag = false;
     clearTimeout(this.pLoopflag);
@@ -527,10 +535,9 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       .set("dummy", Math.random().toString())
       .set("sHandle", this.deviceInfos[0]?.DeviceHandle)
       .set("brightness", "100")
-      .set("fastmode", "0")
-      .set("securitylevel", "4")
+      .set("securitylevel", "2")
       .set("sensitivity", "7")
-      .set("timeout", "5")
+      .set("timeout", "2")
       .set("templateType", TemplateType.toString())
       .set("fakeLevel", "0")
       .set("detectFakeAdvancedMode", "0");
