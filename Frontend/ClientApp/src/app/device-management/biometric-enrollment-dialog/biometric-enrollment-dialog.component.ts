@@ -455,7 +455,7 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
       .set("sHandle", this.deviceInfos[0]?.DeviceHandle)
       .set("brightness", "100")
       .set("fastmode", "0")
-      .set("securitylevel", "4")
+      .set("securitylevel", "3")
       .set("sensitivity", "7")
       .set("timeout", "5")
       .set("templateType", TemplateType.toString())

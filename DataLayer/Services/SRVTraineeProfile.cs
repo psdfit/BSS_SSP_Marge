@@ -2051,7 +2051,7 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@LeftMiddleFinger", model.LeftMiddleFinger));
             param.Add(new SqlParameter("@CurUserID", model.CurUserID));
             
-            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "Au_TraineeBiometricData", param.ToArray()).Tables[0];
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricData", param.ToArray()).Tables[0];
             return dt;
         }
 
@@ -2063,7 +2063,7 @@ namespace DataLayer.Services
             new SqlParameter("@FingerImpression", model.FingerImpression),
             new SqlParameter("@CheckIn", model.AttendanceType == "CheckIn" ? 1 : 0),
             new SqlParameter("@CheckOut", model.AttendanceType == "CheckOut" ? 1 : 0),
-            new SqlParameter("@TimeStamp", model.Date),
+            new SqlParameter("@TimeStamp", DateTime.Now),
             new SqlParameter("@CurUserID", model.CurUserID)
         };
 

@@ -12,7 +12,7 @@ namespace DataLayer.Models.DVV
         public string RightMiddleFinger { get; set; }
         public string LeftIndexFinger { get; set; }
         public string LeftMiddleFinger { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Today;
         public string Time { get; set; }
         public string AttendanceType { get; set; }
 
