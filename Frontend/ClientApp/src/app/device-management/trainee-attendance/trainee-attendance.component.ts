@@ -6,64 +6,23 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTabGroup } from "@angular/material/tabs";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { MatOption } from "@angular/material/core";
-import { MatSelect } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
-import { DeviceStatusUpdateDialogComponent } from "../device-status-update-dialog/device-status-update-dialog.component";
-import { BiometricAttendanceDialogComponent } from "../biometric-attendance-dialog/biometric-attendance-dialog.component";
 import { EnumUserLevel } from "src/app/shared/Enumerations";
-import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
-import { SearchFilter } from "src/app/shared/Interfaces";
+import { BiometricAttendanceDialogComponent } from '../biometric-attendance-dialog/biometric-attendance-dialog.component';
 @Component({
   selector: 'app-trainee-attendance',
   templateUrl: './trainee-attendance.component.html',
   styleUrls: ['./trainee-attendance.component.scss']
 })
 export class TraineeAttendanceComponent implements OnInit {
-  matSelectArray: MatSelect[] = [];
-  @ViewChild('Applicability') Applicability: MatSelect;
-  SelectedAll_Applicability: string;
-  @ViewChild('Province') Province: MatSelect;
-  SelectedAll_Province: string;
-  @ViewChild('Cluster') Cluster: MatSelect;
-  SelectedAll_Cluster: string;
-  @ViewChild('District') District: MatSelect;
-  SelectedAll_District: string;
   currentUser: any = {}
-  DeviceRegistration: any[];
+  DeviceRegistration: any=[]
   schemeArray: any;
   tspDetailArray: any;
   classesArray: any;
 
-  filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.ComSrv.OID.value, SelectedColumns: [] };
 
 
-  SelectAll(event: any, dropDownNo, controlName, formGroup) {
-    const matSelect = this.matSelectArray[(dropDownNo - 1)];
-    if (event.checked) {
-      matSelect.options.forEach((item: MatOption) => item.select());
-      if (this[formGroup].get(controlName).value) {
-        const uniqueArray = Array.from(new Set(this[formGroup].get(controlName).value));
-        this[formGroup].get(controlName).setValue(uniqueArray)
-      }
-    } else {
-      matSelect.options.forEach((item: MatOption) => item.deselect());
-    }
-  }
-  optionClick(event, controlName) {
-    this.EmptyCtrl()
-    let newStatus = true;
-    event.source.options.forEach((item: MatOption) => {
-      if (!item.selected && !item.disabled) {
-        newStatus = false;
-      }
-    });
-    if (event.source.ngControl.name === controlName) {
-      this['SelectedAll_' + controlName] = newStatus;
-    } else {
-      this['SelectedAll_' + controlName] = newStatus;
-    }
-  }
   constructor(
     private Dialog: MatDialog,
     private ComSrv: CommonSrvService,
@@ -89,12 +48,6 @@ export class TraineeAttendanceComponent implements OnInit {
   PlaningType: any[];
   GetDataObject: any = {}
   SpacerTitle: string;
-  SearchCtr = new FormControl('');
-  PSearchCtr = new FormControl('');
-  CSearchCtr = new FormControl('');
-  DSearchCtr = new FormControl('');
-  TSearchCtr = new FormControl('');
-  BSearchCtr = new FormControl('');
   SearchCls = new FormControl('');
   SearchSch = new FormControl('');
   SearchTSP = new FormControl('');
@@ -128,11 +81,11 @@ export class TraineeAttendanceComponent implements OnInit {
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser);
     this.TablesData = new MatTableDataSource([]);
-    this.PageTitle();
     this.InitDeviceRegistrationForm();
     this.GetDeviceRegistration();
     this.getSchemesData(); // Fetch schemes on component load
-
+     this.PageTitle();
+    // Update class dropdown based on selected scheme
     this.schemeFilter.valueChanges.subscribe(value => {
       if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
         this.getDependantFilters();
@@ -230,7 +183,7 @@ export class TraineeAttendanceComponent implements OnInit {
   LoadMatTable(tableData: any[]) {
     const excludeColumnArray: string[] = [];
     if (tableData.length > 0) {
-      this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key)), 'Enrollment', 'Enrollment Status'];
+      this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
       this.TablesData = new MatTableDataSource(tableData);
       this.TablesData.paginator = this.paginator;
       this.TablesData.sort = this.sort;
@@ -238,10 +191,6 @@ export class TraineeAttendanceComponent implements OnInit {
   }
 
   EmptyCtrl() {
-    this.PSearchCtr.setValue('');
-    this.CSearchCtr.setValue('');
-    this.DSearchCtr.setValue('');
-    this.BSearchCtr.setValue('');
     this.SearchCls.setValue('');
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
@@ -347,8 +296,14 @@ export class TraineeAttendanceComponent implements OnInit {
 
       if (response && response.length > 0) {
         this.DeviceRegistration = response;
-        this.LoadMatTable(this.DeviceRegistration); // Load the response into the table
-        this.noRecords = false
+
+        const enrolledTrainees= this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Completed");
+        if (enrolledTrainees.length > 0) {
+          this.LoadMatTable(enrolledTrainees); 
+        }else{
+          this.ComSrv.ShowWarning('No records found.', 'Close');
+        }
+       // Load the response into the table
       } else {
         this.ComSrv.ShowWarning('No device records found.', 'Close');
         this.noRecords = true
@@ -392,8 +347,8 @@ export class TraineeAttendanceComponent implements OnInit {
     const data = [row, DeviceStatus];
 
     // const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {
-    const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {
-      width: '40%',
+    const dialogRef = this.Dialog.open(BiometricAttendanceDialogComponent, {
+      width: '50%',
       data: data,
       disableClose: true,
     });
@@ -421,13 +376,5 @@ export class TraineeAttendanceComponent implements OnInit {
     this.ComSrv.setTitle(this.AcitveRoute.snapshot.data.title);
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
-
-  ngAfterViewInit() {
-    this.matSelectArray = [this.Applicability, this.Province, this.Cluster, this.District];
-    if (this.tabGroup) {
-      this.tabGroup.selectedTabChange.subscribe((event) => {
-        this.TapIndex = event.index
-      });
-    }
-  }
+  
 }

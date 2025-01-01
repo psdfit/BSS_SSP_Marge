@@ -17,7 +17,7 @@ const routes: Routes = [
     data: {
       icon: "verified_user",
       inMenu: true,
-      title: "Trainee Registeration"
+      title: "Trainee Registration"
     }
   },
   {
@@ -27,7 +27,7 @@ const routes: Routes = [
     data: {
       icon: "verified_user",
       inMenu: false,
-      title: "Trainee Registeration"
+      title: "Trainee Registration"
     }
   },
   {
@@ -47,7 +47,7 @@ const routes: Routes = [
     data: {
       icon: "verified_user",
       inMenu: true,
-      title: "Trainee Updation"
+      title: "Trainee Update"
     }
   }
 ];
