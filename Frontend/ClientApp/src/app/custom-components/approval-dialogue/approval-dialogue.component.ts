@@ -27,6 +27,7 @@ export class ApprovalDialogueComponent implements OnInit {
   currentUserDetails: UsersModel;
   enumApprovalStatus = EnumApprovalStatus;
   alert: { Type: string, Title?: string, Message?: string; } = null;
+  filterBy: string = '1';
   constructor(
     private http: CommonSrvService,
     public dialogRef: MatDialogRef<ApprovalDialogueComponent>,
@@ -241,7 +242,12 @@ export class ApprovalDialogueComponent implements OnInit {
   }
 
   getTradeData() { ///Getting trade date
-    this.http.postJSON('api/Approval/GetTradeDate', this.data).subscribe(
+    const requestData = {
+      ...this.data, // Existing data properties
+      filterBy: this.filterBy // Add the filter value
+    };
+
+    this.http.postJSON('api/Approval/GetTradeDate', requestData).subscribe(
       (responseData: ITradeDetail[]) => {
         console.log(responseData);
         if (responseData.length > 0) {
@@ -253,6 +259,18 @@ export class ApprovalDialogueComponent implements OnInit {
         this.http.ShowError(error.error + '\n' + error.message);
       }
     );
+    //this.http.postJSON('api/Approval/GetTradeDate', this.data).subscribe(
+    //  (responseData: ITradeDetail[]) => {
+    //    console.log(responseData);
+    //    if (responseData.length > 0) {
+    //      this.latestid = responseData[0];
+    //      this.TradeTargetDetail = responseData;
+    //    }
+    //  },
+    //  (error) => {
+    //    this.http.ShowError(error.error + '\n' + error.message);
+    //  }
+    //);
   }
 
   onNoClick(): void {

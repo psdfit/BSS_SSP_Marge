@@ -26,5 +26,7 @@ namespace DataLayer.Models
         public DateTime? Month { get; set; }
         public string ForMonth { get; set; }
         public bool? IsAutoApproval { get; set; }
+        public int filterBy { get; set; }
+        
     }
 }
