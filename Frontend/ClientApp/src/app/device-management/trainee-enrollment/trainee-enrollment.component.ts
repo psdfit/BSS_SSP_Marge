@@ -213,7 +213,7 @@ export class TraineeEnrollmentComponent implements OnInit {
   }
 
   getSchemesData() {
-    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForTSR?OID=${this.ComSrv.OID.value}`)
+    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForGSR?OID=${this.ComSrv.OID.value}`)
       .subscribe((d: any) => {
         this.schemeArray = d.Schemes;
       }, error => this.error = error);

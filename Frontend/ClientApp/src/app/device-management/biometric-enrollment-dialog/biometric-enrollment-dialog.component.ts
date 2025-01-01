@@ -60,6 +60,10 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
   traineeBiometricData: any[] = [];
   fingerprintForm: FormGroup;
   isProcessing = false; // Tracks whether a request is ongoing
+  Name: any;
+  SchemeName: any;
+  ClassCode: any;
+  TraineeCode: any;
   constructor(
     private http: HttpClient,
     public dialog: MatDialog,
@@ -70,8 +74,12 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
   ) {
     dialogRef.disableClose = true;
     this.CNIC = this.data[0].TraineeCNIC;
+    this.Name = this.data[0].TraineeName;
+    this.TraineeCode = this.data[0].TraineeCode;
     this.CNICIssueDate = this.data[0].CNICIssueDate;
     this.ClassID = this.data[0].ClassID;
+    this.ClassCode = this.data[0].ClassCode;
+    this.SchemeName = this.data[0].SchemeName
     this.CNICNumber = "CNIC#:" + this.CNIC;
     console.log("dialog data");
     console.log(data);
@@ -198,7 +206,7 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
   CheckDeviceConnection(connection: string) {
     this.IsDeviceConnected = connection === "Up";
     console.log("Device Connection:" + connection);
-    if(connection === "Down") {
+    if (connection === "Down") {
       this.ComSrv.ShowError("Device Connection Lost", "Close", 5000);
       this.closeDialog();
     }
@@ -327,7 +335,7 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
       }
       if (this.gIsCaptureEnd) {
         await this.GetTemplateData(fingerPrintIndex);
-      } 
+      }
     } catch (error) {
       this.ComSrv.ShowError("getCaptureEnd HTTP request error:", error);
     }

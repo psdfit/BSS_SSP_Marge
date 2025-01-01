@@ -9,6 +9,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { MatDialog } from "@angular/material/dialog";
 import { EnumUserLevel } from "src/app/shared/Enumerations";
 import { BiometricAttendanceDialogComponent } from '../biometric-attendance-dialog/biometric-attendance-dialog.component';
+import { SearchFilter } from "src/app/shared/Interfaces";
 @Component({
   selector: 'app-trainee-attendance',
   templateUrl: './trainee-attendance.component.html',
@@ -16,7 +17,7 @@ import { BiometricAttendanceDialogComponent } from '../biometric-attendance-dial
 })
 export class TraineeAttendanceComponent implements OnInit {
   currentUser: any = {}
-  DeviceRegistration: any=[]
+  DeviceRegistration: any = []
   schemeArray: any;
   tspDetailArray: any;
   classesArray: any;
@@ -77,6 +78,8 @@ export class TraineeAttendanceComponent implements OnInit {
   noRecords: boolean;
   SaleGender: string = "Sales Tax Evidence"
 
+  filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.ComSrv.OID.value, SelectedColumns: [] };
+
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser);
@@ -84,7 +87,7 @@ export class TraineeAttendanceComponent implements OnInit {
     this.InitDeviceRegistrationForm();
     this.GetDeviceRegistration();
     this.getSchemesData(); // Fetch schemes on component load
-     this.PageTitle();
+    this.PageTitle();
     // Update class dropdown based on selected scheme
     this.schemeFilter.valueChanges.subscribe(value => {
       if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
@@ -181,7 +184,7 @@ export class TraineeAttendanceComponent implements OnInit {
     }
   }
   LoadMatTable(tableData: any[]) {
-    const excludeColumnArray: string[] = [];
+    const excludeColumnArray: string[] = ['RightIndexFinger', 'RightMiddleFinger', 'LeftIndexFinger', 'LeftMiddleFinger'];
     if (tableData.length > 0) {
       this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
       this.TablesData = new MatTableDataSource(tableData);
@@ -297,13 +300,13 @@ export class TraineeAttendanceComponent implements OnInit {
       if (response && response.length > 0) {
         this.DeviceRegistration = response;
 
-        const enrolledTrainees= this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Completed");
+        const enrolledTrainees = this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Completed");
         if (enrolledTrainees.length > 0) {
-          this.LoadMatTable(enrolledTrainees); 
-        }else{
+          this.LoadMatTable(enrolledTrainees);
+        } else {
           this.ComSrv.ShowWarning('No records found.', 'Close');
         }
-       // Load the response into the table
+        // Load the response into the table
       } else {
         this.ComSrv.ShowWarning('No device records found.', 'Close');
         this.noRecords = true
@@ -376,5 +379,5 @@ export class TraineeAttendanceComponent implements OnInit {
     this.ComSrv.setTitle(this.AcitveRoute.snapshot.data.title);
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
-  
+
 }

@@ -74,7 +74,7 @@
                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                <mat-cell *matCellDef="let row;let i = index">
 
-                  <ng-container *ngIf="column !== 'RequestDate' && column !== 'BiometricEnrollment' && column !== 'Sr#'">
+                  <ng-container *ngIf="column !== 'CreatedDate' && column !== 'BiometricEnrollment' && column !== 'Sr#'">
                      &nbsp;{{ row[column] }}
                   </ng-container>
 
@@ -95,7 +95,7 @@
 
                   </ng-container>
 
-                  <ng-container *ngIf="column == 'RequestDate'">
+                  <ng-container *ngIf="column == 'CreatedDate'">
                      &nbsp; {{row[column]|date}}
                   </ng-container>
 
