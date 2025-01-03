@@ -177,7 +177,7 @@ export class TraineeComponent implements OnInit {
       this.TraineeDoc.setValue('');
       this.TraineeDoc.setValidators([Validators.required]);
       this.TraineeDoc.updateValueAndValidity();
-    } else if(this.SchemeCode=="STV"){
+    } else if(this.SchemeCode=="STV" || this.SchemeCode=="ST25"){
       this.TraineeDoc.setValue('');
       this.TraineeDoc.setValidators([Validators.required]);
       this.TraineeDoc.updateValueAndValidity();
@@ -455,7 +455,7 @@ export class TraineeComponent implements OnInit {
   onEditTrainee(row) {
     //this.registrationError = '';
 
-    if(this.SchemeCode.toUpperCase()=="STV"){
+    if(this.SchemeCode.toUpperCase()=="STV" || this.SchemeCode.toUpperCase()=="ST25"){
       this.getTraineeGuru(row.TraineeID)
     }
     
@@ -468,7 +468,7 @@ export class TraineeComponent implements OnInit {
       (response: any[]) => {
         this.traineeProfileForm.patchValue(row);
         
-        if(this.SchemeCode.toUpperCase()=="STV" && this.traineeGuruDetailList.length>0){
+        if((this.SchemeCode.toUpperCase()=="STV" || this.SchemeCode.toUpperCase()=="ST25") && this.traineeGuruDetailList.length>0){
          const sTraineeGuru= this.traineeGuruDetailList.find(tg=>tg.TraineeID==row.TraineeID)
          if(sTraineeGuru){
           this.IsReferredByGuru.setValue(true)
@@ -695,7 +695,7 @@ export class TraineeComponent implements OnInit {
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
         }
-        if (scheme.SchemeCode == 'STV') {
+        if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25') {
           this.EDFScheme = true;
         }
         else if (scheme.FundingSourceID !== 12) //EDF Scheme

@@ -262,7 +262,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
     } catch (error) {
       this.CheckDeviceConnection("Down");
       this.ComSrv.ShowError("Please start BioMini Agent", "Close", 5000);
-      this.closeDialog();
+      // this.closeDialog();
     }
   }
   CheckDeviceConnection(connection: string) {
@@ -270,7 +270,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
     console.log("Device Connection:" + connection);
     if(connection === "Down") {
       this.ComSrv.ShowError("Device Connection Lost", "Close", 2000);
-      this.closeDialog();
+      // this.closeDialog();
     }
   }
   async AddScannerList(ScannerInfos: any[]) {
