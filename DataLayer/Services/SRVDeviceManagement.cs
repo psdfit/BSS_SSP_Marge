@@ -45,7 +45,7 @@ namespace DataLayer.Services
             return dt;
         }
 
-        public DataTable GetDeviceRegistration(int? registrationID)
+        public DataTable GetDeviceRegistration(int? registrationID, int? userID)
         {
             List<SqlParameter> param = new List<SqlParameter>();
             if (registrationID.HasValue)
@@ -57,25 +57,60 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@RegistrationID", DBNull.Value));
             }
 
+            // Add UserID filter if provided
+            if (userID.HasValue)
+            {
+                param.Add(new SqlParameter("@UserID", userID.Value));
+            }
+            else
+            {
+                param.Add(new SqlParameter("@UserID", DBNull.Value));
+            }
+
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_DVVDeviceRegistration", param.ToArray()).Tables[0];
             return dt;
         }
 
         public DataTable GetBiometricAttendanceTrainees(BiometricAttendanceTraineeModel model)
-{
-    List<SqlParameter> param = new List<SqlParameter>
-    {
-        new SqlParameter("@TraineeID", model.TraineeID ?? 0),
-        new SqlParameter("@SchemeID", model.SchemeID ?? 0),
-        new SqlParameter("@TspID", model.TspID ?? 0),
-        new SqlParameter("@ClassID", model.ClassID ?? 0),
-        new SqlParameter("@UserID", model.UserID ?? 0),
-    };
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+            {
+                new SqlParameter("@TraineeID", model.TraineeID ?? 0),
+                new SqlParameter("@SchemeID", model.SchemeID ?? 0),
+                new SqlParameter("@TspID", model.TspID ?? 0),
+                new SqlParameter("@ClassID", model.ClassID ?? 0),
+                new SqlParameter("@UserID", model.UserID ?? 0),
+            };
 
-    DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_DVVBiometricAttandanceTrainees", param.ToArray()).Tables[0];
-    return dt;
-}
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_DVVBiometricAttandanceTrainees", param.ToArray()).Tables[0];
+            return dt;
+        }
+        
+        public DataTable GetBiometricAttendanceOnRollTrainees(BiometricAttendanceTraineeModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+            {
+                new SqlParameter("@TraineeID", model.TraineeID ?? 0),
+                new SqlParameter("@SchemeID", model.SchemeID ?? 0),
+                new SqlParameter("@TspID", model.TspID ?? 0),
+                new SqlParameter("@ClassID", model.ClassID ?? 0),
+                new SqlParameter("@UserID", model.UserID ?? 0),
+            };
 
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_DVVBiometricAttendanceEnrolledTrainees", param.ToArray()).Tables[0];
+            return dt;
+        }
+
+        public DataTable GetTSPDetailsByClassID(int classID)
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+            {
+                new SqlParameter("@ClassID", classID)
+            };
+
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPDetailByClassID_DVV", param.ToArray()).Tables[0];
+            return dt;
+        }
     }
 
 }

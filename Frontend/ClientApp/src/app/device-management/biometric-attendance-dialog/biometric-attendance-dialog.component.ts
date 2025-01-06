@@ -64,6 +64,10 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   IsMarked: boolean=false
   templateData: any=""
   IsVerified: boolean=false
+  Name: any;
+  TraineeCode: any;
+  ClassCode: any;
+  SchemeName: any;
   constructor(
     private http: HttpClient,
     public dialog: MatDialog,
@@ -76,6 +80,14 @@ export class BiometricAttendanceDialogComponent implements OnInit {
     this.CNIC = this.data[0].TraineeCNIC;
     this.CNICIssueDate = this.data[0].CNICIssueDate;
     this.ClassID = this.data[0].ClassID;
+    this.CNICNumber = "CNIC#:" + this.CNIC;
+    this.CNIC = this.data[0].TraineeCNIC;
+    this.Name = this.data[0].TraineeName;
+    this.TraineeCode = this.data[0].TraineeCode;
+    this.CNICIssueDate = this.data[0].CNICIssueDate;
+    this.ClassID = this.data[0].ClassID;
+    this.ClassCode = this.data[0].ClassCode;
+    this.SchemeName = this.data[0].SchemeName
     this.CNICNumber = "CNIC#:" + this.CNIC;
     console.log("dialog data");
     console.log(data);

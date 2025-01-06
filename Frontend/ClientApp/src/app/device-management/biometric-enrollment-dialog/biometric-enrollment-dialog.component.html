@@ -8,6 +8,28 @@
 
 <!-- Main content area -->
 <mat-card-content>
+    <!-- Read-only fields for Trainee Name, CNIC, and Class Name -->
+    <div class="row ml-1 mr-1 mb-2">
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Trainee Name</mat-label>
+                <input matInput readonly [value]="Name" />
+            </mat-form-field>
+        </div>
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Trainee Code</mat-label>
+                <input matInput readonly [value]="TraineeCode" />
+            </mat-form-field>
+        </div>
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Class Code</mat-label>
+                <input matInput readonly [value]="ClassID" />
+            </mat-form-field>
+        </div>
+    </div>
+
     <div class="row ml-1 mr-1 mb-2">
         <!-- Biometric data display -->
         <div class="col-sm-7 border pb-2">

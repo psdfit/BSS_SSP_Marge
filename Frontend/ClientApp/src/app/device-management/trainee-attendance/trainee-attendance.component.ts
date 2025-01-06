@@ -9,6 +9,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { MatDialog } from "@angular/material/dialog";
 import { EnumUserLevel } from "src/app/shared/Enumerations";
 import { BiometricAttendanceDialogComponent } from '../biometric-attendance-dialog/biometric-attendance-dialog.component';
+import { SearchFilter } from "src/app/shared/Interfaces";
 @Component({
   selector: 'app-trainee-attendance',
   templateUrl: './trainee-attendance.component.html',
@@ -16,7 +17,7 @@ import { BiometricAttendanceDialogComponent } from '../biometric-attendance-dial
 })
 export class TraineeAttendanceComponent implements OnInit {
   currentUser: any = {}
-  DeviceRegistration: any=[]
+  DeviceRegistration: any = []
   schemeArray: any;
   tspDetailArray: any;
   classesArray: any;
@@ -74,9 +75,11 @@ export class TraineeAttendanceComponent implements OnInit {
   TableColumns = [];
   maxDate: Date;
   enumUserLevel = EnumUserLevel;
-
-
+  noRecords: boolean;
   SaleGender: string = "Sales Tax Evidence"
+
+  filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.ComSrv.OID.value, SelectedColumns: [] };
+
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser);
@@ -84,13 +87,27 @@ export class TraineeAttendanceComponent implements OnInit {
     this.InitDeviceRegistrationForm();
     this.GetDeviceRegistration();
     this.getSchemesData(); // Fetch schemes on component load
-     this.PageTitle();
+    this.PageTitle();
     // Update class dropdown based on selected scheme
     this.schemeFilter.valueChanges.subscribe(value => {
-      this.getClassesByTsp(value);
-      this.GetDeviceRegistration();
-
+      if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+        this.getDependantFilters();
+        this.GetDeviceRegistration();
+      } else {
+        this.getTSPDetailByScheme(value);
+        this.GetDeviceRegistration();
+      }
     });
+
+    this.classFilter.valueChanges.subscribe(value => {
+      if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+        this.getDependantFilters();
+        this.GetDeviceRegistration();
+      } else {
+        this.GetDeviceRegistration();
+      }
+    });
+
 
     // Optionally update tspFilter based on user level if needed
     if (this.currentUser.UserLevel !== this.enumUserLevel.TSP) {
@@ -167,7 +184,7 @@ export class TraineeAttendanceComponent implements OnInit {
     }
   }
   LoadMatTable(tableData: any[]) {
-    const excludeColumnArray: string[] = [];
+    const excludeColumnArray: string[] = ['RightIndexFinger', 'RightMiddleFinger', 'LeftIndexFinger', 'LeftMiddleFinger'];
     if (tableData.length > 0) {
       this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
       this.TablesData = new MatTableDataSource(tableData);
@@ -180,6 +197,7 @@ export class TraineeAttendanceComponent implements OnInit {
     this.SearchCls.setValue('');
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
+    this.SearchCls.setValue('');
   }
   ShowPreview(fileName: string) {
     this.ComSrv.PreviewDocument(fileName)
@@ -201,7 +219,6 @@ export class TraineeAttendanceComponent implements OnInit {
   }
 
 
-
   getClassesByTsp(tspId: number) {
     this.classFilter.setValue(0);
     this.ComSrv.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${tspId}`)
@@ -212,8 +229,19 @@ export class TraineeAttendanceComponent implements OnInit {
       });
   }
 
+  getClassesBySchemeFilter() {
+    this.filters.ClassID = 0;
+    this.filters.TraineeID = 0;
+    this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.schemeFilter.value}&UserID=${this.currentUser.UserID}`)
+      .subscribe(data => {
+        this.classesArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
+
   getSchemesData() {
-    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForTSR?OID=${this.ComSrv.OID.value}`)
+    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForGSR?OID=${this.ComSrv.OID.value}`)
       .subscribe((d: any) => {
         this.schemeArray = d.Schemes;
       }, error => this.error = error);
@@ -228,8 +256,24 @@ export class TraineeAttendanceComponent implements OnInit {
       });
   }
 
+  getTSPDetailByScheme(schemeId: number) {
+    this.tspFilter.setValue(0);
+    this.classFilter.setValue(0);
+    this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=${schemeId}`)
+      .subscribe(data => {
+        this.tspDetailArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
 
-
+  getDependantFilters() {
+    if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+      this.getClassesBySchemeFilter();
+    } else {
+      this.getTSPDetailByScheme(this.filters.SchemeID);
+    }
+  }
 
   paramObject: any = {}
   ExportReportName: string = ""
@@ -248,7 +292,7 @@ export class TraineeAttendanceComponent implements OnInit {
 
     try {
       this.IsDisabled = true; // Disable UI elements during API call
-      const endpoint = 'api/DeviceManagement/GetBiometricAttendanceTrainees'; // Replace with your API endpoint
+      const endpoint = 'api/DeviceManagement/GetBiometricAttendanceTrainees';
       const params = this.paramObject;
 
       const response: any = await this.ComSrv.postJSON(endpoint, params).toPromise();
@@ -256,15 +300,16 @@ export class TraineeAttendanceComponent implements OnInit {
       if (response && response.length > 0) {
         this.DeviceRegistration = response;
 
-        const enrolledTrainees= this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Completed");
+        const enrolledTrainees = this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Completed");
         if (enrolledTrainees.length > 0) {
-          this.LoadMatTable(enrolledTrainees); 
-        }else{
+          this.LoadMatTable(enrolledTrainees);
+        } else {
           this.ComSrv.ShowWarning('No records found.', 'Close');
         }
-       // Load the response into the table
+        // Load the response into the table
       } else {
         this.ComSrv.ShowWarning('No device records found.', 'Close');
+        this.noRecords = true
       }
     } catch (error) {
       this.ComSrv.ShowError('Failed to fetch device data. Please try again later.', 'error', 5000);
@@ -334,5 +379,5 @@ export class TraineeAttendanceComponent implements OnInit {
     this.ComSrv.setTitle(this.AcitveRoute.snapshot.data.title);
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
-  
+
 }

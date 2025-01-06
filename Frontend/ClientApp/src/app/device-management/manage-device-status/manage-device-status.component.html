@@ -25,7 +25,7 @@
             <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                <mat-cell *matCellDef="let row; let i = index">
-                  <ng-container *ngIf="column !== 'RequestDate' && column !== 'StatusRequest'">
+                  <ng-container *ngIf="column !== 'CreatedDate' && column !== 'StatusRequest'">
                      &nbsp;{{ row[column] }}
                   </ng-container>
                   <ng-container *ngIf="column === 'Sr#'">
@@ -42,7 +42,7 @@
                   <ng-container *ngIf="column === 'StatusRequest'">
                      &nbsp;{{ row[column] ? 'Active' : 'Deactive' }}
                   </ng-container>
-                  <ng-container *ngIf="column === 'RequestDate'">
+                  <ng-container *ngIf="column === 'CreatedDate'">
                      &nbsp;{{ row[column] | date }}
                   </ng-container>
                </mat-cell>
