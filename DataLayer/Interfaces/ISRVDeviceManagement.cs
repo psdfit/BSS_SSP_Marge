@@ -13,6 +13,7 @@ namespace DataLayer.Interfaces
        DataTable UpdateDeviceStatus(DeviceRegistrationModel Param);
        DataTable GetDeviceRegistration(int? registrationID, int? userID);
        DataTable GetBiometricAttendanceTrainees(BiometricAttendanceTraineeModel model);
+       DataTable GetBiometricAttendanceOnRollTrainees(BiometricAttendanceTraineeModel model);
        DataTable GetTSPDetailsByClassID(int classID);
 
     }

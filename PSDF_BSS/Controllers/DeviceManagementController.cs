@@ -115,6 +115,31 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest("Access Denied. You are not authorized for this activity.");
             }
         }
+        
+        [HttpPost]
+        [Route("GetBiometricAttendanceOnRollTrainees")]
+        public IActionResult GetBiometricAttendanceOnRollTrainees([FromBody] BiometricAttendanceTraineeModel model)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), Split[2], Split[3]);
+
+            if (IsAuthrized)
+            {
+                try
+                {
+                    var result = srvDeviceManagement.GetBiometricAttendanceOnRollTrainees(model);
+                    return Ok(result);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. You are not authorized for this activity.");
+            }
+        }
 
         [HttpGet]
         [Route("GetTSPDetailsByClassID")]

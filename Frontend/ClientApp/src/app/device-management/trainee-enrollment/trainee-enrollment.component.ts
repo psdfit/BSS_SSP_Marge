@@ -20,6 +20,7 @@ export class TraineeEnrollmentComponent implements OnInit {
   schemeArray: any;
   tspDetailArray: any;
   classesArray: any;
+  noRecords: boolean;
 
 
 
@@ -84,7 +85,7 @@ export class TraineeEnrollmentComponent implements OnInit {
     this.InitDeviceRegistrationForm();
     this.GetDeviceRegistration();
     this.getSchemesData(); // Fetch schemes on component load
-     this.PageTitle();
+    this.PageTitle();
     // Update class dropdown based on selected scheme
     this.schemeFilter.valueChanges.subscribe(value => {
       this.getClassesByTsp(value);
@@ -213,7 +214,7 @@ export class TraineeEnrollmentComponent implements OnInit {
   }
 
   getSchemesData() {
-    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForGSR?OID=${this.ComSrv.OID.value}`)
+    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForTSR?OID=${this.ComSrv.OID.value}`)
       .subscribe((d: any) => {
         this.schemeArray = d.Schemes;
       }, error => this.error = error);
@@ -246,9 +247,10 @@ export class TraineeEnrollmentComponent implements OnInit {
     };
     this.DeviceRegistration = [];
 
+
     try {
       this.IsDisabled = true; // Disable UI elements during API call
-      const endpoint = 'api/DeviceManagement/GetBiometricAttendanceTrainees'; // Replace with your API endpoint
+      const endpoint = 'api/DeviceManagement/GetBiometricAttendanceOnRollTrainees'; // Replace with your API endpoint
       const params = this.paramObject;
 
       const response: any = await this.ComSrv.postJSON(endpoint, params).toPromise();
@@ -257,18 +259,21 @@ export class TraineeEnrollmentComponent implements OnInit {
         this.DeviceRegistration = response;
 
         const draftTrainee = this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Pending");
-        if (draftTrainee .length > 0) {
-          this.LoadMatTable(draftTrainee ); 
-        }else{
+        if (draftTrainee.length > 0) {
+          this.LoadMatTable(draftTrainee);
+        } else {
           this.ComSrv.ShowWarning('No records found.', 'Close');
         }
-        
+        this.noRecords = false;
+
       } else {
         this.ComSrv.ShowWarning('No device records found.', 'Close');
+        this.noRecords = true;
       }
     } catch (error) {
       this.ComSrv.ShowError('Failed to fetch device data. Please try again later.', 'error', 5000);
       console.error('API call error:', error);
+      this.noRecords = true; // Ensure fallback in case of error
     } finally {
       this.IsDisabled = false; // Re-enable UI elements
     }
@@ -317,6 +322,7 @@ export class TraineeEnrollmentComponent implements OnInit {
       }
     });
   }
+
   getErrorMessage(errorKey: string, errorValue: any): string {
     const errorMessages = {
       required: 'This field is required.',
@@ -329,10 +335,9 @@ export class TraineeEnrollmentComponent implements OnInit {
     return errorMessages[errorKey];
   }
 
-
   PageTitle(): void {
     this.ComSrv.setTitle(this.AcitveRoute.snapshot.data.title);
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
-  
+
 }

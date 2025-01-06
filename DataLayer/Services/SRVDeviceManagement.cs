@@ -85,6 +85,21 @@ namespace DataLayer.Services
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_DVVBiometricAttandanceTrainees", param.ToArray()).Tables[0];
             return dt;
         }
+        
+        public DataTable GetBiometricAttendanceOnRollTrainees(BiometricAttendanceTraineeModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+            {
+                new SqlParameter("@TraineeID", model.TraineeID ?? 0),
+                new SqlParameter("@SchemeID", model.SchemeID ?? 0),
+                new SqlParameter("@TspID", model.TspID ?? 0),
+                new SqlParameter("@ClassID", model.ClassID ?? 0),
+                new SqlParameter("@UserID", model.UserID ?? 0),
+            };
+
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_DVVBiometricAttendanceEnrolledTrainees", param.ToArray()).Tables[0];
+            return dt;
+        }
 
         public DataTable GetTSPDetailsByClassID(int classID)
         {
