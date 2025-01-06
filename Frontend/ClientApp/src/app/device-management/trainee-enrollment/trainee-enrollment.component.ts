@@ -9,6 +9,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { MatDialog } from "@angular/material/dialog";
 import { EnumUserLevel } from "src/app/shared/Enumerations";
 import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
+import { SearchFilter } from "src/app/shared/Interfaces";
 @Component({
   selector: 'app-trainee-enrollment',
   templateUrl: './trainee-enrollment.component.html',
@@ -21,8 +22,6 @@ export class TraineeEnrollmentComponent implements OnInit {
   tspDetailArray: any;
   classesArray: any;
   noRecords: boolean;
-
-
 
   constructor(
     private Dialog: MatDialog,
@@ -76,6 +75,7 @@ export class TraineeEnrollmentComponent implements OnInit {
   maxDate: Date;
   enumUserLevel = EnumUserLevel;
 
+  filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.ComSrv.OID.value, SelectedColumns: [] };
 
   SaleGender: string = "Sales Tax Evidence"
   ngOnInit(): void {
@@ -88,10 +88,19 @@ export class TraineeEnrollmentComponent implements OnInit {
     this.PageTitle();
     // Update class dropdown based on selected scheme
     this.schemeFilter.valueChanges.subscribe(value => {
-      this.getClassesByTsp(value);
-      this.GetDeviceRegistration();
-
+      if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+        this.getDependantFilters();
+        this.GetDeviceRegistration();
+      } else {
+        this.getTSPDetailByScheme(value);
+        this.GetDeviceRegistration();
+      }
     });
+
+    this.classFilter.valueChanges.subscribe(value => {
+      this.GetDeviceRegistration();
+    });
+
 
     // Optionally update tspFilter based on user level if needed
     if (this.currentUser.UserLevel !== this.enumUserLevel.TSP) {
@@ -167,15 +176,21 @@ export class TraineeEnrollmentComponent implements OnInit {
       this.DeviceRegistrationForm.reset
     }
   }
+  
   LoadMatTable(tableData: any[]) {
     const excludeColumnArray: string[] = [];
     if (tableData.length > 0) {
+      // Set table columns and data source
       this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
       this.TablesData = new MatTableDataSource(tableData);
       this.TablesData.paginator = this.paginator;
       this.TablesData.sort = this.sort;
+    } else {
+      // Clear the table when no data
+      this.TablesData = new MatTableDataSource([]);
     }
   }
+  
 
   EmptyCtrl() {
     this.SearchCls.setValue('');
@@ -201,8 +216,6 @@ export class TraineeEnrollmentComponent implements OnInit {
     );
   }
 
-
-
   getClassesByTsp(tspId: number) {
     this.classFilter.setValue(0);
     this.ComSrv.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${tspId}`)
@@ -214,7 +227,7 @@ export class TraineeEnrollmentComponent implements OnInit {
   }
 
   getSchemesData() {
-    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForTSR?OID=${this.ComSrv.OID.value}`)
+    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForGSR?OID=${this.ComSrv.OID.value}`)
       .subscribe((d: any) => {
         this.schemeArray = d.Schemes;
       }, error => this.error = error);
@@ -229,14 +242,39 @@ export class TraineeEnrollmentComponent implements OnInit {
       });
   }
 
+  getClassesBySchemeFilter() {
+    this.filters.ClassID = 0;
+    this.filters.TraineeID = 0;
+    this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.schemeFilter.value}&UserID=${this.currentUser.UserID}`)
+      .subscribe(data => {
+        this.classesArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
 
+  getTSPDetailByScheme(schemeId: number) {
+    this.tspFilter.setValue(0);
+    this.classFilter.setValue(0);
+    this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=${schemeId}`)
+      .subscribe(data => {
+        this.tspDetailArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
 
+  getDependantFilters() {
+    if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+      this.getClassesBySchemeFilter();
+    } else {
+      this.getTSPDetailByScheme(this.filters.SchemeID);
+    }
+  }
 
   paramObject: any = {}
   ExportReportName: string = ""
   SPName: string = ""
-
-
 
   async GetDeviceRegistration() {
     this.SPName = "RD_DVVDeviceRegistration";
@@ -246,7 +284,6 @@ export class TraineeEnrollmentComponent implements OnInit {
       ClassID: this.classFilter.value || 0,
     };
     this.DeviceRegistration = [];
-
 
     try {
       this.IsDisabled = true; // Disable UI elements during API call
@@ -261,19 +298,20 @@ export class TraineeEnrollmentComponent implements OnInit {
         const draftTrainee = this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Pending");
         if (draftTrainee.length > 0) {
           this.LoadMatTable(draftTrainee);
+          this.noRecords = false;
         } else {
           this.ComSrv.ShowWarning('No records found.', 'Close');
+          this.noRecords = true;
         }
-        this.noRecords = false;
-
       } else {
-        this.ComSrv.ShowWarning('No device records found.', 'Close');
+        this.ComSrv.ShowWarning('No Trainees available for Enrollment.', 'Close');
         this.noRecords = true;
       }
     } catch (error) {
       this.ComSrv.ShowError('Failed to fetch device data. Please try again later.', 'error', 5000);
       console.error('API call error:', error);
       this.noRecords = true; // Ensure fallback in case of error
+      this.LoadMatTable([]); // Empty table for errors
     } finally {
       this.IsDisabled = false; // Re-enable UI elements
     }
@@ -288,7 +326,6 @@ export class TraineeEnrollmentComponent implements OnInit {
       } else {
         if (SPName != 'RD_SSPTSPAssociationSubmission') {
           this.ComSrv.ShowWarning(' No Record Found', 'Close');
-
         }
       }
     } catch (error) {
@@ -308,7 +345,6 @@ export class TraineeEnrollmentComponent implements OnInit {
 
   OpenDialogue(row, DeviceStatus) {
     const data = [row, DeviceStatus];
-
     // const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {
     const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {
       width: '50%',
@@ -339,5 +375,4 @@ export class TraineeEnrollmentComponent implements OnInit {
     this.ComSrv.setTitle(this.AcitveRoute.snapshot.data.title);
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
-
 }

@@ -69,35 +69,50 @@
             <i class="fas fa-file-export"></i> Export Excel</button>
       </mat-toolbar>
       <div class="table-responsive">
-         
-         <mat-table [dataSource]="TablesData" matSort>
-            <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
-               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
-               <mat-cell *matCellDef="let row;let i = index">
+         <!-- Display message when no records are found -->
+         <div class="no-records" *ngIf="noRecords">
+            <p>No records found.</p>
+         </div>
 
-                  <ng-container *ngIf="column !== 'RequestDate' && column !== 'BiometricEnrollment' && column !== 'Sr#'">
-                     &nbsp;{{ row[column] }}
-                  </ng-container>
-                  <ng-container *ngIf="column == 'Sr#'">
-                     &nbsp; {{i+1}}
-                  </ng-container>
-                  <ng-container *ngIf="column == 'BiometricEnrollment'">
-                     <ng-container *ngIf="row['BiometricEnrollment'] == 'Pending'">
-                        <a  color="primary" mat-button (click)="activationRequest(row)"> <i class="fas fa-fingerprint"></i> Enroll Trainee</a>
+         <!-- Table rendering -->
+         <ng-container *ngIf="!noRecords && TablesData.data.length > 0">
+            <mat-table [dataSource]="TablesData" matSort>
+               <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>
+                     {{ camelCaseToWords(column) }}
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let row; let i = index">
+                     <ng-container
+                        *ngIf="column !== 'RequestDate' && column !== 'BiometricEnrollment' && column !== 'Sr#'">
+                        &nbsp;{{ row[column] }}
                      </ng-container>
-                     <ng-container *ngIf="row['BiometricEnrollment'] == 'Completed'">
-                        <a  color="accent" mat-button> <i class="fas fa-check"></i>Enrolled</a>
+                     <ng-container *ngIf="column == 'Sr#'">
+                        &nbsp; {{ i + 1 }}
                      </ng-container>
-                  </ng-container>
-                  <ng-container *ngIf="column == 'RequestDate'">
-                     &nbsp; {{row[column]|date}}
-                  </ng-container>
-               </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
-         </mat-table>
-         <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+                     <ng-container *ngIf="column == 'BiometricEnrollment'">
+                        <ng-container *ngIf="row['BiometricEnrollment'] == 'Pending'">
+                           <a color="primary" mat-button (click)="activationRequest(row)">
+                              <i class="fas fa-fingerprint"></i> Enroll Trainee
+                           </a>
+                        </ng-container>
+                        <ng-container *ngIf="row['BiometricEnrollment'] == 'Completed'">
+                           <a color="accent" mat-button>
+                              <i class="fas fa-check"></i>Enrolled
+                           </a>
+                        </ng-container>
+                     </ng-container>
+                     <ng-container *ngIf="column == 'RequestDate'">
+                        &nbsp; {{ row[column] | date }}
+                     </ng-container>
+                  </mat-cell>
+               </ng-container>
+               <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+               <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+            </mat-table>
+         </ng-container>
+
+         <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
       </div>
+
    </mat-card-content>
 </mat-card>
