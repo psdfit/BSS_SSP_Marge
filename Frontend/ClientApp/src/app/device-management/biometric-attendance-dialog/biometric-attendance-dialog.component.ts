@@ -105,30 +105,115 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.fingerprintForm.controls["AttendanceType"].setValue("CheckOut");
     }
   }
-  async ngOnInit() {
-    await this.InitPage();
-    await this.Init();
+
+  verifyImpression(){
+    const fingerprintImpression=['RightIndexFinger','RightMiddleFinger','LeftIndexFinger','LeftMiddleFinger'];
+    fingerprintImpression.forEach((fingerprint)=>{
+      if(this.fingerprintForm.controls[fingerprint].value){
+        this.CaptureSingle(fingerprint);
+      }
+    });
+}
+  ngOnInit() {
+    this.disableAllCheckboxes();
+    this.InitPage();
   }
-  async onCheckboxChange(event: any, fingerPrintIndex: string) {
-    if (this.isProcessing) {
-      return; // Prevent further interaction while processing
+
+
+
+   async InitPage() {
+    try {
+      this.pageID = Math.random();
+      const url = `${this.urlStr}/api/createSessionID`;
+      const params = new HttpParams().set("dummy", Math.random().toString());
+      const headers = new HttpHeaders({"Content-Type": "application/json; charset=utf-8", });
+      const msg: any = await this.http.get(url, { headers, params }).toPromise();
+      if (msg && msg.sessionId) {
+        const expires = new Date(Date.now() + 60 * 60 * 1000);
+        document.cookie = `username=${msg.sessionId}; expires=${expires.toUTCString()}`;
+        this.Init();
+      }
+
+    } catch (error) {
+      this.CheckDeviceConnection("Down");
     }
-    if (event.checked) {
-      this.disableAllCheckboxes();
-      this.isProcessing = true; // Mark processing as true
-      // Simulate async capture
-      this.VerifyWithTemplate(fingerPrintIndex);
-      setTimeout(() => {
-        this.isProcessing = false; // Mark processing as false
+  }
+
+
+   async Init() {
+     try {
+    const url = `${this.urlStr}/api/initDevice`;
+    const params = new HttpParams().set("dummy", Math.random().toString());
+    const headers = new HttpHeaders({ "Content-Type": "application/json" });
+    const requestOptions = {
+      headers,
+      withCredentials: true,
+      crossDomain: true,
+    };
+      const msg: any = await this.http
+        .get(`${url}?dummy=${params}`, requestOptions)
+        .toPromise();
+      if (msg.retValue == 0) {
+        this.CheckDeviceConnection("Up");
+        if (msg.ScannerInfos) {
+          this.deviceInfos = msg.ScannerInfos;
+          this.AddScannerList(this.deviceInfos);
+        }
         this.enableAllCheckboxes();
-      }, 2000);
-    } else {
-      this.traineeBiometricData = this.traineeBiometricData.filter(
-        (object) => object.fingerPrintIndex !== fingerPrintIndex
-      );
+        this.CheckStatusLoop();
+        this.SendParameter();
+      } else {
+        this.CheckDeviceConnection("Down");
+      }
+    } catch (error) {
+      this.CheckDeviceConnection("Down");
     }
-    console.log("Selected Checkbox Data:", this.traineeBiometricData);
   }
+
+
+  
+
+  CheckDeviceConnection(connection: string) {
+    
+    this.IsDeviceConnected = connection === "Up";
+    console.log("Device Connection:" + connection);
+    if (connection === "Down") {
+      this.ComSrv.ShowError("Please plug suprema device and start web-BioMini Agent ", "Close", 5000);
+      this.closeDialog();
+    }
+  }
+
+
+   SendParameter() {
+    if (!this.isExistScannerHandle()) {
+      this.ComSrv.ShowError("Scanner Init First");
+      return;
+    }
+    const url = `${this.urlStr}/api/setParameters`;
+    const params = new HttpParams()
+      .set("dummy", Math.random().toString())
+      .set("sHandle", this.deviceInfos[0]?.DeviceHandle)
+      .set("brightness", "100")
+      .set("fastmode", "1")
+      .set("securitylevel", "4")
+      .set("sensitivity", "7")
+      .set("timeout", "5")
+      .set("templateType","2002")
+      .set("fakeLevel", "0")
+      .set("detectFakeAdvancedMode", "0");
+    const headers = new HttpHeaders().set("Content-Type", "application/json");
+    const requestOptions = { params, headers };
+    try {
+      const response: any = this.http
+        .get(url, requestOptions)
+        .toPromise();
+      console.log("set parameters response");
+      console.log(response);
+    } catch (error) {
+      console.error("Error setting parameters:", error);
+    }
+  }
+
   disableAllCheckboxes() {
     Object.keys(this.fingerprintForm.controls).forEach((key) => {
       this.fingerprintForm.controls[key].disable();
@@ -227,64 +312,8 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.ComSrv.ShowError("Error Saving Biometric Data");
     }
   }
-  async InitPage() {
-    this.pageID = Math.random();
-    try {
-      const url = `${this.urlStr}/api/createSessionID`;
-      const params = new HttpParams().set("dummy", Math.random().toString());
-      const headers = new HttpHeaders({
-        "Content-Type": "application/json; charset=utf-8",
-      });
-      const msg: any = await this.http
-        .get(url, { headers, params })
-        .toPromise();
-      if (msg && msg.sessionId) {
-        const expires = new Date(Date.now() + 60 * 60 * 1000);
-        document.cookie = `username=${msg.sessionId
-          }; expires=${expires.toUTCString()}`;
-      }
-    } catch (error) {
-      this.CheckDeviceConnection("Down");
-      this.ComSrv.ShowError("BioMini Agent is not started", "Close", 5000);
-    }
-  }
-  async Init() {
-    const url = `${this.urlStr}/api/initDevice`;
-    const params = new HttpParams().set("dummy", Math.random().toString());
-    const headers = new HttpHeaders({ "Content-Type": "application/json" });
-    const requestOptions = {
-      headers,
-      withCredentials: true,
-      crossDomain: true,
-    };
-    try {
-      const msg: any = await this.http
-        .get(`${url}?dummy=${params}`, requestOptions)
-        .toPromise();
-      if (msg.retValue == 0) {
-        this.CheckDeviceConnection("Up");
-        if (msg.ScannerInfos) {
-          this.deviceInfos = msg.ScannerInfos;
-          this.AddScannerList(this.deviceInfos);
-        }
-        this.CheckStatusLoop();
-      } else {
-        this.CheckDeviceConnection("Down");
-      }
-    } catch (error) {
-      this.CheckDeviceConnection("Down");
-      this.ComSrv.ShowError("Please start BioMini Agent", "Close", 5000);
-      // this.closeDialog();
-    }
-  }
-  CheckDeviceConnection(connection: string) {
-    this.IsDeviceConnected = connection === "Up";
-    console.log("Device Connection:" + connection);
-    if(connection === "Down") {
-      this.ComSrv.ShowError("Device Connection Lost", "Close", 2000);
-      // this.closeDialog();
-    }
-  }
+  
+
   async AddScannerList(ScannerInfos: any[]) {
     let count = -1;
     ScannerInfos.forEach((scannerInfo) => {
@@ -463,7 +492,6 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.ComSrv.ShowError("Scanner Init First");
       return;
     }
-    await this.SendParameter(2002);
     const url = `${this.urlStr}/api/getTemplateData`;
     const queryParams = new HttpParams()
       .set("dummy", Math.random().toString())
@@ -525,34 +553,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.ComSrv.ShowError("Error fetching image data:", error);
     }
   }
-  async SendParameter(TemplateType: number) {
-    if (!this.isExistScannerHandle()) {
-      this.ComSrv.ShowError("Scanner Init First");
-      return;
-    }
-    const url = `${this.urlStr}/api/setParameters`;
-    const params = new HttpParams()
-      .set("dummy", Math.random().toString())
-      .set("sHandle", this.deviceInfos[0]?.DeviceHandle)
-      .set("brightness", "100")
-      .set("securitylevel", "2")
-      .set("sensitivity", "7")
-      .set("timeout", "2")
-      .set("templateType", TemplateType.toString())
-      .set("fakeLevel", "0")
-      .set("detectFakeAdvancedMode", "0");
-    const headers = new HttpHeaders().set("Content-Type", "application/json");
-    const requestOptions = { params, headers };
-    try {
-      const response: any = await this.http
-        .get(url, requestOptions)
-        .toPromise();
-      console.log("set parameters response");
-      console.log(response);
-    } catch (error) {
-      console.error("Error setting parameters:", error);
-    }
-  }
+ 
   IsIEbrowser(): boolean {
     const browser = window.navigator.userAgent.toLowerCase();
     return (
