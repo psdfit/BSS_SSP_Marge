@@ -98,7 +98,7 @@ export class DeviceRegistrationComponent implements OnInit {
   maxDate: Date;
   SaleGender: string = "Sales Tax Evidence"
   TSPNames: string[];
-  TSPLocations: string[];
+  TSPLocations: any[];
   DeviceTypes: string[];
 
   schemeArray: any;
@@ -154,7 +154,15 @@ export class DeviceRegistrationComponent implements OnInit {
   SaveFormData() {
     this.IsDisabled = true
     if (this.DeviceRegistrationForm.valid) {
-      this.http.postJSON('api/DeviceManagement/Save', this.DeviceRegistrationForm.getRawValue()).subscribe(
+      // Prepare payload with additional IDs
+      const payload = {
+        ...this.DeviceRegistrationForm.value,
+        SchemeID: this.schemeFilter.value,
+        ClassID: this.classFilter.value,
+        TSPID: this.TSPLocations[0].TSPID,
+      };
+
+      this.http.postJSON('api/DeviceManagement/Save', payload).subscribe(
         (response: any[]) => {
           this.DeviceRegistrationForm.reset()
           this.InitDeviceRegistrationForm()

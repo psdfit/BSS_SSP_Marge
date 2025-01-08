@@ -137,7 +137,6 @@
             <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
          </mat-table>
-
          <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
       </div>
    </mat-card-content>

@@ -68,7 +68,7 @@ namespace PSDF_BSSMaster.Controllers
 
         [HttpGet]
         [Route("GetDeviceRegistration")]
-        public IActionResult GetDeviceRegistration([FromQuery] int? registrationID = null, [FromQuery] int? userID = null)
+        public IActionResult GetDeviceRegistration([FromQuery] int? registrationID = null, [FromQuery] int? userID = null, [FromQuery] int? SchemeID = null, [FromQuery] int? TSPID = null, [FromQuery] int? ClassID = null)
         {
             string[] Split = HttpContext.Request.Path.Value.Split("/");
             bool IsAuthrized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), Split[2], Split[3]);
@@ -76,7 +76,7 @@ namespace PSDF_BSSMaster.Controllers
             {
                 try
                 {
-                    var result = srvDeviceManagement.GetDeviceRegistration(registrationID, userID);
+                    var result = srvDeviceManagement.GetDeviceRegistration(registrationID, userID, SchemeID, TSPID, ClassID );
                     return Ok(result);
                 }
                 catch (Exception e)
