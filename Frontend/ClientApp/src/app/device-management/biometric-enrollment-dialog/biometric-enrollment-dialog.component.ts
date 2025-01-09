@@ -173,7 +173,7 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
       .set("fastmode", "1")
       .set("securitylevel", "4")
       .set("sensitivity", "7")
-      .set("timeout", "5")
+      .set("timeout", "3")
       .set("templateType","2002")
       .set("fakeLevel", "0")
       .set("detectFakeAdvancedMode", "0");
@@ -202,7 +202,7 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
     clearTimeout(this.aLoopflag);
     this.gPreviewFaileCount = 0;
     this.printLfdFlag = false;
-    this.ComSrv.ShowError("Placed your Finger on Camera", "Close", 5000);
+    this.ComSrv.ShowError("Placed your Finger on Camera", "Close", 3000);
     const delayVal = 30000;
       const url = `${this.urlStr}/api/captureSingle`;
       const queryParams = new HttpParams()
@@ -452,9 +452,9 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
         if (response.templateBase64) {
           this.TemplateImgData = response.templateBase64;
         }
-        // const sessionData = `&shandle=${this.deviceInfos[0]?.DeviceHandle}&id=${this.pageID}`;
+        const sessionData = `&shandle=${this.deviceInfos[0]?.DeviceHandle}&id=${this.pageID}`;
         if (this.gIsCaptureEnd) {
-          // this.imgUrl = `${this.urlStr}/img/CaptureImg.bmp?dummy=${Math.random()}${sessionData}`;
+          this.imgUrl = `${this.urlStr}/img/CaptureImg.bmp?dummy=${Math.random()}${sessionData}`;
           // if (fingerPrintIndex && this.TemplateImgData && this.imgUrl) {
           if (fingerPrintIndex && this.TemplateImgData) {
             // Check if an object with the same `fingerPrintIndex` exists
@@ -466,6 +466,7 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
               this.traineeBiometricData[existingIndex] = {
                 fingerPrintIndex,
                 Template: this.TemplateImgData,
+                // ImgUrl: '../../../assets/fingerprint.jpg',
                 ImgUrl: this.imgUrl,
               };
             } else {
@@ -473,8 +474,8 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
               this.traineeBiometricData.push({
                 fingerPrintIndex,
                 Template: this.TemplateImgData,
-                ImgUrl: '../../../assets/fingerprint.jpg',
-                // ImgUrl: this.imgUrl,
+                // ImgUrl: '../../../assets/fingerprint.jpg',
+                ImgUrl: this.imgUrl,
               });
             }
           } else {
@@ -505,6 +506,14 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
       browser.indexOf("edge") !== -1
     );
   }
+
+  ngOnDestroy(): void {
+    if (this.statusLoopSubscription) {
+      this.statusLoopSubscription.unsubscribe();
+    }
+    
+    }
+
   closeDialog() {
     if (this.statusLoopSubscription) {
       this.statusLoopSubscription.unsubscribe();

@@ -5,6 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { interval, Subscription } from "rxjs";
 import { CommonSrvService } from "src/app/common-srv.service";
 import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import { tr } from "date-fns/locale";
 @Component({
   selector: "app-biometric-attendance-dialog",
   templateUrl: "./biometric-attendance-dialog.component.html",
@@ -25,8 +26,8 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   error: any;
   screenWidth: any;
   requestData: { Fingerprint: any; Index: number; CNIC: string };
-  
-  imgUrl ="https://miro.medium.com/v2/resize:fit:679/1*9EBHIOzhE1XfMYoKz1JcsQ.gif";
+  imgUrl =
+    "https://miro.medium.com/v2/resize:fit:679/1*9EBHIOzhE1XfMYoKz1JcsQ.gif";
   TemplateImgData: any;
   Token: any;
   urlStr = "https://localhost";
@@ -53,7 +54,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   LoanId: any;
   myInterval: any;
   modalBio: any;
-  IsDeviceConnected = true;
+  IsDeviceConnected = false;
   selectedIndex: any = 0;
   selectedConnection: any;
   statusLoopSubscription: Subscription | undefined;
@@ -61,13 +62,14 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   traineeBiometricData: any[] = [];
   fingerprintForm: FormGroup;
   isProcessing = false; // Tracks whether a request is ongoing
-  IsMarked: boolean=false
-  templateData: any=""
-  IsVerified: boolean=false
+  IsMarked: boolean = false;
+  templateData: any = "";
+  IsVerified: boolean = false;
   Name: any;
   TraineeCode: any;
   ClassCode: any;
   SchemeName: any;
+  isProcessingEnd: boolean = false
   constructor(
     private http: HttpClient,
     public dialog: MatDialog,
@@ -87,7 +89,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
     this.CNICIssueDate = this.data[0].CNICIssueDate;
     this.ClassID = this.data[0].ClassID;
     this.ClassCode = this.data[0].ClassCode;
-    this.SchemeName = this.data[0].SchemeName
+    this.SchemeName = this.data[0].SchemeName;
     this.CNICNumber = "CNIC#:" + this.CNIC;
     console.log("dialog data");
     console.log(data);
@@ -98,58 +100,208 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       LeftMiddleFinger: [false],
       AttendanceType: ["CheckIn"],
     });
-
-    if(this.data[0].CheckedIn=="Not Checked In"){
+    if (this.data[0].CheckedIn == "Not Checked In") {
       this.fingerprintForm.controls["AttendanceType"].setValue("CheckIn");
-    }else{
+    } else {
       this.fingerprintForm.controls["AttendanceType"].setValue("CheckOut");
     }
   }
-
-  verifyImpression(){
-    const fingerprintImpression=['RightIndexFinger','RightMiddleFinger','LeftIndexFinger','LeftMiddleFinger'];
-    fingerprintImpression.forEach((fingerprint)=>{
-      if(this.fingerprintForm.controls[fingerprint].value){
-        this.CaptureSingle(fingerprint);
+  async verifyImpression() {
+    const fingerprintImpressions = [
+      "RightIndexFinger",
+      "RightMiddleFinger",
+      "LeftIndexFinger",
+      "LeftMiddleFinger",
+    ];
+    this.isProcessingEnd = true;
+    this.ComSrv.ShowWarning("Placed your Finger on Camera.", "Close", 10000);
+    for (const fingerprint of fingerprintImpressions) {
+      const isVerified = await this.VerifyWithTemplate(fingerprint);
+      if (isVerified) {
+        console.log(`Fingerprint ${fingerprint} verified successfully.`);
+        this.ComSrv.ShowWarning("Attendance is marked", "Close", 1000);
+        break; // Exit the loop if verification is successful
       }
-    });
-}
+    }
+    
+
+    this.isProcessingEnd = false;
+
+    this.ComSrv.ShowError(`Verification Failed. Please use an other registered finger.`, "Close", 5000);
+    console.log("Fingerprint form value: ", this.fingerprintForm.value);
+  }
+  async onCheckboxChange(event:any,fingerPrintIndex: string): Promise<boolean> {
+    console.timeStamp(fingerPrintIndex);
+    try {
+      const isVerified = await this.VerifyWithTemplate(fingerPrintIndex);
+      this.isProcessingEnd = true;
+      return isVerified; // Return verification status
+    } catch (error) {
+      console.error("Error during test for fingerprint:", fingerPrintIndex, error);
+      return false;
+    } finally {
+      console.timeEnd(fingerPrintIndex);
+    }
+  }
+  async VerifyWithTemplate(fingerPrintIndex: string): Promise<boolean> {
+    if (!this.isExistScannerHandle()) {
+      this.ComSrv.ShowError("Scanner Init First");
+      return false;
+    }
+    this.templateData = this.data[0][fingerPrintIndex];
+    const templateLength = this.templateData.length;
+    const url = `${this.urlStr}/db/verifyTemplate`;
+    const cb_EncryptOpt = 0;
+    const txt_EncryptKey = "";
+    const extractEx = 0;
+    const qualityLevel = 1;
+    const queryParams = new HttpParams()
+      .set("dummy", Math.random().toString())
+      .set("sHandle", this.deviceInfos[0]?.DeviceHandle)
+      .set("id", this.pageID.toString())
+      .set("tempLen", templateLength.toString())
+      .set("tempData", this.templateData)
+      .set("securitylevel", "4")
+      .set("templateType", "2002")
+      .set("encrypt", cb_EncryptOpt.toString())
+      .set("encryptKey", txt_EncryptKey)
+      .set("extractEx", extractEx.toString())
+      .set("qualityLevel", qualityLevel.toString());
+    const headers = new HttpHeaders().set("Content-Type", "application/json");
+    const requestOptions = {
+      params: queryParams,
+      headers: headers,
+    };
+    try {
+      const response: any = await this.http.get(url, requestOptions).toPromise();
+      if (response.retVerify === "Success") {
+        this.IsVerified = true;
+        this.IsMarked = true;
+        console.log(`Verification succeeded for ${fingerPrintIndex}`);
+        await this.saveBiometricData();
+        return true; // Verification successful
+      } 
+      // else {
+      //   this.ComSrv.ShowError(
+      //     `Verification Failed. Please use [${this.camelCaseToWords(
+      //       fingerPrintIndex
+      //     )}] index.`,
+      //     "Close",
+      //     7000
+      //   );
+      // }
+      return false; // Verification failed
+    } catch (error) {
+      this.ComSrv.ShowError("Error verifying finger impression:");
+      console.error(error);
+      return false;
+    }
+  }
+  // async verifyImpression() {
+  //   const fingerprintImpressions = [
+  //     "RightIndexFinger",
+  //     "RightMiddleFinger",
+  //     "LeftIndexFinger",
+  //     "LeftMiddleFinger",
+  //   ];
+  //   for (const fingerprint of fingerprintImpressions) {
+  //     await this.test(fingerprint);
+  //   }
+  //   console.log("Fingerprint form value: " + this.fingerprintForm.value);
+  // }
+  // async test(fingerPrintIndex) {
+  //   console.timeStamp(fingerPrintIndex);
+  //   await new Promise(resolve => this.VerifyWithTemplate(fingerPrintIndex));
+  //    this.isProcessingEnd=true;
+  //   console.timeEnd(fingerPrintIndex);
+  // }
+  // async VerifyWithTemplate(fingerPrintIndex: string) {
+  //   if (this.isExistScannerHandle() == false) {
+  //     this.ComSrv.ShowError("Scanner Init First");
+  //     return;
+  //   }
+  //   this.templateData = this.data[0][fingerPrintIndex];
+  //   var templateLength = this.templateData.length;
+  //   const url = `${this.urlStr}/db/verifyTemplate`;
+  //   const cb_EncryptOpt = 0;
+  //   const txt_EncryptKey = "";
+  //   const extractEx = 0;
+  //   const qualityLevel = 1; //none
+  //   const queryParams = new HttpParams()
+  //     .set("dummy", Math.random().toString())
+  //     .set("sHandle", this.deviceInfos[0]?.DeviceHandle)
+  //     .set("id", this.pageID.toString())
+  //     .set("tempLen", templateLength.toString())
+  //     .set("tempData", this.templateData)
+  //     .set("securitylevel", "2")
+  //     .set("templateType", "2002")
+  //     .set("encrypt", cb_EncryptOpt.toString())
+  //     .set("encryptKey", txt_EncryptKey)
+  //     .set("extractEx", extractEx.toString())
+  //     .set("qualityLevel", qualityLevel.toString());
+  //   const headers = new HttpHeaders().set("Content-Type", "application/json");
+  //   const requestOptions = {
+  //     params: queryParams,
+  //     headers: headers,
+  //   };
+  //   try {
+  //     const response: any = await this.http
+  //       .get(url, requestOptions)
+  //       .toPromise();
+  //     this.IsVerified = response.retVerify == "Success" ? true : false;
+  //     if (response.retVerify == "Success") {
+  //       this.IsMarked = true;
+  //       if (this.IsMarked) {
+  //         this.saveBiometricData();
+  //       }
+  //     } else {
+  //       this.ComSrv.ShowError(
+  //         "Verification Failed.Please use [ " +
+  //           this.camelCaseToWords(fingerPrintIndex) +
+  //           " ] index",
+  //         "Close",
+  //         7000
+  //       );
+  //     }
+  //   } catch (error) {
+  //     this.ComSrv.ShowError("Error verifying finger impression:");
+  //   }
+  // }
   ngOnInit() {
     this.disableAllCheckboxes();
     this.InitPage();
   }
-
-
-
-   async InitPage() {
+  async InitPage() {
     try {
       this.pageID = Math.random();
       const url = `${this.urlStr}/api/createSessionID`;
       const params = new HttpParams().set("dummy", Math.random().toString());
-      const headers = new HttpHeaders({"Content-Type": "application/json; charset=utf-8", });
-      const msg: any = await this.http.get(url, { headers, params }).toPromise();
+      const headers = new HttpHeaders({
+        "Content-Type": "application/json; charset=utf-8",
+      });
+      const msg: any = await this.http
+        .get(url, { headers, params })
+        .toPromise();
       if (msg && msg.sessionId) {
         const expires = new Date(Date.now() + 60 * 60 * 1000);
-        document.cookie = `username=${msg.sessionId}; expires=${expires.toUTCString()}`;
+        document.cookie = `username=${msg.sessionId
+          }; expires=${expires.toUTCString()}`;
         this.Init();
       }
-
     } catch (error) {
       this.CheckDeviceConnection("Down");
     }
   }
-
-
-   async Init() {
-     try {
-    const url = `${this.urlStr}/api/initDevice`;
-    const params = new HttpParams().set("dummy", Math.random().toString());
-    const headers = new HttpHeaders({ "Content-Type": "application/json" });
-    const requestOptions = {
-      headers,
-      withCredentials: true,
-      crossDomain: true,
-    };
+  async Init() {
+    try {
+      const url = `${this.urlStr}/api/initDevice`;
+      const params = new HttpParams().set("dummy", Math.random().toString());
+      const headers = new HttpHeaders({ "Content-Type": "application/json" });
+      const requestOptions = {
+        headers,
+        withCredentials: true,
+        crossDomain: true,
+      };
       const msg: any = await this.http
         .get(`${url}?dummy=${params}`, requestOptions)
         .toPromise();
@@ -169,22 +321,19 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.CheckDeviceConnection("Down");
     }
   }
-
-
-  
-
   CheckDeviceConnection(connection: string) {
-    
     this.IsDeviceConnected = connection === "Up";
     console.log("Device Connection:" + connection);
     if (connection === "Down") {
-      this.ComSrv.ShowError("Please plug suprema device and start web-BioMini Agent ", "Close", 5000);
+      this.ComSrv.ShowError(
+        "Please start Suprema device and web-BioMini Agent ",
+        "Close",
+        7000
+      );
       this.closeDialog();
     }
   }
-
-
-   SendParameter() {
+  SendParameter() {
     if (!this.isExistScannerHandle()) {
       this.ComSrv.ShowError("Scanner Init First");
       return;
@@ -197,23 +346,20 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       .set("fastmode", "1")
       .set("securitylevel", "4")
       .set("sensitivity", "7")
-      .set("timeout", "5")
-      .set("templateType","2002")
+      .set("timeout", "3")
+      .set("templateType", "2002")
       .set("fakeLevel", "0")
       .set("detectFakeAdvancedMode", "0");
     const headers = new HttpHeaders().set("Content-Type", "application/json");
     const requestOptions = { params, headers };
     try {
-      const response: any = this.http
-        .get(url, requestOptions)
-        .toPromise();
+      const response: any = this.http.get(url, requestOptions).toPromise();
       console.log("set parameters response");
       console.log(response);
     } catch (error) {
       console.error("Error setting parameters:", error);
     }
   }
-
   disableAllCheckboxes() {
     Object.keys(this.fingerprintForm.controls).forEach((key) => {
       this.fingerprintForm.controls[key].disable();
@@ -227,71 +373,15 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   camelCaseToWords(input: string): string {
     return input.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
-  async VerifyWithTemplate(fingerPrintIndex: string) {
-    debugger;
-    if (this.isExistScannerHandle() == false) {
-      this.ComSrv.ShowError("Scanner Init First");
-      return;
-    }
- 
-  
-     this.templateData =this.data[0][fingerPrintIndex];
-    var templateLength = this.templateData.length;
-    const url = `${this.urlStr}/db/verifyTemplate`;
-    const cb_EncryptOpt = 0;
-    const txt_EncryptKey = "";
-    const extractEx = 0;
-    const qualityLevel = 1; //none
-    const queryParams = new HttpParams()
-      .set("dummy", Math.random().toString())
-      .set("sHandle", this.deviceInfos[0]?.DeviceHandle)
-      .set("id", this.pageID.toString())
-      .set("tempLen", templateLength.toString())
-      .set("tempData", this.templateData)
-      .set("securitylevel", "2")
-      .set("templateType", "2002")
-      .set("encrypt", cb_EncryptOpt.toString())
-      .set("encryptKey", txt_EncryptKey)
-      .set("extractEx", extractEx.toString())
-      .set("qualityLevel", qualityLevel.toString());
-    const headers = new HttpHeaders().set("Content-Type", "application/json");
-    
-    const requestOptions = {
-      params: queryParams,
-      headers: headers,
-    };
-    try {
-      const response: any = await this.http.get(url, requestOptions).toPromise();
-      
-      console.log(response);
-      this.IsVerified=response.retVerify == "Success" ? true : false;
-      if(response.retVerify == "Success") {
-        
-         this.IsMarked = true;
-         if(this.IsMarked){
-            this.saveBiometricData();
-          }
-         
-      }else{
-        this.ComSrv.ShowError("Verification Failed.Please use [ "+this.camelCaseToWords(fingerPrintIndex)+" ] index", "Close", 7000);
-      }
-    } catch (error) {
-      this.ComSrv.ShowError("Error verifying finger impression:");
-    }
-  }
   saveBiometricData() {
-  
     const traineeData = {
       TraineeID: this.data[0].TraineeID,
       ClassID: this.data[0].ClassID,
-      AttendanceType: this.fingerprintForm.value.AttendanceType,
+      AttendanceType: this.data[0].CheckedIn == "Not Checked In" ? "CheckIn" : "CheckOut",
       FingerImpression: this.templateData,
     };
-   
     console.log("trainee biometric attendance on save");
     console.log(traineeData);
-
-
     try {
       this.ComSrv.postJSON(
         "api/TraineeProfile/SaveBiometricAttendance",
@@ -299,11 +389,15 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       ).subscribe((response: any) => {
         if (response) {
           this.IsMarked = false;
-          this.ComSrv.openSnackBar("Attendance marked Successfully", "Close", 5000);
+          this.ComSrv.openSnackBar(
+            "Attendance marked Successfully",
+            "Close",
+            5000
+          );
           this.statusLoopSubscription.unsubscribe();
           setTimeout(() => {
-          this.closeDialog();
-         }, 2000);
+            this.closeDialog();
+          }, 500);
         } else {
           this.ComSrv.ShowError("Error Saving Biometric Data");
         }
@@ -312,8 +406,6 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.ComSrv.ShowError("Error Saving Biometric Data");
     }
   }
-  
-
   async AddScannerList(ScannerInfos: any[]) {
     let count = -1;
     ScannerInfos.forEach((scannerInfo) => {
@@ -375,7 +467,8 @@ export class BiometricAttendanceDialogComponent implements OnInit {
     if (!this.isExistScannerHandle()) {
       return;
     }
-    this.imgUrl ="https://miro.medium.com/v2/resize:fit:679/1*9EBHIOzhE1XfMYoKz1JcsQ.gif";
+    this.imgUrl =
+      "https://miro.medium.com/v2/resize:fit:679/1*9EBHIOzhE1XfMYoKz1JcsQ.gif";
     this.gIsCaptureEnd = false;
     this.printFlag = false;
     clearTimeout(this.pLoopflag);
@@ -437,7 +530,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       }
       if (this.gIsCaptureEnd) {
         await this.GetTemplateData(fingerPrintIndex);
-      } 
+      }
     } catch (error) {
       this.ComSrv.ShowError("getCaptureEnd HTTP request error:", error);
     }
@@ -553,7 +646,6 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.ComSrv.ShowError("Error fetching image data:", error);
     }
   }
- 
   IsIEbrowser(): boolean {
     const browser = window.navigator.userAgent.toLowerCase();
     return (
@@ -563,6 +655,14 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       browser.indexOf("edge") !== -1
     );
   }
+
+  ngOnDestroy(): void {
+    if (this.statusLoopSubscription) {
+      this.statusLoopSubscription.unsubscribe();
+    }
+    
+    }
+    
   closeDialog() {
     if (this.statusLoopSubscription) {
       this.statusLoopSubscription.unsubscribe();
