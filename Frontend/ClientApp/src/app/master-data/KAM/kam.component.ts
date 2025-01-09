@@ -7,9 +7,6 @@ import { FormGroup, FormBuilder, Validators, FormGroupDirective, FormControl } f
 import { CommonSrvService } from '../../common-srv.service';
 import { ModelBase } from '../../shared/ModelBase';
 import { UserRightsModel } from '../../master-data/users/users.component';
-import { organizationModel } from '../orgnizations/orgnizations.component';
-import { TSPDetailModel } from '../tsplist/tsplist.component';
-import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import { DialogueService } from '../../shared/dialogue.service';
 
 

@@ -31,10 +31,22 @@ export class TraineeAttendanceComponent implements OnInit {
     private fb: FormBuilder,
     private http: CommonSrvService,
   ) { }
-  TablesData: MatTableDataSource<any>;
   @ViewChild("tabGroup") tabGroup: MatTabGroup;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+
+  attendanceTableData: MatTableDataSource<any>;
+  @ViewChild("paginator") paginator: MatPaginator;
+  @ViewChild("sort") sort: MatSort;
+
+  manualAttendanceTableData: MatTableDataSource<any>;
+  @ViewChild("maPaginator") maPaginator: MatPaginator;
+  @ViewChild("maSort") maSort: MatSort;
+
+  reportTablesData: MatTableDataSource<any>;
+  @ViewChild("rPaginator") rPaginator: MatPaginator;
+  @ViewChild("rSort") rSort: MatSort;
+
+  
+
   CountZeroToHun = [];
   TapIndex: any;
   readOnly = true
@@ -83,7 +95,9 @@ export class TraineeAttendanceComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser);
-    this.TablesData = new MatTableDataSource([]);
+    this.attendanceTableData = new MatTableDataSource([]);
+    this.reportTablesData = new MatTableDataSource([]);
+    this.manualAttendanceTableData = new MatTableDataSource([]);
     this.InitDeviceRegistrationForm();
     this.GetDeviceRegistration();
     this.getSchemesData(); // Fetch schemes on component load
@@ -183,13 +197,25 @@ export class TraineeAttendanceComponent implements OnInit {
       this.DeviceRegistrationForm.reset
     }
   }
-  LoadMatTable(tableData: any[]) {
+  LoadMatTable(tableData: any[],reportName:string="") {
     const excludeColumnArray: string[] = ['RightIndexFinger', 'RightMiddleFinger', 'LeftIndexFinger', 'LeftMiddleFinger'];
+    
+    
     if (tableData.length > 0) {
       this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
-      this.TablesData = new MatTableDataSource(tableData);
-      this.TablesData.paginator = this.paginator;
-      this.TablesData.sort = this.sort;
+      
+      this.attendanceTableData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn == "Not Checked In" || x.CheckedOut == "Not Checked Out"));
+      this.attendanceTableData.paginator = this.paginator;
+      this.attendanceTableData.sort = this.sort;
+
+      this.reportTablesData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn == "Not Checked In" && x.CheckedOut == "Not Checked Out"));
+      this.reportTablesData.paginator = this.rPaginator;
+      this.reportTablesData.sort = this.rSort;
+      
+      this.manualAttendanceTableData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn != "Not Checked In" && x.CheckedOut != "Not Checked Out"));
+      this.reportTablesData.paginator = this.maPaginator;
+      this.reportTablesData.sort = this.maSort;
+
     }
   }
 
@@ -206,14 +232,14 @@ export class TraineeAttendanceComponent implements OnInit {
     return input.replace(/([a-z])([A-Z])/g, '$1 $2');
   }
   applyFilter(event: any) {
-    this.TablesData.filter = event.target.value.trim().toLowerCase();
-    if (this.TablesData.paginator) {
-      this.TablesData.paginator.firstPage();
+    this.attendanceTableData.filter = event.target.value.trim().toLowerCase();
+    if (this.attendanceTableData.paginator) {
+      this.attendanceTableData.paginator.firstPage();
     }
   }
   DataExcelExport() {
     this.ComSrv.ExcelExporWithForm(
-      this.TablesData.filteredData,
+      this.attendanceTableData.filteredData,
       this.SpacerTitle
     );
   }
