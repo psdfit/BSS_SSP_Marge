@@ -43,9 +43,6 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@InActive", 1));
             param.Add(new SqlParameter("@UserID", data.UserID));
             param.Add(new SqlParameter("@CreatedUserID", data.UserID));
-            param.Add(new SqlParameter("@TSPID", data.TSPID));
-            param.Add(new SqlParameter("@ClassID", data.ClassID));
-            param.Add(new SqlParameter("@SchemeID", data.SchemeID));
 
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_DVVDeviceActivationLog", param.ToArray()).Tables[0];
             return dt;

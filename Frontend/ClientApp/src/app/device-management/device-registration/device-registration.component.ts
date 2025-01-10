@@ -6,7 +6,6 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTabGroup } from "@angular/material/tabs";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
 import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
@@ -20,42 +19,9 @@ import { SearchFilter, ExportExcel } from '../../shared/Interfaces';
 })
 export class DeviceRegistrationComponent implements OnInit {
   matSelectArray: MatSelect[] = [];
-  // @ViewChild('Applicability') Applicability: MatSelect;
-  // SelectedAll_Applicability: string;
-  // @ViewChild('Province') Province: MatSelect;
-  // SelectedAll_Province: string;
-  // @ViewChild('Cluster') Cluster: MatSelect;
-  // SelectedAll_Cluster: string;
-  // @ViewChild('District') District: MatSelect;
-  // SelectedAll_District: string;
   currentUser: any = {}
   DeviceRegistration: any[];
-  SelectAll(event: any, dropDownNo, controlName, formGroup) {
-    const matSelect = this.matSelectArray[(dropDownNo - 1)];
-    if (event.checked) {
-      matSelect.options.forEach((item: MatOption) => item.select());
-      if (this[formGroup].get(controlName).value) {
-        const uniqueArray = Array.from(new Set(this[formGroup].get(controlName).value));
-        this[formGroup].get(controlName).setValue(uniqueArray)
-      }
-    } else {
-      matSelect.options.forEach((item: MatOption) => item.deselect());
-    }
-  }
-  optionClick(event, controlName) {
-    this.EmptyCtrl()
-    let newStatus = true;
-    event.source.options.forEach((item: MatOption) => {
-      if (!item.selected && !item.disabled) {
-        newStatus = false;
-      }
-    });
-    if (event.source.ngControl.name === controlName) {
-      this['SelectedAll_' + controlName] = newStatus;
-    } else {
-      this['SelectedAll_' + controlName] = newStatus;
-    }
-  }
+
   constructor(
     private Dialog: MatDialog,
     private ComSrv: CommonSrvService,
@@ -134,9 +100,7 @@ export class DeviceRegistrationComponent implements OnInit {
       UserID: [this.currentUser.UserID],
       Brand: ['Suprema', Validators.required],
       Model: ['BioMini Slim 2', Validators.required],
-      // TSPName: ['', Validators.required],
       TSPLocation: ['', Validators.required],
-      // DeviceType: ['', Validators.required],
       SerialNumber: ['', Validators.required]
     });
     this.schemeFilter.valueChanges.subscribe(value => {
@@ -167,7 +131,7 @@ export class DeviceRegistrationComponent implements OnInit {
           this.DeviceRegistrationForm.reset()
           this.InitDeviceRegistrationForm()
           this.GetDeviceRegistration()
-          this.ComSrv.openSnackBar("Saved data");
+          this.ComSrv.openSnackBar("Your device has been successfully registered!");
           this.IsDisabled = false
         },
         (error) => {

@@ -67,7 +67,8 @@
                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column)
                               }}</mat-header-cell>
                            <mat-cell *matCellDef="let row; let i = index">
-                              <ng-container *ngIf="column !== 'CreatedDate' && column !== 'DeviceStatus'">
+                              <ng-container
+                                 *ngIf="column !== 'CreatedDate' && column !== 'DeviceStatus' && column !== 'Remarks'">
                                  &nbsp;{{ row[column] }}
                               </ng-container>
                               <ng-container *ngIf="column === 'Sr#'">
@@ -85,6 +86,16 @@
                               </ng-container>
                               <ng-container *ngIf="column === 'DeviceStatus'">
                                  &nbsp;{{ row[column] ? 'Active' : 'Deactive' }}
+                              </ng-container>
+                              <ng-container *ngIf="column === 'Remarks'">
+                                 &nbsp;
+                                 <span *ngIf="!row[column]"
+                                    style="text-align: center; display: inline-block; width: 100%;">
+                                    -
+                                 </span>
+                                 <span *ngIf="row[column]">
+                                    {{ row[column] }}
+                                 </span>
                               </ng-container>
                               <ng-container *ngIf="column === 'CreatedDate'">
                                  &nbsp;{{ row[column] | date }}
@@ -113,7 +124,8 @@
                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column)
                               }}</mat-header-cell>
                            <mat-cell *matCellDef="let row; let i = index">
-                              <ng-container *ngIf="column !== 'CreatedDate' && column !== 'DeviceStatus'">
+                              <ng-container
+                                 *ngIf="column !== 'CreatedDate' && column !== 'DeviceStatus' && column !== 'Remarks'">
                                  &nbsp;{{ row[column] }}
                               </ng-container>
                               <ng-container *ngIf="column === 'Sr#'">
@@ -128,6 +140,16 @@
                                     (click)="deActivationRequest(row)">
                                     Deactivate
                                  </a>
+                              </ng-container>
+                              <ng-container *ngIf="column === 'Remarks'">
+                                 &nbsp;
+                                 <span *ngIf="!row[column]"
+                                    style="text-align: center; display: inline-block; width: 100%;">
+                                    -
+                                 </span>
+                                 <span *ngIf="row[column]">
+                                    {{ row[column] }}
+                                 </span>
                               </ng-container>
                               <ng-container *ngIf="column === 'DeviceStatus'">
                                  &nbsp;{{ row[column] ? 'Active' : 'Deactive' }}
