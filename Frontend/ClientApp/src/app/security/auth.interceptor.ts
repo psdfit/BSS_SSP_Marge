@@ -111,14 +111,12 @@ export class AuthInterceptor implements HttpInterceptor {
           
  
 
-          const skippedUrls = ['initDevice','getScannerStatus', 'Capture', 'captureSingle','createSessionID','getParameters','setParameters','getTemplateData','verifyTemplate'];
-          if (skippedUrls.some(pattern => req.url.includes(pattern))) {
+          if (req.url.includes('getScannerStatus')==true || req.url.includes('Capture')==true || req.url.includes('captureSingle')==true) {
             this.setLoading=false; 
+
           }else{
             this.setLoading=true; 
           }
-
-       
 
           if(this.setLoading==true){
             this.auth.setLoading(true); 

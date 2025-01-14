@@ -1,14 +1,13 @@
 <!-- Toolbar with title and close button -->
 <mat-toolbar color="accent" class=" slim slim">
     <mat-icon class="material-icons"> verified_user </mat-icon>
-    <span class="spacer">Trainee Biometric Verification</span>
+    <span class="spacer">Biometric Enrollment</span>
     <mat-icon mat-raised-button color="accent" matDialogClose (click)="statusLoopSubscription.unsubscribe()"
         class="material-icons close-btn">close</mat-icon>
 </mat-toolbar>
 
 <!-- Main content area -->
 <mat-card-content>
-
     <!-- Read-only fields for Trainee Name, CNIC, and Class Name -->
     <div class="row ml-1 mr-1 mb-2">
         <div class="col-sm-4">
@@ -71,7 +70,7 @@
                 <div class="border rounded p-1 mt-2">
                     <mat-checkbox formControlName="RightMiddleFinger"
                         (change)="onCheckboxChange($event, 'RightMiddleFinger')">
-                        <!-- Right Middle Finger --> Right Thumb
+                        Right Middle Finger
                     </mat-checkbox>
                 </div>
                 <div class="border rounded p-1 mt-2">
@@ -83,7 +82,7 @@
                 <div class="border rounded p-1 mt-2 mb-2">
                     <mat-checkbox formControlName="LeftMiddleFinger"
                         (change)="onCheckboxChange($event, 'LeftMiddleFinger')">
-                        <!-- Left Middle Finger --> Left Thumb
+                        Left Middle Finger
                     </mat-checkbox>
                 </div>
             </form>

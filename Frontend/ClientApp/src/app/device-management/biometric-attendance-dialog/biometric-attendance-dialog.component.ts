@@ -406,6 +406,64 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.ComSrv.ShowError("Error Saving Biometric Data");
     }
   }
+  async InitPage() {
+    this.pageID = Math.random();
+    try {
+      const url = `${this.urlStr}/api/createSessionID`;
+      const params = new HttpParams().set("dummy", Math.random().toString());
+      const headers = new HttpHeaders({
+        "Content-Type": "application/json; charset=utf-8",
+      });
+      const msg: any = await this.http
+        .get(url, { headers, params })
+        .toPromise();
+      if (msg && msg.sessionId) {
+        const expires = new Date(Date.now() + 60 * 60 * 1000);
+        document.cookie = `username=${msg.sessionId
+          }; expires=${expires.toUTCString()}`;
+      }
+    } catch (error) {
+      this.CheckDeviceConnection("Down");
+      this.ComSrv.ShowError("BioMini Agent is not started", "Close", 5000);
+    }
+  }
+  async Init() {
+    const url = `${this.urlStr}/api/initDevice`;
+    const params = new HttpParams().set("dummy", Math.random().toString());
+    const headers = new HttpHeaders({ "Content-Type": "application/json" });
+    const requestOptions = {
+      headers,
+      withCredentials: true,
+      crossDomain: true,
+    };
+    try {
+      const msg: any = await this.http
+        .get(`${url}?dummy=${params}`, requestOptions)
+        .toPromise();
+      if (msg.retValue == 0) {
+        this.CheckDeviceConnection("Up");
+        if (msg.ScannerInfos) {
+          this.deviceInfos = msg.ScannerInfos;
+          this.AddScannerList(this.deviceInfos);
+        }
+        this.CheckStatusLoop();
+      } else {
+        this.CheckDeviceConnection("Down");
+      }
+    } catch (error) {
+      this.CheckDeviceConnection("Down");
+      this.ComSrv.ShowError("Please start BioMini Agent", "Close", 5000);
+      // this.closeDialog();
+    }
+  }
+  CheckDeviceConnection(connection: string) {
+    this.IsDeviceConnected = connection === "Up";
+    console.log("Device Connection:" + connection);
+    if(connection === "Down") {
+      this.ComSrv.ShowError("Device Connection Lost", "Close", 2000);
+      // this.closeDialog();
+    }
+  }
   async AddScannerList(ScannerInfos: any[]) {
     let count = -1;
     ScannerInfos.forEach((scannerInfo) => {
@@ -585,6 +643,7 @@ export class BiometricAttendanceDialogComponent implements OnInit {
       this.ComSrv.ShowError("Scanner Init First");
       return;
     }
+    await this.SendParameter(2002);
     const url = `${this.urlStr}/api/getTemplateData`;
     const queryParams = new HttpParams()
       .set("dummy", Math.random().toString())

@@ -121,7 +121,7 @@
                      &nbsp;{{ row[column] | date }}
                   </ng-container>
                   <ng-container *ngIf="column === 'DeviceStatus'">
-                     <span [ngClass]="row[column] ? 'label label-success' : 'label label-danger'">
+                     <span [ngClass]="row[column] ? 'badge badge-green' : 'badge badge-red'">
                         {{ row[column] ? 'Active' : 'Inactive' }}
                      </span>
                   </ng-container>
