@@ -223,26 +223,10 @@ export class TraineeEnrollmentComponent implements OnInit {
     }
     this.DeviceRegistration = []
     this.DeviceRegistration = await this.FetchData(this.SPName, this.paramObject)
-      // if(this.DeviceRegistration.length>0){
-        this.LoadMatTable([
-          {
-            DeviceID:1,
-            DeviceBrand:"Suprema",
-            DeviceModel:"BioMini2.0",
-            DeviceSerialNo:"GTY67890774744",
-            DeviceStatus:"Active"
-          },
-          {
-            DeviceID:1,
-            DeviceBrand:"Suprema",
-            DeviceModel:"BioMini2.0",
-            DeviceSerialNo:"GTY67890774744",
-            DeviceStatus:"InActive"
-          }
-        ])
-        // this.LoadMatTable(this.DeviceRegistration)
-  
-      // }
+    if(this.DeviceRegistration.length>0){
+      this.LoadMatTable(this.DeviceRegistration)
+
+    }
   }
  
   async FetchData(SPName: string, paramObject: any) {
@@ -273,7 +257,6 @@ export class TraineeEnrollmentComponent implements OnInit {
   }
 
   OpenDialogue(row,DeviceStatus) {
-    debugger;
     const data = [row, DeviceStatus];
 
     const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {

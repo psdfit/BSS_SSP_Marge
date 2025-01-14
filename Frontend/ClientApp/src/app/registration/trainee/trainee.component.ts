@@ -241,7 +241,9 @@ export class TraineeComponent implements OnInit {
       TraineeAge: ['', [Validators.required]],
       ReligionID: ['', [Validators.required]],
       VoucherHolder: new FormControl(false),
-      IsReferredByGuru: ['', [Validators.required]],
+      // updated by sami 2025-01-03      
+      // IsReferredByGuru: ['', [Validators.required]],
+       IsReferredByGuru: [''],
       ReferralSourceID: ['', [Validators.required]],
       TraineeIndividualIncomeID: ['', [Validators.required]],
       HouseHoldIncomeID: ['', [Validators.required]],
@@ -312,6 +314,7 @@ export class TraineeComponent implements OnInit {
 
  
   setFormIsDisabled(isDisabled: boolean, errMsg = '') {
+    debugger;
     this.saveBtnTitle = "Save";
     //this.isFormDisabled = state == 'enabled' ? false : state == 'disabled' ? true : true;
     this.isFormDisabled = isDisabled;
@@ -328,11 +331,28 @@ export class TraineeComponent implements OnInit {
     this.save();
   }
   save() {
+    
+    // if (!this.traineeProfileForm.valid) {
+    //   //debugger;
+      
+    //   this.http.ShowError("Something missing or invalid.", "Error");
+    //   console.log(this.traineeProfileForm)
+    //   return;
+    // }
+
     if (!this.traineeProfileForm.valid) {
       //debugger;
-      this.http.ShowError("Something missing or invalid.", "Error");
+      const invalidControls = [];
+      for (const name in this.traineeProfileForm.controls) {
+        if (this.traineeProfileForm.controls[name].invalid) {
+          invalidControls.push(name);
+        }
+      }
+      this.http.ShowError("Something missing or invalid in: " + invalidControls.join(', '), "Error");
+      console.log(this.traineeProfileForm);
       return;
     }
+
     // this.working = true;
     //this.markAsExtraTrainee();
     if (this.TraineeID.value == 0) {
@@ -455,7 +475,7 @@ export class TraineeComponent implements OnInit {
   onEditTrainee(row) {
     //this.registrationError = '';
 
-    if(this.SchemeCode.toUpperCase()=="STV"){
+    if (this.IsSkillsScholrship){
       this.getTraineeGuru(row.TraineeID)
     }
     
@@ -468,7 +488,7 @@ export class TraineeComponent implements OnInit {
       (response: any[]) => {
         this.traineeProfileForm.patchValue(row);
         
-        if(this.SchemeCode.toUpperCase()=="STV" && this.traineeGuruDetailList.length>0){
+        if (this.IsSkillsScholrship && this.traineeGuruDetailList.length>0){
          const sTraineeGuru= this.traineeGuruDetailList.find(tg=>tg.TraineeID==row.TraineeID)
          if(sTraineeGuru){
           this.IsReferredByGuru.setValue(true)
@@ -488,6 +508,7 @@ export class TraineeComponent implements OnInit {
         }
 
         this.tabGroup.selectedIndex = TabGroup.RegistrationForm;
+        debugger;
         if (row.IsSubmitted) {
           this.setFormIsDisabled(true, 'This profile is Submitted so that not available for edit.');
         } else {
@@ -653,7 +674,7 @@ export class TraineeComponent implements OnInit {
         let traineeProfileList = response.ListTraineeProfile;
         this.traineeProfileArray = JSON.parse(JSON.stringify(response.ListTraineeProfile));
         let checkRegistrationCriteria = response.CheckRegistrationCriteria;
-
+debugger;
         if (checkRegistrationCriteria.length > 0) {
           //this.registrationError = checkRegistrationCriteria[0].ErrorMessage;
           this.setFormIsDisabled(true, checkRegistrationCriteria[0].ErrorMessage);
@@ -695,7 +716,7 @@ export class TraineeComponent implements OnInit {
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
         }
-        if (scheme.SchemeCode == 'STV') {
+        if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP') {
           this.EDFScheme = true;
         }
         else if (scheme.FundingSourceID !== 12) //EDF Scheme

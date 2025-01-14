@@ -161,8 +161,7 @@ namespace PSDF_BSS
             services.AddSingleton(typeof(ISRVPotentialTrainees), typeof(SRVPotentialTrainees));
             //services.AddSingletonClassesDataLayer();
             services.AddSingleton(typeof(ISRVBSSReports), typeof(SRVBSSReports));
-            //DVV Services
-            services.AddSingleton(typeof(ISRVDeviceManagement), typeof(SRVDeviceManagement));
+
 
             //SSP Service Include
             services.AddSingleton(typeof(ISRVBusinessProfile), typeof(SRVBusinessProfile));

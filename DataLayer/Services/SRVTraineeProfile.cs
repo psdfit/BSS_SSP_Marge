@@ -589,11 +589,14 @@ namespace DataLayer.Services
 
                 // DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "[dbo].[V_CheckDualEmail]", param.ToArray()).Tables[0];
                 DataSet dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, "SELECT DBO.CheckDualEmail('" + traineeEmail + "') as Count");
-                if (dt.Tables[0].Rows.Count > 0)
+                if (dt.Tables[0].Rows.Count > 0 && Convert.ToInt32(dt.Tables[0].Rows[0]["Count"]) > 0)
                 {
-                    int count = Convert.ToInt32(dt.Tables[0].Rows[0].Field<string>("Count").ToString());
-                    isExist = count > 0 ? true : false;
+                    isExist = true;
                     errMsg = "(Email) is already exist in BSS";
+                }
+                else
+                {
+                    isExist = false;
                 }
             }
             catch (Exception ex)
