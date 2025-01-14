@@ -15,23 +15,47 @@
          <fieldset class="border">
             <legend>Device Registration Form</legend>
             <div class="row">
-
-               <div class="col-sm-3">
-                  <mat-form-field>
-                     <mat-label>TSP Location</mat-label>
-                     <mat-select formControlName="TSPLocation" required>
-                        <mat-option *ngFor="let location of TSPLocations" [value]="location">{{ location }}</mat-option>
+               <div class="col-sm-4">
+                  <mat-form-field fxFlex>
+                     <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()"
+                        matInput>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text"
+                              (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
+                        <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]"
+                           [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
                      </mat-select>
                   </mat-form-field>
                </div>
+               <div class="col-sm-4" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+                  <mat-form-field fxFlex>
+                     <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl()" matInput>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text"
+                              (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                        <mat-option value="0" selected>--All--</mat-option>
 
-               <div class="col-sm-3">
+                        <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]"
+                           [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                     </mat-select>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-4">
+                  <mat-form-field fxFlex>
+                     <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl()" matInput>
+                        <mat-optgrp disabled class="ddlsrchheader"> <input type="text"
+                              (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+                        <mat-option value="0" selected>--All--</mat-option>
+                        <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]"
+                           [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                     </mat-select>
+                  </mat-form-field>
+               </div>
+               <div class="col-sm-4">
                   <mat-form-field>
-                     <mat-label>Device Serial No</mat-label>
-                     <input formControlName="SerialNumber" matInput required />
-                     <mat-error *ngFor="let error of DeviceRegistrationForm.get('SerialNumber').errors | keyvalue">
-                        {{ getErrorMessage(error.key, error.value) }}
-                     </mat-error>
+                     <mat-label>TSP Location</mat-label>
+                     <mat-select formControlName="TSPLocation" required>
+                        <mat-option *ngFor="let location of TSPLocations" [value]="location.TSPLocation">{{
+                           location.TSPLocation }}</mat-option>
+                     </mat-select>
                   </mat-form-field>
                </div>
                <div class="col-sm-3">
@@ -56,6 +80,15 @@
                         getErrorMessage(error.key, error.value) }}</mat-error>
                   </mat-form-field>
                </div>
+               <div class="col-sm-3">
+                  <mat-form-field>
+                     <mat-label>Device Serial Number</mat-label>
+                     <input formControlName="SerialNumber" matInput required />
+                     <mat-error *ngFor="let error of DeviceRegistrationForm.get('SerialNumber').errors | keyvalue">
+                        {{ getErrorMessage(error.key, error.value) }}
+                     </mat-error>
+                  </mat-form-field>
+               </div>
             </div>
             <div class="row" style="float:right" *ngIf="FinalSubmit==false">
                <div class="col-sm-12">
@@ -74,26 +107,32 @@
          <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
             <i class="fas fa-file-export"></i> Export Excel</button>
       </mat-toolbar>
-
       <div class="table-responsive">
          <mat-table [dataSource]="TablesData" matSort>
             <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
-               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+               <mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{ camelCaseToWords(column) }}
+               </mat-header-cell>
                <mat-cell *matCellDef="let row; let i = index">
-                  <ng-container *ngIf="column !== 'RequestDate' && column !== 'StatusRequest'">
-                     &nbsp;{{ row[column] }}
-                  </ng-container>
                   <ng-container *ngIf="column === 'Sr#'">
                      &nbsp;{{ i + 1 }}
                   </ng-container>
-                  <ng-container *ngIf="column === 'StatusRequest'">
-                     &nbsp;{{ row[column] ? 'Active' : 'Deactive' }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'RequestDate'">
+                  <ng-container *ngIf="column === 'CreatedDate'">
                      &nbsp;{{ row[column] | date }}
                   </ng-container>
+                  <ng-container *ngIf="column === 'DeviceStatus'">
+                     <span [ngClass]="row[column] ? 'label label-success' : 'label label-danger'">
+                        {{ row[column] ? 'Active' : 'Inactive' }}
+                     </span>
+                  </ng-container>
+                  <ng-container *ngIf="column === 'Remarks'">
+                     {{ row[column] || 'Pending Approval' }}
+                  </ng-container>
+                  <ng-container
+                     *ngIf="column !== 'Sr#' && column !== 'CreatedDate' && column !== 'DeviceStatus' && column !== 'Remarks'">
+                     &nbsp;{{ row[column] }}
+                  </ng-container>
                </mat-cell>
-
             </ng-container>
             <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>

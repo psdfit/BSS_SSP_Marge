@@ -10,6 +10,8 @@ import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
 import { DeviceStatusUpdateDialogComponent } from "../device-status-update-dialog/device-status-update-dialog.component";
+import { SearchFilter } from "src/app/shared/Interfaces";
+import { EnumUserLevel } from "src/app/shared/Enumerations";
 @Component({
   selector: 'app-manage-device-status',
   templateUrl: './manage-device-status.component.html',
@@ -25,6 +27,8 @@ export class ManageDeviceStatusComponent implements OnInit {
   SelectedAll_Cluster: string;
   @ViewChild('District') District: MatSelect;
   SelectedAll_District: string;
+  @ViewChild('activePaginator') activePaginator: MatPaginator;
+  @ViewChild('inactivePaginator') inactivePaginator: MatPaginator;
   currentUser: any = {}
   DeviceRegistration: any[];
   SelectAll(event: any, dropDownNo, controlName, formGroup) {
@@ -102,15 +106,74 @@ export class ManageDeviceStatusComponent implements OnInit {
   TableColumns = [];
   maxDate: Date;
   SaleGender: string = "Sales Tax Evidence"
+  enumUserLevel = EnumUserLevel;
+  noRecords: boolean;
+
+  SearchTSP = new FormControl('');
+  SearchCls = new FormControl('');
+  SearchSch = new FormControl('');
+  schemeFilter = new FormControl(0);
+  tspFilter = new FormControl(0);
+  classFilter = new FormControl(0);
+
+  selectedSchemeID: number = 0;
+  selectedTSPID: number = 0;
+  selectedClassID: number = 0;
+
+
+  filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.ComSrv.OID.value, SelectedColumns: [] };
+
+
+  schemeArray: any;
+  tspDetailArray: any;
+  classesArray: any;
+
+  activeDevicesData: MatTableDataSource<any>;
+  inactiveDevicesData: MatTableDataSource<any>;
+
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser)
     this.TablesData = new MatTableDataSource([]);
+    this.activeDevicesData = new MatTableDataSource([]);
+    this.inactiveDevicesData = new MatTableDataSource([]);
     this.PageTitle();
     this.InitDeviceRegistrationForm()
     this.GetDeviceRegistration()
 
+
+    this.schemeFilter.valueChanges.subscribe(value => {
+      if (value == '0') {
+        this.selectedSchemeID = null
+      } else {
+        this.selectedSchemeID = value;
+      }
+      this.GetDeviceRegistration();
+      this.getTSPDetailByScheme(value);
+
+    });
+    // this.tspFilter.valueChanges.subscribe(value => { this.getClassesByTsp(value) });
+    this.tspFilter.valueChanges.subscribe(value => {
+      if (value == '0') {
+        this.selectedTSPID = null
+      } else {
+        this.selectedTSPID = value;
+      }
+      this.getClassesByTsp(value);
+      this.GetDeviceRegistration();
+    });
+
+    this.classFilter.valueChanges.subscribe(value => {
+      if (value == '0') {
+        this.selectedClassID = null
+      } else {
+        this.selectedClassID = value;
+      }
+      this.GetDeviceRegistration();
+    });
   }
+
+
   DeviceRegistrationForm: FormGroup;
   InitDeviceRegistrationForm() {
     this.DeviceRegistrationForm = this.fb.group({
@@ -121,6 +184,69 @@ export class ManageDeviceStatusComponent implements OnInit {
       SerialNumber: ['', Validators.required],
     });
   }
+
+
+
+  getTSPDetailByScheme(schemeId: number) {
+    this.tspFilter.setValue(0);
+    this.classFilter.setValue(0);
+    this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=${schemeId}`)
+      .subscribe(data => {
+        this.tspDetailArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
+
+  getClassesByTsp(tspId: number) {
+    this.classFilter.setValue(0);
+    this.ComSrv.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${tspId}`)
+      .subscribe(data => {
+        this.classesArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
+
+  getClassesBySchemeFilter() {
+    this.filters.ClassID = 0;
+    this.filters.TraineeID = 0;
+    this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.schemeFilter.value}&UserID=${this.currentUser.UserID}`)
+      .subscribe(data => {
+        this.classesArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
+
+  getSchemesData() {
+    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForGSR?OID=${this.ComSrv.OID.value}`)
+      .subscribe((d: any) => {
+        this.schemeArray = d.Schemes;
+      }, error => this.error = error);
+  }
+
+  getTspDetails() {
+    this.ComSrv.getJSON(`api/Dashboard/FetchTSPDetails`)
+      .subscribe(data => {
+        this.tspDetailArray = data;
+      }, error => {
+        this.error = error;
+      });
+  }
+
+  // fetchTSPLocationsByClass(classId: number): void {
+  //   this.ComSrv.getJSON(`api/DeviceManagement/GetTSPDetailsByClassID?ClassID=${classId}`)
+  //     .subscribe(
+  //       (locations: string[]) => {
+  //         this.TSPLocations = locations; // Populate TSP locations
+  //       },
+  //       error => {
+  //         console.error('Error fetching TSP locations:', error);
+  //       }
+  //     );
+  // }
+
 
   IsDisabled = false;
   SaveFormData() {
@@ -181,9 +307,31 @@ export class ManageDeviceStatusComponent implements OnInit {
     const excludeColumnArray: string[] = [];
     if (tableData.length > 0) {
       this.TableColumns = ['Action', 'Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
+      const activeDevices = tableData.filter(device => device.DeviceStatus === true);
+      const inactiveDevices = tableData.filter(device => device.DeviceStatus === false);
+      // Set the filtered data
+      this.activeDevicesData = new MatTableDataSource(activeDevices);
+
+      this.inactiveDevicesData = new MatTableDataSource(inactiveDevices);
       this.TablesData = new MatTableDataSource(tableData);
-      this.TablesData.paginator = this.paginator;
-      this.TablesData.sort = this.sort;
+
+      this.activeDevicesData.paginator = this.activePaginator;
+      this.activeDevicesData.sort = this.sort;
+
+      this.inactiveDevicesData.paginator = this.inactivePaginator;
+      this.inactiveDevicesData.sort = this.sort;
+    }
+  }
+
+  onTabChange(index: number) {
+    if (index === 0) {
+      // Active Devices Tab
+      this.activeDevicesData.paginator = this.activePaginator;
+      this.activeDevicesData.sort = this.sort;
+    } else if (index === 1) {
+      // Inactive Devices Tab
+      this.inactiveDevicesData.paginator = this.inactivePaginator;
+      this.inactiveDevicesData.sort = this.sort;
     }
   }
 
@@ -212,30 +360,44 @@ export class ManageDeviceStatusComponent implements OnInit {
     );
   }
 
-
   paramObject: any = {}
   ExportReportName: string = ""
   SPName: string = ""
   async GetDeviceRegistration() {
     this.SPName = "RD_DVVDeviceRegistration";
-    this.paramObject = {
-      UserID: this.currentUser.UserID,
-    };
-    
+    this.paramObject = {};
+
+    this.paramObject.SchemeID = this.selectedSchemeID;
+    this.paramObject.TSPID = this.selectedTSPID;
+    this.paramObject.ClassID = this.selectedClassID;
+
+    const params = new URLSearchParams();
+
+    // Dynamically append parameters to the URL
+    Object.keys(this.paramObject).forEach(key => {
+      if (this.paramObject[key]) {
+        params.append(key, this.paramObject[key].toString());
+      }
+    });
+
     try {
-      const deviceData: any = await this.ComSrv.getJSON('api/DeviceManagement/GetDeviceRegistration').toPromise();
+      const deviceData: any = await this.ComSrv.getJSON(
+        `api/DeviceManagement/GetDeviceRegistration?${params.toString()}`
+      ).toPromise();
       console.log(deviceData, 'Fetched Device Data');
       if (deviceData && deviceData.length > 0) {
         this.LoadMatTable(deviceData); // Load the fetched data into the table
+        this.noRecords = false;
       } else {
         this.ComSrv.ShowWarning('No records found', 'Close');
+        this.noRecords = true;
       }
     } catch (error) {
       console.error('Error fetching device registration data:', error);
       this.ComSrv.ShowError('Error fetching data', 'error', 5000);
+      this.noRecords = true;
     }
   }
-  
 
   async FetchData(SPName: string, paramObject: any) {
     try {
@@ -246,16 +408,12 @@ export class ManageDeviceStatusComponent implements OnInit {
       } else {
         if (SPName != 'RD_SSPTSPAssociationSubmission') {
           this.ComSrv.ShowWarning(' No Record Found', 'Close');
-
         }
       }
     } catch (error) {
       this.error = error;
     }
   }
-
-  
-  
 
   GetParamString(SPName: string, paramObject: any) {
     let ParamString = SPName;
@@ -301,9 +459,20 @@ export class ManageDeviceStatusComponent implements OnInit {
   ngAfterViewInit() {
     this.matSelectArray = [this.Applicability, this.Province, this.Cluster, this.District];
     if (this.tabGroup) {
+      // Handle tab change events
       this.tabGroup.selectedTabChange.subscribe((event) => {
-        this.TapIndex = event.index
+        this.onTabChange(event.index);
       });
     }
+    // Set paginator and sort for active devices on initial load
+    this.activeDevicesData.paginator = this.activePaginator;
+    this.activeDevicesData.sort = this.sort;
+    this.ComSrv.OID.subscribe(OID => {
+      this.schemeFilter.setValue(0);
+      this.tspFilter.setValue(0);
+      this.classFilter.setValue(0);
+      this.filters.OID = OID;
+      this.getSchemesData();
+    });
   }
 }

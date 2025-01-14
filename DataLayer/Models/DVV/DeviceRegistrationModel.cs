@@ -8,8 +8,10 @@ namespace DataLayer.Models.DVV
     {
         public int RegistrationID { get; set; }
         public int ActivationLogID { get; set; }
-
+        public int TSPID { get; set; }
         public string TSPLocation { get; set; }
+        public int ClassID { get; set; }
+        public int SchemeID { get; set; }
         public string Brand { get; set; }
         public string Model { get; set; }
         public string SerialNumber { get; set; }

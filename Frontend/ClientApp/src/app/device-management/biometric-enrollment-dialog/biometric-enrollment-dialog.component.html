@@ -1,44 +1,52 @@
+<!-- Toolbar with title and close button -->
 <mat-toolbar color="accent" class=" slim slim">
     <mat-icon class="material-icons"> verified_user </mat-icon>
-    <span class="spacer">NADRA Verification Process</span>
-    <!-- <input readonly [(ngModel)]="CNICNumber" class="search" style="width: 161px;" /> -->
+    <span class="spacer">Trainee Biometric Verification</span>
     <mat-icon mat-raised-button color="accent" matDialogClose (click)="statusLoopSubscription.unsubscribe()"
         class="material-icons close-btn">close</mat-icon>
 </mat-toolbar>
+
+<!-- Main content area -->
 <mat-card-content>
-    <!-- <form (ngSubmit)="scanFingerPrint()" [formGroup]="CriteriaForm"> -->
-    <!-- <fieldset class="border rounded">
-                <legend>NADRA Verification</legend> -->
-    <div class="row  mr-1 ml-1 pt-1 text-center" style="padding: 3px 0px !important;">
-        <div class="col-sm-3 border" style="border-top-left-radius: 7px;">
-            <!-- <img class="pt-1 img-fluid" width="55" src="../../../assets/PSDF_logo.png" alt=""> -->
-            <img class="pt-1 img-fluid" width="90" src="../../../assets/NADRA_logo.png" alt="">
+
+    <!-- Read-only fields for Trainee Name, CNIC, and Class Name -->
+    <div class="row ml-1 mr-1 mb-2">
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Trainee Name</mat-label>
+                <input matInput readonly [value]="Name" />
+            </mat-form-field>
         </div>
-        <div class="col-sm-6 border">
-            <!-- <a mat-raised-button class="mr-2" style="cursor: default;" color="primary">CNIC:33203-6899043-7</a> -->
-            <div class="mt-3">
-                <span class="rounded border  pt-2 pb-2 pl-3 pr-3 bg-success "> <strong>CNIC:</strong>
-                    {{CNIC}}</span>
-            </div>
-            <div class="left mt-2">
-                <div class="rounded border mt-2 mr-2 pt-2 pb-2 pl-3 pr-3 bg-primary-c">
-                    <strong>Attempts Left</strong>:
-                    <span>09</span>
-                </div>
-                <div class="rounded border mt-2 pt-2 pb-2 pl-3 pr-3 bg-warning">
-                    <strong>Time Left</strong>:
-                    <span>09:30</span>
-                </div>
-            </div>
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Trainee Code</mat-label>
+                <input matInput readonly [value]="TraineeCode" />
+            </mat-form-field>
         </div>
-        <div class="col-sm-3 border" style="border-top-right-radius: 7px;">
-            <img class="pt-1 img-fluid" width="80" src="../../../assets/PSDF_logo.png" alt="">
-            <!-- <img class="pt-1 img-fluid" width="65" src="../../../assets/NADRA_logo.png" alt=""> -->
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Class Code</mat-label>
+                <input matInput readonly [value]="ClassID" />
+            </mat-form-field>
         </div>
     </div>
-    <div class="row ml-1 mr-1 text-center">
-        <div class="col-sm-3 border">
-            <div class="device-status-container border rounded mt-4">
+
+    <div class="row ml-1 mr-1 mb-2">
+        <!-- Biometric data display -->
+        <div class="col-sm-7 border pb-2">
+            <div class="row">
+                <div class="col-6" *ngFor="let item of traineeBiometricData; let i = index">
+                    <div class="border rounded text-center p-2 mt-2">{{camelCaseToWords(item.fingerPrintIndex)}} <br>
+                        <img [src]="item.ImgUrl" width="100" height="100" class="img-fluid  text-center p-2 m-1" alt=""
+                            srcset="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Device status and finger selection -->
+        <div class="col-sm-5 border pb-2">
+            <!-- Device status display -->
+            <div class="device-status-container border rounded mt-2 text-center">
                 <h6 class="status-heading">Device Status</h6>
                 <div class="status-wrapper">
                     <div *ngIf="IsDeviceConnected" class="device-status online ">
@@ -51,66 +59,42 @@
                     </div>
                 </div>
             </div>
-            <!-- <mat-form-field>
-                            <mat-label>Select Connection</mat-label>
-                            <mat-select (openedChange)="emptyCtrl()" [(ngModel)]="selectedConnection" [ngModelOptions]="{standalone: true}" matInput required>
-                                <mat-option  value="NADRA Server 1">NADRA Server 1</mat-option>
-                                <mat-option  value="NADRA Server 2">NADRA Server 2</mat-option>
-                            </mat-select>
-                        </mat-form-field> -->
-            <div class="device-status-container border rounded mt-3 pl-1 pr-1">
-                <h6 class="status-heading">NADRA Connectivity</h6>
-                <div class="status-wrapper">
-                    <div class="device-status online mr-1">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Up</span>
-                    </div>
-                    <!-- <div class="device-status offline mr-1">
-                                    <i class="fas fa-times-circle"></i>
-                                    <span>Down</span>
-                                </div> -->
+
+
+            <form [formGroup]="fingerprintForm">
+                <div class="border rounded p-1 mt-2">
+                    <mat-checkbox formControlName="RightIndexFinger"
+                        (change)="onCheckboxChange($event, 'RightIndexFinger')">
+                        Right Index Finger
+                    </mat-checkbox>
                 </div>
-            </div>
-            <br>
-            <!-- <a mat-raised-button matTooltip="Proceed NADRA Verification" color="primary" [style]="IsDeviceConnected && imgUrl.length>0 ?'background-color:#19a64e ;color:white':''"  (click)="verifyNadraRequest()" [disabled]="!IsDeviceConnected || imgUrl.length==0"> <mat-icon class="material-icons"> verified_user </mat-icon> NADRA</a>  -->
-            <!-- <div class="border rounded  mt-1">
-                            <strong>
-                                <span>Time Left</span><br>
-                            </strong>
-                            <span>09:30</span>
-                        </div> -->
-        </div>
-        <div class="col-sm-6 border ">
-            <img [src]="imgUrl" width="200" class="pt-2 pb-2 img-fluid" alt="" srcset="">
-        </div>
-        <div class="col-sm-3 border ">
-            <mat-form-field>
-                <mat-label>Select Index</mat-label>
-                <mat-select (openedChange)="emptyCtrl()" [(ngModel)]="selectedIndex"
-                    (selectionChange)="GetSelectedIndex($event)" [ngModelOptions]="{standalone: true}" matInput
-                    required>
-                    <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
-                            (keydown)="$event.stopPropagation()" /></mat-optgrp>
-                    <mat-option *ngFor="let s of fingerPrintArray | like:['Value',BSearchCtr.value]"
-                        [value]="s.ID">{{s.Value}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <img class="img-fluid" width="85" src="../../../assets/RightHand.png" alt=""><br>
-            <img class="img-fluid" width="85" style="position: relative;right: 15px;" src="../../../assets/LeftHand.png"
-                alt=""><br>
+                <div class="border rounded p-1 mt-2">
+                    <mat-checkbox formControlName="RightMiddleFinger"
+                        (change)="onCheckboxChange($event, 'RightMiddleFinger')">
+                        <!-- Right Middle Finger --> Right Thumb
+                    </mat-checkbox>
+                </div>
+                <div class="border rounded p-1 mt-2">
+                    <mat-checkbox formControlName="LeftIndexFinger"
+                        (change)="onCheckboxChange($event, 'LeftIndexFinger')">
+                        Left Index Finger
+                    </mat-checkbox>
+                </div>
+                <div class="border rounded p-1 mt-2 mb-2">
+                    <mat-checkbox formControlName="LeftMiddleFinger"
+                        (change)="onCheckboxChange($event, 'LeftMiddleFinger')">
+                        <!-- Left Middle Finger --> Left Thumb
+                    </mat-checkbox>
+                </div>
+            </form>
+
         </div>
     </div>
-    <!-- </fieldset> -->
+    <!-- Scan fingerprint button -->
     <div class="row mb-1 mt-1 pl-1 pr-1">
         <div class="col-sm-12">
-            <a mat-raised-button color="primary" class="ml-1" (click)="CaptureSingle()" style="float:right"
-                [disabled]="!IsDeviceConnected"><i class="fas fa-fingerprint"></i> Scan Fingerprint</a>
-            <a mat-raised-button matTooltip="Proceed NADRA Verification" color="primary" style="float:right"
-                [style]="IsDeviceConnected && imgUrl.length>0 ?'background-color:#19a64e ;color:white':''"
-                (click)="verifyNadraRequest()" [disabled]="!IsDeviceConnected || imgUrl.length==0"> <mat-icon
-                    class="material-icons"> verified_user </mat-icon>Verify NADRA</a>
-            <!-- <a mat-raised-button matDialogClose (click)="statusLoopSubscription.unsubscribe()"><i
-                        class="fas fa-times"></i> Close</a> -->
+            <a mat-raised-button color="primary" class="ml-1" (click)="saveBiometricData()" style="float:right"
+                [disabled]="!IsDeviceConnected"><i class="fas fa-save"></i> Save</a>
         </div>
     </div>
 </mat-card-content>

@@ -280,7 +280,8 @@ export enum EnumReports {
   'Trainer change Logs' = 36,
   'Bulk Trainees Status Report' = 37,
   'TSP Details Report' = 38,
-  'AMS Missing Classes Data Report' = 39
+  'AMS Missing Classes Data Report' = 39,
+  'TSP Change Request Report' = 41,
 }
 export enum EnumSubReports {
   'Master Data of TSPs – Trainee Wise' = 'TraineeWise'

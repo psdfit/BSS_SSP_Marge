@@ -6,60 +6,24 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTabGroup } from "@angular/material/tabs";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { MatOption } from "@angular/material/core";
-import { MatSelect } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
-import { DeviceStatusUpdateDialogComponent } from "../device-status-update-dialog/device-status-update-dialog.component";
-import { BiometricAttendanceDialogComponent } from "../biometric-attendance-dialog/biometric-attendance-dialog.component";
 import { EnumUserLevel } from "src/app/shared/Enumerations";
-import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
+import { BiometricAttendanceDialogComponent } from '../biometric-attendance-dialog/biometric-attendance-dialog.component';
+import { SearchFilter } from "src/app/shared/Interfaces";
 @Component({
   selector: 'app-trainee-attendance',
   templateUrl: './trainee-attendance.component.html',
   styleUrls: ['./trainee-attendance.component.scss']
 })
 export class TraineeAttendanceComponent implements OnInit {
-  matSelectArray: MatSelect[] = [];
-  @ViewChild('Applicability') Applicability: MatSelect;
-  SelectedAll_Applicability: string;
-  @ViewChild('Province') Province: MatSelect;
-  SelectedAll_Province: string;
-  @ViewChild('Cluster') Cluster: MatSelect;
-  SelectedAll_Cluster: string;
-  @ViewChild('District') District: MatSelect;
-  SelectedAll_District: string;
   currentUser: any = {}
-  DeviceRegistration: any[];
+  DeviceRegistration: any = []
   schemeArray: any;
   tspDetailArray: any;
   classesArray: any;
 
-  SelectAll(event: any, dropDownNo, controlName, formGroup) {
-    const matSelect = this.matSelectArray[(dropDownNo - 1)];
-    if (event.checked) {
-      matSelect.options.forEach((item: MatOption) => item.select());
-      if (this[formGroup].get(controlName).value) {
-        const uniqueArray = Array.from(new Set(this[formGroup].get(controlName).value));
-        this[formGroup].get(controlName).setValue(uniqueArray)
-      }
-    } else {
-      matSelect.options.forEach((item: MatOption) => item.deselect());
-    }
-  }
-  optionClick(event, controlName) {
-    this.EmptyCtrl()
-    let newStatus = true;
-    event.source.options.forEach((item: MatOption) => {
-      if (!item.selected && !item.disabled) {
-        newStatus = false;
-      }
-    });
-    if (event.source.ngControl.name === controlName) {
-      this['SelectedAll_' + controlName] = newStatus;
-    } else {
-      this['SelectedAll_' + controlName] = newStatus;
-    }
-  }
+
+
   constructor(
     private Dialog: MatDialog,
     private ComSrv: CommonSrvService,
@@ -67,10 +31,22 @@ export class TraineeAttendanceComponent implements OnInit {
     private fb: FormBuilder,
     private http: CommonSrvService,
   ) { }
-  TablesData: MatTableDataSource<any>;
   @ViewChild("tabGroup") tabGroup: MatTabGroup;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+
+  attendanceTableData: MatTableDataSource<any>;
+  @ViewChild("paginator") paginator: MatPaginator;
+  @ViewChild("sort") sort: MatSort;
+
+  manualAttendanceTableData: MatTableDataSource<any>;
+  @ViewChild("maPaginator") maPaginator: MatPaginator;
+  @ViewChild("maSort") maSort: MatSort;
+
+  reportTablesData: MatTableDataSource<any>;
+  @ViewChild("rPaginator") rPaginator: MatPaginator;
+  @ViewChild("rSort") rSort: MatSort;
+
+  
+
   CountZeroToHun = [];
   TapIndex: any;
   readOnly = true
@@ -85,12 +61,6 @@ export class TraineeAttendanceComponent implements OnInit {
   PlaningType: any[];
   GetDataObject: any = {}
   SpacerTitle: string;
-  SearchCtr = new FormControl('');
-  PSearchCtr = new FormControl('');
-  CSearchCtr = new FormControl('');
-  DSearchCtr = new FormControl('');
-  TSearchCtr = new FormControl('');
-  BSearchCtr = new FormControl('');
   SearchCls = new FormControl('');
   SearchSch = new FormControl('');
   SearchTSP = new FormControl('');
@@ -117,24 +87,41 @@ export class TraineeAttendanceComponent implements OnInit {
   TableColumns = [];
   maxDate: Date;
   enumUserLevel = EnumUserLevel;
-
-
+  noRecords: boolean;
   SaleGender: string = "Sales Tax Evidence"
+
+  filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.ComSrv.OID.value, SelectedColumns: [] };
+
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser);
-    this.TablesData = new MatTableDataSource([]);
-    this.PageTitle();
+    this.attendanceTableData = new MatTableDataSource([]);
+    this.reportTablesData = new MatTableDataSource([]);
+    this.manualAttendanceTableData = new MatTableDataSource([]);
     this.InitDeviceRegistrationForm();
     this.GetDeviceRegistration();
     this.getSchemesData(); // Fetch schemes on component load
-
+    this.PageTitle();
     // Update class dropdown based on selected scheme
     this.schemeFilter.valueChanges.subscribe(value => {
-      this.getClassesByTsp(value);
-      this.GetDeviceRegistration();
-
+      if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+        this.getDependantFilters();
+        this.GetDeviceRegistration();
+      } else {
+        this.getTSPDetailByScheme(value);
+        this.GetDeviceRegistration();
+      }
     });
+
+    this.classFilter.valueChanges.subscribe(value => {
+      if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+        this.getDependantFilters();
+        this.GetDeviceRegistration();
+      } else {
+        this.GetDeviceRegistration();
+      }
+    });
+
 
     // Optionally update tspFilter based on user level if needed
     if (this.currentUser.UserLevel !== this.enumUserLevel.TSP) {
@@ -210,24 +197,33 @@ export class TraineeAttendanceComponent implements OnInit {
       this.DeviceRegistrationForm.reset
     }
   }
-  LoadMatTable(tableData: any[]) {
-    const excludeColumnArray: string[] = [];
+  LoadMatTable(tableData: any[],reportName:string="") {
+    const excludeColumnArray: string[] = ['RightIndexFinger', 'RightMiddleFinger', 'LeftIndexFinger', 'LeftMiddleFinger'];
+    
+    
     if (tableData.length > 0) {
-      this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key)), 'Enrollment', 'Enrollment Status'];
-      this.TablesData = new MatTableDataSource(tableData);
-      this.TablesData.paginator = this.paginator;
-      this.TablesData.sort = this.sort;
+      this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
+      
+      this.attendanceTableData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn == "Not Checked In" || x.CheckedOut == "Not Checked Out"));
+      this.attendanceTableData.paginator = this.paginator;
+      this.attendanceTableData.sort = this.sort;
+
+      this.reportTablesData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn == "Not Checked In" && x.CheckedOut == "Not Checked Out"));
+      this.reportTablesData.paginator = this.rPaginator;
+      this.reportTablesData.sort = this.rSort;
+      
+      this.manualAttendanceTableData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn != "Not Checked In" && x.CheckedOut != "Not Checked Out"));
+      this.reportTablesData.paginator = this.maPaginator;
+      this.reportTablesData.sort = this.maSort;
+
     }
   }
 
   EmptyCtrl() {
-    this.PSearchCtr.setValue('');
-    this.CSearchCtr.setValue('');
-    this.DSearchCtr.setValue('');
-    this.BSearchCtr.setValue('');
     this.SearchCls.setValue('');
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
+    this.SearchCls.setValue('');
   }
   ShowPreview(fileName: string) {
     this.ComSrv.PreviewDocument(fileName)
@@ -236,18 +232,17 @@ export class TraineeAttendanceComponent implements OnInit {
     return input.replace(/([a-z])([A-Z])/g, '$1 $2');
   }
   applyFilter(event: any) {
-    this.TablesData.filter = event.target.value.trim().toLowerCase();
-    if (this.TablesData.paginator) {
-      this.TablesData.paginator.firstPage();
+    this.attendanceTableData.filter = event.target.value.trim().toLowerCase();
+    if (this.attendanceTableData.paginator) {
+      this.attendanceTableData.paginator.firstPage();
     }
   }
   DataExcelExport() {
     this.ComSrv.ExcelExporWithForm(
-      this.TablesData.filteredData,
+      this.attendanceTableData.filteredData,
       this.SpacerTitle
     );
   }
-
 
 
   getClassesByTsp(tspId: number) {
@@ -260,8 +255,19 @@ export class TraineeAttendanceComponent implements OnInit {
       });
   }
 
+  getClassesBySchemeFilter() {
+    this.filters.ClassID = 0;
+    this.filters.TraineeID = 0;
+    this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.schemeFilter.value}&UserID=${this.currentUser.UserID}`)
+      .subscribe(data => {
+        this.classesArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
+
   getSchemesData() {
-    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForTSR?OID=${this.ComSrv.OID.value}`)
+    this.ComSrv.getJSON(`api/TSRLiveData/GetSchemesForGSR?OID=${this.ComSrv.OID.value}`)
       .subscribe((d: any) => {
         this.schemeArray = d.Schemes;
       }, error => this.error = error);
@@ -276,8 +282,24 @@ export class TraineeAttendanceComponent implements OnInit {
       });
   }
 
+  getTSPDetailByScheme(schemeId: number) {
+    this.tspFilter.setValue(0);
+    this.classFilter.setValue(0);
+    this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=${schemeId}`)
+      .subscribe(data => {
+        this.tspDetailArray = (data as any[]);
+      }, error => {
+        this.error = error;
+      });
+  }
 
-
+  getDependantFilters() {
+    if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+      this.getClassesBySchemeFilter();
+    } else {
+      this.getTSPDetailByScheme(this.filters.SchemeID);
+    }
+  }
 
   paramObject: any = {}
   ExportReportName: string = ""
@@ -296,16 +318,24 @@ export class TraineeAttendanceComponent implements OnInit {
 
     try {
       this.IsDisabled = true; // Disable UI elements during API call
-      const endpoint = 'api/DeviceManagement/GetBiometricAttendanceTrainees'; // Replace with your API endpoint
+      const endpoint = 'api/DeviceManagement/GetBiometricAttendanceTrainees';
       const params = this.paramObject;
 
       const response: any = await this.ComSrv.postJSON(endpoint, params).toPromise();
 
       if (response && response.length > 0) {
         this.DeviceRegistration = response;
-        this.LoadMatTable(this.DeviceRegistration); // Load the response into the table
+
+        const enrolledTrainees = this.DeviceRegistration.filter(x => x.BiometricEnrollment == "Completed");
+        if (enrolledTrainees.length > 0) {
+          this.LoadMatTable(enrolledTrainees);
+        } else {
+          this.ComSrv.ShowWarning('No records found.', 'Close');
+        }
+        // Load the response into the table
       } else {
         this.ComSrv.ShowWarning('No device records found.', 'Close');
+        this.noRecords = true
       }
     } catch (error) {
       this.ComSrv.ShowError('Failed to fetch device data. Please try again later.', 'error', 5000);
@@ -346,8 +376,8 @@ export class TraineeAttendanceComponent implements OnInit {
     const data = [row, DeviceStatus];
 
     // const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {
-    const dialogRef = this.Dialog.open(BiometricEnrollmentDialogComponent, {
-      width: '40%',
+    const dialogRef = this.Dialog.open(BiometricAttendanceDialogComponent, {
+      width: '50%',
       data: data,
       disableClose: true,
     });
@@ -375,13 +405,5 @@ export class TraineeAttendanceComponent implements OnInit {
     this.ComSrv.setTitle(this.AcitveRoute.snapshot.data.title);
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
-  
-  ngAfterViewInit() {
-    this.matSelectArray = [this.Applicability, this.Province, this.Cluster, this.District];
-    if (this.tabGroup) {
-      this.tabGroup.selectedTabChange.subscribe((event) => {
-        this.TapIndex = event.index
-      });
-    }
-  }
+
 }
