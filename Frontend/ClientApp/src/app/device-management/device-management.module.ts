@@ -11,7 +11,6 @@ import { BiometricAttendanceDialogComponent } from "./biometric-attendance-dialo
 import { ManualAttendanceDialogComponent } from "./manual-attendance-dialog/manual-attendance-dialog.component";
 import { SharedModule } from "../shared/shared.module";
 import { DeviceStatusUpdateDialogComponent } from './device-status-update-dialog/device-status-update-dialog.component';
-
 @NgModule({
   declarations: [
     DeviceRegistrationComponent,

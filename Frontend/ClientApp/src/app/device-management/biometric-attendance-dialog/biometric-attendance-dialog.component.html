@@ -1,1 +1,150 @@
-<p>biometric-attendance-dialog works!</p>
+<!-- Toolbar with title and close button -->
+<mat-toolbar color="accent" class=" slim slim">
+    <mat-icon class="material-icons"> verified_user </mat-icon>
+    <span class="spacer">Biometric Attendance</span>
+    <mat-icon mat-raised-button color="accent" matDialogClose (click)="statusLoopSubscription.unsubscribe()"
+        class="material-icons close-btn">close</mat-icon>
+</mat-toolbar>
+<!-- Main content area -->
+<mat-card-content>
+    <!-- Read-only fields for Trainee Name, CNIC, and Class Name -->
+    <div class="row ml-1 mr-1 mb-2">
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Trainee Name</mat-label>
+                <input matInput readonly [value]="data[0].TraineeName" />
+            </mat-form-field>
+        </div>
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Trainee Code</mat-label>
+                <input matInput readonly [value]="data[0].TraineeCode" />
+            </mat-form-field>
+        </div>
+        <div class="col-sm-4">
+            <mat-form-field fxFlex>
+                <mat-label>Class Code</mat-label>
+                <input matInput readonly [value]="data[0].ClassCode" />
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row ml-1 mr-1 mb-2">
+        <!-- Biometric data display -->
+        <div class="col-sm-7 border pb-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="device-status-container border rounded mt-2 text-center">
+                        <h6 class="status-heading">Attendance Status</h6>
+                        <div class="status-wrapper">
+
+                            <ng-container
+                            *ngIf="data[0].CheckedIn !='Not Checked In' && data[0].CheckedOut !='Not Checked Out';else templateName">
+                                <div  class="device-status online ">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Marked</span>
+                                </div>
+                            </ng-container>
+                            <ng-template #templateName>
+                                <div *ngIf="IsVerified" class="device-status online ">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Marked</span>
+                                </div>
+                                <div *ngIf="!IsVerified" class="device-status offline">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>Unmarked</span>
+                                </div>
+                            </ng-template>
+
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="pl-2 m-1"><br>
+                        <ul>
+                            <li class="border rounded  pl-2 mt-2">Select the checkbox for the specific fingerprint index
+                                and scan.</li>
+                            <li class="border rounded  pl-2 mt-2">If there's an issue, scan again.</li>
+                            <li class="border rounded  pl-2 mt-2">If the right index finger doesn't work, select another
+                                checkbox and scan the corresponding finger.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Device status and finger selection -->
+        <div class="col-sm-5 border pb-2">
+            <!-- Device status display -->
+            <div class="device-status-container border rounded mt-2 text-center">
+                <h6 class="status-heading">Device Status</h6>
+                <div class="status-wrapper">
+                    <div *ngIf="IsDeviceConnected" class="device-status online ">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Online</span>
+                    </div>
+                    <div *ngIf="!IsDeviceConnected" class="device-status offline">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Offline</span>
+                    </div>
+                </div>
+            </div>
+            <form [formGroup]="fingerprintForm">
+                 <div class="border rounded p-1 mt-2"  *ngIf="data[0].CheckedIn =='Not Checked In' || data[0].CheckedOut =='Not Checked Out'">
+                    <mat-radio-group formControlName="AttendanceType">
+                        <mat-radio-button color="primary" [disabled]="data[0].CheckedIn !='Not Checked In'"
+                            value="CheckIn" class="mr-3">CheckIn</mat-radio-button> |
+                        <mat-radio-button color="accent"
+                            [disabled]="data[0].CheckedIn =='Not Checked In' && data[0].CheckedOut=='Not Checked Out'"
+                            value="CheckOut">CheckOut</mat-radio-button>
+                    </mat-radio-group>
+
+                </div>
+                <div class="border rounded p-1 mt-2"  *ngIf="data[0].CheckedIn !='Not Checked In'">
+                    <mat-checkbox [checked]="data[0].CheckedIn !='Not Checked In'">
+                        CheckedIn
+                    </mat-checkbox>
+                </div>
+                <div class="border rounded p-1 mt-2"  *ngIf="data[0].CheckedOut !='Not Checked Out'">
+                    <mat-checkbox [checked]="data[0].CheckedOut !='Not Checked In'">
+                        CheckedOut
+                    </mat-checkbox>
+                </div>
+
+                <div class="border rounded p-1 mt-2">
+                    <mat-checkbox formControlName="RightIndexFinger"
+                        (change)="onCheckboxChange($event, 'RightIndexFinger')">
+                        Right Index Finger
+                    </mat-checkbox>
+                </div>
+                <div class="border rounded p-1 mt-2">
+                    <mat-checkbox formControlName="RightMiddleFinger"
+                        (change)="onCheckboxChange($event, 'RightMiddleFinger')">
+                        Right Middle Finger
+                    </mat-checkbox>
+                </div>
+                <div class="border rounded p-1 mt-2">
+                    <mat-checkbox formControlName="LeftIndexFinger"
+                        (change)="onCheckboxChange($event, 'LeftIndexFinger')">
+                        Left Index Finger
+                    </mat-checkbox>
+                </div>
+                <div class="border rounded p-1 mt-2 mb-2">
+                    <mat-checkbox formControlName="LeftMiddleFinger"
+                        (change)="onCheckboxChange($event, 'LeftMiddleFinger')">
+                        Left Middle Finger
+                    </mat-checkbox>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scan fingerprint button -->
+    <div class="row mb-1 mt-1 pl-1 pr-1">
+        <div class="col-sm-12">
+            <a mat-raised-button color="primary"
+                *ngIf="this.data[0].CheckedIn =='Not Checked In' || this.data[0].CheckedOut =='Not Checked Out'"
+                [disabled]="!IsDeviceConnected || isProcessingEnd" class="ml-1" (click)="verifyImpression()" style="float:right"><i class="fas fa-fingerprint"></i> Mark Attendance</a>
+        </div>
+    </div>
+</mat-card-content>

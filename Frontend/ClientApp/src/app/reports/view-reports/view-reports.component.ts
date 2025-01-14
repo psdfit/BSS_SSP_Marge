@@ -712,6 +712,21 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
         break;
 
+      case EnumReports['TSP Change Request Report']:
+        var StartMonth = moment(this.startDate.value).format('YYYY-MM');
+        var EndMonth = moment(this.endDate.value).format('YYYY-MM');
+
+        this.SPName = "RPT_TSPChangeRequest"
+        this.ExportReportName = 'TSP Change Request Report'
+
+        this.paramObject = {
+          StartMonth: StartMonth,
+          EndMonth: EndMonth,
+        }
+
+        this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
+        break;
+
       case EnumReports['Bulk Trainees Status Report']:
         var FundingSource = this.chosenFilter('Project Type').split("=")[1];
         FundingSource = FundingSource == 'undefined' ? "0" : FundingSource

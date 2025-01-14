@@ -27,6 +27,9 @@ namespace DataLayer.Models
         public int SessionID { get; set; }
         public string IPAddress { get; set; }
         public double ageCompleted { get; set; }
+        public int DistrictID { get; set; }
+        public string DistrictName { get; set; }
+
 
     }
 }

@@ -103,12 +103,26 @@ export class AuthInterceptor implements HttpInterceptor {
       // If user is not authorized, redirect to the login page
       this.router.navigateByUrl('/login');
     }
+    
+        this.lcount++;
+        if (this.lcount > 0) {
 
-    // Increment loading count to indicate loading state
-    this.lcount++;
-    if (this.lcount > 0) {
-      this.auth.setLoading(true);
-    }
+          
+          
+ 
+
+          const skippedUrls = ['initDevice','getScannerStatus', 'Capture', 'captureSingle','createSessionID','getParameters','setParameters','getTemplateData','verifyTemplate'];
+          if (skippedUrls.some(pattern => req.url.includes(pattern))) {
+            this.setLoading=false; 
+          }else{
+            this.setLoading=true; 
+          }
+
+       
+
+          if(this.setLoading==true){
+            this.auth.setLoading(true); 
+          }
 
     return next.handle(req).pipe(
       tap(

@@ -15,7 +15,7 @@ namespace DataLayer.Services
         {
         }
 
-        public List<SkillsScholarshipInitiativeModel> GetSkillsScholarshipBySchemeID(int SchemeID, int? TSPId, int Locality, int Cluster)
+        public List<SkillsScholarshipInitiativeModel> GetSkillsScholarshipBySchemeID(int SchemeID, int? TSPId, int Locality, int Cluster, int? District)
         {
             try
             {
@@ -23,11 +23,16 @@ namespace DataLayer.Services
                 {
                     TSPId = null;
                 }
-                SqlParameter[] param = new SqlParameter[4];
+                if (District == 0)
+                {
+                    District = null;
+                }
+                SqlParameter[] param = new SqlParameter[5];
                 param[0] = new SqlParameter("@SchemeID", SchemeID);
                 param[1] = new SqlParameter("@TSPId", TSPId);
                 param[2] = new SqlParameter("@Locality", Locality);
                 param[3] = new SqlParameter("@ClusterID", Cluster);
+                param[4] = new SqlParameter("@DistrictID", District);
 
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "B2C_Dashboard", param).Tables[0];
                 return LoopinData(dt);
@@ -100,6 +105,8 @@ namespace DataLayer.Services
             SkillsScholarship.EnrolmentsCompleted = Convert.ToInt32(r["EnrolmentsCompleted"]);
             SkillsScholarship.RemainingSeats = Convert.ToInt32(r["RemainingSeats"]);
             SkillsScholarship.ClusterID = Convert.ToInt32(r["ClusterID"]);
+            SkillsScholarship.DistrictID = Convert.ToInt32(r["DistrictID"]);
+            SkillsScholarship.DistrictName = r["DistrictName"].ToString();
             if (r.Table.Columns.Contains("SchemeID"))
             {
                 
@@ -190,14 +197,28 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<SkillsScholarshipInitiativeModel> FetchDistrictsByCluster(int Cluster)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[2];
+                param[0] = new SqlParameter("@Cluster", Cluster);
 
-        public void GetStartRace(int SchemeID, int ClusterID, int TradeID, int UserID)
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "DistrictProvider", param).Tables[0];
+                return LoopinDataDistrict(dt);
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public void GetStartRace(int SchemeID, int ClusterID, int DistrictID, int TradeID, int UserID)
         {
             try
             {
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@SchemeID", SchemeID));
                 param.Add(new SqlParameter("@ClusterID", ClusterID));
+                param.Add(new SqlParameter("@DistrictID", DistrictID));
                 param.Add(new SqlParameter("@TradeID", TradeID));
                 param.Add(new SqlParameter("@StartRaceUserID", UserID));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "StartRace", param.ToArray());
@@ -210,13 +231,14 @@ namespace DataLayer.Services
             { throw new Exception(e.Message); }
 
         }
-        public void GetStopRace(int SchemeID, int ClusterID, int TradeID, int UserID)
+        public void GetStopRace(int SchemeID, int ClusterID, int DistrictID, int TradeID, int UserID)
         {
             try
             {
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@SchemeID", SchemeID));
                 param.Add(new SqlParameter("@ClusterID", ClusterID));
+                param.Add(new SqlParameter("@DistrictID", DistrictID));
                 param.Add(new SqlParameter("@TradeID", TradeID));
                 param.Add(new SqlParameter("@StopRaceUserID", UserID));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "StopRace", param.ToArray());
@@ -265,6 +287,25 @@ namespace DataLayer.Services
             return SkillsScholarship;
         }
 
+        private List<SkillsScholarshipInitiativeModel> LoopinDataDistrict(DataTable dt)
+        {
+            List<SkillsScholarshipInitiativeModel> SkillsScholarshipL = new List<SkillsScholarshipInitiativeModel>();
 
+            foreach (DataRow r in dt.Rows)
+            {
+                SkillsScholarshipL.Add(RowOfSkillsScholarshipDistrict(r));
+
+            }
+            return SkillsScholarshipL;
+        }
+        private SkillsScholarshipInitiativeModel RowOfSkillsScholarshipDistrict(DataRow r)
+        {
+            SkillsScholarshipInitiativeModel SkillsScholarship = new SkillsScholarshipInitiativeModel();
+
+            SkillsScholarship.DistrictName = r["DistrictName"].ToString();
+            SkillsScholarship.DistrictID = Convert.ToInt32(r["DistrictID"]);
+
+            return SkillsScholarship;
+        }
     }
 }

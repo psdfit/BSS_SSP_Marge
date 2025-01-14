@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
+using DataLayer.Models.DVV;
+using System.Xml.Linq;
 
 namespace DataLayer.Services
 {
@@ -195,9 +197,9 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@ReferralSourceID", traineeProfile.ReferralSourceID));
                 param.Add(new SqlParameter("@TraineeEmail", traineeProfile.TraineeEmail));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
-            
-                
-            
+
+
+
             }
             catch (Exception ex)
             {
@@ -207,19 +209,19 @@ namespace DataLayer.Services
 
             if (traineeProfile.IsReferredByGuru)
             {
-                var trainees= FetchTraineeProfileByClass(traineeProfile.ClassID).FirstOrDefault(t=>t.TraineeCNIC==traineeProfile.TraineeCNIC && t.TraineeName==traineeProfile.TraineeName);
+                var trainees = FetchTraineeProfileByClass(traineeProfile.ClassID).FirstOrDefault(t => t.TraineeCNIC == traineeProfile.TraineeCNIC && t.TraineeName == traineeProfile.TraineeName);
                 SaveTraineeGuru(traineeProfile, trainees.TraineeID);
             }
             return FetchTraineeProfileByClass(traineeProfile.ClassID);
         }
 
-        public void SaveTraineeGuru(TraineeProfileModel traineeData,int traineeID)
+        public void SaveTraineeGuru(TraineeProfileModel traineeData, int traineeID)
         {
 
             List<SqlParameter> param = new List<SqlParameter>();
-               param.Add(new SqlParameter("@GuruProfileID", traineeData.GuruProfileID));
-               param.Add(new SqlParameter("@TraineeID", traineeID));
-               param.Add(new SqlParameter("@UserID", traineeData.CurUserID));    
+            param.Add(new SqlParameter("@GuruProfileID", traineeData.GuruProfileID));
+            param.Add(new SqlParameter("@TraineeID", traineeID));
+            param.Add(new SqlParameter("@UserID", traineeData.CurUserID));
             SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeGuruProfile", param.ToArray());
         }
 
@@ -2038,6 +2040,37 @@ namespace DataLayer.Services
             List<SqlParameter> param = new List<SqlParameter>();
             param.Add(new SqlParameter("@CreatedUserID", UserID));
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
+            return dt;
+        }
+
+        public DataTable SaveTraineeBiometricData(BiometricTraineeDataModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+
+            param.Add(new SqlParameter("@TraineeID", model.TraineeID));
+            param.Add(new SqlParameter("@RightIndexFinger", model.RightIndexFinger));
+            param.Add(new SqlParameter("@RightMiddleFinger", model.RightMiddleFinger));
+            param.Add(new SqlParameter("@LeftIndexFinger", model.LeftIndexFinger));
+            param.Add(new SqlParameter("@LeftMiddleFinger", model.LeftMiddleFinger));
+            param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+            
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricData", param.ToArray()).Tables[0];
+            return dt;
+        }
+
+        public DataTable SaveBiometricAttendance(BiometricTraineeDataModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+        {
+            new SqlParameter("@TraineeID", model.TraineeID),
+            new SqlParameter("@FingerImpression", model.FingerImpression),
+            new SqlParameter("@CheckIn", model.AttendanceType == "CheckIn" ? 1 : 0),
+            new SqlParameter("@CheckOut", model.AttendanceType == "CheckOut" ? 1 : 0),
+            new SqlParameter("@TimeStamp", DateTime.Now),
+            new SqlParameter("@CurUserID", model.CurUserID)
+        };
+
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricAttendance", param.ToArray()).Tables[0];
             return dt;
         }
 
