@@ -42,8 +42,8 @@
         <mat-form-field appearance="fill" class="dropdown" >
           <mat-label>Filter By</mat-label>
           <mat-select [(value)]="filterBy"  (selectionChange)="[getTradeData()]">
-            <mat-option  value="1">Cluster wise</mat-option>
-            <mat-option value="2">District wise</mat-option>
+            <mat-option  [value]="'1'">Cluster wise</mat-option>
+            <mat-option [value]="'2'">District wise</mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -51,7 +51,7 @@
           <thead>
             <tr class="row">
               <th class="col-3"><h6>Cluster Name</h6></th>
-              <th *ngIf="filterBy === 'district'" class="col-3"><h6>District Name</h6></th>
+              <th *ngIf="filterBy === '2'" class="col-3"><h6>District Name</h6></th>
               <th class="col-3"><h6>Trade Name</h6></th>
               <th class="col-3"><h6>Trade Target</h6></th>
             </tr>
@@ -60,7 +60,7 @@
             <ng-container>
               <tr *ngFor="let t of TradeTargetDetail; let i = index" class="row">
                 <td class="col-3" style="padding-top:30px">{{t.ClusterName}}</td>
-                <td *ngIf="filterBy === 'district'" class="col-3" style="padding-top:30px">{{t.DistrictName}}</td>
+                <td *ngIf="filterBy === '2'" class="col-3" style="padding-top:30px">{{t.DistrictName}}</td>
                 <td class="col-3" style="padding-top:30px">{{t.TradeName}}</td>
                 <td class="col-3">
                   <mat-form-field>
