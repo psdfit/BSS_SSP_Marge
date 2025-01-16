@@ -132,8 +132,16 @@ export class BiometricAttendanceDialogComponent implements OnInit {
   }
   async onCheckboxChange(event:any,fingerPrintIndex: string): Promise<boolean> {
     console.timeStamp(fingerPrintIndex);
+    
     try {
+    this.ComSrv.ShowWarning("Placed your Finger on Camera.", "Close", 10000);
+
       const isVerified = await this.VerifyWithTemplate(fingerPrintIndex);
+      if (isVerified) {
+        console.log(`Fingerprint ${fingerPrintIndex} verified successfully.`);
+        this.ComSrv.ShowWarning("Attendance is marked", "Close", 1000);
+        // break; // Exit the loop if verification is successful
+      }
       this.isProcessingEnd = true;
       return isVerified; // Return verification status
     } catch (error) {

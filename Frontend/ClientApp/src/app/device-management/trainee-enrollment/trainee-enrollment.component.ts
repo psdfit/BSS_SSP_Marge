@@ -79,6 +79,8 @@ export class TraineeEnrollmentComponent implements OnInit {
 
   SaleGender: string = "Sales Tax Evidence"
   ngOnInit(): void {
+
+
     this.currentUser = this.ComSrv.getUserDetails();
     console.log(this.currentUser);
     this.TablesData = new MatTableDataSource([]);

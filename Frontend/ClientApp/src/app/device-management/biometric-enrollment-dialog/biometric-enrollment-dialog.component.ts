@@ -92,7 +92,9 @@ export class BiometricEnrollmentDialogComponent implements OnInit {
   }
   ngOnInit() {
     this.disableAllCheckboxes();
-    this.InitPage();
+    this.Init()
+    // if(this.ComSrv.IsDeviceConnected==false)
+    
   }
 
 

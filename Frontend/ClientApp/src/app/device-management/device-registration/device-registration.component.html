@@ -58,21 +58,21 @@
                      </mat-select>
                   </mat-form-field>
                </div>
-               <div class="col-sm-3">
+               <div [class]="currentUser.UserLevel != enumUserLevel.TSP ? 'col-sm-3' : 'col-sm-4'">
                   <mat-form-field>
                      <mat-label>Select Brand</mat-label>
                      <mat-select formControlName="Brand" matInput required>
-                        <mat-option value="Suprema">Suprema </mat-option>
-                        <mat-option value="Digital Persona">Digital Persona</mat-option>
+                        <mat-option value="Suprema" selected>Suprema </mat-option>
+                        <!-- <mat-option value="Digital Persona">Digital Persona</mat-option>
                         <mat-option value="ZKTeco">ZKTeco</mat-option>
-                        <mat-option value="Virdi">Virdi</mat-option>
+                        <mat-option value="Virdi">Virdi</mat-option> -->
                      </mat-select>
                      <mat-error
                         *ngFor="let error of DeviceRegistrationForm.get('Brand').errors | keyvalue">{{getErrorMessage(error.key,
                         error.value) }}</mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-3">
+               <div  [class]="currentUser.UserLevel != enumUserLevel.TSP ? 'col-sm-3' : 'col-sm-4'">
                   <mat-form-field>
                      <mat-label>Model Name</mat-label>
                      <input formControlName="Model" matInput required />
@@ -80,7 +80,7 @@
                         getErrorMessage(error.key, error.value) }}</mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-3">
+               <div [class]="currentUser.UserLevel != enumUserLevel.TSP ? 'col-sm-3' : 'col-sm-4'">
                   <mat-form-field>
                      <mat-label>Device Serial Number</mat-label>
                      <input formControlName="SerialNumber" matInput required />
