@@ -1,6 +1,7 @@
 using DataLayer.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Data;
 
 namespace DataLayer.Interfaces
 {
@@ -44,6 +45,6 @@ namespace DataLayer.Interfaces
         public List<ClassModel> FetchClassesForPRNCompletion(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated);
         public List<ClassModel> FetchClassesForPRNFinal(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated);
         public List<ClassModel> FetchClassesForTRN(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated);
-
+        public DataTable FetchDeveiceStatus(int UserID);
     }
 }

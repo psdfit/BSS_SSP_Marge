@@ -320,6 +320,18 @@ namespace PSDF_BSS.API.Controllers
                 Data = Data
             });
         }
+        [HttpGet("~/api/trainee/deleteattendance/{cnic}")]
+        public IActionResult DeleteTraineeAndAttandance(string cnic)
+        {
+
+            _srvTraineeProfile.DeleteTraineeandAttandance(cnic);
+
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Success"
+            });
+        }
     }
 
 

@@ -2070,6 +2070,16 @@ namespace DataLayer.Services
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricAttendance", param.ToArray()).Tables[0];
             return dt;
         }
-
+        public void DeleteTraineeandAttandance(string cnic)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@CNIC", cnic));
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "DeleteTraineeandAttandance", param.ToArray());
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
     }
 }

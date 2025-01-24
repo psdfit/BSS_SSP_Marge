@@ -130,5 +130,7 @@ namespace DataLayer.Interfaces
         DataTable SaveTraineeBiometricData(BiometricTraineeDataModel model);
 
         DataTable SaveBiometricAttendance(BiometricTraineeDataModel model);
+
+        void DeleteTraineeandAttandance(string CNIC);
     }
 }
