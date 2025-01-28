@@ -197,5 +197,52 @@ namespace PSDF_BSS.API.Controllers
                 Data = Data
             });
         }
+
+        [HttpPost("~/api/Instructor/biomatricRegistration")]
+        public IActionResult biomatricRegistration(InstructorDVV model)
+        {
+            string errMsg = string.Empty;
+            if (model == null)
+            {
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+            }
+            if (model.InstructorID == 0)
+            {
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Invalid InstructorID."
+                });
+            }
+            if (model.InstructorID == 0
+                || string.IsNullOrEmpty(model.BiometricData1)
+                || string.IsNullOrEmpty(model.BiometricData2)
+                || string.IsNullOrEmpty(model.BiometricData3)
+                || string.IsNullOrEmpty(model.BiometricData4)
+                || string.IsNullOrEmpty(model.LocationAddress)
+
+                )
+            {
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+            }
+
+            model.CurUserID = Convert.ToInt32(User.Identity.Name);
+            bool result = _srvInstructor.SavebiomatricInstructorDVV(model, out errMsg);
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = result ? "Success" : errMsg,
+                Data = new { isSaved = result }
+            });
+        }
+
     }
 }

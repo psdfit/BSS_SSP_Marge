@@ -2050,7 +2050,7 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@LeftIndexFinger", model.LeftIndexFinger));
             param.Add(new SqlParameter("@LeftMiddleFinger", model.LeftMiddleFinger));
             param.Add(new SqlParameter("@CurUserID", model.CurUserID));
-            
+
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricData", param.ToArray()).Tables[0];
             return dt;
         }
@@ -2080,6 +2080,54 @@ namespace DataLayer.Services
             }
             catch (Exception e)
             { throw new Exception(e.Message); }
+        }
+
+        public int SavebiomatricTraineeProfileDVV(TraineeProfileDVV model, out string errMsg)
+        {
+            errMsg = string.Empty;
+            try
+            {
+
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@TraineeID", model.TraineeID));
+                param.Add(new SqlParameter("@BiometricData1", model.BiometricData1));
+                param.Add(new SqlParameter("@BiometricData2", model.BiometricData2));
+                param.Add(new SqlParameter("@BiometricData3", model.BiometricData3));
+                param.Add(new SqlParameter("@BiometricData4", model.BiometricData4));
+                // Add an output parameter to capture the return value from the stored procedure
+                SqlParameter returnParameter = new SqlParameter
+                {
+                    ParameterName = "@ReturnVal",
+                    Direction = ParameterDirection.ReturnValue
+                };
+                param.Add(returnParameter);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_BioMatricTraineeProfileDVV", param.ToArray());
+
+                // Get the return value from the stored procedure
+                int returnValue = (int)returnParameter.Value;
+
+                // Handle success or failure based on the return value
+                if (returnValue == 0)
+                {
+                    return 0; // Success
+                }
+                else if (returnValue == -1)
+                {
+                    errMsg = "TraineeID not found.";
+                    return -1; // Failure due to invalid TraineeID
+                }
+                else
+                {
+                    errMsg = $"An error occurred. Error Code: {returnValue}";
+                    return returnValue; // Other error codes
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any unexpected exceptions
+                errMsg = ex.Message;
+                return -99; // Indicate unexpected error
+            }
         }
     }
 }
