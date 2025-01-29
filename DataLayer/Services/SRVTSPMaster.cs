@@ -331,6 +331,48 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
-        //RD_GetKAMUserByClassCode
+        public ApprovalHistoryModel GET_ConcateClassescodebyTPRNID_Notification(string TPRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_ConcateClasscodebyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ConcateClasscodebyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+
+                List<ApprovalHistoryModel> KAMTSPUser = Helper.ConvertDataTableToModel<ApprovalHistoryModel>(dt);
+                KAMTSPUser[0].ForMonth = String.Format("{0:y}", KAMTSPUser[0].Month);  // "March, 2008"
+                return KAMTSPUser[0];
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public string GET_KAMAndTspUserByTPRNIDs_Notification(string TPRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+
+                List<TSPMasterModel> KAMTSPUser = Helper.ConvertDataTableToModel<TSPMasterModel>(dt);
+                string TSPIds = (string.Join(",", KAMTSPUser.Select(x => x.UserID.ToString())));
+                List<string> Distinct_uniqueValues = TSPIds.ToLower().Split(',').Distinct().ToList();
+                string UniqueString = string.Join(",", Distinct_uniqueValues);
+
+                return UniqueString;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
     }
 }

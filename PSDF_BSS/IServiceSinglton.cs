@@ -174,6 +174,9 @@ namespace PSDF_BSS
             services.AddSingleton(typeof(ISRVPayment), typeof(SRVPayment));
             services.AddSingleton(typeof(ISRVProcessConfiguration), typeof(SRVProcessConfiguration));
 
+            //SRN Coursera --Added by  samiullah 17-01-2025
+            services.AddSingleton(typeof(ISRVTPRN), typeof(SRVTPRN));
+            services.AddSingleton(typeof(ISRVTPRNDetails), typeof(SRVTPRNDetails));
 
             //SRN Coursera --Added by  Rao Ali Haider 04-July-2024
             services.AddSingleton(typeof(ISRVSRNCoursera), typeof(SRVSRNCoursera));

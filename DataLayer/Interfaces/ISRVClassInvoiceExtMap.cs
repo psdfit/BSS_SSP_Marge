@@ -23,6 +23,7 @@ namespace DataLayer.Interfaces
 
         ClassInvoiceMapModel GetInvoices(int InvoiceID);
         System.Data.DataTable GetMPR(int ID);
+        System.Data.DataTable GetTPRN(int ID);
         System.Data.DataTable GetSRN(int ID);
         System.Data.DataTable GetPRN(int ID);
         System.Data.DataTable GetPRNMaster(int ID);

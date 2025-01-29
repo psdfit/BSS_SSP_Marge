@@ -75,6 +75,12 @@ export class CancelComponent implements OnInit {
       }
       this.CancelConfirmMsg = 'Are you sure you want to cancel this invoice header? \nNote: All invoices against this header will be cancelled. Please view details for more information.';
     }
+    else if (type === 'Inv_S') {
+      if (next != undefined) {
+        if (next.InvHeaderSRN > 0 && next.InvSRNIsCanceled <= 0) { this.ComSrv.ShowError('Please cancel next month\'s invoice first to cancel this one.'); return; }
+      }
+      this.CancelConfirmMsg = 'Are you sure you want to cancel this invoice header? \nNote: All invoices against this header will be cancelled. Please view details for more information.';
+    }
     else if (type == 'PO_SRN') {
       if (next != undefined) {
         if (next.POHeaderIDSRN > 0 && next.POHeaderSRNIsCanceled <= 0) { this.ComSrv.ShowError("Please cancel next month's PO first to cancel this one."); return; }
@@ -86,6 +92,19 @@ export class CancelComponent implements OnInit {
         if (next.SRNID > 0 && next.SRNIsCanceled <= 0) { this.ComSrv.ShowError('Please cancel next month\'s SRN first to cancel this one.'); return; }
       }
       this.CancelConfirmMsg = 'Are you sure you want to cancel this SRN?';
+    }
+
+    else if (type == 'PO_TPRN') {
+      if (next != undefined) {
+        if (next.POHeaderIDTPRN > 0 && next.POHeaderTPRNIsCanceled <= 0) { this.ComSrv.ShowError("Please cancel next month's PO first to cancel this one."); return; }
+      }
+      this.CancelConfirmMsg = 'Are you sure you want to cancel this PO header? \nNote: All PO Lines against this header will be cancelled. Please view details for more information.';
+    }
+    else if (type === 'TPRN') {
+      if (next != undefined) {
+        if (next.TPRNID > 0 && next.TPRNIsCanceled <= 0) { this.ComSrv.ShowError('Please cancel next month\'s SRN first to cancel this one.'); return; }
+      }
+      this.CancelConfirmMsg = 'Are you sure you want to cancel this TPRN?';
     }
     else if (type === 'PRN') {
       if (next != undefined) {
@@ -144,6 +163,9 @@ export class CancelComponent implements OnInit {
   }
   GetSRN(ID: number) {
     this.dailog.openDocumentDialogue(ID, 'SRN');
+  }
+  GetTPRN(ID: number) {
+    this.dailog.openDocumentDialogue(ID, 'TPRN');
   }
   GetPRN(ID: number) {
     this.dailog.openDocumentDialogue(ID, 'PRN');

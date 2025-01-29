@@ -176,6 +176,96 @@
         </mat-card-content>
       </mat-card>
     </mat-tab>
+    <mat-tab label="Transportation Recommendation Note" *ngIf="tprn.length>0">
+      <mat-card>
+        <mat-card-content>
+          <div fxLayoutAlign="space-around space-around" fxLayout="column">
+            <!--<mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Stipend Recommendation Note</span>
+            <div class="spacer"></div>
+          </mat-toolbar>-->
+
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+
+                    <th>Month</th>
+                    <th>Report Date</th>
+                    <th>Number Of Months</th>
+                    <th>TSP Name</th>
+                    <th>Trade Name</th>
+                    <th>Class Code</th>
+                    <th>Batch</th>
+                    <th>Training District</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let r of tprn ">
+                    <tr>
+
+                      <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                      <td class="number-align-center">{{r.ReportDate | date:environment.MonthFormat}}</td>
+                      <td class="number-align-center">{{r.NumberOfMonths}}</td>
+                      <td>{{r.TSPName}}</td>
+                      <td>{{r.TradeName}}</td>
+                      <td>{{r.ClassCode}}</td>
+                      <td class="number-align-center">{{r.Batch}}</td>
+                      <td>{{r.TrainingDistrict}}</td>
+                    </tr>
+                    <tr *ngIf="r.tprnDetails">
+                      <td colspan="9">
+                        <div>
+                          <table class="table table-bordered" style="color:lightslategrey">
+                            <thead>
+                              <tr>
+
+                                <th>Trainee Code</th>
+                                <th>Trainee Name</th>
+                                <th>Father Name</th>
+                                <th>Trainee CNIC</th>
+                                <th>Contact Number</th>
+                                <th>Report Id</th>
+                                <th>Amount</th>
+                                <th>Token Number</th>
+                                <th>Transaction Number</th>
+                                <th>Comments</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
+                              <ng-container *ngFor="let c of r.tprnDetails">
+                                <tr *ngIf="c.Comments != 'Stipend Withheld till Trainee Verification'">
+
+                                  <td>{{c.TraineeCode}}</td>
+                                  <td>{{c.TraineeName}}</td>
+                                  <td>{{c.FatherName}}</td>
+                                  <td class="number-align-center">{{c.TraineeCNIC}}</td>
+                                  <td class="number-align-center">{{c.ContactNumber1}}</td>
+                                  <td class="number-align-center">{{c.ReportId}}</td>
+                                  <td class="decimal-align-right">{{c.Amount | number: environment.Decimal}}</td>
+                                  <td class="number-align-center">{{c.TokenNumber}}</td>
+                                  <td class="number-align-center">{{c.TransactionNumber}}</td>
+                                  <td>{{c.Comments}}</td>
+                                  <td class="number-align-center">{{c.IsPaid?"Redeemed":"Pending"}}</td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                    <!--Nested Grid ends here-->
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
     <mat-tab label="Payment Recommendation Note" *ngIf="PRNMaster.length>0">
       <mat-card>
         <mat-card-content>

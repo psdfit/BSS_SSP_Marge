@@ -36,7 +36,6 @@
                     <div class="device-status-container border rounded mt-2 text-center">
                         <h6 class="status-heading">Attendance Status</h6>
                         <div class="status-wrapper">
-
                             <ng-container
                             *ngIf="data[0].CheckedIn !='Not Checked In' && data[0].CheckedOut !='Not Checked Out';else templateName">
                                 <div  class="device-status online ">
@@ -54,13 +53,8 @@
                                     <span>Unmarked</span>
                                 </div>
                             </ng-template>
-
-
-
                         </div>
-
                     </div>
-
                     <div class="pl-2 m-1"><br>
                         <ul>
                             <li class="border rounded  pl-2 mt-2">Select the checkbox for the specific fingerprint index
@@ -98,7 +92,6 @@
                             [disabled]="data[0].CheckedIn =='Not Checked In' && data[0].CheckedOut=='Not Checked Out'"
                             value="CheckOut">CheckOut</mat-radio-button>
                     </mat-radio-group>
-
                 </div>
                 <div class="border rounded p-1 mt-2"  *ngIf="data[0].CheckedIn !='Not Checked In'">
                     <mat-checkbox [checked]="data[0].CheckedIn !='Not Checked In'">
@@ -110,7 +103,6 @@
                         CheckedOut
                     </mat-checkbox>
                 </div>
-
                 <div class="border rounded p-1 mt-2">
                     <mat-checkbox formControlName="RightIndexFinger"
                         (change)="onCheckboxChange($event, 'RightIndexFinger')">
@@ -138,7 +130,6 @@
             </form>
         </div>
     </div>
-
     <!-- Scan fingerprint button -->
     <!-- <div class="row mb-1 mt-1 pl-1 pr-1">
         <div class="col-sm-12">

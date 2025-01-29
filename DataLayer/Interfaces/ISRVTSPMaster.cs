@@ -22,6 +22,8 @@ namespace DataLayer.Interfaces
         public UsersModel KAMUserByTSPUserID(int UserID);
         public ApprovalHistoryModel GET_ConcateClassescodebySRNID_Notification(string SRNIDs, SqlTransaction transaction = null);
         public string GET_KAMAndTspUserBySRNIDs_Notification(string SRNIDs, SqlTransaction transaction = null);
+        public string GET_KAMAndTspUserByTPRNIDs_Notification(string SRNIDs, SqlTransaction transaction = null);
+        public ApprovalHistoryModel GET_ConcateClassescodebyTPRNID_Notification(string SRNIDs, SqlTransaction transaction = null);
         long CheckDupplicateTspByNTNAlert(string ntn, string TSPName);
     }
 }

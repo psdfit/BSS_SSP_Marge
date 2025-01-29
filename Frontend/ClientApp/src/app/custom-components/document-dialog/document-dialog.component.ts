@@ -13,6 +13,7 @@ export class DocumentDialogComponent implements OnInit {
   environment = environment;
   mpr: any[] = [];
   srn: any[] = [];
+  tprn: any[] = [];
   PRNMaster: any[] = [];
   PO: any[] = [];
   Inv: any[] = [];
@@ -27,6 +28,8 @@ export class DocumentDialogComponent implements OnInit {
       this.GetMPR();
     else if (this.data.Col == 'SRN')
       this.GetSRN();
+    else if (this.data.Col == 'TPRN')
+      this.GetTPRN();
     else if (this.data.Col == 'PRN')
       this.GetPRN();
     else if (this.data.Col == 'PO')
@@ -62,6 +65,26 @@ export class DocumentDialogComponent implements OnInit {
         
         this.srn = d;
         this.srn.forEach((it) => {
+          if (it.srnDetails)
+            it.srnDetails = JSON.parse('[' + it.srnDetails +']');
+
+        });
+       
+      },
+      error => {
+        this.http.ShowError(error, "Error");
+      }
+    );
+  }
+
+  GetTPRN() {
+    this.http.getJSON("api/Cancelation/getTPRN/", this.data.ID).subscribe(
+      (data:any) => {
+        //let currentUser = this.http.getUserDetails();
+        let d = data;
+        
+        this.tprn = d;
+        this.tprn.forEach((it) => {
           if (it.srnDetails)
             it.srnDetails = JSON.parse('[' + it.srnDetails +']');
 
