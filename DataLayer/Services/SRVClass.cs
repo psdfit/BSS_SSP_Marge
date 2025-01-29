@@ -1053,5 +1053,12 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public DataTable FetchDeveiceStatus(int UserID)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@CreatedUserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GetDeveiceStatus", param.ToArray()).Tables[0];
+            return dt;
+        }
     }
 }

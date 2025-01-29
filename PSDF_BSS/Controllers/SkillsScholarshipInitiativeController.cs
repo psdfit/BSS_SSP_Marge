@@ -54,8 +54,8 @@ namespace PSDF_BSS.Controllers
         }
 
         [HttpGet]
-        [Route("GetFilteredSkillsScholarshipInitiative/{id}/{tspid}/{Locality}/{Cluster}")]
-        public IActionResult GetFilteredSkillsScholarshipInitiative(int id, int tspid, int Locality, int Cluster)
+        [Route("GetFilteredSkillsScholarshipInitiative/{id}/{tspid}/{Locality}/{Cluster}/{District}")]
+        public IActionResult GetFilteredSkillsScholarshipInitiative(int id, int tspid, int Locality, int Cluster, int District)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace PSDF_BSS.Controllers
 
                 ls.Add(srvScheme.FetchSchemesBySkillScholarshipType(CurUserID));
 
-                ls.Add(srvskillscholarship.GetSkillsScholarshipBySchemeID(id, tspid, Locality, Cluster));
+                ls.Add(srvskillscholarship.GetSkillsScholarshipBySchemeID(id, tspid, Locality, Cluster, District));
                 
 
                 return Ok(ls);
@@ -194,8 +194,25 @@ namespace PSDF_BSS.Controllers
         }
 
         [HttpGet]
-        [Route("StartRace/{SchemeID}/{ClusterID}/{TradeID}")]
-        public IActionResult GetStartRace(int SchemeID, int ClusterID, int TradeID)
+        [Route("GetFilteredDistricts/{id}")]
+        public IActionResult GetFilteredDistricts(int id)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+                ls.Add(srvskillscholarship.FetchDistrictsByCluster(id));
+
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("StartRace/{SchemeID}/{ClusterID}/{DistrictID}/{TradeID}")]
+        public IActionResult GetStartRace(int SchemeID, int ClusterID, int DistrictID, int TradeID)
         {
             try
             {
@@ -204,7 +221,7 @@ namespace PSDF_BSS.Controllers
                 loginuser = srvUsers.GetByUserID(CurUserID);
 
 
-                srvskillscholarship.GetStartRace(SchemeID, ClusterID, TradeID, loginuser.UserID);
+                srvskillscholarship.GetStartRace(SchemeID, ClusterID, DistrictID, TradeID, loginuser.UserID);
                 return Ok(true);
             }
             catch (Exception e)
@@ -214,15 +231,15 @@ namespace PSDF_BSS.Controllers
         }
 
         [HttpGet]
-        [Route("StopRace/{SchemeID}/{ClusterID}/{TradeID}")]
-        public IActionResult GetStopRace(int SchemeID, int ClusterID, int TradeID)
+        [Route("StopRace/{SchemeID}/{ClusterID}/{DistrictID}/{TradeID}")]
+        public IActionResult GetStopRace(int SchemeID, int ClusterID, int DistrictID, int TradeID)
         {
             try
             {
                 int CurUserID = Convert.ToInt32(User.Identity.Name);
                 UsersModel loginuser = new UsersModel();
                 loginuser = srvUsers.GetByUserID(CurUserID);
-                srvskillscholarship.GetStopRace(SchemeID, ClusterID, TradeID, loginuser.UserID);
+                srvskillscholarship.GetStopRace(SchemeID, ClusterID, DistrictID, TradeID, loginuser.UserID);
                 return Ok(true);
             }
             catch (Exception e)

@@ -85,6 +85,8 @@ namespace DataLayer.Interfaces
 
         int SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg);
 
+        int SavebiomatricTraineeProfileDVV(TraineeProfileDVV model, out string errMsg); //added by Ali
+
         void SaveTraineeProfileDVVResponse(TraineeProfileDVV model);
 
         bool SaveTraineeAttendance(TraineeAttendanceDVV model, out string errMsg);
@@ -130,5 +132,7 @@ namespace DataLayer.Interfaces
         DataTable SaveTraineeBiometricData(BiometricTraineeDataModel model);
 
         DataTable SaveBiometricAttendance(BiometricTraineeDataModel model);
+
+        void DeleteTraineeandAttandance(string CNIC);
     }
 }

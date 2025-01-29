@@ -2037,6 +2037,7 @@ namespace DataLayer.Services
             {
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@SchemeID", model.FormID));
+                param.Add(new SqlParameter("@filterBy", model.filterBy));
 
                 DataTable dt = new DataTable();
                 if (transaction != null)
@@ -2072,8 +2073,11 @@ namespace DataLayer.Services
             TradeTarget.TradeName = row.Field<string>("TradeName");
             TradeTarget.ClusterName = row.Field<string>("ClusterName");
             TradeTarget.ClusterID = row.Field<int>("ClusterID");
-            TradeTarget.DistrictName = row.Field<string>("DistrictName");
-            TradeTarget.DistrictID = row.Field<int>("DistrictID");
+            if (row.Table.Columns.Contains("DistrictName"))
+            { 
+                TradeTarget.DistrictName = row.Field<string>("DistrictName");
+                TradeTarget.DistrictID = row.Field<int>("DistrictID");
+            }
             if (row.Table.Columns.Contains("TradeTarget"))
             {
                 int val = row.Field<int>("TradeTarget");

@@ -12,6 +12,7 @@ using DataLayer.Models;using System.Collections.Generic;using System.Data;na
         List<InstructorModel> FetchInstructor(bool InActive);
         void ActiveInActive(int InstrID, bool? InActive, int CurUserID);
         bool SaveInstructorAttendance(InstructorAttendanceDVV model, out string errMsg);
+        bool SavebiomatricInstructorDVV(InstructorDVV model, out string errMsg);
         bool SaveInstructorDVV(InstructorDVV model, out string errMsg);
         public List<InstructorModel> FetchInstructorDataByUser(int UserID);
         public List<InstructorModel> GetByClassID(int ClassID);
