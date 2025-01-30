@@ -8,6 +8,7 @@ namespace DataLayer.Interfaces
     {
         List<ApprovalHistoryModel> FetchApprovalHistory(ApprovalHistoryModel model, SqlTransaction transaction = null);
         bool SaveSRNApprovalHistory(ref ApprovalWrapperModel model);
+        bool SaveGURNApprovalHistory(ref ApprovalWrapperModel model);
         public void SendSRNApprovalNotification(ApprovalWrapperModel model);
         bool SaveApprovalHistory(ref ApprovalWrapperModel wrapperModel);
         public void SendApprovalNotification(ApprovalWrapperModel wrapperModel);
