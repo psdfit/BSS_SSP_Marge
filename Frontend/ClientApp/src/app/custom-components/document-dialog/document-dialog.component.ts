@@ -117,7 +117,7 @@ export class DocumentDialogComponent implements OnInit {
       ProjectName: item.ProjectName,
       ClassStartDate: item.ClassStartdateGURNDetail,
       ClassEndDate: item.ClassEnddateGURNDetail,
-      GuruName: item.GuruName,
+      GURUName: item.GURUName,
       GURUCNIC: item.GURUCNIC,
       GURUContactNumber: item.GURUContactNumber,
       TraineeCode: item.TraineeCode,
