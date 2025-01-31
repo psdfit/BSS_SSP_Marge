@@ -1920,6 +1920,7 @@ namespace DataLayer.Services
                         param.Add(new SqlParameter("@TradeID", data.TradeID));
                         param.Add(new SqlParameter("@TradeTarget", data.TradeTarget));
                         param.Add(new SqlParameter("@ClusterID", data.ClusterID));
+                        param.Add(new SqlParameter("@DistrictID", data.DistrictID));
                         SqlHelper.ExecuteNonQuery(_transaction, CommandType.StoredProcedure, "[Save_TradeTarget]", param.ToArray());
                     }
                     _transaction.Commit();
@@ -1949,6 +1950,7 @@ namespace DataLayer.Services
                         param.Add(new SqlParameter("@TradeID", data.TradeID));
                         param.Add(new SqlParameter("@TradeTarget", data.TradeTarget));
                         param.Add(new SqlParameter("@ClusterID", data.ClusterID));
+                        param.Add(new SqlParameter("@DistrictID", data.DistrictID));
                         SqlHelper.ExecuteNonQuery(_transaction, CommandType.StoredProcedure, "[Update_TradeTarget]", param.ToArray());
                     }
                     _transaction.Commit();
