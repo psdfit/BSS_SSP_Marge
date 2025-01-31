@@ -223,8 +223,6 @@ namespace PSDF_BSS.API.Controllers
                 || string.IsNullOrEmpty(model.BiometricData2)
                 || string.IsNullOrEmpty(model.BiometricData3)
                 || string.IsNullOrEmpty(model.BiometricData4)
-                || string.IsNullOrEmpty(model.LocationAddress)
-
                 )
             {
                 return BadRequest(new ApiResponse()
