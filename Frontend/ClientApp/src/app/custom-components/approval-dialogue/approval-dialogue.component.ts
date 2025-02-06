@@ -27,6 +27,7 @@ export class ApprovalDialogueComponent implements OnInit {
   currentUserDetails: UsersModel;
   enumApprovalStatus = EnumApprovalStatus;
   alert: { Type: string, Title?: string, Message?: string; } = null;
+  filterBy: string = '1';
   constructor(
     private http: CommonSrvService,
     public dialogRef: MatDialogRef<ApprovalDialogueComponent>,
@@ -39,14 +40,29 @@ export class ApprovalDialogueComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.currentUserDetails = this.http.getUserDetails();
-    this.getApprovalHistory();
-    this.getTradeData();
-  }
+  //ngOnInit(): void {
+  //  this.currentUserDetails = this.http.getUserDetails();
+  //  this.getApprovalHistory();
+  //  this.getTradeFilterby();
+  //  this.getTradeData();
+    //}
+    ngOnInit(): void {
+        this.currentUserDetails = this.http.getUserDetails();
+        this.getApprovalHistory().then(() => {
+            // Ensure that latest is populated before calling the next functions
+            this.getTradeFilterby();
+            this.getTradeData();
+        }).catch((error) => {
+            console.error('Error fetching approval history:', error);
+            // Handle the error as needed
+        });
+    }
+
 
   RejectedButtonHide(ProcessKey: any) {
     if (ProcessKey === 'PO_SRN'
+      || ProcessKey === 'INV_TPRN'
+      || ProcessKey === 'PO_TPRN'
       || ProcessKey === 'PO_TRN'
       || ProcessKey === 'PO_VRN'
       || ProcessKey === 'PO_TSP'
@@ -72,6 +88,8 @@ export class ApprovalDialogueComponent implements OnInit {
     const isPostInSAP = (
       EnumApprovalProcess.AP_BD === this.latest.ProcessKey
       || EnumApprovalProcess.AP_PD === this.latest.ProcessKey
+      || EnumApprovalProcess.PO_TPRN === this.latest.ProcessKey
+      || EnumApprovalProcess.INV_TPRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_SRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_VRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_TRN === this.latest.ProcessKey
@@ -205,43 +223,99 @@ export class ApprovalDialogueComponent implements OnInit {
     );
   }
 
-  getApprovalHistory() {
-    /// data object must have ProcessKey & FormID
-    this.http.postJSON('api/Approval/GetApprovalHistory', this.data).subscribe(
-      (responseData: IApprovalHistory[]) => {
-        console.log(responseData);
-        if (responseData.length > 0) {
-          // let currentUser = this.http.getUserDetails();
-          this.latest = responseData[0];
-          if (this.latest.ApprovalStatusID != EnumApprovalStatus.Approved) {
-            responseData[0].ModifiedDate = responseData[0].CreatedDate;
-            responseData[0].ApproverName = responseData[0].ApproverNames;
-            /// checks current user is valid for current approval
-            if (
-              this.latest.ApproverIDs.split(',')
-                .map(Number)
-                .includes(this.currentUserDetails.UserID)
-            ) {
-              this.isValidApprover = true;
-            } else {
-              this.isValidApprover = false;
-            }
-          } else {
-            // data.unshift(latest);
-            // this.approvalHistory = data;
-            this.isAlreadyApproved = true;
-          }
-          this.approvalHistory = responseData;
-        }
-      },
-      (error) => {
-        this.http.ShowError(error.error + '\n' + error.message);
-      }
-    );
-  }
+  //getApprovalHistory() {
+  //  /// data object must have ProcessKey & FormID
+  //  this.http.postJSON('api/Approval/GetApprovalHistory', this.data).subscribe(
+  //    (responseData: IApprovalHistory[]) => {
+  //      console.log(responseData);
+  //      if (responseData.length > 0) {
+  //        // let currentUser = this.http.getUserDetails();
+  //        this.latest = responseData[0];
+  //        if (this.latest.ApprovalStatusID != EnumApprovalStatus.Approved) {
+  //          responseData[0].ModifiedDate = responseData[0].CreatedDate;
+  //          responseData[0].ApproverName = responseData[0].ApproverNames;
+  //          /// checks current user is valid for current approval
+  //          if (
+  //            this.latest.ApproverIDs.split(',')
+  //              .map(Number)
+  //              .includes(this.currentUserDetails.UserID)
+  //          ) {
+  //            this.isValidApprover = true;
+  //          } else {
+  //            this.isValidApprover = false;
+  //          }
+  //        } else {
+  //          // data.unshift(latest);
+  //          // this.approvalHistory = data;
+  //          this.isAlreadyApproved = true;
+  //        }
+  //        this.approvalHistory = responseData;
+  //      }
+  //    },
+  //    (error) => {
+  //      this.http.ShowError(error.error + '\n' + error.message);
+  //    }
+  //  );
+    //}
+    getApprovalHistory(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.http.postJSON('api/Approval/GetApprovalHistory', this.data).subscribe(
+                (responseData: IApprovalHistory[]) => {
+                    console.log(responseData);
+                    if (responseData.length > 0) {
+                        this.latest = responseData[0];
+                        if (this.latest.ApprovalStatusID !== EnumApprovalStatus.Approved) {
+                            this.latest.ModifiedDate = this.latest.CreatedDate;
+                            this.latest.ApproverName = this.latest.ApproverNames;
+                            this.isValidApprover = this.latest.ApproverIDs.split(',')
+                                .map(Number)
+                                .includes(this.currentUserDetails.UserID);
+                        } else {
+                            this.isAlreadyApproved = true;
+                        }
+                        this.approvalHistory = responseData;
+                    }
+                    resolve(); // Signal completion
+                },
+                (error) => {
+                    this.http.ShowError(error.error + '\n' + error.message);
+                    reject(error); // Signal error
+                }
+            );
+        });
+    }
 
+    getTradeFilterby() {
+        debugger;
+    const requestData = {
+      ...this.data, // Existing data properties
+      filterBy: 0 // Add the filter value
+        }
+        console.log('Step : ', this.latest.IsFinalStep);
+     if (this.latest.IsFinalStep) {
+      this.http.postJSON('api/Approval/GetTradeDate', requestData).subscribe(
+        (responseData: any[]) => {
+          console.log(responseData);
+          if (responseData.length > 0) {
+            const hasDistrictName = responseData.some(item => item.DistrictName);
+            this.filterBy = hasDistrictName ? '2' : '1';
+          }
+          else { this.filterBy = '1' }
+        },
+        (error) => {
+          this.http.ShowError(error.error + '\n' + error.message);
+        });
+    }
+  }
   getTradeData() { ///Getting trade date
-    this.http.postJSON('api/Approval/GetTradeDate', this.data).subscribe(
+    console.log('Selected Filter:', this.filterBy);
+    
+    const requestDataResult = {
+      ...this.data, // Existing data properties
+      filterBy: this.filterBy // Add the filter value
+    }
+
+    this.http.postJSON('api/Approval/GetTradeDate', requestDataResult).subscribe(
       (responseData: ITradeDetail[]) => {
         console.log(responseData);
         if (responseData.length > 0) {
@@ -253,6 +327,18 @@ export class ApprovalDialogueComponent implements OnInit {
         this.http.ShowError(error.error + '\n' + error.message);
       }
     );
+    //this.http.postJSON('api/Approval/GetTradeDate', this.data).subscribe(
+    //  (responseData: ITradeDetail[]) => {
+    //    console.log(responseData);
+    //    if (responseData.length > 0) {
+    //      this.latestid = responseData[0];
+    //      this.TradeTargetDetail = responseData;
+    //    }
+    //  },
+    //  (error) => {
+    //    this.http.ShowError(error.error + '\n' + error.message);
+    //  }
+    //);
   }
 
   onNoClick(): void {
@@ -289,5 +375,4 @@ export interface ITradeDetail {
   TradeTarget?: number;
   TradeName?: string;
 }
-
 

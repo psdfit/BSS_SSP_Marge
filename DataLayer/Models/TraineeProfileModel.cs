@@ -117,6 +117,11 @@ namespace DataLayer.Models
         public bool IsReferredByGuru { get; set; }
         public int GuruProfileID { get; set; }
 
+        public string RightIndexFinger { get; set; }
+        public string RightMiddleFinger { get; set; }
+        public string LeftIndexFinger { get; set; }
+        public string LeftMiddleFinger { get; set; }
+
 
     }
 }

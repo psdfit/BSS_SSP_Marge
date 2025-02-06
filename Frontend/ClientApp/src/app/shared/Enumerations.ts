@@ -10,6 +10,8 @@ export enum EnumApprovalProcess {
   , PO_TSP = 'PO_TSP'
   , PO_TRN = 'PO_TRN'
   , PO_SRN = 'PO_SRN'
+  , PO_GURN = 'PO_GURN'
+  , PO_GRN = 'PO_GRN'
   , PRN_C = 'PRN_C'
   , PRN_R = 'PRN_R'
   , PRN_F = 'PRN_F' // this is actually PRN Employment (Final = Employment)
@@ -18,6 +20,8 @@ export enum EnumApprovalProcess {
   , INV_1ST = 'INV_1ST'
   , INV_2ND = 'INV_2ND'
   , INV_SRN = 'INV_SRN'
+  , INV_GURN = 'INV_GURN'
+  , INV_TPRN = 'INV_TPRN'
   , INV_F = 'INV_F'
   , INV_TRN = 'INV_TRN'
   , INV_C = 'INV_C'
@@ -33,6 +37,9 @@ export enum EnumApprovalProcess {
   , CR_INCEPTION = 'CR_INCEPTION'
   , CR_INSTRUCTOR_REPLACE = 'CR_INSTRUCTOR_REPLACE'
   , SRN = 'SRN'
+  , GURN = 'GURN'
+  , TPRN = 'TPRN'
+  , PO_TPRN = 'PO_TPRN'
   , VRN = 'VRN'
   , INV_VRN = 'INV_VRN'
   , PO_VRN = 'PO_VRN'
@@ -136,6 +143,9 @@ export enum EnumExcelReportType {
   PendingClassesinKAMDashboard = 22,
   StipendDisbursementStatusReport = 23,
   orgconfigration = 24,
+  GURN = 26
+  TPRN = 25,
+  PO_TPRN = 26,
 }
 
 
@@ -280,7 +290,8 @@ export enum EnumReports {
   'Trainer change Logs' = 36,
   'Bulk Trainees Status Report' = 37,
   'TSP Details Report' = 38,
-  'AMS Missing Classes Data Report' = 39
+  'AMS Missing Classes Data Report' = 39,
+  'TSP Change Request Report' = 41,
 }
 export enum EnumSubReports {
   'Master Data of TSPs – Trainee Wise' = 'TraineeWise'

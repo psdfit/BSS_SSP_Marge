@@ -1,4 +1,5 @@
 using DataLayer.Models;
+using DataLayer.Models.DVV;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -84,6 +85,8 @@ namespace DataLayer.Interfaces
 
         int SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg);
 
+        int SavebiomatricTraineeProfileDVV(TraineeProfileDVV model, out string errMsg); //added by Ali
+
         void SaveTraineeProfileDVVResponse(TraineeProfileDVV model);
 
         bool SaveTraineeAttendance(TraineeAttendanceDVV model, out string errMsg);
@@ -125,5 +128,11 @@ namespace DataLayer.Interfaces
         public DataTable FetchReport(int UserID, string SpName);
 
         List<CheckRegistrationCriteriaModel> checkTSPTradeCriteria(int programid, int tradeid, int UserID);
+
+        DataTable SaveTraineeBiometricData(BiometricTraineeDataModel model);
+
+        DataTable SaveBiometricAttendance(BiometricTraineeDataModel model);
+
+        void DeleteTraineeandAttandance(string CNIC);
     }
 }

@@ -139,7 +139,8 @@ export class InvoiceApprovalsComponent implements OnInit {
   }
 
   checkTSPColor(row: any) {
-    if (row.ProcessKey === EnumApprovalProcess.INV_SRN || row.ProcessKey === EnumApprovalProcess.INV_TRN) {
+    if (row.ProcessKey === EnumApprovalProcess.INV_SRN || row.ProcessKey === EnumApprovalProcess.INV_TRN || row.ProcessKey === EnumApprovalProcess.INV_TPRN) {
+    if (row.ProcessKey === EnumApprovalProcess.INV_SRN || row.ProcessKey === EnumApprovalProcess.INV_TRN || row.ProcessKey === EnumApprovalProcess.INV_GURN) {
       this.openApprovalDialogue(row);
     }
     else {

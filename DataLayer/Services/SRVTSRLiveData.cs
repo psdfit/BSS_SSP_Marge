@@ -567,7 +567,64 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
-        
+        public List<TERLiveDataModel> FetchTERPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
+                // param.Add(new SqlParameter("@UserID", filterModel.UserID));
+                // param.Add(new SqlParameter("@OID", filterModel.OID));
+                param.AddRange(Common.GetPagingParams(pagingModel));
+
+                DataTable dt = new DataTable();
+                dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TERPaged", param.ToArray()).Tables[0];
+
+                if (dt.Rows.Count > 0)
+                    totalCount = Convert.ToInt32(dt.Rows[0]["TotalCount"]);
+                else
+                    totalCount = 0;
+                return LoopinTERLiveDataPaged(dt);
+
+               
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<TARLiveDataModel> FetchTARPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
+                // New parameters for filtering by Month and Year
+                param.Add(new SqlParameter("@Month", filterModel.Month ?? (object)DBNull.Value));
+                param.Add(new SqlParameter("@Year", filterModel.Year ?? (object)DBNull.Value));
+                // param.Add(new SqlParameter("@UserID", filterModel.UserID));
+                // param.Add(new SqlParameter("@OID", filterModel.OID));
+                param.AddRange(Common.GetPagingParams(pagingModel));
+
+                DataTable dt = new DataTable();
+                dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TAR_Paged", param.ToArray()).Tables[0];
+
+                if (dt.Rows.Count > 0)
+                    totalCount = Convert.ToInt32(dt.Rows[0]["TotalCount"]);
+                else
+                    totalCount = 0;
+                return LoopinTARLiveDataPaged(dt);
+
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+
         public List<GSRLiveDataModel> FetchGSRPaged(PagingModel pagingModel, SearchFilter filterModel)
         {
             try
@@ -596,6 +653,24 @@ namespace DataLayer.Services
                 tsrLiveModel.Add(RowOfTSRLiveDatapaged(r));
             }
             return tsrLiveModel;
+        } 
+        private List<TERLiveDataModel> LoopinTERLiveDataPaged(DataTable dt)
+        {
+            List<TERLiveDataModel> terLiveModel = new List<TERLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                terLiveModel.Add(RowOfTERLiveDatapaged(r));
+            }
+            return terLiveModel;
+        } 
+        private List<TARLiveDataModel> LoopinTARLiveDataPaged(DataTable dt)
+        {
+            List<TARLiveDataModel> tarLiveModel = new List<TARLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                tarLiveModel.Add(RowOfTARLiveDatapaged(r));
+            }
+            return tarLiveModel;
         } 
         
         private List<GSRLiveDataModel> LoopinGSRLiveDataPaged(DataTable dt)
@@ -632,7 +707,37 @@ namespace DataLayer.Services
             tsr.CertAuthName = row.Field<string>("CertAuthName");
             return tsr;
         }
-        
+         private TERLiveDataModel RowOfTERLiveDatapaged(DataRow row)
+        {
+            TERLiveDataModel ter = new TERLiveDataModel();
+            ter.TraineeCode = row.Field<string>("TraineeCode");
+            ter.TraineeID = row.Field<int>("TraineeID");
+            ter.TraineeName = row.Field<string>("TraineeName");
+            ter.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            ter.FatherName = row.Field<string>("FatherName");
+            ter.SchemeName = row.Field<string>("SchemeName");
+            ter.ClassCode = row.Field<string>("ClassCode");
+            ter.IsEnrolled = row.Field<bool>("IsEnrolled");
+            return ter;
+        }
+
+        private TARLiveDataModel RowOfTARLiveDatapaged(DataRow row)
+        {
+            TARLiveDataModel tar = new TARLiveDataModel();
+            tar.TraineeCode = row.Field<string>("TraineeCode");
+            tar.TraineeID = row.Field<int>("TraineeID");
+            tar.TraineeName = row.Field<string>("TraineeName");
+            tar.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            tar.FatherName = row.Field<string>("FatherName");
+            tar.SchemeName = row.Field<string>("SchemeName");
+            tar.ClassCode = row.Field<string>("ClassCode");
+            tar.CheckIn = row.Field<bool>("CheckIn");
+            tar.CheckOut = row.Field<bool>("CheckOut");
+            tar.TimeStamp = row["TimeStamp"] == DBNull.Value ? (DateTime?)null : row.Field<DateTime>("TimeStamp");
+
+            return tar;
+        }
+
         private GSRLiveDataModel RowOfGSRLiveDatapaged(DataRow row)
         {
             GSRLiveDataModel gsr = new GSRLiveDataModel();

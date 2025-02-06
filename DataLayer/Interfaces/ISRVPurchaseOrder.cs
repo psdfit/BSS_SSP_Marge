@@ -10,6 +10,8 @@ namespace DataLayer.Interfaces
     {
         bool CreatePO(int schemeID, string processKey, int curuserID, SqlTransaction transaction = null);
         bool CreatePOForSRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null);
+        bool CreatePOForGURN(string gurnIDs, string processKey, int curuserID, SqlTransaction transaction = null);
+        bool CreatePOForTPRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null);
         bool CreatePOForTRN(int srnID, int curuserID, SqlTransaction transaction = null);
         bool POHeaderApproveReject(POHeaderModel model, SqlTransaction transaction = null);
         List<POHeaderModel> GetPOHeaderByID(int POHeaderID, SqlTransaction transaction = null);

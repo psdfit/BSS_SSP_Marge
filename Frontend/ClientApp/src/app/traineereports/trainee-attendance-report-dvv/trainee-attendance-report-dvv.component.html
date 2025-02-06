@@ -1,0 +1,124 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-toolbar color="accent" class="slim slim">
+        <span class="spacer">Trainee Attendance Report DVV </span>
+        <div class="spacer"></div>
+      </mat-toolbar>
+      <div class="row">
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-label>Month</mat-label>
+            <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
+            <button mat-icon-button matSuffix (click)="clearMonth()"><mat-icon>close</mat-icon></button>
+            <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
+              (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl($event)"
+              matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                  [formControl]="SearchSch" autofocus />
+              </mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]"
+                [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+          <mat-form-field fxFlex>
+            <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl($event)" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                  [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]"
+                [value]="s.TSPID">{{s.TSPName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl($event)" matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                  [formControl]="SearchCls" autofocus /></mat-optgrp>
+              <mat-option value="0" selected>--All--</mat-option>
+              <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]"
+                [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          <br />
+          <button mat-raised-button color="success" style="float:right" *ngIf="tsrDatasource?.length > 0"
+            (click)="exportToExcel()">Export Excel</button>
+        </div>
+      </div>
+      <div fxLayout="column" class="table-responsive">
+        <mat-table [dataSource]="tsrDatasource" matSort class="table table-bordered">
+          <mat-header-row *matHeaderRowDef="displayedColumns" tabindex="0"></mat-header-row>
+          <mat-row *matRowDef="let rows; columns: displayedColumns;" tabindex="0"></mat-row>
+
+          <!-- <ng-container matColumnDef="TraineeID">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee ID </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.TraineeID}}</mat-cell>
+          </ng-container>
+           -->
+          <ng-container matColumnDef="TraineeCode">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.TraineeCode}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="TraineeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.TraineeName}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="TraineeCNIC">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.TraineeCNIC}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="FatherName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.FatherName}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="SchemeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.SchemeName}}</mat-cell>
+          </ng-container>
+
+          <!-- <ng-container matColumnDef="ClassID">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class ID </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.ClassID}}</mat-cell>
+          </ng-container> -->
+
+          <ng-container matColumnDef="ClassCode">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.ClassCode}}</mat-cell>
+          </ng-container>
+
+          <!-- CheckIn Column -->
+          <ng-container matColumnDef="CheckIn">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Check In </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.CheckIn ? 'Yes' : 'No'}} </mat-cell>
+          </ng-container>
+
+          <!-- CheckOut Column -->
+          <ng-container matColumnDef="CheckOut">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Check Out </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.CheckOut ? 'Yes' : 'No'}} </mat-cell>
+          </ng-container>
+
+
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [length]="resultsLength"
+          [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

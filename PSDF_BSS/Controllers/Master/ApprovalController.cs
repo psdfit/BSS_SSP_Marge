@@ -234,6 +234,45 @@ namespace MasterDataModule.Controllers
             }
         }
         [HttpPost]
+        [Route("SaveGURNApprovalHistory")]
+        public IActionResult SaveGURNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveGURNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendSRNApprovalNotification(wrapperModel);
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("SaveTPRNApprovalHistory")]
+        public IActionResult SaveTPRNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveTPRNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendTPRNApprovalNotification(wrapperModel);
+                
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
         [Route("GetApprovalHistory")]
         public IActionResult GetApprovalHistory(ApprovalHistoryModel model)
         {

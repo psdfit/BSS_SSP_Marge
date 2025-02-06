@@ -418,5 +418,28 @@ namespace DataLayer.Services
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
             return dt;
         }
+
+        public bool SavebiomatricInstructorDVV(InstructorDVV model, out string errMsg)
+        {
+            errMsg = string.Empty;
+            bool result = false;
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@InstructorID", model.InstructorID));
+                param.Add(new SqlParameter("@BiometricData1", model.BiometricData1));
+                param.Add(new SqlParameter("@BiometricData2", model.BiometricData2));
+                param.Add(new SqlParameter("@BiometricData3", model.BiometricData3));
+                param.Add(new SqlParameter("@BiometricData4", model.BiometricData4));
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SaveBiomatricInstructorDVV", param.ToArray());
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+            }
+            return result;
+        }
+
     }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from '../../app/security/auth-guard.service';
 import { GeneratePrnCompletionComponent } from './generate-prn-completion/generate-prn-completion.component';
+import { GenerateGuruRecommendationNoteComponent } from './generate-guru-recommendation-note/generate-guru-recommendation-note.component';
 import { GeneratePrnFinalComponent } from './generate-prn-final/generate-prn-final.component';
 import { GenerateTrnComponent } from './generate-trn/generate-trn.component';
 import { GenerateSrnCourseraComponent } from './generate-srn-coursera/generate-srn-coursera.component';
@@ -15,6 +16,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Generate PRN Completion',
+    },
+  },
+  {
+    path: 'generate-guru-recommendation-note',
+    component: GenerateGuruRecommendationNoteComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate Guru Payment Note',
     },
   },
   {

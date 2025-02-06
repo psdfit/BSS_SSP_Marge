@@ -716,10 +716,7 @@ debugger;
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
         }
-        if (scheme.SchemeCode == 'STV') {
-          this.EDFScheme = true;
-        }
-        if (scheme.SchemeCode == 'ST25') {
+        if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP') {
           this.EDFScheme = true;
         }
         else if (scheme.FundingSourceID !== 12) //EDF Scheme

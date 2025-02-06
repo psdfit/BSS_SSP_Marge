@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
+using DataLayer.Models.DVV;
+using System.Xml.Linq;
 
 namespace DataLayer.Services
 {
@@ -195,9 +197,9 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@ReferralSourceID", traineeProfile.ReferralSourceID));
                 param.Add(new SqlParameter("@TraineeEmail", traineeProfile.TraineeEmail));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
-            
-                
-            
+
+
+
             }
             catch (Exception ex)
             {
@@ -207,19 +209,19 @@ namespace DataLayer.Services
 
             if (traineeProfile.IsReferredByGuru)
             {
-                var trainees= FetchTraineeProfileByClass(traineeProfile.ClassID).FirstOrDefault(t=>t.TraineeCNIC==traineeProfile.TraineeCNIC && t.TraineeName==traineeProfile.TraineeName);
+                var trainees = FetchTraineeProfileByClass(traineeProfile.ClassID).FirstOrDefault(t => t.TraineeCNIC == traineeProfile.TraineeCNIC && t.TraineeName == traineeProfile.TraineeName);
                 SaveTraineeGuru(traineeProfile, trainees.TraineeID);
             }
             return FetchTraineeProfileByClass(traineeProfile.ClassID);
         }
 
-        public void SaveTraineeGuru(TraineeProfileModel traineeData,int traineeID)
+        public void SaveTraineeGuru(TraineeProfileModel traineeData, int traineeID)
         {
 
             List<SqlParameter> param = new List<SqlParameter>();
-               param.Add(new SqlParameter("@GuruProfileID", traineeData.GuruProfileID));
-               param.Add(new SqlParameter("@TraineeID", traineeID));
-               param.Add(new SqlParameter("@UserID", traineeData.CurUserID));    
+            param.Add(new SqlParameter("@GuruProfileID", traineeData.GuruProfileID));
+            param.Add(new SqlParameter("@TraineeID", traineeID));
+            param.Add(new SqlParameter("@UserID", traineeData.CurUserID));
             SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeGuruProfile", param.ToArray());
         }
 
@@ -2041,5 +2043,94 @@ namespace DataLayer.Services
             return dt;
         }
 
+        public DataTable SaveTraineeBiometricData(BiometricTraineeDataModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+
+            param.Add(new SqlParameter("@TraineeID", model.TraineeID));
+            param.Add(new SqlParameter("@RightIndexFinger", model.RightIndexFinger));
+            param.Add(new SqlParameter("@RightMiddleFinger", model.RightMiddleFinger));
+            param.Add(new SqlParameter("@LeftIndexFinger", model.LeftIndexFinger));
+            param.Add(new SqlParameter("@LeftMiddleFinger", model.LeftMiddleFinger));
+            param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricData", param.ToArray()).Tables[0];
+            return dt;
+        }
+
+        public DataTable SaveBiometricAttendance(BiometricTraineeDataModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+        {
+            new SqlParameter("@TraineeID", model.TraineeID),
+            new SqlParameter("@FingerImpression", model.FingerImpression),
+            new SqlParameter("@CheckIn", model.AttendanceType == "CheckIn" ? 1 : 0),
+            new SqlParameter("@CheckOut", model.AttendanceType == "CheckOut" ? 1 : 0),
+            new SqlParameter("@TimeStamp", DateTime.Now),
+            new SqlParameter("@CurUserID", model.CurUserID)
+        };
+
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricAttendance", param.ToArray()).Tables[0];
+            return dt;
+        }
+        public void DeleteTraineeandAttandance(string cnic)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@CNIC", cnic));
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "DeleteTraineeandAttandance", param.ToArray());
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+
+        public int SavebiomatricTraineeProfileDVV(TraineeProfileDVV model, out string errMsg)
+        {
+            errMsg = string.Empty;
+            try
+            {
+
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@TraineeID", model.TraineeID));
+                param.Add(new SqlParameter("@BiometricData1", model.BiometricData1));
+                param.Add(new SqlParameter("@BiometricData2", model.BiometricData2));
+                param.Add(new SqlParameter("@BiometricData3", model.BiometricData3));
+                param.Add(new SqlParameter("@BiometricData4", model.BiometricData4));
+                // Add an output parameter to capture the return value from the stored procedure
+                SqlParameter returnParameter = new SqlParameter
+                {
+                    ParameterName = "@ReturnVal",
+                    Direction = ParameterDirection.ReturnValue
+                };
+                param.Add(returnParameter);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_BioMatricTraineeProfileDVV", param.ToArray());
+
+                // Get the return value from the stored procedure
+                int returnValue = (int)returnParameter.Value;
+
+                // Handle success or failure based on the return value
+                if (returnValue == 0)
+                {
+                    return 0; // Success
+                }
+                else if (returnValue == -1)
+                {
+                    errMsg = "TraineeID not found.";
+                    return -1; // Failure due to invalid TraineeID
+                }
+                else
+                {
+                    errMsg = $"An error occurred. Error Code: {returnValue}";
+                    return returnValue; // Other error codes
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any unexpected exceptions
+                errMsg = ex.Message;
+                return -99; // Indicate unexpected error
+            }
+        }
     }
 }

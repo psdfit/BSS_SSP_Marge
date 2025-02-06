@@ -9,6 +9,17 @@ export interface SearchFilter {
   OID?: number;
   SelectedColumns?: string[]
 }
+
+export interface SearchFilterTAR {
+  SchemeID: number;
+  TSPID: number;
+  ClassID: number;
+  TraineeID: number;
+  OID: number;
+  SelectedColumns: any[]; // Adjust the type as needed
+  Month: number | null;   // Add Month property
+  Year: number | null;    // Add Year property
+}
 export interface ExportExcel {
   Title: string;
   Author: string;

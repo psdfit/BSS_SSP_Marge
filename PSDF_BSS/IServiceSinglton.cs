@@ -80,6 +80,8 @@ namespace PSDF_BSS
             services.AddSingleton(typeof(ISRVPOHeader), typeof(SRVPOHeader));
             services.AddSingleton(typeof(ISRVSRN), typeof(SRVSRN));
             services.AddSingleton(typeof(ISRVSRNDetails), typeof(SRVSRNDetails));
+            services.AddSingleton(typeof(ISRVGURN), typeof(SRVGURN));
+            services.AddSingleton(typeof(ISRVGURNDetails), typeof(SRVGURNDetails));
             services.AddSingleton(typeof(ISRVEquipmentTools), typeof(SRVEquipmentTools));
             services.AddSingleton(typeof(ISRVConsumableMaterial), typeof(SRVConsumableMaterial));
             services.AddSingleton(typeof(ISRVSourceOfCurriculum), typeof(SRVSourceOfCurriculum));
@@ -103,6 +105,7 @@ namespace PSDF_BSS
             services.AddSingleton(typeof(ISRVIncomeRange), typeof(SRVIncomeRange));
             services.AddSingleton(typeof(ISRVRTP), typeof(SRVRTP));
             services.AddSingleton(typeof(ISRVPRN), typeof(SRVPRN));
+            services.AddSingleton(typeof(ISRVGRN), typeof(SRVGRN));
             services.AddSingleton(typeof(ISRVInvoice), typeof(SRVInvoice));
             services.AddSingleton(typeof(ISRVInvoiceMaster), typeof(SRVInvoiceMaster));
             services.AddSingleton(typeof(ISRVUser_Pwd), typeof(SRVUser_Pwd));
@@ -173,6 +176,9 @@ namespace PSDF_BSS
             services.AddSingleton(typeof(ISRVPayment), typeof(SRVPayment));
             services.AddSingleton(typeof(ISRVProcessConfiguration), typeof(SRVProcessConfiguration));
 
+            //SRN Coursera --Added by  samiullah 17-01-2025
+            services.AddSingleton(typeof(ISRVTPRN), typeof(SRVTPRN));
+            services.AddSingleton(typeof(ISRVTPRNDetails), typeof(SRVTPRNDetails));
 
             //SRN Coursera --Added by  Rao Ali Haider 04-July-2024
             services.AddSingleton(typeof(ISRVSRNCoursera), typeof(SRVSRNCoursera));
