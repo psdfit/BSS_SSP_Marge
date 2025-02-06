@@ -50,17 +50,18 @@
                 <th>MPR</th>
                 <th>PRN (Regular/Complete/Final)</th>
                 <th>Invoice (Regular/Complete/Final)</th>
+               
                 <th>SRN</th>
-                <th>PO (SRN)</th>
-                <th>Invoice (SRN)</th>
-                <th>GPN</th>
-                <th>PO (GPN)</th>
-                <th>Invoice (GPN)</th>
                 <th>SRN (PO)</th>
                 <th>SRN (Invoice)</th>
+
                 <th>TPRN</th>
                 <th>TPRN (PO)</th>
                 <th>TPRN (Invoice)</th>
+
+                <th>GPN</th>
+                <th>GPN (PO)</th>
+                <th>GPN (Invoice)</th>
                 <!--<th> Action</th>-->
               </tr>
             </thead>
@@ -124,24 +125,7 @@
 
 
                 <!-- GURN Columns -->
-                <td>
-                  <span [ngStyle]="{'color': Inv.GURNIsCanceled>0 ? 'red' : 'black'}">{{Inv.GURNID>0?'':Inv.GURNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
-                  <a class="myAnchor" *ngIf="Inv.GURNID>0" (click)='GetGURN(Inv.GURNID)'>View Detail</a>
-                  <b class="myDivider" *ngIf="Inv.GURNID>0">|</b>
-                  <a class="myAnchor" matTooltip="Cancel GURN" color="warn" *ngIf="Inv.GURNID>0" (click)="Cancel(Inv.GURNID, 'GURN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
-                </td>
-                <td>
-                  <span [ngStyle]="{'color': Inv.POHeaderGURNIsCanceled>0 ? 'red' : 'black'}">{{Inv.POHeaderIDGURN>0?'':Inv.POHeaderGURNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
-                  <a class="myAnchor" *ngIf="Inv.POHeaderIDGURN>0" (click)='GetPOGURN(Inv.POHeaderIDGURN)'>View Detail</a>
-                  <b class="myDivider" *ngIf="Inv.POHeaderIDGURN>0">|</b>                  
-                  <a class="myAnchor" matTooltip="Cancel PO" color="warn" *ngIf="Inv.POHeaderIDGURN>0" (click)="Cancel(Inv.POHeaderIDGURN, 'PO_SRN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
-                </td>
-                <td>
-                  <span [ngStyle]="{'color': Inv.InvGURNIsCanceled>0 ? 'red' : 'black'}">{{Inv.InvHeaderGURN>0?'':Inv.InvGURNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
-                  <a class="myAnchor" *ngIf="Inv.InvHeaderGURN>0" (click)='GetInvGURN(Inv.InvHeaderGURN)'>View Detail</a>
-                  <b class="myDivider" *ngIf="Inv.InvHeaderGURN>0">|</b>
-                  <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="Inv.InvHeaderGURN>0" (click)="Cancel(Inv.InvHeaderGURN, 'Inv_GURN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
-                </td>
+          
 
                 <!-- <td>
                   <span [ngStyle]="{'color': Inv.SRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.SRNID>0?'':Inv.SRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
@@ -196,6 +180,24 @@
                     (click)="Cancel(Inv.InvHeaderTPRN, 'Inv_S', Inv.ClassID, i)"><mat-icon
                       style="vertical-align:middle;">cancel_present</mat-icon></a>
                 </td> 
+                <td>
+                  <span [ngStyle]="{'color': Inv.GURNIsCanceled>0 ? 'red' : 'black'}">{{Inv.GURNID>0?'':Inv.GURNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.GURNID>0" (click)='GetGURN(Inv.GURNID)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.GURNID>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel GURN" color="warn" *ngIf="Inv.GURNID>0" (click)="Cancel(Inv.GURNID, 'GURN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.POHeaderGURNIsCanceled>0 ? 'red' : 'black'}">{{Inv.POHeaderIDGURN>0?'':Inv.POHeaderGURNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.POHeaderIDGURN>0" (click)='GetPOGURN(Inv.POHeaderIDGURN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.POHeaderIDGURN>0">|</b>                  
+                  <a class="myAnchor" matTooltip="Cancel PO" color="warn" *ngIf="Inv.POHeaderIDGURN>0" (click)="Cancel(Inv.POHeaderIDGURN, 'PO_SRN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.InvGURNIsCanceled>0 ? 'red' : 'black'}">{{Inv.InvHeaderGURN>0?'':Inv.InvGURNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.InvHeaderGURN>0" (click)='GetInvGURN(Inv.InvHeaderGURN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.InvHeaderGURN>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="Inv.InvHeaderGURN>0" (click)="Cancel(Inv.InvHeaderGURN, 'Inv_GURN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td>
               </tr>
             </tbody>
           </table>

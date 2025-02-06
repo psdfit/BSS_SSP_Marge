@@ -52,7 +52,7 @@ namespace DataLayer.Services
         //private readonly ISRVClassInvoiceMap srvInvMap;
         public SRVApprovalHistory(ISRVTSPDetail srv, ISRVProgramDesign srvProgramDesign, ISRVCriteriaTemplate srvCriteria, ISRVApprovalProcess srvApprovalProcess, ISRVTSPMaster srvTSPMaster, ISRVScheme srvScheme, ISRVPurchaseOrder srvPurchaseOrder, ISRVGenerateInvoice generateInvoice,
             ISRVSRN srvSRN, ISRVTPRN srvTPRN, ISRVTrade srvTrade, ISRVPRN srvPRN, ISRVSAPApi srvSAPApi, ISRVTrn srvTRN, ISRVPRNMaster srvPRNMaster,
-            ISRVSRN srvSRN, ISRVGURN srvGURN, ISRVTrade srvTrade, ISRVPRN srvPRN, ISRVSAPApi srvSAPApi, ISRVTrn srvTRN, ISRVPRNMaster srvPRNMaster,
+            ISRVGURN srvGURN,
             ISRVApproval srvApproval, ISRVInvoiceMaster srvInvoiceMaster, ISRVInvoice srvInvoice, ISRVUsers srvUsers,
             ISRVPOHeader srvPOHeader, ISRVPOLines srvPOLines, ISRVSendEmail srvSendEmail, ISRVClassInvoiceExtMap srvcancel, ISRVClassInvoiceMap srvInvMap,
             ISRVSchemeChangeRequest srvCrScheme, ISRVTSPChangeRequest srvCrTSP, ISRVClassChangeRequest srvCrClass, ISRVTraineeChangeRequest srvCrTrainee,

@@ -143,9 +143,9 @@ export enum EnumExcelReportType {
   PendingClassesinKAMDashboard = 22,
   StipendDisbursementStatusReport = 23,
   orgconfigration = 24,
-  GURN = 26
   TPRN = 25,
   PO_TPRN = 26,
+  GURN = 27,
 }
 
 
