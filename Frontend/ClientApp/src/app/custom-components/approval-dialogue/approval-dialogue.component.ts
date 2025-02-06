@@ -63,6 +63,7 @@ export class ApprovalDialogueComponent implements OnInit {
     if (ProcessKey === 'PO_SRN'
       || ProcessKey === 'INV_TPRN'
       || ProcessKey === 'PO_TPRN'
+      || ProcessKey === 'PO_GURN'
       || ProcessKey === 'PO_TRN'
       || ProcessKey === 'PO_VRN'
       || ProcessKey === 'PO_TSP'
@@ -80,6 +81,7 @@ export class ApprovalDialogueComponent implements OnInit {
       || ProcessKey === 'INV_SRN'
       || ProcessKey === 'INV_VRN'
       || ProcessKey === 'INV_TRN'
+      || ProcessKey === 'INV_GURN'
     )
       this.RejectedButtonHideBit = false;
   }
@@ -89,6 +91,7 @@ export class ApprovalDialogueComponent implements OnInit {
       EnumApprovalProcess.AP_BD === this.latest.ProcessKey
       || EnumApprovalProcess.AP_PD === this.latest.ProcessKey
       || EnumApprovalProcess.PO_TPRN === this.latest.ProcessKey
+      || EnumApprovalProcess.PO_GURN === this.latest.ProcessKey
       || EnumApprovalProcess.INV_TPRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_SRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_VRN === this.latest.ProcessKey
@@ -101,6 +104,7 @@ export class ApprovalDialogueComponent implements OnInit {
       || EnumApprovalProcess.INV_TRN === this.latest.ProcessKey
       || EnumApprovalProcess.INV_C === this.latest.ProcessKey
       || EnumApprovalProcess.TRD === this.latest.ProcessKey
+      || EnumApprovalProcess.INV_GURN === this.latest.ProcessKey
 
     );
     if (this.latest.IsFinalStep && isPostInSAP && EnumApprovalProcess.AP_PD === this.latest.ProcessKey) {
