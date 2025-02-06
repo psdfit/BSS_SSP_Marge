@@ -321,6 +321,77 @@ namespace PSDF_BSS.API.Controllers
                 Data = Data
             });
         }
+        [HttpGet("~/api/trainee/deleteattendance/{cnic}")]
+        public IActionResult DeleteTraineeAndAttandance(string cnic)
+        {
+
+            _srvTraineeProfile.DeleteTraineeandAttandance(cnic);
+
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Success"
+            });
+        }
+
+
+        [HttpPost("~/api/Trainee/BiomatricRegistration")]
+        public IActionResult BiomatricRegistration(TraineeProfileDVV model)
+        {
+            string errMsg = string.Empty;
+            if (model == null)
+            {
+                _srvTraineeProfile.SaveTraineeProfileDVVResponse(model);
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+
+
+            }
+            if (model.TraineeID == 0
+                || string.IsNullOrEmpty(model.BiometricData1)
+                || string.IsNullOrEmpty(model.BiometricData2)
+                || string.IsNullOrEmpty(model.BiometricData3)
+                || string.IsNullOrEmpty(model.BiometricData4)
+                )
+            {
+                _srvTraineeProfile.SaveTraineeProfileDVVResponse(model);
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+
+            }
+            model.CurUserID = Convert.ToInt32(User.Identity.Name);
+            int result = _srvTraineeProfile.SavebiomatricTraineeProfileDVV(model, out errMsg);
+            if (result == 0)
+            {
+                return Ok(new ApiResponse
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = new { TraineeID = result }
+                });
+                
+            }
+            else
+            {
+                return Ok(new ApiResponse
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = string.IsNullOrEmpty(errMsg) ? "Error occurred while saving the Trainee biomatrics." : errMsg,
+                    Data = new { isSaved = false }
+                });
+            }
+
+        }
+
+
+
+
     }
 
 

@@ -78,6 +78,7 @@ export class DocumentDialogComponent implements OnInit {
   }
 
   GetTPRN() {
+    debugger;
     this.http.getJSON("api/Cancelation/getTPRN/", this.data.ID).subscribe(
       (data:any) => {
         //let currentUser = this.http.getUserDetails();
@@ -85,8 +86,8 @@ export class DocumentDialogComponent implements OnInit {
         
         this.tprn = d;
         this.tprn.forEach((it) => {
-          if (it.srnDetails)
-            it.srnDetails = JSON.parse('[' + it.srnDetails +']');
+          if (it.TPRNDetails)
+            it.TPRNDetails = JSON.parse('[' + it.TPRNDetails +']');
 
         });
        

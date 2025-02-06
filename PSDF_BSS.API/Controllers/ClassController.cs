@@ -1,5 +1,6 @@
 ﻿using DataLayer.Interfaces;
 using DataLayer.Models;
+using DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PSDF_BSS.API.Models;
@@ -83,6 +84,27 @@ namespace PSDF_BSS.API.Controllers
                 StatusCode = (int)HttpStatusCode.OK,
                 Message = "Success",
                 Data = classes
+            });
+        }
+
+        [HttpGet("~/api/class/getalldevices")]
+        public IActionResult GetDeveicesStatus()
+        {
+            int userID = Convert.ToInt32(User.Identity.Name);
+
+            var _DeveiceStatus = _srvClass.FetchDeveiceStatus(userID);
+
+
+            var Data = new
+            {
+                devicestatuscheck = _DeveiceStatus,
+            };
+
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Success",
+                Data = Data
             });
         }
     }
