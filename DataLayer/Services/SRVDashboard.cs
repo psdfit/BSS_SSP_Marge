@@ -59,7 +59,7 @@ namespace DataLayer.Services
               AND InActive = 0
               AND IsMigrated = 0
               AND ProgramTypeID = 7
-             ORDER BY SchemeID";
+            ORDER BY SchemeID";
 
                 // Execute query
                 DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);

@@ -214,7 +214,7 @@
                       <td class="number-align-center">{{r.Batch}}</td>
                       <td>{{r.TrainingDistrict}}</td>
                     </tr>
-                    <tr *ngIf="r.TPRNDetails">
+                    <tr *ngIf="r.tprnDetails">
                       <td colspan="9">
                         <div>
                           <table class="table table-bordered" style="color:lightslategrey">
@@ -236,7 +236,7 @@
                             </thead>
                             <tbody>
 
-                              <ng-container *ngFor="let c of r.TPRNDetails">
+                              <ng-container *ngFor="let c of r.tprnDetails">
                                 <tr *ngIf="c.Comments != 'Stipend Withheld till Trainee Verification'">
 
                                   <td>{{c.TraineeCode}}</td>
