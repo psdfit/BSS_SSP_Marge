@@ -8,14 +8,15 @@ import { MatTabGroup } from "@angular/material/tabs";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { EnumUserLevel } from "src/app/shared/Enumerations";
-import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
+// import { BiometricEnrollmentDialogComponent } from "../biometric-enrollment-dialog/biometric-enrollment-dialog.component";
 import { SearchFilter } from "src/app/shared/Interfaces";
+import { BiometricEnrollmentDialogComponent } from "src/app/device-management/biometric-enrollment-dialog/biometric-enrollment-dialog.component";
 @Component({
-  selector: 'app-trainee-enrollment',
-  templateUrl: './trainee-enrollment.component.html',
-  styleUrls: ['./trainee-enrollment.component.scss']
+  selector: 'app-trainee-enrollment-report',
+  templateUrl: './trainee-enrollment-report.component.html',
+  styleUrls: ['./trainee-enrollment-report.component.scss'],
 })
-export class TraineeEnrollmentComponent implements OnInit {
+export class TraineeEnrollmentReportComponent implements OnInit {
   currentUser: any = {}
   DeviceRegistration: any[];
   schemeArray: any;

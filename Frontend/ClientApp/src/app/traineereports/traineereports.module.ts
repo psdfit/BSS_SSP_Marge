@@ -16,6 +16,8 @@ import { PrnReportComponent } from './prn-report/prn-report.component';
 import { ClassStatusUpdateComponent } from './class-status-update/class-status-update/class-status-update.component';
 import { ClassStatusDialougeComponent } from './class-status-update/class-status-dialouge/class-status-dialouge.component';
 import { GuruRportsComponent } from './gsr/gsr.component';
+import { TraineeEnrollmentReportComponent } from './trainee-enrollment-report/trainee-enrollment-report.component';
+import { TraineeAttendanceReportComponent } from './trainee-attendance-report/trainee-attendance-report.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { GuruRportsComponent } from './gsr/gsr.component';
     ClassStatusUpdateComponent,
     ClassStatusDialougeComponent,
     GuruRportsComponent,
+    TraineeEnrollmentReportComponent,
+    TraineeAttendanceReportComponent,
   ],
   imports: [
     CommonModule,
