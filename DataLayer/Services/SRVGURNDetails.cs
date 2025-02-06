@@ -88,14 +88,24 @@ namespace DataLayer.Services
             model.IsPaid = row.Field<bool?>("IsPaid");
             model.IsVarified = row.Field<bool?>("IsVarified");
             model.TraineeName = row.Field<string>("TraineeName");
+            model.TraineeCode = row.Field<string>("TraineeCode");
+            model.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            model.FatherName = row.Field<string>("FatherName");
+            model.ContactNumber1 = row.Field<string>("ContactNumber");
+            model.GURUName = row.Field<string>("GURUName");
+            model.GURUCNIC = row.Field<string>("GURUCNIC");
+            model.GURUContactNumber = row.Field<string>("GURUContactNumber");
+            model.ProjectName = row.Field<string>("Project");
+            model.SchemeName = row.Field<string>("Scheme");
+            model.ClassStartDate = row.Field<DateTime?>("ClassStartDate")?.ToString("yyyy-MM-dd");
+            model.ClassEndDate = row.Field<DateTime?>("ClassEndDate")?.ToString("yyyy-MM-dd");
             if (row.Table.Columns.Contains("FundingCategory"))
             {
                 model.TSPName = row.Field<string>("TSPName");
                 model.SchemeName = row.Field<string>("SchemeName");
                 model.FundingCategory = row.Field<string>("FundingCategory");
-                model.ClassStartDate = row.Field<string>("ClassStartDate");
-                model.ClassEndDate = row.Field<string>("ClassEndDate");
-
+                model.ClassStartDate = row.Field<DateTime?>("ClassStartDate")?.ToString("yyyy-MM-dd");
+                model.ClassEndDate = row.Field<DateTime?>("ClassEndDate")?.ToString("yyyy-MM-dd");
             }
             if (ForExcel)
             {
@@ -122,15 +132,8 @@ namespace DataLayer.Services
                 //model.ClassStartdateGURNDetail = row["ClassStartDate"].ToString().GetDate();
                 //model.ClassEnddateGURNDetail = row["ClassEndDate"].ToString().GetDate();
                 //====================================================
-
-                model.TraineeCode = row.Field<string>("TraineeCode");
-                model.TraineeCNIC = row.Field<string>("TraineeCNIC");
-                model.FatherName = row.Field<string>("FatherName");
-                model.ContactNumber1 = row.Field<string>("ContactNumber");
                 model.DistrictName = row.Field<string>("DistrictName");
-                model.GURUName = row.Field<string>("GURUName");
-                model.GURUCNIC = row.Field<string>("GURUCNIC");
-                model.GURUContactNumber = row.Field<string>("GURUContactNumber");
+
 
 
             }

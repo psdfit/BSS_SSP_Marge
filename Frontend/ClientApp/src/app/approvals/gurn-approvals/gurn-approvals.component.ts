@@ -257,6 +257,7 @@ export class GurnApprovalsComponent implements OnInit {
 
 
     ExportToExcel(GURNID: number) {
+        
         let filteredData = this.GURNDetailsBulkArray;
 
         this.http.postJSON('api/GURN/GetGURNExcelExport/', { GURNID: GURNID, Month: this.month.value }).subscribe((d: any) => {
@@ -270,7 +271,6 @@ export class GurnApprovalsComponent implements OnInit {
                 List1: this.populateData(filteredData),
             };
             this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
-
         });
 
     }
@@ -304,11 +304,14 @@ export class GurnApprovalsComponent implements OnInit {
         return data.map((item, index) => {
             return {
                 "SR #": index + 1,
-                "Project": item.FundingCategory
+                "Project": item.ProjectName
                 , "Scheme": item.SchemeName
                 , "TSP": item.TSPName
                 , "Class Start Date": this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
                 , "Class End Date": this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
+                , "GURU Name": item.GURUName
+                , "GURU CNIC": item.GURUCNIC
+                , "GURU Contact Number": item.GURUContactNumber
                 , "Trainee Code": item.TraineeCode
                 , "Trainee Name": item.TraineeName
                 , "Father Name": item.FatherName
