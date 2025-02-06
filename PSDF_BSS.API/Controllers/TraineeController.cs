@@ -35,6 +35,7 @@ namespace PSDF_BSS.API.Controllers
                     Message = "Bad request. You are requested to an invalid class."
                 });
             }
+
             var trainees = _srvTraineeProfile.FetchTraineeProfileByClass_DVV(id)
                 .Select(x => new
                 {

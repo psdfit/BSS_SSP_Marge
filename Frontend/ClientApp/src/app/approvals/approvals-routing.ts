@@ -25,6 +25,7 @@ import { ClassDatesChangeRequestApprovalsComponent } from "./cr-class-dates-appr
 import { TestComponent } from "./test/test.component";
 import { RegistrationApprovalComponent } from "./registration-approval/registration-approval.component";
 import { AnnualPlanApprovalComponent } from "./annual-plan-approval/annual-plan-approval.component";
+import { TprnApprovalsComponent } from './tprn-approvals/tprn-approvals.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,16 @@ const routes: Routes = [
       icon: "verified_user",
       inMenu: true,
       title: "SRN Approval Requests",
+    },
+  },
+  {
+    path: "tprn-approvals",
+    component: TprnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "TPRN Approval Requests",
     },
   },
   {

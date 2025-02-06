@@ -61,6 +61,8 @@ export class ApprovalDialogueComponent implements OnInit {
 
   RejectedButtonHide(ProcessKey: any) {
     if (ProcessKey === 'PO_SRN'
+      || ProcessKey === 'INV_TPRN'
+      || ProcessKey === 'PO_TPRN'
       || ProcessKey === 'PO_TRN'
       || ProcessKey === 'PO_VRN'
       || ProcessKey === 'PO_TSP'
@@ -86,6 +88,8 @@ export class ApprovalDialogueComponent implements OnInit {
     const isPostInSAP = (
       EnumApprovalProcess.AP_BD === this.latest.ProcessKey
       || EnumApprovalProcess.AP_PD === this.latest.ProcessKey
+      || EnumApprovalProcess.PO_TPRN === this.latest.ProcessKey
+      || EnumApprovalProcess.INV_TPRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_SRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_VRN === this.latest.ProcessKey
       || EnumApprovalProcess.PO_TRN === this.latest.ProcessKey

@@ -51,8 +51,11 @@
                 <th>PRN (Regular/Complete/Final)</th>
                 <th>Invoice (Regular/Complete/Final)</th>
                 <th>SRN</th>
-                <th>PO (SRN)</th>
-                <th>Invoice (SRN)</th>
+                <th>SRN (PO)</th>
+                <th>SRN (Invoice)</th>
+                <th>TPRN</th>
+                <th>TPRN (PO)</th>
+                <th>TPRN (Invoice)</th>
                 <!--<th> Action</th>-->
               </tr>
             </thead>
@@ -113,6 +116,60 @@
                   <b class="myDivider" *ngIf="Inv.InvHeaderSRN>0">|</b>
                   <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="Inv.InvHeaderSRN>0" (click)="Cancel(Inv.InvHeaderSRN, 'Inv_S', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
                 </td>
+
+                <!-- <td>
+                  <span [ngStyle]="{'color': Inv.SRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.SRNID>0?'':Inv.SRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.SRNID>0" (click)='GetSRN(Inv.SRNID)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.SRNID>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel SRN" color="warn" *ngIf="Inv.SRNID>0" (click)="Cancel(Inv.SRNID, 'SRN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.POHeaderSRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.POHeaderIDSRN>0?'':Inv.POHeaderSRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.POHeaderIDSRN>0" (click)='GetPO(Inv.POHeaderIDSRN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.POHeaderIDSRN>0">|</b>                  
+                  <a class="myAnchor" matTooltip="Cancel PO" color="warn" *ngIf="Inv.POHeaderIDSRN>0" (click)="Cancel(Inv.POHeaderIDSRN, 'PO_SRN', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+
+                </td>
+                <td>
+                  <span [ngStyle]="{'color': Inv.InvSRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.InvHeaderSRN>0?'':Inv.InvSRNIsCanceled>0?'Cancelled':'Not Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.InvHeaderSRN>0" (click)='GetInv(Inv.InvHeaderSRN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.InvHeaderSRN>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="Inv.InvHeaderSRN>0" (click)="Cancel(Inv.InvHeaderSRN, 'Inv_S', Inv.ClassID, i)"><mat-icon style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td> -->
+
+                 <td>
+                  <span
+                    [ngStyle]="{'color': Inv.TPRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.TPRNID>0?'':Inv.TPRNIsCanceled>0?'Cancelled':'Not
+                    Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.TPRNID>0" (click)='GetTPRN(Inv.TPRNID)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.TPRNID>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel TPRN" color="warn" *ngIf="Inv.TPRNID>0"
+                    (click)="Cancel(Inv.TPRNID, 'TPRN', Inv.ClassID, i)"><mat-icon
+                      style="vertical-align:middle;">cancel_present</mat-icon></a>
+                
+                </td>
+                <td>
+                  <span
+                    [ngStyle]="{'color': Inv.POHeaderTPRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.POHeaderIDTPRN>0?'':Inv.POHeaderTPRNIsCanceled>0?'Cancelled':'Not
+                    Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.POHeaderIDTPRN>0" (click)='GetPO(Inv.POHeaderIDTPRN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.POHeaderIDTPRN>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel PO" color="warn" *ngIf="Inv.POHeaderIDTPRN>0"
+                    (click)="Cancel(Inv.POHeaderIDTPRN, 'PO_TPRN', Inv.ClassID, i)"><mat-icon
+                      style="vertical-align:middle;">cancel_present</mat-icon></a>
+                
+                </td>
+                <td>
+                  <span
+                    [ngStyle]="{'color': Inv.InvTPRNIsCanceled>0 ? 'red' : 'black'}">{{Inv.InvHeaderTPRN>0?'':Inv.InvTPRNIsCanceled>0?'Cancelled':'Not
+                    Generated'}}</span>
+                  <a class="myAnchor" *ngIf="Inv.InvHeaderTPRN>0" (click)='GetInv(Inv.InvHeaderTPRN)'>View Detail</a>
+                  <b class="myDivider" *ngIf="Inv.InvHeaderTPRN>0">|</b>
+                  <a class="myAnchor" matTooltip="Cancel Invoice" color="warn" *ngIf="Inv.InvHeaderTPRN>0"
+                    (click)="Cancel(Inv.InvHeaderTPRN, 'Inv_S', Inv.ClassID, i)"><mat-icon
+                      style="vertical-align:middle;">cancel_present</mat-icon></a>
+                </td> 
               </tr>
             </tbody>
           </table>

@@ -365,6 +365,16 @@ namespace DataLayer.Services
             catch (Exception ex) { throw ex; }
         }
 
+        public DataTable GetTPRN(int ID)
+        {
+            try
+            {
+                return SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "GetTPRN", new SqlParameter("@ID", ID)).Tables[0];
+
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         public DataTable GetPRN(int ID)
         {
             try

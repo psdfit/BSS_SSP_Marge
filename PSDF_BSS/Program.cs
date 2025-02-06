@@ -27,8 +27,9 @@ namespace PSDF_BSS
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                    .ConfigureServices(serviceCollection=> {
-                        serviceCollection.AddSingleton<IScheduler>(serviceProvider => new Scheduler(serviceProvider.GetService<ISRVSendEmail>(),serviceProvider.GetService<ISRVTraineeProfile>(), serviceProvider.GetService<ISRVDistrict>(),
+                    .ConfigureServices(serviceCollection =>
+                    {
+                        serviceCollection.AddSingleton<IScheduler>(serviceProvider => new Scheduler(serviceProvider.GetService<ISRVSendEmail>(), serviceProvider.GetService<ISRVTraineeProfile>(), serviceProvider.GetService<ISRVDistrict>(),
                             serviceProvider.GetService<ISRVOrgConfig>(), serviceProvider.GetService<ISRVClass>(), serviceProvider.GetService<ISRVTraineeStatus>())); ; ;
                     })
                     .UseStartup<Startup>();
