@@ -25,6 +25,7 @@ import { ClassDatesChangeRequestApprovalsComponent } from "./cr-class-dates-appr
 import { TestComponent } from "./test/test.component";
 import { RegistrationApprovalComponent } from "./registration-approval/registration-approval.component";
 import { AnnualPlanApprovalComponent } from "./annual-plan-approval/annual-plan-approval.component";
+import { GurnApprovalsComponent } from "./gurn-approvals/gurn-approvals.component";
 import { TprnApprovalsComponent } from './tprn-approvals/tprn-approvals.component';
 
 const routes: Routes = [
@@ -46,6 +47,16 @@ const routes: Routes = [
       icon: "verified_user",
       inMenu: true,
       title: "SRN Approval Requests",
+    },
+  },
+  {
+    path: "gurn-approvals",
+    component: GurnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "GURN Approval Requests",
     },
   },
   {

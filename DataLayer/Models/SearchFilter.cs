@@ -20,5 +20,9 @@ namespace DataLayer.Models
         public int DistrictID { get; set; } 
         public int TehsilID { get; set; }
         public List<string> SelectedColumns { get; set; }
+
+        // New fields for filtering by Month and Year
+        public int? Month { get; set; }
+        public int? Year { get; set; }
     }
 }

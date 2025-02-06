@@ -57,7 +57,7 @@ export class CancelComponent implements OnInit {
     });
   }
   Cancel(row: any, type: any, classid, index) {
-    let next : any;
+    let next: any;
     if (index < this.ClassData.length - 1) {
       console.log(this.ClassData[index + 1].Month, this.ClassData.length, index);
       next = this.ClassData[index + 1];
@@ -81,9 +81,21 @@ export class CancelComponent implements OnInit {
       }
       this.CancelConfirmMsg = 'Are you sure you want to cancel this invoice header? \nNote: All invoices against this header will be cancelled. Please view details for more information.';
     }
+    else if (type === 'Inv_GURN') {
+      if (next != undefined) {
+        if (next.InvHeaderSRN > 0 && next.InvSRNIsCanceled <= 0) { this.ComSrv.ShowError('Please cancel next month\'s invoice first to cancel this one.'); return; }
+      }
+      this.CancelConfirmMsg = 'Are you sure you want to cancel this invoice header? \nNote: All invoices against this header will be cancelled. Please view details for more information.';
+    }
     else if (type == 'PO_SRN') {
       if (next != undefined) {
         if (next.POHeaderIDSRN > 0 && next.POHeaderSRNIsCanceled <= 0) { this.ComSrv.ShowError("Please cancel next month's PO first to cancel this one."); return; }
+      }
+      this.CancelConfirmMsg = 'Are you sure you want to cancel this PO header? \nNote: All PO Lines against this header will be cancelled. Please view details for more information.';
+    }
+    else if (type == 'PO_GURN') {
+      if (next != undefined) {
+        if (next.POHeaderIDGURN > 0 && next.POHeaderGURNIsCanceled <= 0) { this.ComSrv.ShowError("Please cancel next month's PO first to cancel this one."); return; }
       }
       this.CancelConfirmMsg = 'Are you sure you want to cancel this PO header? \nNote: All PO Lines against this header will be cancelled. Please view details for more information.';
     }
@@ -105,6 +117,12 @@ export class CancelComponent implements OnInit {
         if (next.TPRNID > 0 && next.TPRNIsCanceled <= 0) { this.ComSrv.ShowError('Please cancel next month\'s SRN first to cancel this one.'); return; }
       }
       this.CancelConfirmMsg = 'Are you sure you want to cancel this TPRN?';
+    }
+    else if (type === 'GURN') {
+      if (next != undefined) {
+        if (next.GURNID > 0 && next.GURNIsCanceled <= 0) { this.ComSrv.ShowError('Please cancel next month\'s GURN first to cancel this one.'); return; }
+      }
+      this.CancelConfirmMsg = 'Are you sure you want to cancel this GURN?';
     }
     else if (type === 'PRN') {
       if (next != undefined) {
@@ -174,6 +192,15 @@ export class CancelComponent implements OnInit {
     this.dailog.openDocumentDialogue(ID, 'PO');
   }
   GetInv(ID: number) {
+    this.dailog.openDocumentDialogue(ID, 'Inv');
+  }
+  GetGURN(ID: number) {
+    this.dailog.openDocumentDialogue(ID, 'GURN');
+  }
+  GetPOGURN(ID: number) {
+    this.dailog.openDocumentDialogue(ID, 'PO');
+  }
+  GetInvGURN(ID: number) {
     this.dailog.openDocumentDialogue(ID, 'Inv');
   }
   EmptyCtrl(ev: any) {

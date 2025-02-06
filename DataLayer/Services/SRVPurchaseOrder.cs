@@ -86,6 +86,28 @@ namespace DataLayer.Services
             catch (Exception e)
             { throw new Exception(e.Message); }
         }
+public bool CreatePOForGURN(string gurnIDs,string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@GURNIDs", gurnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForGURN", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POForGURN", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
 
         public bool CreatePOForTPRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
         {

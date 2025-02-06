@@ -10,6 +10,8 @@ export enum EnumApprovalProcess {
   , PO_TSP = 'PO_TSP'
   , PO_TRN = 'PO_TRN'
   , PO_SRN = 'PO_SRN'
+  , PO_GURN = 'PO_GURN'
+  , PO_GRN = 'PO_GRN'
   , PRN_C = 'PRN_C'
   , PRN_R = 'PRN_R'
   , PRN_F = 'PRN_F' // this is actually PRN Employment (Final = Employment)
@@ -18,6 +20,7 @@ export enum EnumApprovalProcess {
   , INV_1ST = 'INV_1ST'
   , INV_2ND = 'INV_2ND'
   , INV_SRN = 'INV_SRN'
+  , INV_GURN = 'INV_GURN'
   , INV_TPRN = 'INV_TPRN'
   , INV_F = 'INV_F'
   , INV_TRN = 'INV_TRN'
@@ -34,6 +37,7 @@ export enum EnumApprovalProcess {
   , CR_INCEPTION = 'CR_INCEPTION'
   , CR_INSTRUCTOR_REPLACE = 'CR_INSTRUCTOR_REPLACE'
   , SRN = 'SRN'
+  , GURN = 'GURN'
   , TPRN = 'TPRN'
   , PO_TPRN = 'PO_TPRN'
   , VRN = 'VRN'
@@ -139,6 +143,7 @@ export enum EnumExcelReportType {
   PendingClassesinKAMDashboard = 22,
   StipendDisbursementStatusReport = 23,
   orgconfigration = 24,
+  GURN = 26
   TPRN = 25,
   PO_TPRN = 26,
 }

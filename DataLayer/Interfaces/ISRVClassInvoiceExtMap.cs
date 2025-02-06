@@ -25,6 +25,7 @@ namespace DataLayer.Interfaces
         System.Data.DataTable GetMPR(int ID);
         System.Data.DataTable GetTPRN(int ID);
         System.Data.DataTable GetSRN(int ID);
+        System.Data.DataTable GetGURN(int ID);
         System.Data.DataTable GetPRN(int ID);
         System.Data.DataTable GetPRNMaster(int ID);
         System.Data.DataTable GetPO(int ID);
