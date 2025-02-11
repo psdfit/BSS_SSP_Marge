@@ -376,7 +376,7 @@
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
-            <input matInput placeholder="Uniform & Bag Cost per Trainee" formControlName="UniformBagCost" required
+            <input matInput placeholder="Uniform & Bag Cost per Trainee / Hostel" formControlName="UniformBagCost" required
                    type="text" DecimelOnly>
             <mat-error *ngIf="notForm.controls.UniformBagCost.invalid && notForm.controls.UniformBagCost.errors.required">required</mat-error>
           </mat-form-field>
@@ -450,6 +450,30 @@
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Guru Payment" formControlName="GuruPayment" required type="text"
+                   DecimelOnly>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Protectorate and Visa Stamping" formControlName="ProtectorateandVisa" required type="text"
+                   DecimelOnly>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Medical cost" formControlName="MedicalCost" required type="text"
+                   DecimelOnly>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Prometric costs" formControlName="PrometricCost" required type="text"
+                   DecimelOnly>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Other Training and supporting cost" formControlName="OtherTrainingCost" required type="text"
                    DecimelOnly>
           </mat-form-field>
         </div>
@@ -841,7 +865,7 @@
                 <th>Training Cost per Trainee per Month (Exclusive of Taxes)</th>
                 <th>Sales Tax</th>
                 <th>Training Cost per Trainee per Month (Inclusive of Taxes)</th>
-                <th>Uniform & Bag Cost per Trainee</th>
+                <th>Uniform & Bag Cost per Trainee / Hostel</th>
                 <th>Testing & Certification Fee per Trainee</th>
                 <th>Boarding & Other Allowances per trainee</th>
                 <th>Self Employment Commitment</th>
@@ -851,6 +875,10 @@
                 <th>On Job Training (OJT)</th>
                 <th>Transportation</th>
                 <th>Guru Payment</th>
+                <th>Protectorate and Visa Stamping</th>
+                <th>Medical cost</th>
+                <th>Prometric costs</th>
+                <th>Other Training and supporting cost</th>
                 <th>Total Cost</th>
                 <th *ngIf="!scheme[0]?.FinalSubmitted">Action</th>
               </tr>
@@ -1525,11 +1553,39 @@
                     </ng-container>
                     <ng-container *ngIf="!row.IsEditable">{{row.GuruPayment}}</ng-container>
                     <br />
-
-                    <!--<mat-form-field>
-      <mat-form-field><input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly maxlength="15">
-      <mat-error *ngIf="row.controls.Stipend.invalid && row.controls.Stipend.errors.required">required</mat-error>
-    </mat-form-field>-->
+                  </td>
+                  <td>
+                    <ng-container *ngIf="row.IsEditable">
+                      <mat-form-field>
+                        <input matInput type="text"
+                               formControlName="ProtectorateandVisa"
+                               [ngModel]="row.ProtectorateandVisa" />
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="!row.IsEditable">{{row.ProtectorateandVisa}}</ng-container>
+                    <br />
+                  </td>
+                  <td>
+                    <ng-container *ngIf="row.IsEditable">
+                      <mat-form-field>
+                        <input matInput type="text"
+                               formControlName="MedicalCost"
+                               [ngModel]="row.MedicalCost" />
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="!row.IsEditable">{{row.MedicalCost}}</ng-container>
+                    <br />
+                  </td>
+                  <td>
+                    <ng-container *ngIf="row.IsEditable">
+                      <mat-form-field>
+                        <input matInput type="text"
+                               formControlName="MedicalCost"
+                               [ngModel]="row.MedicalCost" />
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="!row.IsEditable">{{row.MedicalCost}}</ng-container>
+                    <br />
                   </td>
                   <td>
                     <ng-container *ngIf="row.IsEditable">

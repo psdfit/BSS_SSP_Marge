@@ -139,6 +139,10 @@ export class ClassComponent implements OnInit {
       balloonpayment: 0,
       GuruPayment: 0,
       Transportation: 0,
+      ProtectorateandVisa: 0,  //Added by Rao Ali Haider for International Plac
+      MedicalCost: 0,
+      PrometricCost: 0,
+      OtherTrainingCost: 0,
     }
     this.notForm = this._formBuilder.group({ ...this.classFormGroup, TotalClasses: [0, Validators.required] });
 
@@ -525,8 +529,12 @@ export class ClassComponent implements OnInit {
               this.tableList['IsEditable'] = false,
               this.tableList['balloonpayment'] = this.notForm.controls.balloonpayment.value,
               this.tableList['GuruPayment'] = this.notForm.controls.GuruPayment.value,
-              this.tableList['Transportation'] = this.notForm.controls.Transportation.value
-            this.populatedTableList.push(this.tableList);
+              this.tableList['Transportation'] = this.notForm.controls.Transportation.value,
+              this.tableList['MedicalCost'] = this.notForm.controls.MedicalCost.value,  //Added by Rao Ali Haider for International Plac
+              this.tableList['PrometricCost'] = this.notForm.controls.PrometricCost.value,
+              this.tableList['OtherTrainingCost'] = this.notForm.controls.OtherTrainingCost.value,
+              this.tableList['ProtectorateandVisa'] = this.notForm.controls.ProtectorateandVisa.value
+              this.populatedTableList.push(this.tableList);
             this.tableList = [];
 
             form.patchValue({
@@ -571,7 +579,11 @@ export class ClassComponent implements OnInit {
               TotalCostPerClass: TotalCost_temp,
               balloonpayment: this.notForm.controls.balloonpayment.value,
               GuruPayment: this.notForm.controls.GuruPayment.value,
-              Transportation: this.notForm.controls.Transportation.value
+              Transportation: this.notForm.controls.Transportation.value,
+              ProtectorateandVisa: this.notForm.controls.ProtectorateandVisa.value,  //Added by Rao Ali Haider for International Plac
+              MedicalCost: this.notForm.controls.MedicalCost.value,
+              PrometricCost: this.notForm.controls.PrometricCost.value,
+              OtherTrainingCost: this.notForm.controls.OtherTrainingCost.value
               
             }, { emitEvent: true });
           });
@@ -999,7 +1011,11 @@ export class ClassComponent implements OnInit {
             this.tableList['TotalCostPerClass'] = Math.round(TotalCost_temp),
             this.tableList['balloonpayment'] = f['On Job Training (OJT)'] ?? 0,
             this.tableList['GuruPayment'] = f['Guru Payment'] ?? 0, 
-            this.tableList['Transportation'] = f['Transportation'] ?? 0, 
+            this.tableList['Transportation'] = f['Transportation'] ?? 0,
+            this.tableList['ProtectorateandVisa'] = f['ProtectorateandVisa'] ?? 0, //Added by Rao Ali Haider for International Placement
+            this.tableList['MedicalCost'] = f['MedicalCost'] ?? 0,
+            this.tableList['PrometricCost'] = f['PrometricCost'] ?? 0,
+            this.tableList['OtherTrainingCost'] = f['OtherTrainingCost'] ?? 0,
             this.tableList['IsEditable'] = false
           
           ///
@@ -1066,7 +1082,11 @@ export class ClassComponent implements OnInit {
             Stipend: Math.round(f['Stipend']),
             balloonpayment: Math.round(f['On Job Training (OJT)']), 
             GuruPayment: Math.round(f['Guru Payment']),
-            Transportation: Math.round(f['Transportation']), 
+            Transportation: Math.round(f['Transportation']),
+            ProtectorateandVisa: Math.round(f['ProtectorateandVisa']),  //Added by Rao Ali Haider for International Plac
+            MedicalCost: Math.round(f['MedicalCost']),
+            PrometricCost: Math.round(f['PrometricCost']),
+            OtherTrainingCost: Math.round(f['OtherTrainingCost']),
             TotalCostPerClass: Math.round(TotalCost_temp)
           }, { emitEvent: true });
           form.markAllAsTouched();
@@ -1275,6 +1295,10 @@ export class ClassComponent implements OnInit {
       (!row['EmploymentCommitmentFormal'] && row['EmploymentCommitmentFormal'] != 0) ||
       (!row['OverallEmploymentCommitment'] && row['OverallEmploymentCommitment'] != 0) ||
       (!row['TotalCostPerClass'] && row['TotalCostPerClass'] != 0) ||
+      (!row['ProtectorateandVisa'] && row['ProtectorateandVisa'] != 0) || //Added by Rao Ali Haider for International Plac
+      (!row['MedicalCost'] && row['MedicalCost'] != 0) ||
+      (!row['PrometricCost'] && row['PrometricCost'] != 0) ||
+      (!row['OtherTrainingCost'] && row['OtherTrainingCost'] != 0) ||
       (row.RequiredLocationGeoTag && !regEx.test(row.GeoTagging)) ||
       !row['TradeDetailMapID']
     ) {
@@ -1430,7 +1454,11 @@ export class ClassComponent implements OnInit {
       RequiredLocationGeoTag: ['', Validators.required],
       balloonpayment: 0,
       GuruPayment: 0,
-      Transportation: 0
+      Transportation: 0,      
+      ProtectorateandVisa: 0,
+      MedicalCost:0,
+      PrometricCost: 0,
+      OtherTrainingCost: 0
     },
       { updateOn: "change" }
 
@@ -1492,6 +1520,10 @@ export class ClassModel extends ModelBase {
   balloonpayment: number;
   GuruPayment: number;
   Transportation: number;
+  ProtectorateandVisa: number;
+  MedicalCost: number;
+  PrometricCost: number;
+  OtherTrainingCost: number;
 }
 
 
