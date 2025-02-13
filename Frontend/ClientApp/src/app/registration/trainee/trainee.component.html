@@ -533,22 +533,48 @@
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="GuardianNextToKinName" placeholder="Name" matInput
-                            maxlength="50" TitleCase required />
+                                 maxlength="50" TitleCase required />
                           <mat-label>Guardian/(Next To Kin) Name</mat-label>
-                          <mat-error
-                            *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.required"><strong>required</strong></mat-error>
-                          <mat-error
-                            *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.pattern"><strong>letters
-                              only</strong></mat-error>
+                          <mat-error *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.required"><strong>required</strong></mat-error>
+                          <mat-error *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.pattern">
+                            <strong>
+                              letters
+                              only
+                            </strong>
+                          </mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="GuardianNextToKinContactNo"
-                            placeholder="Mobile / Landline" matInput NumberOnly maxlength="11" required />
+                                 placeholder="Mobile / Landline" matInput NumberOnly maxlength="11" required />
                           <mat-label>Guardian/(Next To Kin) Contact Number</mat-label>
-                          <mat-error
-                            *ngIf="GuardianNextToKinContactNo.invalid && GuardianNextToKinContactNo.errors.required"><strong>required</strong></mat-error>
+                          <mat-error *ngIf="GuardianNextToKinContactNo.invalid && GuardianNextToKinContactNo.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <!---Added by Ali Haider for International Placement--->
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="Accounttitle"
+                                 placeholder="Account title" matInput required />
+                          <mat-label>Account title</mat-label>
+                          <mat-error *ngIf="Accounttitle.invalid && Accounttitle.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="BankName"
+                                 placeholder="Bank Name" matInput required />
+                          <mat-label>Bank Name</mat-label>
+                          <mat-error *ngIf="BankName.invalid && BankName.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="IBANNumber"
+                                 placeholder="IBAN Number" matInput required />
+                          <mat-label>IBAN Number</mat-label>
+                          <mat-error *ngIf="IBANNumber.invalid && IBANNumber.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                     </div>

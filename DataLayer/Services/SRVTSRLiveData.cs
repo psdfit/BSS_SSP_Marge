@@ -432,6 +432,12 @@ namespace DataLayer.Services
                 tsr.ClassStatusName = row.Field<string>("ClassStatusName");
                 tsr.ProvinceName = row.Field<string>("ProvinceName");
             }
+            if (row.Table.Columns.Contains("IBANNumber"))
+            {
+                tsr.IBANNumber = row.Field<string>("IBANNumber");
+                tsr.BankName = row.Field<string>("BankName");
+                tsr.Accounttitle = row.Field<string>("Accounttitle");
+            }
             return tsr;
         }
 
@@ -447,6 +453,7 @@ namespace DataLayer.Services
             gsr.ClassCode = row.Field<string>("ClassCode");
             gsr.GuruCNIC = row.Field<string>("GuruCNIC");
             gsr.GuruName = row.Field<string>("GuruName");
+
             return gsr;
         }
 
@@ -705,6 +712,12 @@ namespace DataLayer.Services
             tsr.Disability = row.Field<string>("Disability");
             tsr.ReligionName = row.Field<string>("ReligionName");
             tsr.CertAuthName = row.Field<string>("CertAuthName");
+            if (row.Table.Columns.Contains("IBANNumber"))
+            {
+                tsr.IBANNumber = row.Field<string>("IBANNumber");
+                tsr.BankName = row.Field<string>("BankName");
+                tsr.Accounttitle = row.Field<string>("Accounttitle");
+            }
             return tsr;
         }
          private TERLiveDataModel RowOfTERLiveDatapaged(DataRow row)

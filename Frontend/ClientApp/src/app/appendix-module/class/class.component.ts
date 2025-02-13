@@ -427,6 +427,10 @@ export class ClassComponent implements OnInit {
               parseInt(this.notForm.controls.balloonpayment.value),
               parseInt(this.notForm.controls.GuruPayment.value),
               parseInt(this.notForm.controls.Transportation.value),
+              parseInt(this.notForm.controls.ProtectorateandVisa.value),
+              parseInt(this.notForm.controls.MedicalCost.value),
+              parseInt(this.notForm.controls.PrometricCost.value),
+              parseInt(this.notForm.controls.OtherTrainingCost.value),
               parseInt(item.trainees)
             );
 
@@ -922,11 +926,15 @@ export class ClassComponent implements OnInit {
               //parseInt(f['Stipend']),
               parseInt(this.notForm.controls.Stipend.value),
               parseInt(f['Testing & Certification Fee per Trainee']),
-              parseInt(f['Uniform & Bag Cost per Trainee']),
+              parseInt(f['Uniform & Bag Cost per Trainee / Hostel']),
               //parseInt(this.notForm.controls.UniformBagCost.value),
               parseInt(f['On Job Training (OJT)']),
               parseInt(f['Guru Payment']),
               parseInt(f['Transportation']),
+              parseInt(f['Protectorate and Visa Stamping']),
+              parseInt(f['Medical cost']),
+              parseInt(f['Prometric costs']),
+              parseInt(f['Other Training and supporting cost']),
               item.trainees
 
               //this.notForm.controls.TrainingCostPerTraineePerMonthInTax.value,
@@ -1001,7 +1009,7 @@ export class ClassComponent implements OnInit {
             this.tableList['TrainingCostPerTraineePerMonthExTax'] = TrainingCostPerTraineePerMonthExTaxes_temp,
             this.tableList['SalesTax'] = Math.round(SalesTax_temp),
             this.tableList['TrainingCostPerTraineePerMonthInTax'] = TrainingCostPerTraineePerMonthIncTaxes_temp,
-            this.tableList['UniformBagCost'] = f['Uniform & Bag Cost per Trainee'],
+            this.tableList['UniformBagCost'] = f['Uniform & Bag Cost per Trainee / Hostel'],
             this.tableList['PerTraineeTestCertCost'] = Math.round(f['Testing & Certification Fee per Trainee']),
             this.tableList['BoardingAllowancePerTrainee'] = Math.round(f['Boarding & Other Allowances per trainee']),
             this.tableList['EmploymentCommitmentSelf'] = Math.round(f['Employment Commitment Self']),
@@ -1012,10 +1020,10 @@ export class ClassComponent implements OnInit {
             this.tableList['balloonpayment'] = f['On Job Training (OJT)'] ?? 0,
             this.tableList['GuruPayment'] = f['Guru Payment'] ?? 0, 
             this.tableList['Transportation'] = f['Transportation'] ?? 0,
-            this.tableList['ProtectorateandVisa'] = f['ProtectorateandVisa'] ?? 0, //Added by Rao Ali Haider for International Placement
-            this.tableList['MedicalCost'] = f['MedicalCost'] ?? 0,
-            this.tableList['PrometricCost'] = f['PrometricCost'] ?? 0,
-            this.tableList['OtherTrainingCost'] = f['OtherTrainingCost'] ?? 0,
+            this.tableList['ProtectorateandVisa'] = f['Protectorate and Visa Stamping'] ?? 0, //Added by Rao Ali Haider for International Placement
+            this.tableList['MedicalCost'] = f['Medical cost'] ?? 0,
+            this.tableList['PrometricCost'] = f['Prometric costs'] ?? 0,
+            this.tableList['OtherTrainingCost'] = f['Other Training and supporting cost'] ?? 0,
             this.tableList['IsEditable'] = false
           
           ///
@@ -1073,7 +1081,7 @@ export class ClassComponent implements OnInit {
             TrainingCostPerTraineePerMonthExTax: TrainingCostPerTraineePerMonthExTaxes_temp,
             SalesTax: Math.round(SalesTax_temp),
             TrainingCostPerTraineePerMonthInTax: TrainingCostPerTraineePerMonthIncTaxes_temp,
-            UniformBagCost: f['Uniform & Bag Cost per Trainee'],
+            UniformBagCost: f['Uniform & Bag Cost per Trainee / Hostel'],
             PerTraineeTestCertCost: Math.round(f['Testing & Certification Fee per Trainee']),
             BoardingAllowancePerTrainee: Math.round(f['Boarding & Other Allowances per trainee']),
             EmploymentCommitmentSelf: Math.round(f['Employment Commitment Self']),
@@ -1083,10 +1091,10 @@ export class ClassComponent implements OnInit {
             balloonpayment: Math.round(f['On Job Training (OJT)']), 
             GuruPayment: Math.round(f['Guru Payment']),
             Transportation: Math.round(f['Transportation']),
-            ProtectorateandVisa: Math.round(f['ProtectorateandVisa']),  //Added by Rao Ali Haider for International Plac
-            MedicalCost: Math.round(f['MedicalCost']),
-            PrometricCost: Math.round(f['PrometricCost']),
-            OtherTrainingCost: Math.round(f['OtherTrainingCost']),
+            ProtectorateandVisa: Math.round(f['Protectorate and Visa Stamping']),  //Added by Rao Ali Haider for International Plac
+            MedicalCost: Math.round(f['Medical cost']),
+            PrometricCost: Math.round(f['Prometric costs']),
+            OtherTrainingCost: Math.round(f['Other Training and supporting cost']),
             TotalCostPerClass: Math.round(TotalCost_temp)
           }, { emitEvent: true });
           form.markAllAsTouched();
@@ -1120,9 +1128,9 @@ export class ClassComponent implements OnInit {
     //return (TrainingCostPerTraineePerMonthIncTaxes / (1 + SalesTaxRate))?.toFixed(2);
     return parseFloat((TrainingCostPerTraineePerMonthIncTaxes / (1 + SalesTaxRate)).toFixed(this.decimalPlaces));
   }
-  calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend, testingCert, uniformBag, ojt, Guru, transportation, trainees) {
+  calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend, testingCert, uniformBag, ojt, Guru, transportation, ProtectorateandVisa, MedicalCost, PrometricCost, OtherTrainingCost, trainees) {
     let val = 0
-    if (duration < 1) { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)) * trainees); }
+    if (duration < 1) { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru) + ProtectorateandVisa + MedicalCost + PrometricCost +  OtherTrainingCost) * trainees); }
     else { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)) * trainees); }
     return parseFloat(val.toFixed(this.decimalPlaces));
   }

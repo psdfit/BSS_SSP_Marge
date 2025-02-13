@@ -1580,11 +1580,22 @@
                     <ng-container *ngIf="row.IsEditable">
                       <mat-form-field>
                         <input matInput type="text"
-                               formControlName="MedicalCost"
-                               [ngModel]="row.MedicalCost" />
+                               formControlName="PrometricCost"
+                               [ngModel]="row.PrometricCost" />
                       </mat-form-field>
                     </ng-container>
-                    <ng-container *ngIf="!row.IsEditable">{{row.MedicalCost}}</ng-container>
+                    <ng-container *ngIf="!row.IsEditable">{{row.PrometricCost}}</ng-container>
+                    <br />
+                  </td>
+                  <td>
+                    <ng-container *ngIf="row.IsEditable">
+                      <mat-form-field>
+                        <input matInput type="text"
+                               formControlName="OtherTrainingCost"
+                               [ngModel]="row.OtherTrainingCost" />
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="!row.IsEditable">{{row.OtherTrainingCost}}</ng-container>
                     <br />
                   </td>
                   <td>

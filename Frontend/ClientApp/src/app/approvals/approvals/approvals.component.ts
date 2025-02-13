@@ -388,7 +388,7 @@ export class ApprovalsComponent implements OnInit {
             "Sales Tax": r.SalesTax,
             "Training Cost per Trainee per Month (Inclusive of Taxes)":
               r.TrainingCostPerTraineePerMonthInTax,
-            "Uniform & Bag Cost per Trainee": r.UniformBagCost,
+            "Uniform & Bag Cost per Trainee / Hostel": r.UniformBagCost,
             "Testing & Certification Fee per Trainee": r.PerTraineeTestCertCost,
             "Boarding & Other Allowances per trainee":
               r.BoardingAllowancePerTrainee,
@@ -399,6 +399,10 @@ export class ApprovalsComponent implements OnInit {
             "On Job Training (OJT)": this.decimalPipe.transform(r.balloonpayment, "1.2-2"),
             "Transportation": this.decimalPipe.transform(r.Transportation, "1.2-2"),
             "Guru Payment": this.decimalPipe.transform(r.GuruPayment, "1.2-2"),
+            "Protectorate and Visa Stamping": this.decimalPipe.transform(r.ProtectorateandVisa, "1.2-2"),
+            "Medical cost": this.decimalPipe.transform(r.MedicalCost, "1.2-2"),
+            "Prometric Cost": this.decimalPipe.transform(r.PrometricCost, "1.2-2"),
+            "Other Training and supporting cost": this.decimalPipe.transform(r.OtherTrainingCost, "1.2-2"),
             "Total Cost": this.decimalPipe.transform(r.TotalCostPerClass,"1.2-2"),
           }));
 
@@ -711,6 +715,10 @@ export class ApprovalsComponent implements OnInit {
             "On Job Training (OJT)": x.balloonpayment,
             "Transportation": x.Transportation,
             "Guru Payment": x.GuruPayment,
+            "Protectorate and Visa Stamping": x.ProtectorateandVisa,
+            "Medical cost": x.MedicalCost,
+            "Prometric costs": x.PrometricCost,
+            "Other Training and supporting cost": x.OtherTrainingCost,
             // ,"Total Cost": x.
             "Training Cost Per Trainee Per Month Ex Tax":
               x.TrainingCostPerTraineePerMonthExTax,

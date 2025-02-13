@@ -196,6 +196,9 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TraineeDisabilityID", traineeProfile.TraineeDisabilityID));
                 param.Add(new SqlParameter("@ReferralSourceID", traineeProfile.ReferralSourceID));
                 param.Add(new SqlParameter("@TraineeEmail", traineeProfile.TraineeEmail));
+                param.Add(new SqlParameter("@IBANNumber", traineeProfile.IBANNumber));
+                param.Add(new SqlParameter("@BankName", traineeProfile.BankName));
+                param.Add(new SqlParameter("@Accounttitle", traineeProfile.Accounttitle));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
 
 
@@ -1470,7 +1473,18 @@ namespace DataLayer.Services
             {
                 TraineeProfile.TraineeCrIsRejected = row.Field<bool>("TraineeCrIsRejected");
             }
-
+            if (row.Table.Columns.Contains("Accounttitle"))
+            {
+                TraineeProfile.Accounttitle = row.Field<string>("Accounttitle");
+            }
+            if (row.Table.Columns.Contains("BankName"))
+            {
+                TraineeProfile.BankName = row.Field<string>("BankName");
+            }
+            if (row.Table.Columns.Contains("IBANNumber"))
+            {
+                TraineeProfile.IBANNumber = row.Field<string>("IBANNumber");
+            }
             return TraineeProfile;
         }
 
