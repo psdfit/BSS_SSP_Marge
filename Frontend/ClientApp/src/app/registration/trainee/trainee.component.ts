@@ -749,6 +749,7 @@ debugger;
         }
         if (scheme.FundingCategoryID !== 20) {
           this.IsInternationalPlacement = false;
+            this.RemoveInternatonplacemntFields();
         }
         else {
           this.IsInternationalPlacement = true;
