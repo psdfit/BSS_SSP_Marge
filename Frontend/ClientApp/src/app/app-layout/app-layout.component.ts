@@ -292,4 +292,27 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
     return true;
     // this.router.navigate(['/notification/viewallnotification',data]);
   }
+
+  private apiUrl = 'api/MobileAppDownload/GetMobileApp';
+
+
+  downloadMobileApp() {
+    this.ComSrv.getMobileApp(this.apiUrl, { responseType: 'blob' }).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'myApp.zip';
+      
+      // Append the anchor tag to the body and trigger the click
+      document.body.appendChild(a);
+      a.click();
+      
+      // Remove the anchor tag and revoke the object URL after the download
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, error => {
+      console.error('Download failed:', error);
+    });
+}
+
 }
