@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 /* **** Aamer Rehman Malik *****/
 import { Component, OnInit } from '@angular/core';
 import { Workbook } from 'exceljs';
@@ -19,9 +20,9 @@ import { DatePipe } from '@angular/common';
 
 
 @Component({
-  selector: 'app-tsp-trainee-list',
-  templateUrl: './tsp-trainee-list.component.html',
-  styleUrls: ['./tsp-trainee-list.component.scss'],
+  selector: 'app-onjob-trainee-placement',
+  templateUrl: './onjob-trainee-placement.component.html',
+  styleUrls: ['./onjob-trainee-placement.component.scss'],
   providers: [DatePipe],
   animations: [
     trigger("listAnimation", [
@@ -69,12 +70,12 @@ import { DatePipe } from '@angular/common';
   ]
 })
 
-export class TSPTraineeListComponent implements OnInit {
+export class OnjobTraineePlacementComponent implements OnInit {
   TSPDetail = [];
   classesArray: any[];
 
   Scheme: any[];
-  ClassList: [];
+  ClassList: any=[];
   //TraineeList: [];
   ApprovalData: any;
   ReportedEmploymentList: any;
@@ -94,7 +95,7 @@ export class TSPTraineeListComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
     if (this.currentUser.UserLevel == this.enumUserLevel.TSP) {
-      this.ComSrv.setTitle("Employment Reporting By TSP");
+      this.ComSrv.setTitle("On Job Trainee");
     }
     else {
       this.ComSrv.setTitle("Employment");
@@ -137,12 +138,21 @@ export class TSPTraineeListComponent implements OnInit {
   }
 
 
-
+classData:any=[]
   GetClasses() {
     if (this.currentUser.UserLevel == EnumUserLevel.TSP) {
       this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClass/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.userid}&filter=${this.ComSrv.OID.value}`).subscribe(
         (d: any) => {
-          this.ClassList = d[0];
+          this.ClassList = d[0]
+          this.classData = d[0];
+
+          if (d[0]?.length > 0) {
+            const startIndex = 0;
+            const endIndex = Math.min(this.PAGE_SIZE, d[0].length);
+            this.ClassList = d[0].slice(startIndex, endIndex);
+            this.currentPage = 0;
+            this.totalPages = Math.ceil(d[0].length / this.PAGE_SIZE);
+          }
           this.Scheme = d[1];
           console.log(d);
         }
@@ -164,6 +174,37 @@ export class TSPTraineeListComponent implements OnInit {
       );
     }
   }
+
+
+  PAGE_SIZE: number = 5;
+  currentPage: number = 0;
+  totalPages: number = 0;
+  Math = Math;
+  
+  loadData(param: string = 'next'): void {
+    if (!this.classData?.length) {
+      this.ClassList = [];
+      return;
+    }
+  
+    this.totalPages = Math.ceil(this.classData.length / this.PAGE_SIZE);
+  
+    // Handle pagination direction
+    if (param === 'next' && this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+    } else if (param === 'pre' && this.currentPage > 0) {
+      this.currentPage--;
+    }
+  
+    // Calculate indices
+    const startIndex = this.currentPage * this.PAGE_SIZE;
+    const endIndex = Math.min(startIndex + this.PAGE_SIZE, this.classData.length);
+  
+    // Update displayed data
+    this.ClassList = this.classData.slice(startIndex, endIndex);
+  }
+
+
   GetTraineeOfClass(ClassID: any, r: any) {
     r.HasTrainees = !r.HasTrainees;
     if (r.Trainees) {
