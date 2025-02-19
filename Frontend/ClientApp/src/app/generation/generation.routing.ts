@@ -6,6 +6,8 @@ import { GenerateGuruRecommendationNoteComponent } from './generate-guru-recomme
 import { GeneratePrnFinalComponent } from './generate-prn-final/generate-prn-final.component';
 import { GenerateTrnComponent } from './generate-trn/generate-trn.component';
 import { GenerateSrnCourseraComponent } from './generate-srn-coursera/generate-srn-coursera.component';
+import { GeneratePvrnComponent } from './generate-pvrn/generate-pvrn.component';
+import { GenerateMrnComponent } from './generate-mrn/generate-mrn.component';
 
 const routes: Routes = [
   {
@@ -56,6 +58,26 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Generate Coursera SRN',
+    },
+  },
+  {
+    path: 'generate-pvrn',
+    component: GeneratePvrnComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate PVRN',
+    },
+  },
+  {
+    path: 'generate-mrn',
+    component: GenerateMrnComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate MRN',
     },
   },
 ];
