@@ -24,7 +24,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
   constructor(private fb: FormBuilder, private datePipe: DatePipe, public dialogRef: MatDialogRef<ExportConfirmDialogueComponent>,
     @Inject(MAT_DIALOG_DATA) public input: ExportExcel, private commonService: CommonSrvService, private groupByPipe: GroupByPipe) {
       dialogRef.disableClose=true;
-    if (this.input.Type === EnumExcelReportType.TSR) {
+    if (this.input.Type === EnumExcelReportType.TSR || this.input.Type === EnumExcelReportType.TAR) {
       this.columnList = Object.keys(this.input.DataModel);
     }
     else {
@@ -76,7 +76,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
   btnActive=true
   async generateExcel() {
 
-    if (this.input.Type === EnumExcelReportType.TSR) {
+    if (this.input.Type === EnumExcelReportType.TSR || this.input.Type === EnumExcelReportType.TAR) {
       this.btnActive=false
       this.input.SearchFilters.SelectedColumns = [];
       this.columns.controls.filter(x => x.value).forEach(control => {
@@ -117,7 +117,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
       Object.keys(this.input.Data).forEach(key => {
         const row = workSheet.addRow([key, this.input.Data[key]])
       })
-      if (this.input.Type === EnumExcelReportType.TSR) {
+      if (this.input.Type === EnumExcelReportType.TSR || this.input.Type === EnumExcelReportType.TAR) {
         workSheet.addRow([]);
         workSheet.addRow([]);
       }
@@ -139,8 +139,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
         || this.input.Type === EnumExcelReportType.PRN_R
         || this.input.Type === EnumExcelReportType.PRN_C
         || this.input.Type === EnumExcelReportType.PRN_F
-        || this.input.Type === EnumExcelReportType.PRN_T)
-      {
+        || this.input.Type === EnumExcelReportType.PRN_T) {
         // SET SERIAL NUMBER
         keys.unshift('Sr#');
         values.unshift(++index)
@@ -189,8 +188,6 @@ export class ExportConfirmDialogueComponent implements OnInit {
         || this.input.Type === EnumExcelReportType.PRN_R
         || this.input.Type === EnumExcelReportType.PRN_T
         || this.input.Type === EnumExcelReportType.SRN
-        || this.input.Type === EnumExcelReportType.TPRN
-        || this.input.Type === EnumExcelReportType.GURN
         || this.input.Type === EnumExcelReportType.Invoice
         || this.input.Type === EnumExcelReportType.RTP
         || this.input.Type === EnumExcelReportType.UnVerifiedTraineesChangeRequestApproval
@@ -232,7 +229,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
     // });
     if (this.input.Type === EnumExcelReportType.PRN) {
       const rowValues = [
-       'Total'
+        'Total'
         , ''
         , ''
         , ''
@@ -301,7 +298,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
     }
     else if (this.input.Type === EnumExcelReportType.PRN_C) {
       const rowValues = [
-       'Total'
+        'Total'
         , ''
         , ''
         , ''
@@ -362,7 +359,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
     }
     else if (this.input.Type === EnumExcelReportType.PRN_F) {
       const rowValues = [
-       'Total'
+        'Total'
         , ''
         , ''
         , ''
@@ -428,7 +425,7 @@ export class ExportConfirmDialogueComponent implements OnInit {
     }
     else if (this.input.Type === EnumExcelReportType.PRN_R) {
       const rowValues = [
-       'Total'
+        'Total'
         , ''
         , ''
         , ''

@@ -31,10 +31,11 @@ export const MY_FORMATS = {
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
+
 @Component({
-  selector: 'app-trainee-attendance-report-dvv',
-  templateUrl: './trainee-attendance-report-dvv.component.html',
-  styleUrls: ['./trainee-attendance-report-dvv.component.scss'],
+  selector: 'app-trainee-attendance-report-dvv-classwise',
+  templateUrl: './trainee-attendance-report-dvv-classwise.component.html',
+  styleUrls: ['./trainee-attendance-report-dvv-classwise.component.scss'],
   providers: [GroupByPipe, DatePipe,
     {
       provide: DateAdapter,
@@ -45,17 +46,17 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ]
 })
-export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewInit {
+export class TraineeAttendanceClassWiseComponent implements OnInit, AfterViewInit {
   environment = environment;
   tsrDatasource: any[];
   // displayedColumns = ['Sr', 'TraineeCode', 'TraineeName', 'FatherName', 'TraineeCNIC', 'GenderName', 'ContactNumber1', 'TraineeAge', 'ProvinceName', 'TraineeDistrictName', 'GuardianNextToKinName', 'TraineeStatusName', "ClassStatusName", "StartDate", "EndDate", "CertAuthName", "ReligionName", "Disability", "Dvv"];
   // displayedColumns = ['TraineeCode', 'TraineeName', 'TraineeCNIC', 'FatherName', 'SchemeName', 'ClassCode', 'CheckIn', 'CheckOut']; 
   displayedColumns = [
-    'SchemeName', 'TSPName', 'ClassCode', 'TraineeCode', 'TraineeName', 'TraineeCNIC',
-    'TraineeStatusName', 'MPRTraineeStatus', 'ClassDistrictName', 'ClassTiming', 'Shift',
-    'ClassStartDate', 'ClassEndDate', 'ClassStatusName', 'TrainingDaysNo', 'TrainingDays',
-    'TPMVisitDateMarking', 'AttendanceDate', 'CheckIn', 'CheckOut', 'KAM'
+    'Scheme', 'TSP', 'ClassCode', 'District', 'ClassStartDate', 'ClassEndDate',
+    'AttendanceDate', 'OnRollCompletedTraineesPresent', 'OnRollCompletedTraineesAbsent',
+    'TotalOnRollCompletedTrainees', 'OnRollCompletedTraineesRatio',
   ];
+
 
   schemeArray = [];
   tspDetailArray = [];
@@ -85,8 +86,9 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
   ) { }
 
   ngOnInit(): void {
-    this.commonService.setTitle('Trainee Attendance Report');
+    this.commonService.setTitle('Trainee Attendance Report Classwise');
     this.currentUser = this.commonService.getUserDetails();
+    
     this.schemeFilter.valueChanges.subscribe(value => {
       if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
         this.getDependantFilters();
@@ -230,7 +232,7 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
   }
 
   getPagedData(pagingModel, filterModel) {
-    return this.commonService.postJSON('api/TSRLiveData/RD_TARPaged', { pagingModel, filterModel });
+    return this.commonService.postJSON('api/TSRLiveData/RD_TARPagedClasswise', { pagingModel, filterModel });
   }
 
   exportToExcel() {
@@ -239,7 +241,7 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
     this.filters.ClassID = this.classFilter.value;
 
     const exportExcel: ExportExcel = {
-      Title: 'Trainee Attendance Report',
+      Title: 'Trainee Attendance Report Classwise',
       Author: this.currentUser.FullName,
       Type: EnumExcelReportType.TAR,
       Data: {},
@@ -258,51 +260,35 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
       pagingModel: { PageNumber: 0, PageSize: 0 }, // Add Paging Model if required
       filterModel: that.input.SearchFilters, // Ensure it matches the backend expectation
     };
-    await that.commonService.postJSON(`api/TSRLiveData/RD_TARPaged`, payload)
+    await that.commonService.postJSON(`api/TSRLiveData/RD_TARPagedClasswise`, payload)
       .toPromise()
       .then((responseData: any[]) => {
         that.input.Data = {
           'Filters:': '',
           TraineeStatus: 'All',
-          'Scheme(s)': that.groupByPipe.transform(responseData[0], 'SchemeName').map(x => x.key).join(','),
-          'TSP(s)': that.groupByPipe.transform(responseData[0], 'TSPName').map(x => x.key).join(','),
+          'Scheme(s)': that.groupByPipe.transform(responseData[0], 'Scheme').map(x => x.key).join(','),
+          'TSP(s)': that.groupByPipe.transform(responseData[0], 'TSP').map(x => x.key).join(','),
         };
         that.input.List1 = responseData[0].map((item, index) => {
           const obj = new TARDataModel();
           obj['Sr#'] = ++index;
-          obj['Scheme'] = item.SchemeName;
-          obj['Training Service Provider'] = item.TSPName;
+          obj['Scheme'] = item.Scheme;
+          obj['TSP'] = item.TSP;
           obj['Class Code'] = item.ClassCode;
-          obj['Trainee Code'] = item.TraineeCode;
-          obj['Trainee Name'] = item.TraineeName;
-          obj['CNIC'] = item.TraineeCNIC;
-          obj['Trainee Status'] = item.TraineeStatusName;
-          obj['MPR Trainee Status'] = item.MPRTraineeStatus;
-          obj['District of Training Location'] = item.ClassDistrictName;
-          obj['Class Start Time'] = item.ClassStartTime ? new Date(item.ClassStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
-          obj['Class End Time'] = item.ClassEndTime ? new Date(item.ClassEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
-          obj['Shift'] = item.Shift === '1st' ? 'Morning' : 'Evening';
+          obj['District'] = item.District;
           obj['Class Start Date'] = that.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy');
           obj['Class End Date'] = that.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy');
-          obj['Class Status'] = item.ClassStatusName;
-          obj['Training Days Count'] = item.TrainingDaysNo;
-          obj['Training Days'] = item.TrainingDays;
-          obj['TPM Visit Date 1'] = item.TPMVisitDateMarking1
-            ? new Date(item.TPMVisitDateMarking1).toLocaleDateString('en-GB')
-            : '';
-
-          obj['TPM Visit Date 2'] = item.TPMVisitDateMarking2
-            ? new Date(item.TPMVisitDateMarking2).toLocaleDateString('en-GB')
-            : '';
           obj['Attendance Date'] = that.datePipe.transform(item.AttendanceDate, 'dd/MM/yyyy');
-          obj['Check-In Time'] = item.CheckIn ? new Date(item.CheckIn).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
-          obj['Check-Out Time'] = item.CheckOut ? new Date(item.CheckOut).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
-          obj['KAM'] = item.KAM;
-
+          obj['Total Trainees Per Class'] = item.TotalTraineesPerClass;
+          obj['On-Roll Completed Trainees Present'] = item.OnRollCompletedTraineesPresent;
+          obj['On-Roll Completed Trainees Absent'] = item.OnRollCompletedTraineesAbsent;
+          obj['Total On-Roll Completed Trainees'] = item.TotalOnRollCompletedTrainees;
+          obj['On-Roll Completed Trainees Ratio'] = item.OnRollCompletedTraineesRatio
+            ? (item.OnRollCompletedTraineesRatio).toFixed(2) + '%'
+            : '';
           return obj;
-
-
         });
+
       });
   }
 
@@ -331,28 +317,19 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
 }
 
 export class TARDataModel {
-  'Sr#': any = 'Sr';
-  'Scheme': any = 'SchemeName';
-  'Training Service Provider': any = 'TSPName';
+  'Sr#': any = 'Sr#';
+  'Scheme': any = 'Scheme';
+  'TSP': any = 'TSP';
   'Class Code': any = 'ClassCode';
-  'Trainee Code': any = 'TraineeCode';
-  'Trainee Name': any = 'TraineeName';
-  'CNIC': any = 'TraineeCNIC';
-  'Trainee Status': any = 'TraineeStatusName';
-  'MPR Trainee Status': any = 'MPRTraineeStatus';
-  'District of Training Location': any = 'ClassDistrictName';
-  'Class Start Time': any = 'ClassStartTime';
-  'Class End Time': any = 'ClassEndTime';
-  'Shift': any = 'Shift';
+  'District': any = 'District';
   'Class Start Date': any = 'ClassStartDate';
   'Class End Date': any = 'ClassEndDate';
-  'Class Status': any = 'ClassStatusName';
-  'Training Days Count': any = 'TrainingDaysNo';
-  'Training Days': any = 'TrainingDays';
-  'TPM Visit Date 1': any = 'TPMVisitDateMarking1';
-  'TPM Visit Date 2': any = 'TPMVisitDateMarking2';
   'Attendance Date': any = 'AttendanceDate';
-  'Check-In Time': any = 'CheckIn';
-  'Check-Out Time': any = 'CheckOut';
-  'KAM': any = 'KAM';
+  'Total Trainees Per Class': any = 'TotalTraineesPerClass';
+  'On-Roll Completed Trainees Present': any = 'OnRollCompletedTraineesPresent';
+  'On-Roll Completed Trainees Absent': any = 'OnRollCompletedTraineesAbsent';
+  'Total On-Roll Completed Trainees': any = 'TotalOnRollCompletedTrainees';
+  'On-Roll Completed Trainees Ratio': any = 'OnRollCompletedTraineesRatio';
 }
+
+

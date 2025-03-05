@@ -146,6 +146,7 @@ export enum EnumExcelReportType {
   TPRN = 25,
   PO_TPRN = 26,
   GURN = 27,
+  TAR = 28
 }
 
 

@@ -10,7 +10,7 @@
           <mat-form-field fxFlex>
             <mat-label>Month</mat-label>
             <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
-            <button mat-icon-button matSuffix (click)="clearMonth()"><mat-icon>close</mat-icon></button>
+            <!-- <button mat-icon-button matSuffix (click)="clearMonth()"><mat-icon>close</mat-icon></button> -->
             <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
             <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
               (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
@@ -67,52 +67,149 @@
             <mat-cell *matCellDef="let row">{{row.TraineeID}}</mat-cell>
           </ng-container>
            -->
-          <ng-container matColumnDef="TraineeCode">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.TraineeCode}}</mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="TraineeName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.TraineeName}}</mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="TraineeCNIC">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.TraineeCNIC}}</mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="FatherName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.FatherName}}</mat-cell>
-          </ng-container>
-
+          <!-- Scheme -->
           <ng-container matColumnDef="SchemeName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.SchemeName}}</mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.SchemeName }}</mat-cell>
           </ng-container>
 
-          <!-- <ng-container matColumnDef="ClassID">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Class ID </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.ClassID}}</mat-cell>
-          </ng-container> -->
+          <!-- TSP Name -->
+          <ng-container matColumnDef="TSPName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.TSPName }}</mat-cell>
+          </ng-container>
 
+          <!-- Class Code -->
           <ng-container matColumnDef="ClassCode">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Class Code </mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.ClassCode}}</mat-cell>
+            <mat-cell *matCellDef="let row">{{ row.ClassCode }}</mat-cell>
           </ng-container>
 
-          <!-- CheckIn Column -->
+          <!-- Trainee Code -->
+          <ng-container matColumnDef="TraineeCode">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Code </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.TraineeCode }}</mat-cell>
+          </ng-container>
+
+          <!-- Trainee Name -->
+          <ng-container matColumnDef="TraineeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.TraineeName }}</mat-cell>
+          </ng-container>
+
+          <!-- Trainee CNIC -->
+          <ng-container matColumnDef="TraineeCNIC">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee CNIC </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.TraineeCNIC }}</mat-cell>
+          </ng-container>
+
+          <!-- Trainee Status (Current) -->
+          <ng-container matColumnDef="TraineeStatusName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Status </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.TraineeStatusName }}</mat-cell>
+          </ng-container>
+
+          <!-- MPR Trainee Status -->
+          <ng-container matColumnDef="MPRTraineeStatus">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">
+              MPR Trainee Status
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" style="text-align: center;">
+              {{ row.MPRTraineeStatus ? row.MPRTraineeStatus : '-' }}
+            </mat-cell>
+          </ng-container>
+
+
+
+          <!-- District of Training Center -->
+          <ng-container matColumnDef="ClassDistrictName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> District </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.ClassDistrictName }}</mat-cell>
+          </ng-container>
+
+          <!-- Class Timing -->
+          <ng-container matColumnDef="ClassTiming">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Timing </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.ClassStartTime | date: 'HH:mm a' }} - {{ row.ClassEndTime | date:
+              'HH:mm a' }}</mat-cell>
+          </ng-container>
+
+
+          <!-- Shift -->
+          <ng-container matColumnDef="Shift">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Shift </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.Shift }}</mat-cell>
+          </ng-container>
+
+          <!-- Class Start Date -->
+          <ng-container matColumnDef="ClassStartDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Start Date </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.ClassStartDate | date: 'yyyy-MM-dd' }}</mat-cell>
+          </ng-container>
+
+          <!-- Class Completion Date -->
+          <ng-container matColumnDef="ClassEndDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Completion Date </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.ClassEndDate | date: 'yyyy-MM-dd' }}</mat-cell>
+          </ng-container>
+
+          <!-- Class Status -->
+          <ng-container matColumnDef="ClassStatusName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Status </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.ClassStatusName }}</mat-cell>
+          </ng-container>
+
+          <!-- Class Functional Days (Number) -->
+          <ng-container matColumnDef="TrainingDaysNo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Functional Days </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.TrainingDaysNo }}</mat-cell>
+          </ng-container>
+
+          <!-- Class Functional Days (Names) -->
+          <ng-container matColumnDef="TrainingDays">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Functional Days (Names) </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.TrainingDays }}</mat-cell>
+          </ng-container>
+
+          <!-- TPM Visit Date Marking -->
+          <ng-container matColumnDef="TPMVisitDateMarking">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="center-text"> TPM Visit Date </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="center-text" style="text-align: center;">
+              <ng-container *ngIf="row.TPMVisitDateMarking1 || row.TPMVisitDateMarking2; else noData">
+                {{ row.TPMVisitDateMarking1 ? (row.TPMVisitDateMarking1 | date: 'yyyy-MM-dd') : '' }}
+                <ng-container *ngIf="row.TPMVisitDateMarking1 && row.TPMVisitDateMarking2">, </ng-container>
+                {{ row.TPMVisitDateMarking2 ? (row.TPMVisitDateMarking2 | date: 'yyyy-MM-dd') : '' }}
+              </ng-container>
+              <ng-template #noData>-</ng-template>
+            </mat-cell>
+          </ng-container>
+
+
+          <!-- Attendance Date -->
+          <ng-container matColumnDef="AttendanceDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Attendance Date </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.AttendanceDate | date: 'yyyy-MM-dd' }}</mat-cell>
+          </ng-container>
+
+          <!-- Check In -->
           <ng-container matColumnDef="CheckIn">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Check In </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.CheckIn ? 'Yes' : 'No'}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Sign In </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.CheckIn | date: 'hh:mm:ss a' }}</mat-cell>
           </ng-container>
 
-          <!-- CheckOut Column -->
+          <!-- Check Out -->
           <ng-container matColumnDef="CheckOut">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Check Out </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.CheckOut ? 'Yes' : 'No'}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Sign Out </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.CheckOut ? (row.CheckOut | date: 'hh:mm:ss a') : 'N/A' }}</mat-cell>
           </ng-container>
+
+
+          <!-- KAM -->
+          <ng-container matColumnDef="KAM">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> KAM Name </mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.KAM }}</mat-cell>
+          </ng-container>
+
 
 
         </mat-table>

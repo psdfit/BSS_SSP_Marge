@@ -126,7 +126,7 @@ namespace PSDF_BSS.Controllers
                 int curUserID = Convert.ToInt32(User.Identity.Name);
                 int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
                 curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
-                
+
                 list.Add("TSRLiveData", srvTSRLiveData.FetchTCRLiveDataByFilters(new int[] { 0, 0, 0, 0, OID, curUserID }));
                 return Ok(list);
             }
@@ -219,7 +219,7 @@ namespace PSDF_BSS.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
+
         [HttpPost]
         [Route("GetFilteredGSRData")]
         public IActionResult GetFilteredGSRData(SearchFilter filters)
@@ -321,8 +321,8 @@ namespace PSDF_BSS.Controllers
         {
             try
             {
-                PagingModel pagingModel = jObject["pagingModel"].ToObject<PagingModel>();
-                SearchFilter filterModel = jObject["filterModel"].ToObject<SearchFilter>();
+                PagingModel pagingModel = jObject["pagingModel"]?.ToObject<PagingModel>();
+                SearchFilter filterModel = jObject["filterModel"]?.ToObject<SearchFilter>();
 
                 int curUserID = Convert.ToInt32(User.Identity.Name);
                 int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
@@ -334,6 +334,35 @@ namespace PSDF_BSS.Controllers
                 List<object> ls = new List<object>();
 
                 ls.Add(srvTSRLiveData.FetchTARPaged(pagingModel, filterModel, out totalCount));
+                pagingModel.TotalCount = totalCount;
+                ls.Add(pagingModel);
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("RD_TARPagedClasswise")]
+        public IActionResult RD_TARPagedClasswise([FromBody] JObject jObject)
+        {
+            try
+            {
+                PagingModel pagingModel = jObject["pagingModel"]?.ToObject<PagingModel>();
+                SearchFilter filterModel = jObject["filterModel"]?.ToObject<SearchFilter>();
+
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                filterModel.UserID = curUserID;
+
+                int totalCount = 0;
+                List<object> ls = new List<object>();
+
+                ls.Add(srvTSRLiveData.FetchTARPagedClasswise(pagingModel, filterModel, out totalCount));
                 pagingModel.TotalCount = totalCount;
                 ls.Add(pagingModel);
                 return Ok(ls);
