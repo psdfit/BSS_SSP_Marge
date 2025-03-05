@@ -88,6 +88,7 @@ export class TraineeAttendanceClassWiseComponent implements OnInit, AfterViewIni
   ngOnInit(): void {
     this.commonService.setTitle('Trainee Attendance Report Classwise');
     this.currentUser = this.commonService.getUserDetails();
+    
     this.schemeFilter.valueChanges.subscribe(value => {
       if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
         this.getDependantFilters();
@@ -242,7 +243,7 @@ export class TraineeAttendanceClassWiseComponent implements OnInit, AfterViewIni
     const exportExcel: ExportExcel = {
       Title: 'Trainee Attendance Report Classwise',
       Author: this.currentUser.FullName,
-      Type: EnumExcelReportType.TSR,
+      Type: EnumExcelReportType.TAR,
       Data: {},
       List1: [],
       ImageFieldNames: ['Trainee Img', 'CNIC Img'],
@@ -282,7 +283,9 @@ export class TraineeAttendanceClassWiseComponent implements OnInit, AfterViewIni
           obj['On-Roll Completed Trainees Present'] = item.OnRollCompletedTraineesPresent;
           obj['On-Roll Completed Trainees Absent'] = item.OnRollCompletedTraineesAbsent;
           obj['Total On-Roll Completed Trainees'] = item.TotalOnRollCompletedTrainees;
-          obj['On-Roll Completed Trainees Ratio'] = item.OnRollCompletedTraineesRatio;
+          obj['On-Roll Completed Trainees Ratio'] = item.OnRollCompletedTraineesRatio
+            ? (item.OnRollCompletedTraineesRatio).toFixed(2) + '%'
+            : '';
           return obj;
         });
 

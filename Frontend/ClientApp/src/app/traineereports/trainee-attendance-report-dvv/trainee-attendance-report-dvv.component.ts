@@ -241,7 +241,7 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
     const exportExcel: ExportExcel = {
       Title: 'Trainee Attendance Report',
       Author: this.currentUser.FullName,
-      Type: EnumExcelReportType.TSR,
+      Type: EnumExcelReportType.TAR,
       Data: {},
       List1: [],
       ImageFieldNames: ['Trainee Img', 'CNIC Img'],
@@ -270,31 +270,35 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
         that.input.List1 = responseData[0].map((item, index) => {
           const obj = new TARDataModel();
           obj['Sr#'] = ++index;
+          obj['Scheme'] = item.SchemeName;
+          obj['Training Service Provider'] = item.TSPName;
+          obj['Class Code'] = item.ClassCode;
           obj['Trainee Code'] = item.TraineeCode;
           obj['Trainee Name'] = item.TraineeName;
           obj['CNIC'] = item.TraineeCNIC;
-          obj['Scheme'] = item.SchemeName;
-          obj['Class Code'] = item.ClassCode;
-          obj['Attendance Date'] = that.datePipe.transform(item.AttendanceDate, 'dd/MM/yyyy');
-          obj['Check-In Time'] = item.CheckIn ? new Date(item.CheckIn).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
-          obj['Check-Out Time'] = item.CheckOut ? new Date(item.CheckOut).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
+          obj['Trainee Status'] = item.TraineeStatusName;
+          obj['MPR Trainee Status'] = item.MPRTraineeStatus;
+          obj['District of Training Location'] = item.ClassDistrictName;
           obj['Class Start Time'] = item.ClassStartTime ? new Date(item.ClassStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
           obj['Class End Time'] = item.ClassEndTime ? new Date(item.ClassEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
-          obj['Total Class Hours'] = item.ClassTotalHours;
-          obj['Enrolled Trainees'] = item.EnrolledTrainees;
           obj['Shift'] = item.Shift === '1st' ? 'Morning' : 'Evening';
-          obj['Training Days Count'] = item.TrainingDaysNo;
-          obj['Training Days'] = item.TrainingDays;
-          obj['KAM'] = item.KAM;
-          obj['Trainee Status'] = item.TraineeStatusName;
-          obj['District of Training Location'] = item.ClassDistrictName;
           obj['Class Start Date'] = that.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy');
           obj['Class End Date'] = that.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy');
           obj['Class Status'] = item.ClassStatusName;
-          obj['Training Service Provider'] = item.TSPName;
-          obj['MPR Trainee Status'] = item.MPRTraineeStatus;
-          obj['TPM Visit Date 1'] = item.TPMVisitDateMarking1 ? new Date(item.TPMVisitDateMarking1).toISOString().split('T')[0] : '';
-          obj['TPM Visit Date 2'] = item.TPMVisitDateMarking2 ? new Date(item.TPMVisitDateMarking2).toISOString().split('T')[0] : '';
+          obj['Training Days Count'] = item.TrainingDaysNo;
+          obj['Training Days'] = item.TrainingDays;
+          obj['TPM Visit Date 1'] = item.TPMVisitDateMarking1
+            ? new Date(item.TPMVisitDateMarking1).toLocaleDateString('en-GB')
+            : '';
+
+          obj['TPM Visit Date 2'] = item.TPMVisitDateMarking2
+            ? new Date(item.TPMVisitDateMarking2).toLocaleDateString('en-GB')
+            : '';
+          obj['Attendance Date'] = that.datePipe.transform(item.AttendanceDate, 'dd/MM/yyyy');
+          obj['Check-In Time'] = item.CheckIn ? new Date(item.CheckIn).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
+          obj['Check-Out Time'] = item.CheckOut ? new Date(item.CheckOut).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
+          obj['KAM'] = item.KAM;
+
           return obj;
 
 
@@ -328,29 +332,27 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
 
 export class TARDataModel {
   'Sr#': any = 'Sr';
+  'Scheme': any = 'SchemeName';
+  'Training Service Provider': any = 'TSPName';
+  'Class Code': any = 'ClassCode';
   'Trainee Code': any = 'TraineeCode';
   'Trainee Name': any = 'TraineeName';
   'CNIC': any = 'TraineeCNIC';
-  'Scheme': any = 'SchemeName';
-  'Class Code': any = 'ClassCode';
-  'Attendance Date': any = 'AttendanceDate';
-  'Check-In Time': any = 'CheckIn';
-  'Check-Out Time': any = 'CheckOut';
+  'Trainee Status': any = 'TraineeStatusName';
+  'MPR Trainee Status': any = 'MPRTraineeStatus';
+  'District of Training Location': any = 'ClassDistrictName';
   'Class Start Time': any = 'ClassStartTime';
   'Class End Time': any = 'ClassEndTime';
-  'Total Class Hours': any = 'ClassTotalHours';
-  'Enrolled Trainees': any = 'EnrolledTrainees';
   'Shift': any = 'Shift';
-  'Training Days Count': any = 'TrainingDaysNo';
-  'Training Days': any = 'TrainingDays';
-  'KAM': any = 'KAM';
-  'Trainee Status': any = 'TraineeStatusName';
-  'District of Training Location': any = 'ClassDistrictName';
   'Class Start Date': any = 'ClassStartDate';
   'Class End Date': any = 'ClassEndDate';
   'Class Status': any = 'ClassStatusName';
-  'Training Service Provider': any = 'TSPName';
-  'MPR Trainee Status': any = 'MPRTraineeStatus';
+  'Training Days Count': any = 'TrainingDaysNo';
+  'Training Days': any = 'TrainingDays';
   'TPM Visit Date 1': any = 'TPMVisitDateMarking1';
   'TPM Visit Date 2': any = 'TPMVisitDateMarking2';
+  'Attendance Date': any = 'AttendanceDate';
+  'Check-In Time': any = 'CheckIn';
+  'Check-Out Time': any = 'CheckOut';
+  'KAM': any = 'KAM';
 }

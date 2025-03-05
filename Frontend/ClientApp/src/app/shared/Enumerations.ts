@@ -44,6 +44,8 @@ export enum EnumApprovalProcess {
   , REG_EVAL = 'REG_EVAL'
   , PROG_APP = 'PROG_APP'
   , CRTEM_APP = 'CRTEM_APP'
+  , IPVS = 'IPVS'
+
 }
 export enum EnumCertificationAuthority {
   PBTE = 1
@@ -140,7 +142,8 @@ export enum EnumExcelReportType {
   PendingClassesinKAMDashboard = 22,
   StipendDisbursementStatusReport = 23,
   orgconfigration = 24,
-  GURN = 26
+  GURN = 26,
+  TAR = 30
 }
 
 
