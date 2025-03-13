@@ -383,7 +383,7 @@ namespace DataLayer.Services
                         {
                     new Claim(ClaimTypes.Name, user.UserID.ToString())
                         }),
-                        Expires = DateTime.UtcNow.AddHours(1),
+                        Expires = DateTime.UtcNow.AddMonths(1),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                     };
                     var token = tokenHandler.CreateToken(tokenDescriptor);
