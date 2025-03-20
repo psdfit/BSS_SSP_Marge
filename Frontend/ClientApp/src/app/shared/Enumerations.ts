@@ -22,6 +22,10 @@ export enum EnumApprovalProcess {
   , INV_SRN = 'INV_SRN'
   , INV_GURN = 'INV_GURN'
   , INV_TPRN = 'INV_TPRN'
+  , INV_PVRN = 'INV_PVRN'
+  , INV_PCRN = 'INV_PCRN'
+  , INV_OTRN = 'INV_OTRN'
+  , INV_MRN = 'INV_MRN'
   , INV_F = 'INV_F'
   , INV_TRN = 'INV_TRN'
   , INV_C = 'INV_C'
@@ -39,7 +43,15 @@ export enum EnumApprovalProcess {
   , SRN = 'SRN'
   , GURN = 'GURN'
   , TPRN = 'TPRN'
+  , PVRN = 'PVRN'
+  , PCRN = 'PCRN'
+  , OTRN = 'OTRN'
+  , MRN = 'MRN'
   , PO_TPRN = 'PO_TPRN'
+  , PO_PVRN = 'PO_PVRN'
+  , PO_PCRN = 'PO_PCRN'
+  , PO_OTRN = 'PO_OTRN'
+  , PO_MRN = 'PO_MRN'
   , VRN = 'VRN'
   , INV_VRN = 'INV_VRN'
   , PO_VRN = 'PO_VRN'
@@ -146,6 +158,12 @@ export enum EnumExcelReportType {
   TPRN = 25,
   PO_TPRN = 26,
   GURN = 27,
+  PVRN=28,
+  MRN=29,
+  PCRN=30,
+  OTRN=31,
+
+  
 }
 
 

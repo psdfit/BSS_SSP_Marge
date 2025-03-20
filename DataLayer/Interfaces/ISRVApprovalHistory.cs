@@ -11,6 +11,10 @@ namespace DataLayer.Interfaces
         bool SaveGURNApprovalHistory(ref ApprovalWrapperModel model);
         public void SendSRNApprovalNotification(ApprovalWrapperModel model);
         bool SaveTPRNApprovalHistory(ref ApprovalWrapperModel model);
+        bool SavePVRNApprovalHistory(ref ApprovalWrapperModel model);
+        bool SaveMRNApprovalHistory(ref ApprovalWrapperModel model);
+        bool SavePCRNApprovalHistory(ref ApprovalWrapperModel model);
+        bool SaveOTRNApprovalHistory(ref ApprovalWrapperModel model);
         public void SendTPRNApprovalNotification(ApprovalWrapperModel model);
         bool SaveApprovalHistory(ref ApprovalWrapperModel wrapperModel);
         public void SendApprovalNotification(ApprovalWrapperModel wrapperModel);

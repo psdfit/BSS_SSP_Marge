@@ -178,7 +178,19 @@ namespace PSDF_BSS
 
             //SRN Coursera --Added by  samiullah 17-01-2025
             services.AddSingleton(typeof(ISRVTPRN), typeof(SRVTPRN));
+            services.AddSingleton(typeof(ISRVPVRN), typeof(SRVPVRN));
+            services.AddSingleton(typeof(ISRVMRN), typeof(SRVMRN));
+
+            services.AddSingleton(typeof(ISRVPCRN), typeof(SRVPCRN));
+            services.AddSingleton(typeof(ISRVPCRNDetails), typeof(SRVPCRNDetails));
+
+            services.AddSingleton(typeof(ISRVOTRN), typeof(SRVOTRN));
+            services.AddSingleton(typeof(ISRVOTRNDetails), typeof(SRVOTRNDetails));
+
             services.AddSingleton(typeof(ISRVTPRNDetails), typeof(SRVTPRNDetails));
+            services.AddSingleton(typeof(ISRVPVRNDetails), typeof(SRVPVRNDetails));
+            services.AddSingleton(typeof(ISRVMRNDetails), typeof(SRVMRNDetails));
+            services.AddSingleton(typeof(ISRVManualNoteGeneration), typeof(SRVManualNoteGeneration));
 
             //SRN Coursera --Added by  Rao Ali Haider 04-July-2024
             services.AddSingleton(typeof(ISRVSRNCoursera), typeof(SRVSRNCoursera));
