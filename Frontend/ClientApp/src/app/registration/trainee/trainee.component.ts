@@ -737,7 +737,10 @@ debugger;
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
         }
-        if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV') {
+        if (scheme.FundingCategoryID == 16) {
+          this.EDFScheme = true;
+        }
+        else if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV') {
           this.EDFScheme = true;
         }
         else if (scheme.FundingSourceID !== 12) //EDF Scheme
