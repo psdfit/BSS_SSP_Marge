@@ -424,6 +424,22 @@ const routes: Routes = [
           ),
         canLoad: [AuthGuardService],
       },
+      // {
+      //   path: 'device-management',
+      //   loadChildren: () =>
+      //     import('./device-management/device-management.module').then(
+      //       (m) => m.DeviceManagementModule
+      //     ),
+      //   canLoad: [AuthGuardService],
+      // },
+      {
+        path: 'ip-docs-verification',
+        loadChildren: () =>
+          import('./international-placement-docs/international-placement-docs.module').then(
+            (m) => m.InternationalPlacementModule
+          ),
+        canLoad: [AuthGuardService],
+      },
     ],
   },
 ];

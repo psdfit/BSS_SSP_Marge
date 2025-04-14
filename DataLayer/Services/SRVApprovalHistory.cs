@@ -3,6 +3,7 @@
 using DataLayer.Dapper;
 using DataLayer.Interfaces;
 using DataLayer.Models;
+using DataLayer.Models.IP;
 using DataLayer.Models.SSP;
 using Microsoft.Data.SqlClient;
 using System;
@@ -22,6 +23,7 @@ namespace DataLayer.Services
         private readonly ISRVSRN srvSRN;
         private readonly ISRVTPRN srvTPRN;
         private readonly ISRVGURN srvGURN;
+        private readonly ISRVIPDocsVerification srvIPDocsVerification;
         private readonly ISRVTrade srvTrade;
         private readonly ISRVPRN srvPRN;
         private readonly ISRVSAPApi srvSAPApi;
@@ -60,7 +62,7 @@ namespace DataLayer.Services
             ISRVApproval srvApproval, ISRVInvoiceMaster srvInvoiceMaster, ISRVInvoice srvInvoice, ISRVUsers srvUsers,
             ISRVPOHeader srvPOHeader, ISRVPOLines srvPOLines, ISRVSendEmail srvSendEmail, ISRVClassInvoiceExtMap srvcancel, ISRVClassInvoiceMap srvInvMap,
             ISRVSchemeChangeRequest srvCrScheme, ISRVTSPChangeRequest srvCrTSP, ISRVClassChangeRequest srvCrClass, ISRVTraineeChangeRequest srvCrTrainee,
-            ISRVInstructorChangeRequest srvCrInstructor, ISRVInceptionReportChangeRequest srvCrInceptionReport, ISRVInstructorReplaceChangeRequest srvCrInstructorReplace, IDapperConfig dapper)
+            ISRVInstructorChangeRequest srvCrInstructor, ISRVInceptionReportChangeRequest srvCrInceptionReport, ISRVIPDocsVerification srvIPDocsVerification ,ISRVInstructorReplaceChangeRequest srvCrInstructorReplace, IDapperConfig dapper)
         {
             this.srvTSPDetail = srv;
             this.srvProgramDesign = srvProgramDesign;
@@ -91,6 +93,7 @@ namespace DataLayer.Services
             this.srvCrInstructor = srvCrInstructor;
             this.srvCrInceptionReport = srvCrInceptionReport;
             this.srvCrInstructorReplace = srvCrInstructorReplace;
+            this.srvIPDocsVerification = srvIPDocsVerification;
             this.srvcancel = srvcancel;
             this.srvMRN = srvMRN;
             this.srvPVRN = srvPVRN;
@@ -113,7 +116,7 @@ namespace DataLayer.Services
         }
 
         public List<ApprovalHistoryModel> FetchApprovalHistory(ApprovalHistoryModel model, SqlTransaction transaction = null)
-        {
+            {
             try
             {
                 List<SqlParameter> param = new List<SqlParameter>();
@@ -1506,6 +1509,54 @@ namespace DataLayer.Services
                                                 _transaction.Commit();
                                                 result = true;
                                                 break;
+                                            
+                                            case EnumApprovalProcess.IPVS:
+                                                srvIPDocsVerification.VisaStampingApproveReject(new VisaStampingResponseModel()
+                                                {
+                                                    VisaStampingTraineeDocumentsID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    CurUserID = model.CurUserID
+                                                }, _transaction);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
+
+                                            case EnumApprovalProcess.IPMC:
+                                                srvIPDocsVerification.MedicalCostApproveReject(new MedicalCostResponseModel()
+                                                {
+                                                    MedicalTraineeDocumentsID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    CurUserID = model.CurUserID
+                                                }, _transaction);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
+    
+                                            case EnumApprovalProcess.IPPC:
+                                                srvIPDocsVerification.PrometricCostApproveReject(new PrometricCostResponseModel()
+                                                {
+                                                    PrometricTraineeDocumentsID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    CurUserID = model.CurUserID
+                                                }, _transaction);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
+
+                                            case EnumApprovalProcess.IPOT:
+                                                srvIPDocsVerification.OtherTrainingCostApproveReject(new OtherTrainingCostResponseModel()
+                                                {
+                                                    OtherTraineeDocumentsID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    CurUserID = model.CurUserID
+                                                }, _transaction);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
 
                                             case EnumApprovalProcess.PRN_R:
                                                 List<PRNMasterModel> PRNMasterModel = srvPRNMaster.GetPRNMasterForApproval(model.FormID, _transaction);
@@ -2144,6 +2195,54 @@ namespace DataLayer.Services
                                             srvCrInstructorReplace.CrInstructorReplaceApproveReject(new InstructorReplaceChangeRequestModel()
                                             {
                                                 InstructorReplaceChangeRequestID = model.FormID,
+                                                IsApproved = false,
+                                                IsRejected = true,
+                                                CurUserID = model.CurUserID
+                                            }, _transaction);
+                                            _transaction.Commit();
+                                            result = true;
+                                            break;
+
+                                        case EnumApprovalProcess.IPVS:
+                                            srvIPDocsVerification.VisaStampingApproveReject(new VisaStampingResponseModel()
+                                            {
+                                                VisaStampingTraineeDocumentsID = model.FormID,
+                                                IsApproved = false,
+                                                IsRejected = true,
+                                                CurUserID = model.CurUserID
+                                            }, _transaction);
+                                            _transaction.Commit();
+                                            result = true;
+                                            break;
+
+                                        case EnumApprovalProcess.IPMC:
+                                            srvIPDocsVerification.MedicalCostApproveReject(new MedicalCostResponseModel()
+                                            {
+                                                MedicalTraineeDocumentsID = model.FormID,
+                                                IsApproved = false,
+                                                IsRejected = true,
+                                                CurUserID = model.CurUserID
+                                            }, _transaction);
+                                            _transaction.Commit();
+                                            result = true;
+                                            break;
+
+                                        case EnumApprovalProcess.IPPC:
+                                            srvIPDocsVerification.PrometricCostApproveReject(new PrometricCostResponseModel()
+                                            {
+                                                PrometricTraineeDocumentsID = model.FormID,
+                                                IsApproved = false,
+                                                IsRejected = true,
+                                                CurUserID = model.CurUserID
+                                            }, _transaction);
+                                            _transaction.Commit();
+                                            result = true;
+                                            break;
+
+                                        case EnumApprovalProcess.IPOT:
+                                            srvIPDocsVerification.OtherTrainingCostApproveReject(new OtherTrainingCostResponseModel()
+                                            {
+                                                OtherTraineeDocumentsID = model.FormID,
                                                 IsApproved = false,
                                                 IsRejected = true,
                                                 CurUserID = model.CurUserID

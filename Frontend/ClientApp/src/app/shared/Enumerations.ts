@@ -60,6 +60,10 @@ export enum EnumApprovalProcess {
   , PROG_APP = 'PROG_APP'
   , CRTEM_APP = 'CRTEM_APP'
   , IPVS = 'IPVS'
+  , IPPC = 'IPPC'
+  , IPMC = 'IPMC'
+  , IPOT = 'IPOT'
+  , IPVS = 'IPVS'
 
 }
 export enum EnumCertificationAuthority {

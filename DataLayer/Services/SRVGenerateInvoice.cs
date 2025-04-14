@@ -72,14 +72,27 @@ namespace DataLayer.Services
                     // Duration is 1 month or less
                     if (c.Duration <= 1)
                     {
-                        CreateRegularInvoicesFor1MonthOrLess(c);
+                        int paymentValue4;
+                        if (int.TryParse(PaymentStructure[0], out paymentValue4))
+                        {
+                            if (paymentValue4 != 0)
+                            {
+                                CreateRegularInvoicesFor1MonthOrLess(c);
+                            }
+                        }
                     }
                     else
                     {
                         // handle for duration value in decimal and greater than 1 (1.5, 1.7, 2.8, ... etc)
                         // 2.5 * 30 = 75 days
-
-                        CreateRegularInvoicesForGreaterThan1Month(c);
+                        int paymentValue3;
+                        if (int.TryParse(PaymentStructure[0], out paymentValue3))
+                        {
+                            if (paymentValue3 != 0)
+                            {
+                                CreateRegularInvoicesForGreaterThan1Month(c);
+                            }
+                        }
                     }
 
                     if (PaymentStructure.Length == 2)
@@ -116,19 +129,25 @@ namespace DataLayer.Services
                         //        m.InvoiceNo = ++InvoiceNo;
                         //    }
                         //}
-                        m.InvoiceNo = InvoiceNo;
-                        m.InvoiceType = "2nd Last";
-                        m.Amount = GetCostPercentage(PaymentStructure[1], (c.TotalPerTraineeCostInTax / (1 + c.SalesTaxRate)), "2nd Last");
-                        m.Month = EndDate.AddDays(org.TSROpeningDays);
+                                int paymentValue2;
+                                if (int.TryParse(PaymentStructure[1], out paymentValue2))
+                                {
+                                    if (paymentValue2 != 0)
+                                    {
+                                        m.InvoiceNo = InvoiceNo;
+                                        m.InvoiceType = "2nd Last";
+                                        m.Amount = GetCostPercentage(PaymentStructure[1], (c.TotalPerTraineeCostInTax / (1 + c.SalesTaxRate)), "2nd Last");
+                                        m.Month = EndDate.AddDays(org.TSROpeningDays);
 
-                        m.InvoiceDays = ls.Where(x => x.InvoiceType == "Regular").Sum(x => x.InvoiceDays);
-                        m.InvoiceStartDate = m.Month;
-                        m.InvoiceEndDate = GetMonthEndDate(m.Month);
-                        m.POStartDate = m.InvoiceStartDate;
-                        m.POEndDate = m.InvoiceEndDate;
+                                        m.InvoiceDays = ls.Where(x => x.InvoiceType == "Regular").Sum(x => x.InvoiceDays);
+                                        m.InvoiceStartDate = m.Month;
+                                        m.InvoiceEndDate = GetMonthEndDate(m.Month);
+                                        m.POStartDate = m.InvoiceStartDate;
+                                        m.POEndDate = m.InvoiceEndDate;
 
-                        ls.Add(m);
-
+                                        ls.Add(m);
+                                    }
+                                }
                         if (PaymentStructure.Length == 3)
                         {
                             int paymentValue1;

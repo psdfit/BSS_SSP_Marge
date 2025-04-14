@@ -164,6 +164,9 @@ namespace PSDF_BSS
             services.AddSingleton(typeof(ISRVPotentialTrainees), typeof(SRVPotentialTrainees));
             //services.AddSingletonClassesDataLayer();
             services.AddSingleton(typeof(ISRVBSSReports), typeof(SRVBSSReports));
+            //DVV Services
+            services.AddSingleton(typeof(ISRVDeviceManagement), typeof(SRVDeviceManagement));
+            services.AddSingleton(typeof(ISRVIPDocsVerification), typeof(SRVIPDocsVerification));
 
 
             //SSP Service Include
@@ -195,6 +198,7 @@ namespace PSDF_BSS
             //SRN Coursera --Added by  Rao Ali Haider 04-July-2024
             services.AddSingleton(typeof(ISRVSRNCoursera), typeof(SRVSRNCoursera));
             services.AddSingleton(typeof(ISRVTraineeGuruProfile), typeof(SRVTraineeGuruProfile));
+
 
             //SRN Coursera --Added by  Umair Nadeem 17-Feb-2025
             services.AddSingleton(typeof(ISRVMobileAppDownload), typeof(SRVMobileAppDownload));

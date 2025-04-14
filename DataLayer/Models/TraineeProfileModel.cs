@@ -121,6 +121,11 @@ namespace DataLayer.Models
         public string RightMiddleFinger { get; set; }
         public string LeftIndexFinger { get; set; }
         public string LeftMiddleFinger { get; set; }
+        //added By ali Haider for International Placement
+        public string Accounttitle { get; set; }
+        public string BankName { get; set; }
+        public string IBANNumber { get; set; }
+
 
 
     }
