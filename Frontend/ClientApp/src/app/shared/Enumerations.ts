@@ -47,6 +47,10 @@ export enum EnumApprovalProcess {
   , REG_EVAL = 'REG_EVAL'
   , PROG_APP = 'PROG_APP'
   , CRTEM_APP = 'CRTEM_APP'
+  , IPVS = 'IPVS'
+  , IPPC = 'IPPC'
+  , IPMC = 'IPMC'
+  , IPOT = 'IPOT'
 }
 export enum EnumCertificationAuthority {
   PBTE = 1

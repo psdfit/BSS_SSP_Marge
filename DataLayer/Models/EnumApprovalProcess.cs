@@ -60,5 +60,9 @@ namespace DataLayer.Models
         public const string Class_Status_Active = "Class_Status_Active ";
         public const string PROG_APP = "PROG_APP";
         public const string CRTEM_APP = "CRTEM_APP";
+        public const string IPVS = "IPVS";
+        public const string IPMC = "IPMC";
+        public const string IPPC = "IPPC";
+        public const string IPOT = "IPOT";
     }
 }
