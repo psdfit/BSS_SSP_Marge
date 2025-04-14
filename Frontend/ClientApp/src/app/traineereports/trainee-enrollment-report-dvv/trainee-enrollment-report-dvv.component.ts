@@ -51,7 +51,7 @@ export class TraineeEnrollmentReportDVVComponent implements OnInit, AfterViewIni
   ) { }
 
   ngOnInit(): void {
-    this.commonService.setTitle('Trainee Status Report');
+    this.commonService.setTitle('Trainee Enrollment Report');
     this.currentUser = this.commonService.getUserDetails();
     this.schemeFilter.valueChanges.subscribe(value => {
       if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {

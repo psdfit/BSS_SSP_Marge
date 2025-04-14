@@ -195,7 +195,10 @@ namespace PSDF_BSS
             //SRN Coursera --Added by  Rao Ali Haider 04-July-2024
             services.AddSingleton(typeof(ISRVSRNCoursera), typeof(SRVSRNCoursera));
             services.AddSingleton(typeof(ISRVTraineeGuruProfile), typeof(SRVTraineeGuruProfile));
-            
+
+            //SRN Coursera --Added by  Umair Nadeem 17-Feb-2025
+            services.AddSingleton(typeof(ISRVMobileAppDownload), typeof(SRVMobileAppDownload));
+
 
             return services;
         }
