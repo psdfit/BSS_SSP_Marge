@@ -59,7 +59,6 @@ export enum EnumApprovalProcess {
   , REG_EVAL = 'REG_EVAL'
   , PROG_APP = 'PROG_APP'
   , CRTEM_APP = 'CRTEM_APP'
-  , IPVS = 'IPVS'
   , IPPC = 'IPPC'
   , IPMC = 'IPMC'
   , IPOT = 'IPOT'
@@ -168,8 +167,8 @@ export enum EnumExcelReportType {
   MRN=29,
   PCRN=30,
   OTRN=31,
+  TAR=32
 
-  
 }
 
 

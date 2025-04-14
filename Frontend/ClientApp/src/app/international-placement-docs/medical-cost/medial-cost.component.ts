@@ -335,7 +335,8 @@ export class MedicalCostComponent implements OnInit {
 
   openVisaStampingDialog(row: any): void {
     const dialogRef = this.dialog.open(MedicalCostDocDialogComponent, {
-      width: '1100px',
+      height: "92%",
+            width: "60%",
       data: {
         traineeID: row.TraineeID,
         traineeName: row.TraineeName,

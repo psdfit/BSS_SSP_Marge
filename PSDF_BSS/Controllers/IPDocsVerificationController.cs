@@ -89,12 +89,20 @@ namespace PSDF_BSSMaster.Controllers
                 {
                     return BadRequest("No files received for upload.");
                 }
-                string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\VisaStamping";
+
+                //string baseFolder = @"\\Documents\\VisaStamping";
+                //string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
+                //if (!Directory.Exists(traineeFolder))
+                //{
+                //    Directory.CreateDirectory(traineeFolder);
+                //}
+                string baseFolder = Path.Combine(_env.ContentRootPath, "Documents", "VisaStamping");
                 string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
                 if (!Directory.Exists(traineeFolder))
                 {
                     Directory.CreateDirectory(traineeFolder);
                 }
+
                 List<string> savedFilePaths = new List<string>();
                 foreach (var file in model.Files)
                 {
@@ -181,12 +189,20 @@ namespace PSDF_BSSMaster.Controllers
                 {
                     return BadRequest("No files received for upload.");
                 }
-                string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\MedicalCost";
+                //string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\MedicalCost";
+                //string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
+                //if (!Directory.Exists(traineeFolder))
+                //{
+                //    Directory.CreateDirectory(traineeFolder);
+                //}
+
+                string baseFolder = Path.Combine(_env.ContentRootPath, "Documents", "MedicalCost");
                 string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
                 if (!Directory.Exists(traineeFolder))
                 {
                     Directory.CreateDirectory(traineeFolder);
                 }
+
                 List<string> savedFilePaths = new List<string>();
                 foreach (var file in model.Files)
                 {
@@ -274,12 +290,21 @@ namespace PSDF_BSSMaster.Controllers
                 {
                     return BadRequest("No files received for upload.");
                 }
-                string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\PrometricCost";
+                //string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\PrometricCost";
+                //string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
+                //if (!Directory.Exists(traineeFolder))
+                //{
+                //    Directory.CreateDirectory(traineeFolder);
+                //}
+
+
+                string baseFolder = Path.Combine(_env.ContentRootPath, "Documents", "PrometricCost");
                 string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
                 if (!Directory.Exists(traineeFolder))
                 {
                     Directory.CreateDirectory(traineeFolder);
                 }
+
                 List<string> savedFilePaths = new List<string>();
                 foreach (var file in model.Files)
                 {
@@ -366,12 +391,21 @@ namespace PSDF_BSSMaster.Controllers
                 {
                     return BadRequest("No files received for upload.");
                 }
-                string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\OtherTrainingCost";
+                //string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\OtherTrainingCost";
+                //string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
+                //if (!Directory.Exists(traineeFolder))
+                //{
+                //    Directory.CreateDirectory(traineeFolder);
+                //}
+
+
+                string baseFolder = Path.Combine(_env.ContentRootPath, "Documents", "OtherTrainingCost");
                 string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
                 if (!Directory.Exists(traineeFolder))
                 {
                     Directory.CreateDirectory(traineeFolder);
                 }
+
                 List<string> savedFilePaths = new List<string>();
                 foreach (var file in model.Files)
                 {
