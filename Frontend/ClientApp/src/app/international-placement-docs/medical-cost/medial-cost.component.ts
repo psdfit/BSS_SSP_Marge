@@ -204,13 +204,14 @@ export class MedicalCostComponent implements OnInit {
     ];
     const exportData = this.TablesData.filteredData.map((row: any) => {
       let newRow = { ...row };
+      console.log(newRow, 'newRowww');
       // Format dates
       newRow.ClassStartDate = this.formatDate(newRow.ClassStartDate);
       newRow.ClassEndDate = this.formatDate(newRow.ClassEndDate);
       newRow.TraineeDOB = this.formatDate(newRow.TraineeDOB);
       // Handle "Documents Uploaded" column (0/1 to No/Yes)
-      if ('DocumentsUploaded' in newRow) {
-        newRow['DocumentsUploaded'] = newRow['Documents Uploaded'] === 1 ? 'Yes' : 'No';
+      if ('IsIPMCDocUploaded' in newRow) {
+        newRow['DocumentsUploaded'] = newRow['IsIPMCDocUploaded'] === 1 ? 'Yes' : 'No';
       }
       // Remove unwanted columns
       excludeColumnArray.forEach(col => delete newRow[col]);
