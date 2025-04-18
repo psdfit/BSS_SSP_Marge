@@ -16,19 +16,48 @@ import { DialogueService } from '../../shared/dialogue.service';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { MatDatepicker } from '@angular/material/datepicker';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 @Component({
   selector: 'app-trainee-attendance-report-dvv',
   templateUrl: './trainee-attendance-report-dvv.component.html',
   styleUrls: ['./trainee-attendance-report-dvv.component.scss'],
-  providers: [GroupByPipe, DatePipe]
+  providers: [GroupByPipe, DatePipe,
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ]
 })
 export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewInit {
   environment = environment;
   tsrDatasource: any[];
   // displayedColumns = ['Sr', 'TraineeCode', 'TraineeName', 'FatherName', 'TraineeCNIC', 'GenderName', 'ContactNumber1', 'TraineeAge', 'ProvinceName', 'TraineeDistrictName', 'GuardianNextToKinName', 'TraineeStatusName', "ClassStatusName", "StartDate", "EndDate", "CertAuthName", "ReligionName", "Disability", "Dvv"];
-  displayedColumns = ['TraineeCode', 'TraineeName', 'TraineeCNIC', 'FatherName', 'SchemeName', 'ClassCode', 'CheckIn', 'CheckOut']; schemeArray = [];
+  // displayedColumns = ['TraineeCode', 'TraineeName', 'TraineeCNIC', 'FatherName', 'SchemeName', 'ClassCode', 'CheckIn', 'CheckOut']; 
+  displayedColumns = [
+    'SchemeName', 'TSPName', 'ClassCode', 'TraineeCode', 'TraineeName', 'TraineeCNIC',
+    'TraineeStatusName', 'MPRTraineeStatus', 'ClassDistrictName', 'ClassTiming', 'Shift',
+    'ClassStartDate', 'ClassEndDate', 'ClassStatusName', 'TrainingDaysNo', 'TrainingDays',
+    'TPMVisitDateMarking', 'AttendanceDate', 'CheckIn', 'CheckOut', 'KAM'
+  ];
+
+  schemeArray = [];
   tspDetailArray = [];
   classesArray: any[];
   // filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.commonService.OID.value, SelectedColumns: [] };
@@ -46,7 +75,7 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
   resultsLength: number;
   currentUser: UsersModel;
   enumUserLevel = EnumUserLevel;
-  TSRDataModelKeys = Object.keys(new TSRDataModel());
+  TARDataModelKeys = Object.keys(new TARDataModel());
 
   constructor(
     private commonService: CommonSrvService,
@@ -212,12 +241,12 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
     const exportExcel: ExportExcel = {
       Title: 'Trainee Attendance Report',
       Author: this.currentUser.FullName,
-      Type: EnumExcelReportType.TSR,
+      Type: EnumExcelReportType.TAR,
       Data: {},
       List1: [],
       ImageFieldNames: ['Trainee Img', 'CNIC Img'],
       SearchFilters: this.filters,
-      DataModel: new TSRDataModel(),
+      DataModel: new TARDataModel(),
       LoadDataAsync: this.loadDataAsync
     };
 
@@ -225,71 +254,53 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
   }
 
   async loadDataAsync(that: any) {
-    await that.commonService.postJSON(`api/TSRLiveData/GetFilteredTSRData`, that.input.SearchFilters)
+    const payload = {
+      pagingModel: { PageNumber: 0, PageSize: 0 }, // Add Paging Model if required
+      filterModel: that.input.SearchFilters, // Ensure it matches the backend expectation
+    };
+    await that.commonService.postJSON(`api/TSRLiveData/RD_TARPaged`, payload)
       .toPromise()
       .then((responseData: any[]) => {
         that.input.Data = {
           'Filters:': '',
           TraineeStatus: 'All',
-          'Scheme(s)': that.groupByPipe.transform(responseData, 'SchemeName').map(x => x.key).join(','),
-          'TSP(s)': that.groupByPipe.transform(responseData, 'TSPName').map(x => x.key).join(','),
-          TraineeImagesAdded: true
+          'Scheme(s)': that.groupByPipe.transform(responseData[0], 'SchemeName').map(x => x.key).join(','),
+          'TSP(s)': that.groupByPipe.transform(responseData[0], 'TSPName').map(x => x.key).join(','),
         };
-        that.input.List1 = responseData.map((item, index) => {
-          const obj = new TSRDataModel();
+        that.input.List1 = responseData[0].map((item, index) => {
+          const obj = new TARDataModel();
           obj['Sr#'] = ++index;
-          obj.Scheme = item.SchemeName;
+          obj['Scheme'] = item.SchemeName;
           obj['Training Service Provider'] = item.TSPName;
-          obj['Trade Group'] = item.SectorName;
-          obj.Trade = item.TradeName;
-          obj.ClassCode = item.ClassCode;
-          obj['Trainee ID'] = item.TraineeCode;
+          obj['Class Code'] = item.ClassCode;
+          obj['Trainee Code'] = item.TraineeCode;
           obj['Trainee Name'] = item.TraineeName;
-          obj['Father\'s Name'] = item.FatherName;
-          obj['CNIC Issue Date'] = that.datePipe.transform(item.CNICIssueDate, 'dd/MM/yyyy');
-          obj.CNIC = item.TraineeCNIC;
-          obj['Date Of Birth'] = that.datePipe.transform(item.DateOfBirth, 'dd/MM/yyyy');
-          obj['Roll #'] = item.TraineeRollNumber;
-          obj.Batch = item.Batch;
-          obj.Section = item.SectionName;
-          obj.Shift = item.Shift === '1st' ? 'Morning' : 'Evening';
-          obj['Trainee Address'] = `${item.TraineeHouseNumber}, ${item.TraineeStreetMohalla}, ${item.TraineeMauzaTown}, ${item.TraineeTehsilName}, ${item.TraineeDistrictName}`;
-          obj['Residence Tehsil'] = item.TraineeTehsilName;
-          obj['District of Residence'] = item.TraineeDistrictName;
-          obj['Province of Residence'] = item.ProvinceName;
-          obj.Gender = item.GenderName;
-          obj.Education = item.Education;
-          obj['Contact Number'] = item.ContactNumber1;
-          obj['Training Location'] = `${item.TrainingAddressLocation}`;
-          obj['District of Training Location'] = item.ClassDistrictName;
-
-          obj['CNIC Verified'] = item.TraineeVerified ? 'Yes' : 'No';
+          obj['CNIC'] = item.TraineeCNIC;
           obj['Trainee Status'] = item.TraineeStatusName;
-          obj['Is Dual'] = item.IsDual ? 'Yes' : 'No';
-          obj['Trainee Status Update Date'] = that.datePipe.transform(item.TraineeStatusChangeDate, 'dd/MM/yyyy');
-          obj['Examination Assesment'] = item.ResultStatusName;
-          obj['Voucher Holder'] = item.VoucherHolder ? 'Yes' : 'No';
-          obj.Reason = item.TraineeStatusChangeReason;
-          obj['Class ID'] = item.ClassUID;
-          obj['Trainee Profile ID'] = item.TraineeUID;
-          obj['CNIC IMG Status'] = item.IsVarifiedCNIC ? 1 : 0;
-          obj['Trainee Img'] = item.TraineeImg;
-          obj['CNIC Img'] = item.CNICImgNADRA;
-          obj.Sector = item.SectorName;
-
-          obj.Cluster = item.ClusterName;
-          obj.KAM = item.KAM;
+          obj['MPR Trainee Status'] = item.MPRTraineeStatus;
+          obj['District of Training Location'] = item.ClassDistrictName;
+          obj['Class Start Time'] = item.ClassStartTime ? new Date(item.ClassStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
+          obj['Class End Time'] = item.ClassEndTime ? new Date(item.ClassEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
+          obj['Shift'] = item.Shift === '1st' ? 'Morning' : 'Evening';
+          obj['Class Start Date'] = that.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy');
+          obj['Class End Date'] = that.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy');
           obj['Class Status'] = item.ClassStatusName;
-          obj['Class Start Date'] = that.datePipe.transform(item.StartDate, 'dd/MM/yyyy');
-          obj['Class End Date'] = that.datePipe.transform(item.EndDate, 'dd/MM/yyyy');
-          obj['Certify Authority'] = item.CertAuthName;
-          obj['Religion'] = item.ReligionName;
-          obj['Disability'] = item.Disability;
-          obj['Dvv'] = item.Dvv;
-          obj['Trainee Employment Status'] = item.TraineeEmploymentStatus;
-          obj['Trainee Employment Verification Status'] = item.TraineeEmploymentVerificationStatus;
-          obj['Trainee Email'] = item.TraineeEmail;
+          obj['Training Days Count'] = item.TrainingDaysNo;
+          obj['Training Days'] = item.TrainingDays;
+          obj['TPM Visit Date 1'] = item.TPMVisitDateMarking1
+            ? new Date(item.TPMVisitDateMarking1).toLocaleDateString('en-GB')
+            : '';
+
+          obj['TPM Visit Date 2'] = item.TPMVisitDateMarking2
+            ? new Date(item.TPMVisitDateMarking2).toLocaleDateString('en-GB')
+            : '';
+          obj['Attendance Date'] = that.datePipe.transform(item.AttendanceDate, 'dd/MM/yyyy');
+          obj['Check-In Time'] = item.CheckIn ? new Date(item.CheckIn).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
+          obj['Check-Out Time'] = item.CheckOut ? new Date(item.CheckOut).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : '';
+          obj['KAM'] = item.KAM;
+
           return obj;
+
 
         });
       });
@@ -319,55 +330,29 @@ export class TraineeAttendanceReportDVVComponent implements OnInit, AfterViewIni
   }
 }
 
-export class TSRDataModel {
+export class TARDataModel {
   'Sr#': any = 'Sr';
   'Scheme': any = 'SchemeName';
   'Training Service Provider': any = 'TSPName';
-  'Trade Group': any = 'SectorName';
-  'Trade': any = 'TradeName';
-  'ClassCode': any = 'ClassCode';
-  'Trainee ID': any = 'TraineeCode';
+  'Class Code': any = 'ClassCode';
+  'Trainee Code': any = 'TraineeCode';
   'Trainee Name': any = 'TraineeName';
-  'Father\'s Name': any = 'FatherName';
-  'CNIC Issue Date': any = 'CNICIssueDate'
   'CNIC': any = 'TraineeCNIC';
-  'Date Of Birth': any = 'DateOfBirth'
-  'Roll #': any = 'TraineeRollNumber';
-  'Batch': any = 'Batch';
-  'Section': any = 'SectionName';
-  'Shift': any = 'Shift';
-  'Trainee Address': any = 'TraineeHouseNumber,TraineeStreetMohalla,TraineeMauzaTown,TraineeTehsilName,TraineeDistrictName';
-  'Residence Tehsil': any = 'TraineeTehsilName';
-  'District of Residence': any = 'TraineeDistrictName';
-  'Province of Residence': any = 'ProvinceName';
-  'Gender': any = 'GenderName';
-  'Education': any = 'Education';
-  'Contact Number': any = 'ContactNumber1';
-  'Training Location': any = 'TrainingAddressLocation';
-  'District of Training Location': any = 'ClassDistrictName';
-  'CNIC Verified': any = 'TraineeVerified';
   'Trainee Status': any = 'TraineeStatusName';
-  'Is Dual': any = 'IsDual';
-  'Trainee Status Update Date': any = 'TraineeStatusChangeDate';
-  'Examination Assesment': any = 'ResultStatusName';
-  'Voucher Holder': any = 'VoucherHolder';
-  'Reason': any = 'TraineeStatusChangeReason';
-  'Class ID': any = 'ClassUID';
-  'Trainee Profile ID': any = 'TraineeUID';
-  'CNIC IMG Status': any = 'IsVarifiedCNIC';
-  'Trainee Img': any = 'TraineeImg';
-  'CNIC Img': any = 'CNICImgNADRA';
-  'Sector': any = 'SectorName';
-  'Cluster': any = 'ClusterName';
-  'KAM': any = 'KAM';
-  'Trainee Employment Status': any = 'TraineeEmploymentStatus';
-  'Trainee Employment Verification Status': any = 'TraineeEmploymentVerificationStatus';
-  'Trainee Email': any = 'TraineeEmail';
+  'MPR Trainee Status': any = 'MPRTraineeStatus';
+  'District of Training Location': any = 'ClassDistrictName';
+  'Class Start Time': any = 'ClassStartTime';
+  'Class End Time': any = 'ClassEndTime';
+  'Shift': any = 'Shift';
+  'Class Start Date': any = 'ClassStartDate';
+  'Class End Date': any = 'ClassEndDate';
   'Class Status': any = 'ClassStatusName';
-  'Class Start Date': any = 'StartDate';
-  'Class End Date': any = 'EndDate';
-  'Certify Authority' = 'CertAuthName';
-  'Religion' = 'ReligionName';
-  'Disability': any = 'Disability';
-  'Dvv': any = 'Dvv';
+  'Training Days Count': any = 'TrainingDaysNo';
+  'Training Days': any = 'TrainingDays';
+  'TPM Visit Date 1': any = 'TPMVisitDateMarking1';
+  'TPM Visit Date 2': any = 'TPMVisitDateMarking2';
+  'Attendance Date': any = 'AttendanceDate';
+  'Check-In Time': any = 'CheckIn';
+  'Check-Out Time': any = 'CheckOut';
+  'KAM': any = 'KAM';
 }

@@ -14,6 +14,7 @@ import { EmploymentDailogComponent } from './employment-dailog/employment-dailog
 import { DEOEmploymentVerificationDialogComponent } from './deo-employment-verification-dialog/deo-employment-verification-dialog.component';
 import { TelephonicEmploymentverification } from './TelephonicEmployment-verification/TelephonicEmployment-verification.component';
 import { telephonicemploymentverificationComponent } from './telephonic-employment-verification-dialog/telephonic-employment-verification-dialog.component';
+import { OnjobTraineePlacementComponent } from './onjob-trainee-placement/onjob-trainee-placement.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { telephonicemploymentverificationComponent } from './telephonic-employme
     EmploymentDailogComponent,
     TelephonicEmploymentverification,
     DEOEmploymentVerificationDialogComponent,
-    telephonicemploymentverificationComponent
+    telephonicemploymentverificationComponent,
+    OnjobTraineePlacementComponent
   ],
   imports: [
     CommonModule,

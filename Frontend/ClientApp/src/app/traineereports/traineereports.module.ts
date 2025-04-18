@@ -18,6 +18,7 @@ import { ClassStatusDialougeComponent } from './class-status-update/class-status
 import { GuruRportsComponent } from './gsr/gsr.component';
 import { TraineeEnrollmentReportDVVComponent } from './trainee-enrollment-report-dvv/trainee-enrollment-report-dvv.component';
 import { TraineeAttendanceReportDVVComponent } from './trainee-attendance-report-dvv/trainee-attendance-report-dvv.component';
+import { TraineeAttendanceClassWiseComponent } from './trainee-attendance-report-dvv-classwise/trainee-attendance-report-dvv-classwise.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { TraineeAttendanceReportDVVComponent } from './trainee-attendance-report
     ClassStatusDialougeComponent,
     GuruRportsComponent,
     TraineeEnrollmentReportDVVComponent,
-    TraineeAttendanceReportDVVComponent
+    TraineeAttendanceReportDVVComponent,
+    TraineeAttendanceClassWiseComponent,
   ],
   imports: [
     CommonModule,

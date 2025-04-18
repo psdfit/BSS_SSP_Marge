@@ -15,6 +15,24 @@ namespace DataLayer.Models
         public const string TPRN = "TPRN";
         public const string PO_TPRN = "PO_TPRN";
         public const string INV_TPRN = "INV_TPRN";
+
+        public const string PVRN = "PVRN";
+        public const string PO_PVRN = "PO_PVRN";
+        public const string INV_PVRN = "INV_PVRN";
+
+        public const string MRN = "MRN";
+        public const string PO_MRN = "PO_MRN";
+        public const string INV_MRN = "INV_MRN";
+
+        public const string OTRN = "OTRN";
+        public const string PO_OTRN = "PO_OTRN";
+        public const string INV_OTRN = "INV_OTRN";
+
+        public const string PCRN = "PCRN";
+        public const string PO_PCRN = "PO_PCRN";
+        public const string INV_PCRN = "INV_PCRN";
+
+
         public const string AP_BD = "AP_BD";
         public const string PRN_F = "PRN_F";
         public const string PO_SRN = "PO_SRN";

@@ -32,6 +32,14 @@ import { CriteriaTemplateApprovalComponent } from './criteria-template-approval/
 import { VrnApprovalsComponent } from './vrn-approvals/vrn-approvals.component';
 import { TprnApprovalsComponent } from './tprn-approvals/tprn-approvals.component';
 import { TprnApprovalsDialogueComponent } from './tprn-approvals-dialogue/tprn-approvals-dialogue.component';
+import { MrnApprovalsComponent } from './mrn-approvals/mrn-approvals.component';
+import { PvrnApprovalsComponent } from './pvrn-approvals/pvrn-approvals.component';
+import { PvrnApprovalsDialogueComponent } from './pvrn-approvals-dialogue/pvrn-approvals-dialogue.component';
+import { MrnApprovalsDialogueComponent } from './mrn-approvals-dialogue/mrn-approvals-dialogue.component';
+import { PcrnApprovalsDialogueComponent } from './pcrn-approvals-dialogue/pcrn-approvals-dialogue.component';
+import { PcrnApprovalsComponent } from './pcrn-approvals/pcrn-approvals.component';
+import { OtrnApprovalsDialogueComponent } from './otrn-approvals-dialogue/otrn-approvals-dialogue.component';
+import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.component';
 
 @NgModule({
   declarations: [ApprovalsComponent, SrnApprovalsComponent, GurnApprovalsComponent, DeletionApprovalsComponent, InvoiceApprovalsComponent,
@@ -40,7 +48,7 @@ import { TprnApprovalsDialogueComponent } from './tprn-approvals-dialogue/tprn-a
     ClassChangeRequestApprovalsComponent, TraineeChangeRequestApprovalsComponent, InstructorChangeRequestApprovalsComponent,
     InceptionReportChangeRequestApprovalsComponent, NewInstructorRequestApprovalsComponent,
     ReplaceInstructorChangeRequestApprovalsComponent, VerifiedTraineeChangeRequestApprovalsComponent,
-    ClassDatesChangeRequestApprovalsComponent, TestComponent, RegistrationApprovalComponent, AnnualPlanApprovalComponent, CriteriaTemplateApprovalComponent, VrnApprovalsComponent, TprnApprovalsComponent, TprnApprovalsDialogueComponent],
+    ClassDatesChangeRequestApprovalsComponent, TestComponent, RegistrationApprovalComponent, AnnualPlanApprovalComponent, CriteriaTemplateApprovalComponent, VrnApprovalsComponent, TprnApprovalsComponent, TprnApprovalsDialogueComponent, MrnApprovalsComponent, PvrnApprovalsComponent, PvrnApprovalsDialogueComponent, MrnApprovalsDialogueComponent, PcrnApprovalsDialogueComponent,PcrnApprovalsComponent, OtrnApprovalsDialogueComponent, OtrnApprovalsComponent],
   imports: [
     CommonModule,
     SharedModule,

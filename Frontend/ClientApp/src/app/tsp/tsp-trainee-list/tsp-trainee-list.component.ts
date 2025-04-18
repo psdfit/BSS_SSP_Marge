@@ -17,7 +17,6 @@ import { ExportExcel } from '../../shared/Interfaces';
 import { EnumExcelReportType } from '../../shared/Enumerations';
 import { DatePipe } from '@angular/common';
 
-
 @Component({
   selector: 'app-tsp-trainee-list',
   templateUrl: './tsp-trainee-list.component.html',
@@ -68,6 +67,7 @@ import { DatePipe } from '@angular/common';
     ])
   ]
 })
+
 export class TSPTraineeListComponent implements OnInit {
   TSPDetail = [];
   classesArray: any[];
@@ -508,8 +508,11 @@ export class TSPTraineeListComponent implements OnInit {
 
   exportToExcelReportedEmployment() {
     let filteredData = [...this.ReportedEmploymentList]
-    let data = {
-    };
+    if (!this.ReportedEmploymentList || this.ReportedEmploymentList.length === 0) {
+      this.ComSrv.ShowError("No data available for export.");
+      throw new Error('No data available for export.');
+    }
+    let data = {};
 
     let exportExcel: ExportExcel = {
       Title: 'Reported Employment Report',
