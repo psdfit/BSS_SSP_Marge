@@ -1,5 +1,5 @@
 {
-  "UsersAPIURL": "http://localhost:55216/",
+  "UsersAPIURL": "https://localhost:7046/",
   "ReportsAPIURL": "https://localhost:44303/",
   "_UsersAPIURL": "http://172.19.1.19:51599/",
   "_ReportsAPIURL": "http://172.19.1.19:44303/",
