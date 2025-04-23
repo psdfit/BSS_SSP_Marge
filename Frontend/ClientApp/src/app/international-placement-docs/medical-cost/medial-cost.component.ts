@@ -204,7 +204,6 @@ export class MedicalCostComponent implements OnInit {
     ];
     const exportData = this.TablesData.filteredData.map((row: any) => {
       let newRow = { ...row };
-      console.log(newRow, 'newRowww');
       // Format dates
       newRow.ClassStartDate = this.formatDate(newRow.ClassStartDate);
       newRow.ClassEndDate = this.formatDate(newRow.ClassEndDate);

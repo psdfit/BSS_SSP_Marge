@@ -63,7 +63,6 @@ export enum EnumApprovalProcess {
   , IPPC = 'IPPC'
   , IPMC = 'IPMC'
   , IPOT = 'IPOT'
-  , IPVS = 'IPVS'
 
 }
 export enum EnumCertificationAuthority {
@@ -164,12 +163,13 @@ export enum EnumExcelReportType {
   TPRN = 25,
   PO_TPRN = 26,
   GURN = 27,
-  PVRN=28,
-  MRN=29,
-  PCRN=30,
-  OTRN=31,
+  PVRN = 28,
+  MRN = 29,
+  PCRN = 30,
+  OTRN = 31,
+  TAR = 32
 
-  
+
 }
 
 
