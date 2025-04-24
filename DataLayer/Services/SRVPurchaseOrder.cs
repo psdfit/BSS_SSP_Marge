@@ -20,7 +20,7 @@ namespace DataLayer.Services
         {
             List<POHeaderModel> POHeaderModel = new List<POHeaderModel>();
             DataTable dt = new DataTable();
-           // DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "[RD_GetPOHeaderByID]", new SqlParameter("@POHeaderID", POHeaderID)).Tables[0];
+            // DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "[RD_GetPOHeaderByID]", new SqlParameter("@POHeaderID", POHeaderID)).Tables[0];
 
             if (transaction != null)
             {
@@ -36,13 +36,14 @@ namespace DataLayer.Services
                 POHeaderModel = Helper.ConvertDataTableToModel<POHeaderModel>(dt);
                 return POHeaderModel;
             }
-            else { 
-            return null;
+            else
+            {
+                return null;
 
             }
         }
 
-        public bool CreatePO(int schemeID,string processKey, int curuserID, SqlTransaction transaction = null)
+        public bool CreatePO(int schemeID, string processKey, int curuserID, SqlTransaction transaction = null)
         {
             try
             {
@@ -64,7 +65,7 @@ namespace DataLayer.Services
             catch (Exception e)
             { throw new Exception(e.Message); }
         }
-        public bool CreatePOForSRN(string srnIDs,string processKey, int curuserID, SqlTransaction transaction = null)
+        public bool CreatePOForSRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
         {
             try
             {
@@ -86,7 +87,7 @@ namespace DataLayer.Services
             catch (Exception e)
             { throw new Exception(e.Message); }
         }
-public bool CreatePOForGURN(string gurnIDs,string processKey, int curuserID, SqlTransaction transaction = null)
+        public bool CreatePOForGURN(string gurnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
         {
             try
             {
@@ -121,6 +122,101 @@ public bool CreatePOForGURN(string gurnIDs,string processKey, int curuserID, Sql
                 if (transaction != null)
                 {
                     SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForTPRN", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POFor" +
+                        "TPRN", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+
+        public bool CreatePOForPVRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@PVRNIDs", srnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForPVRN", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POForPVRN" +
+                        "TPRN", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+
+        public bool CreatePOForPCRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@PCRNIDs", srnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForPCRN", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POForPCRN" +
+                        "TPRN", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+        public bool CreatePOForOTRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@OTRNIDs", srnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForOTRN", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POForOTRN" +
+                        "TPRN", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+
+        public bool CreatePOForMRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@MRNIDs", srnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForMRN", param.ToArray());
                 }
                 else
                 {

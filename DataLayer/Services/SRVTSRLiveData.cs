@@ -613,7 +613,7 @@ namespace DataLayer.Services
                 // New parameters for filtering by Month and Year
                 param.Add(new SqlParameter("@Month", filterModel.Month ?? (object)DBNull.Value));
                 param.Add(new SqlParameter("@Year", filterModel.Year ?? (object)DBNull.Value));
-                // param.Add(new SqlParameter("@UserID", filterModel.UserID));
+                param.Add(new SqlParameter("@UserID", filterModel.UserID));
                 // param.Add(new SqlParameter("@OID", filterModel.OID));
                 param.AddRange(Common.GetPagingParams(pagingModel));
 
@@ -771,7 +771,6 @@ namespace DataLayer.Services
             ter.IsEnrolled = row.Field<bool>("IsEnrolled");
             return ter;
         }
-
         private TARLiveDataModel RowOfTARLiveDatapaged(DataRow row)
         {
             TARLiveDataModel tar = new TARLiveDataModel();

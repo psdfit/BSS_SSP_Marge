@@ -7,6 +7,10 @@ import { GenerateGuruRecommendationNoteComponent } from './generate-guru-recomme
 import { GeneratePrnFinalComponent } from './generate-prn-final/generate-prn-final.component';
 import { GenerateTrnComponent } from './generate-trn/generate-trn.component';
 import { GenerateSrnCourseraComponent } from './generate-srn-coursera/generate-srn-coursera.component';
+import { GenerateMrnComponent } from './generate-mrn/generate-mrn.component';
+import { GeneratePvrnComponent } from './generate-pvrn/generate-pvrn.component';
+import { GeneratePcrnComponent } from './generate-pcrn/generate-pcrn.component';
+import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +18,11 @@ import { GenerateSrnCourseraComponent } from './generate-srn-coursera/generate-s
     GeneratePrnFinalComponent,
     GenerateTrnComponent,
     GenerateSrnCourseraComponent,
-    GenerateGuruRecommendationNoteComponent
+    GenerateGuruRecommendationNoteComponent,
+    GenerateMrnComponent,
+    GeneratePvrnComponent,
+    GeneratePcrnComponent,
+    GenerateOtrnComponent
   ],
   imports: [
     CommonModule,

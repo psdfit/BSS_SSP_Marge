@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  UsersAPIURL: "http://localhost:55216/",
+  UsersAPIURL: "https://localhost:7046/",
   ReportsAPIURL: "https://localhost:44303/",
   //UsersAPIURL: "http://3.127.198.171:51599/",//"/core/",
   //ReportsAPIURL: "http://3.127.198.171:44303/",

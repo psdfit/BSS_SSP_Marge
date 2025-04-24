@@ -10,7 +10,7 @@
           <mat-form-field fxFlex>
             <mat-label>Month</mat-label>
             <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
-            <!-- <button mat-icon-button matSuffix (click)="clearMonth()"><mat-icon>close</mat-icon></button> -->
+            <button mat-icon-button matSuffix (click)="clearMonth()"><mat-icon>close</mat-icon></button>
             <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
             <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
               (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
