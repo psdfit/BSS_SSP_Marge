@@ -144,6 +144,24 @@
               {{row.Disability}}
             </mat-cell>
           </ng-container>
+          <ng-container matColumnDef="Accounttitle">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Account Title</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.Accounttitle}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="BankName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Bank Name</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.BankName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="IBANNumber">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> IBAN Number</mat-header-cell>
+            <mat-cell *matCellDef="let row ; let index=index">
+              {{row.IBANNumber}}
+            </mat-cell>
+          </ng-container>
 
 
           <ng-container matColumnDef="Dvv">

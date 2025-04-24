@@ -1,0 +1,118 @@
+<div class="comp-main-div">
+  <div class="row">
+    <div class="col-sm-3">
+      <mat-form-field fxFlex>
+        <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()" id="SchemeID"
+          matInput required>
+          <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+              [formControl]="SearchKam" /></mat-optgrp>
+          <mat-option>--Select--</mat-option>
+          <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchKam.value]"
+            [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-3">
+      <mat-form-field fxFlex>
+        <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month" [max]="today"
+          [formControl]="DateMonth" required readonly />
+        <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #customDatePicker startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+          (monthSelected)="chosenMonthHandler($event, customDatePicker)" panelClass="example-month-picker"
+          [max]="maxDate">
+        </mat-datepicker>
+        <mat-label>Month</mat-label>
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-card>
+    <mat-card-content class="p-0 m-0 ">
+      <mat-toolbar color="accent" class=" slim p-1 m-1">
+        <mat-icon class="material-icons">view_comfy</mat-icon>
+        <span class="spacer">Generate MRN</span>
+        <mat-icon style="cursor:pointer" matTooltip="Business Rules for SRN Coursera"
+        (click)="displayHideAlert()">info</mat-icon>
+
+        
+        <button mat-raised-button *ngIf="PrnClasses != null && PrnClasses.length != 0" style="float:right;margin: 0px 7px;background: #c3d9ff"
+        (click)="exportToExcel()">
+        <i class="fas fa-file-export"></i>Export Excel</button>
+
+        <button mat-raised-button color="accent"  (click)="generate()"> Generate MRN</button>
+
+
+   
+      </mat-toolbar>
+    </mat-card-content>
+    <div *ngIf="infoAlert">
+      <ngb-alert type="primary" (click)="displayHideAlert()">
+        <ul class="pl-3">
+          <li>The classes should end in that month and class status should be completed.</li>
+          <li>Trainee status should be completed.</li>
+          <li>Trainee Should not be extra.</li>
+          <li>Trainee status should be verified.</li>
+        </ul>
+      </ngb-alert>
+    </div>
+    <!--*ngIf="PrnClasses != null && PrnClasses.length != 0 "-->
+  
+    <div class="row" *ngIf="IsGenerated">
+      <div class="col">
+        <h1 class="text-center">{{message}}</h1>
+      </div>
+    </div>
+    <div *ngIf="!IsGenerated">
+      <mat-card-content>
+        <div class="main-content">
+          <div fxLayout="column" class="table-responsive">
+            <mat-table [dataSource]="PrnClasses" #SortClass="matSort" matSort class="custom-width">
+              <ng-container matColumnDef="Sr">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Sr#</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;">{{ i + 1 || ""}}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="SchemeName" style="width: 300px;">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>SchemeName</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;">{{Row.SchemeName}}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TSPName" style="width: 300px;">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TSPName</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;">{{Row.TSPName}}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TradeName" style="width: 300px;">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TradeName</mat-header-cell>
+                <mat-cell *matCellDef="let Row; let i = index;">{{Row.TradeName}}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ClassCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>ClassCode</mat-header-cell>
+                <mat-cell *matCellDef="let Row" style="color: #005b9e;"> <a class="myAnchor"
+                    (click)="openClassJourneyDialogue(Row.ClassID)"> {{Row.ClassCode}} </a> </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="StartDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>StartDate</mat-header-cell>
+                <mat-cell *matCellDef="let Row">{{Row.StartDate | date:'dd/MM/yyyy'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="EndDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>EndDate</mat-header-cell>
+                <mat-cell *matCellDef="let Row">{{Row.EndDate | date:'dd/MM/yyyy'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ClassStatusName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>ClassStatusName</mat-header-cell>
+                <mat-cell *matCellDef="let Row">{{Row.ClassStatusName}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="MedicalCost">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>MedicalCost</mat-header-cell>
+                <mat-cell *matCellDef="let Row">{{Row.MedicalCost}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="TotalEligibleTrainees">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>TotalEligibleTrainees</mat-header-cell>
+                <mat-cell *matCellDef="let Row"> {{Row.TotalEligibleTrainees}} </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumnsClass"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumnsClass;" tabindex="0"></mat-row>
+            </mat-table>
+          </div>
+        </div>
+      </mat-card-content>
+    </div>
+  </mat-card>
+</div>

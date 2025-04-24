@@ -134,5 +134,9 @@ namespace DataLayer.Models
         public double PercentageCompleted { get; set; }
         public int DaysSinceLastActivity { get; set; }
         public string CoursraTraineeIDs { get; set; }
+        //Added by Rao Ali Haider for International Placement
+        public string IBANNumber { get; set; }
+        public string BankName { get; set; }
+        public string Accounttitle { get; set; }
     }
 }

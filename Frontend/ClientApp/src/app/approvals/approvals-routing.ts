@@ -25,7 +25,12 @@ import { ClassDatesChangeRequestApprovalsComponent } from "./cr-class-dates-appr
 import { TestComponent } from "./test/test.component";
 import { RegistrationApprovalComponent } from "./registration-approval/registration-approval.component";
 import { AnnualPlanApprovalComponent } from "./annual-plan-approval/annual-plan-approval.component";
+import { GurnApprovalsComponent } from "./gurn-approvals/gurn-approvals.component";
 import { TprnApprovalsComponent } from './tprn-approvals/tprn-approvals.component';
+import { PvrnApprovalsComponent } from './pvrn-approvals/pvrn-approvals.component';
+import { MrnApprovalsComponent } from './mrn-approvals/mrn-approvals.component';
+import { PcrnApprovalsComponent } from './pcrn-approvals/pcrn-approvals.component';
+import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.component';
 
 const routes: Routes = [
   {
@@ -49,6 +54,16 @@ const routes: Routes = [
     },
   },
   {
+    path: "gurn-approvals",
+    component: GurnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "GURN Approval Requests",
+    },
+  },
+  {
     path: "tprn-approvals",
     component: TprnApprovalsComponent,
     canActivate: [AuthGuardService],
@@ -58,6 +73,46 @@ const routes: Routes = [
       title: "TPRN Approval Requests",
     },
   },
+  {
+    path: "pvrn-approvals",
+    component: PvrnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "PVRN Approval Requests",
+    },
+  },
+  {
+    path: "mrn-approvals",
+    component: MrnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "MRN Approval Requests",
+    },
+  },
+{
+  path: "pcrn-approvals",
+  component: PcrnApprovalsComponent,
+  canActivate: [AuthGuardService],
+  data: {
+    icon: "verified_user",
+    inMenu: true,
+    title: "PCRN Approval Requests",
+  },
+},
+{
+  path: "otrn-approvals",
+  component: OtrnApprovalsComponent,
+  canActivate: [AuthGuardService],
+  data: {
+    icon: "verified_user",
+    inMenu: true,
+    title: "OTRN Approval Requests",
+  },
+},
   {
     path: "vrn-approvals",
     component: VrnApprovalsComponent,

@@ -10,6 +10,8 @@ export enum EnumApprovalProcess {
   , PO_TSP = 'PO_TSP'
   , PO_TRN = 'PO_TRN'
   , PO_SRN = 'PO_SRN'
+  , PO_GURN = 'PO_GURN'
+  , PO_GRN = 'PO_GRN'
   , PRN_C = 'PRN_C'
   , PRN_R = 'PRN_R'
   , PRN_F = 'PRN_F' // this is actually PRN Employment (Final = Employment)
@@ -18,7 +20,12 @@ export enum EnumApprovalProcess {
   , INV_1ST = 'INV_1ST'
   , INV_2ND = 'INV_2ND'
   , INV_SRN = 'INV_SRN'
+  , INV_GURN = 'INV_GURN'
   , INV_TPRN = 'INV_TPRN'
+  , INV_PVRN = 'INV_PVRN'
+  , INV_PCRN = 'INV_PCRN'
+  , INV_OTRN = 'INV_OTRN'
+  , INV_MRN = 'INV_MRN'
   , INV_F = 'INV_F'
   , INV_TRN = 'INV_TRN'
   , INV_C = 'INV_C'
@@ -34,8 +41,17 @@ export enum EnumApprovalProcess {
   , CR_INCEPTION = 'CR_INCEPTION'
   , CR_INSTRUCTOR_REPLACE = 'CR_INSTRUCTOR_REPLACE'
   , SRN = 'SRN'
+  , GURN = 'GURN'
   , TPRN = 'TPRN'
+  , PVRN = 'PVRN'
+  , PCRN = 'PCRN'
+  , OTRN = 'OTRN'
+  , MRN = 'MRN'
   , PO_TPRN = 'PO_TPRN'
+  , PO_PVRN = 'PO_PVRN'
+  , PO_PCRN = 'PO_PCRN'
+  , PO_OTRN = 'PO_OTRN'
+  , PO_MRN = 'PO_MRN'
   , VRN = 'VRN'
   , INV_VRN = 'INV_VRN'
   , PO_VRN = 'PO_VRN'
@@ -43,6 +59,11 @@ export enum EnumApprovalProcess {
   , REG_EVAL = 'REG_EVAL'
   , PROG_APP = 'PROG_APP'
   , CRTEM_APP = 'CRTEM_APP'
+  , IPPC = 'IPPC'
+  , IPMC = 'IPMC'
+  , IPOT = 'IPOT'
+  , IPVS = 'IPVS'
+
 }
 export enum EnumCertificationAuthority {
   PBTE = 1
@@ -141,6 +162,13 @@ export enum EnumExcelReportType {
   orgconfigration = 24,
   TPRN = 25,
   PO_TPRN = 26,
+  GURN = 27,
+  PVRN=28,
+  MRN=29,
+  PCRN=30,
+  OTRN=31,
+  TAR=32
+
 }
 
 

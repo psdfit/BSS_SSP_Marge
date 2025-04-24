@@ -17,7 +17,6 @@ import { ExportExcel } from '../../shared/Interfaces';
 import { EnumExcelReportType } from '../../shared/Enumerations';
 import { DatePipe } from '@angular/common';
 
-
 @Component({
   selector: 'app-tsp-trainee-list',
   templateUrl: './tsp-trainee-list.component.html',
@@ -68,6 +67,7 @@ import { DatePipe } from '@angular/common';
     ])
   ]
 })
+
 export class TSPTraineeListComponent implements OnInit {
   TSPDetail = [];
   classesArray: any[];
@@ -498,11 +498,6 @@ export class TSPTraineeListComponent implements OnInit {
     this.ComSrv.postJSON('api/TSPEmployment/VerifiedEmploymentExportExcel', this.filters).subscribe(
       (d: any) => {
         this.VerifiedEmploymentList = d;
-        // Throw an error if the response is empty
-        if (!this.VerifiedEmploymentList || this.VerifiedEmploymentList.length === 0) {
-          this.ComSrv.ShowError("No data available for export.");
-          throw new Error('No data available for export.');
-        }
         this.exportToExcelVerifiedEmployment();
       }
       , (error) => {
@@ -513,8 +508,11 @@ export class TSPTraineeListComponent implements OnInit {
 
   exportToExcelReportedEmployment() {
     let filteredData = [...this.ReportedEmploymentList]
-    let data = {
-    };
+    if (!this.ReportedEmploymentList || this.ReportedEmploymentList.length === 0) {
+      this.ComSrv.ShowError("No data available for export.");
+      throw new Error('No data available for export.');
+    }
+    let data = {};
 
     let exportExcel: ExportExcel = {
       Title: 'Reported Employment Report',
@@ -528,12 +526,13 @@ export class TSPTraineeListComponent implements OnInit {
 
   exportToExcelVerifiedEmployment() {
     let filteredData = [...this.VerifiedEmploymentList]
-    let data = {};
+    let data = {
+    };
 
     let exportExcel: ExportExcel = {
       Title: 'Verified Employment Report',
       Author: '',
-      Type: EnumExcelReportType?.VerifiedEmployment,
+      Type: EnumExcelReportType.VerifiedEmployment,
       Data: data,
       List1: this.populateDataVerifiedEmployment(filteredData),
     };
@@ -577,22 +576,22 @@ export class TSPTraineeListComponent implements OnInit {
   populateDataVerifiedEmployment(data: any) {
     return data.map(item => {
       return {
-        "Class Code": item?.ClassCode
-        , "Scheme": item?.SchemeName
-        , "TSP": item?.TSPName
-        , "Class Status": item?.ClassStatusName
+        "Class Code": item.ClassCode
+        , "Scheme": item.SchemeName
+        , "TSP": item.TSPName
+        , "Class Status": item.ClassStatusName
         //, "Verification Source": item.VerificationMethodType
         //, "Completion Date": this._date.transform(item.StartDate, 'MM/dd/yyyy')
         , "Completion Date": this._date.transform(item.EndDate, 'MM/dd/yyyy')
-        , "Contractual Trainees Per Class": item?.TraineesPerClass
-        , "Completed Trainees": item?.CompletedTrainees
-        , "Employment Commitment in percentage": item?.OverallEmploymentCommitment
-        , "Employment Commitment Trainees": item?.EmploymentCommittedTrainees
-        , "Employment Reported": item?.EmploymentReported
-        , "Verified": item?.VerifiedEmployment
-        , "Verified to Commitment": item?.VerifiedToContractualCommitment + '%'
-        , "Source Of Verification": item?.SourceOfVerification
-        , "KAM": item?.KAM
+        , "Contractual Trainees Per Class": item.TraineesPerClass
+        , "Completed Trainees": item.CompletedTrainees
+        , "Employment Commitment in percentage": item.OverallEmploymentCommitment
+        , "Employment Commitment Trainees": item.EmploymentCommittedTrainees
+        , "Employment Reported": item.EmploymentReported
+        , "Verified": item.VerifiedEmployment
+        , "Verified to Commitment": item.VerifiedToContractualCommitment + '%'
+        , "Source Of Verification": item.SourceOfVerification
+        , "KAM": item.KAM
         //, "Employment Address": item.EmploymentAddress
         //, "Supervisor Name": item.SupervisorName
         //, "SupervisorContactNumber": item.SupervisorContact

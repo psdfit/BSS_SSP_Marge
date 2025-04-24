@@ -200,6 +200,16 @@ namespace PSDF_BSSd.Controllers
             catch (Exception e)  {  return BadRequest(e.InnerException.ToString());  }
         }
         [HttpGet]
+        [Route("getGURN/{id}")]
+        public IActionResult getGURN(int id)
+        {
+            try
+            {
+                return Ok(srv.GetGURN(id));
+            }
+            catch (Exception e) { return BadRequest(e.InnerException.ToString()); }
+        }
+        [HttpGet]
         [Route("getTPRN/{id}")]
         public IActionResult getTPRN(int id)
         {

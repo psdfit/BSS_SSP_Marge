@@ -109,5 +109,9 @@ namespace DataLayer.Models
         public int balloonpayment { get; set; }
         public int GuruPayment { get; set; }
         public int Transportation { get; set; }
+        public int ProtectorateandVisa { get; set; }
+        public int MedicalCost { get; set; }
+        public int PrometricCost { get; set; }
+        public int OtherTrainingCost { get; set; }
     }
 }

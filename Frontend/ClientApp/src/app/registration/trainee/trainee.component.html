@@ -533,22 +533,48 @@
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="GuardianNextToKinName" placeholder="Name" matInput
-                            maxlength="50" TitleCase required />
+                                 maxlength="50" TitleCase required />
                           <mat-label>Guardian/(Next To Kin) Name</mat-label>
-                          <mat-error
-                            *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.required"><strong>required</strong></mat-error>
-                          <mat-error
-                            *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.pattern"><strong>letters
-                              only</strong></mat-error>
+                          <mat-error *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.required"><strong>required</strong></mat-error>
+                          <mat-error *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.pattern">
+                            <strong>
+                              letters
+                              only
+                            </strong>
+                          </mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="GuardianNextToKinContactNo"
-                            placeholder="Mobile / Landline" matInput NumberOnly maxlength="11" required />
+                                 placeholder="Mobile / Landline" matInput NumberOnly maxlength="11" required />
                           <mat-label>Guardian/(Next To Kin) Contact Number</mat-label>
-                          <mat-error
-                            *ngIf="GuardianNextToKinContactNo.invalid && GuardianNextToKinContactNo.errors.required"><strong>required</strong></mat-error>
+                          <mat-error *ngIf="GuardianNextToKinContactNo.invalid && GuardianNextToKinContactNo.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <!---Added by Ali Haider for International Placement--->
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="Accounttitle"
+                                 placeholder="Account title" matInput required />
+                          <mat-label>Account title</mat-label>
+                          <mat-error *ngIf="Accounttitle.invalid && Accounttitle.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="BankName"
+                                 placeholder="Bank Name" matInput required />
+                          <mat-label>Bank Name</mat-label>
+                          <mat-error *ngIf="BankName.invalid && BankName.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="IBANNumber"
+                                 placeholder="IBAN Number" matInput required />
+                          <mat-label>IBAN Number</mat-label>
+                          <mat-error *ngIf="IBANNumber.invalid && IBANNumber.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                     </div>
@@ -565,6 +591,16 @@
                         may take legal action against me. I authorise PSDF to check my data through NADRA Verisys and
                         share my CV with potential employers through various mediums without any liability.
                       </p>
+                      <div *ngIf="IsSkillsScholrship">
+                        <p>
+                          I hereby solemnly affirm that I belong to the transgender community.
+                          I further affirm that I have voluntarily selected the associate partner of PSDF to receive training
+                          in that trade. I understand that this is a provisional registration with the associate partner, and
+                          I will be eligible for the scholarship if my class enrolment number is 10 or above. I hereby also
+                          give PSDF the consent to pay my scholarship fee to the associate partner once I complete the training
+                          according to the terms and conditions.
+                        </p>
+                      </div>
                       <mat-checkbox formControlName="Undertaking" [disabled]="isFormDisabled">Undertaking</mat-checkbox>
                       <mat-error *ngIf="Undertaking.invalid && Undertaking.errors.required"><strong>It must be
                           checked.</strong></mat-error>

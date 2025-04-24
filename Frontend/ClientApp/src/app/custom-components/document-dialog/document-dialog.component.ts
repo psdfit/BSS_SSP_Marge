@@ -13,6 +13,7 @@ export class DocumentDialogComponent implements OnInit {
   environment = environment;
   mpr: any[] = [];
   srn: any[] = [];
+  gurn: any = [];
   tprn: any[] = [];
   PRNMaster: any[] = [];
   PO: any[] = [];
@@ -28,6 +29,8 @@ export class DocumentDialogComponent implements OnInit {
       this.GetMPR();
     else if (this.data.Col == 'SRN')
       this.GetSRN();
+    else if (this.data.Col == 'GURN')
+      this.GetGURN();
     else if (this.data.Col == 'TPRN')
       this.GetTPRN();
     else if (this.data.Col == 'PRN')
@@ -41,7 +44,7 @@ export class DocumentDialogComponent implements OnInit {
   }
   GetMPR() {
     this.http.getJSON("api/Cancelation/getMPRByID/", this.data.ID).subscribe(
-      (data:any) => {
+      (data: any) => {
         //let currentUser = this.http.getUserDetails();
         let d = data;
         this.mpr = d;
@@ -50,7 +53,7 @@ export class DocumentDialogComponent implements OnInit {
             it.mprDetails = JSON.parse(it.mprDetails);
 
         });
-       
+
       },
       error => {
         this.http.ShowError(error, "Error");
@@ -59,23 +62,81 @@ export class DocumentDialogComponent implements OnInit {
   }
   GetSRN() {
     this.http.getJSON("api/Cancelation/getSRN/", this.data.ID).subscribe(
-      (data:any) => {
+      (data: any) => {
         //let currentUser = this.http.getUserDetails();
         let d = data;
-        
+
         this.srn = d;
         this.srn.forEach((it) => {
           if (it.srnDetails)
-            it.srnDetails = JSON.parse('[' + it.srnDetails +']');
+            it.srnDetails = JSON.parse('[' + it.srnDetails + ']');
 
         });
-       
+
       },
       error => {
         this.http.ShowError(error, "Error");
       }
     );
   }
+
+  GetGURN() {
+    this.http.getJSON("api/GURN/GetGURNDetails/", this.data.ID).subscribe(
+      (data: any) => {
+        if (data && data.length > 0) {
+          const firstRow = data[0]; // Use the first record for parent data
+          this.gurn = [{
+            Month: firstRow[0].ClassStartdateGURNDetail,
+            ReportDate: firstRow[0].ClassStartdateGURNDetail,
+            NumberOfMonths: this.getNumberOfMonths(firstRow[0].ClassStartdateGURNDetail, firstRow[0].ClassEnddateGURNDetail),
+            TSPName: firstRow[0].TSPNameGURNDetail,
+            TradeName: firstRow[0].SchemeName,
+            ClassCode: firstRow[0].ClassCodeGURNDetail,
+            Batch: firstRow[0]?.TraineeCode?.split('-')[3],
+            TrainingDistrict: firstRow[0].DistrictName,
+            gurnDetails: this.getGurnDetails(firstRow), // Pass as an array if the function expects it
+          }];
+        } else {
+          this.gurn = null; // Handle no data scenario
+        }
+      },
+      (error) => {
+        this.http.ShowError(error, "Error");
+      }
+    );
+  }
+
+  // Helper function to calculate months
+  getNumberOfMonths(startDate: string, endDate: string): number {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const months = (end.getFullYear() - start.getFullYear()) * 12;
+    return months + end.getMonth() - start.getMonth();
+  }
+
+  // Helper function to process all rows for the nested table
+  getGurnDetails(data: any[]) {
+    return data.map((item) => ({
+      ProjectName: item.ProjectName,
+      ClassStartDate: item.ClassStartdateGURNDetail,
+      ClassEndDate: item.ClassEnddateGURNDetail,
+      GURUName: item.GURUName,
+      GURUCNIC: item.GURUCNIC,
+      GURUContactNumber: item.GURUContactNumber,
+      TraineeCode: item.TraineeCode,
+      TraineeName: item.TraineeName,
+      FatherName: item.FatherName,
+      TraineeCNIC: item.TraineeCNIC,
+      ContactNumber1: item.ContactNumber1,
+      ReportId: item.GURNID,
+      Amount: item.Amount,
+      TokenNumber: "", // Adjust as needed
+      TransactionNumber: "", // Adjust as needed
+      Comments: "", // Adjust as needed
+      IsPaid: false, // Adjust as needed
+    }));
+  }
+
 
   GetTPRN() {
     debugger;
@@ -99,7 +160,7 @@ export class DocumentDialogComponent implements OnInit {
   }
   GetPRN() {
     this.http.getJSON("api/Cancelation/getPRN/", this.data.ID).subscribe(
-      (data:any) => {
+      (data: any) => {
         //let currentUser = this.http.getUserDetails();
         let d = data;
 
@@ -119,7 +180,7 @@ export class DocumentDialogComponent implements OnInit {
   }
   GetPO() {
     this.http.getJSON("api/Cancelation/getPO/", this.data.ID).subscribe(
-      (data:any) => {
+      (data: any) => {
         //let currentUser = this.http.getUserDetails();
         let d = data;
 
@@ -138,10 +199,10 @@ export class DocumentDialogComponent implements OnInit {
   }
   GetInv() {
     this.http.getJSON("api/Cancelation/getInv/", this.data.ID).subscribe(
-      (data:any) => {
+      (data: any) => {
         //let currentUser = this.http.getUserDetails();
         let d = data;
-        
+
         this.Inv = d;
         this.Inv.forEach((it) => {
           if (it.InvDetail)

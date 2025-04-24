@@ -86,6 +86,7 @@
         </mat-card-content>
       </mat-card>
     </mat-tab>
+
     <mat-tab label="Stipend Recommendation Note" *ngIf="srn.length>0">
       <mat-card>
         <mat-card-content>
@@ -176,6 +177,105 @@
         </mat-card-content>
       </mat-card>
     </mat-tab>
+
+    <!-- Guru Payment Table -->
+    <mat-tab label="Guru Payment Note" *ngIf="gurn.length>0">
+      <mat-card>
+        <mat-card-content>
+          <div fxLayoutAlign="space-around space-around" fxLayout="column">
+            <!--<mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+            <mat-icon class="material-icons">view_comfy</mat-icon>
+            <span class="spacer">Stipend Recommendation Note</span>
+            <div class="spacer"></div>
+          </mat-toolbar>-->
+
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Report Date</th>
+                    <th>Number Of Months</th>
+                    <th>TSP Name</th>
+                    <th>Trade Name</th>
+                    <th>Class Code</th>
+                    <th>Batch</th>
+                    <th>Training District</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let r of gurn ">
+                    <tr>
+                      <td class="number-align-center">{{r.Month | date:environment.MonthFormat}}</td>
+                      <td class="number-align-center">{{r.ReportDate | date:environment.MonthFormat}}</td>
+                      <td class="number-align-center">{{r.NumberOfMonths}}</td>
+                      <td>{{r.TSPName}}</td>
+                      <td>{{r.TradeName}}</td>
+                      <td>{{r.ClassCode}}</td>
+                      <td class="number-align-center">{{r.Batch}}</td>
+                      <td>{{r.TrainingDistrict}}</td>
+                    </tr>
+                    <tr *ngIf="r.gurnDetails?.length > 0">
+                      <td colspan="9">
+                        <div>
+                          <table class="table table-bordered" style="color:lightslategrey">
+                            <thead>
+                              <tr>
+                                <th>Project Name</th>
+                                <th>Guru Name</th>
+                                <th>GURU CNIC</th>
+                                <th>GURU Contact Number</th>
+
+                                <th>Trainee Code</th>
+                                <th>Trainee Name</th>
+                                <th>Father Name</th>
+                                <th>Trainee CNIC</th>
+                                <th>Trainee Contact Number</th>
+                                <th>Report Id</th>
+                                <th>Amount</th>
+                                <th>Token Number</th>
+                                <th>Transaction Number</th>
+                                <th>Comments</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
+                              <ng-container *ngFor="let c of r.gurnDetails">
+                                <tr *ngIf="c.Comments != 'Stipend Withheld till Trainee Verification'">
+                                  <td>{{c.ProjectName}}</td>
+                                  <td>{{c.GURUName}}</td>
+                                  <td>{{c.GURUCNIC}}</td>
+                                  <td>{{c.GURUContactNumber}}</td>
+
+                                  <td>{{c.TraineeCode}}</td>
+                                  <td>{{c.TraineeName}}</td>
+                                  <td>{{c.FatherName}}</td>
+                                  <td class="number-align-center">{{c.TraineeCNIC}}</td>
+                                  <td class="number-align-center">{{c.ContactNumber1}}</td>
+                                  <td class="number-align-center">{{c.ReportId}}</td>
+                                  <td class="decimal-align-right">{{c.Amount | number: environment.Decimal}}</td>
+                                  <td class="number-align-center">{{c.TokenNumber}}</td>
+                                  <td class="number-align-center">{{c.TransactionNumber}}</td>
+                                  <td>{{c.Comments}}</td>
+                                  <td class="number-align-center">{{c.IsPaid?"Redeemed":"Pending"}}</td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                    <!--Nested Grid ends here-->
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+
     <mat-tab label="Transportation Recommendation Note" *ngIf="tprn.length>0">
       <mat-card>
         <mat-card-content>
@@ -273,7 +373,6 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-
                   <th>Process Name</th>
                   <th>TSP Name</th>
                   <th>Month</th>
@@ -398,11 +497,14 @@
                               <td class="number-align-center">{{c.NonFunctionalVisit1}}</td>
                               <td class="number-align-center">{{c.NonFunctionalVisit2}}</td>
                               <td class="number-align-center">{{c.NonFunctionalVisit3}}</td>
-                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit1Date != null">{{c.NonFunctionalVisit1Date | date:'dd/MM/yyyy'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit1Date != null">
+                                {{c.NonFunctionalVisit1Date | date:'dd/MM/yyyy'}}</td>
                               <td class="number-align-center" *ngIf="c.NonFunctionalVisit1Date == null">{{'N/A'}}</td>
-                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit2Date != null">{{c.NonFunctionalVisit2Date | date:'dd/MM/yyyy'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit2Date != null">
+                                {{c.NonFunctionalVisit2Date | date:'dd/MM/yyyy'}}</td>
                               <td class="number-align-center" *ngIf="c.NonFunctionalVisit2Date == null">{{'N/A'}}</td>
-                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit3Date != null">{{c.NonFunctionalVisit3Date | date:'dd/MM/yyyy'}}</td>
+                              <td class="number-align-center" *ngIf="c.NonFunctionalVisit3Date != null">
+                                {{c.NonFunctionalVisit3Date | date:'dd/MM/yyyy'}}</td>
                               <td class="number-align-center" *ngIf="c.NonFunctionalVisit3Date == null">{{'N/A'}}</td>
                               <td class="number-align-center">{{c.EmploymentCommitmentPercentage}}</td>
                               <td class="number-align-center">{{c.CompletedTrainees}}</td>
@@ -433,11 +535,11 @@
       </mat-card>
     </mat-tab>
     <mat-tab label="Purchase Order" *ngIf="PO.length>0">
-      <div class="table-responsive"  >
+      <div class="table-responsive">
         <table class="table table-bordered">
           <thead>
             <tr>
-              
+
               <th>Doc Entry</th>
               <th>Doc Num</th>
               <th>Doc Type</th>
@@ -460,7 +562,7 @@
           <tbody>
             <ng-container *ngFor="let r of PO">
               <tr>
-                
+
                 <td class="number-align-center">{{r.DocEntry}}</td>
                 <td class="number-align-center">{{r.DocNum}}</td>
                 <td>{{r.DocType}}</td>
@@ -554,11 +656,11 @@
       </div>
     </mat-tab>
     <mat-tab label="Invoice" *ngIf="Inv.length>0">
-      <div class="table-responsive" >
+      <div class="table-responsive">
         <table class="table table-bordered">
           <thead>
             <tr>
-             
+
               <th>TSP</th>
               <th>Invoice Month</th>
               <th>Doc Num</th>
@@ -580,7 +682,7 @@
           <tbody>
             <ng-container *ngFor="let r of Inv">
               <tr>
-               
+
                 <td>{{r.TSPName}}</td>
                 <td class="number-align-center">{{r.U_Month | date:environment.MonthFormat}}</td>
                 <td class="number-align-center">{{r.DocNum}}</td>
@@ -668,10 +770,10 @@
                           <td>{{l.s[0].t[0].cls[0].pc[0].PCategoryName}}</td>
                           <td>{{l.TaxCode}}</td>
                           <td class="number-align-center">{{l.WTaxLiable}}</td>
-                          <td class="number-align-center">{{l.StartDate  | date:environment.DateFormat}}</td>
-                          <td class="number-align-center">{{l.EndDate  | date:environment.DateFormat}}</td>
-                          <td class="number-align-center">{{l.ActualStartDate  | date:environment.DateFormat}}</td>
-                          <td class="number-align-center">{{l.ActualEndDate  | date:environment.DateFormat}}</td>
+                          <td class="number-align-center">{{l.StartDate | date:environment.DateFormat}}</td>
+                          <td class="number-align-center">{{l.EndDate | date:environment.DateFormat}}</td>
+                          <td class="number-align-center">{{l.ActualStartDate | date:environment.DateFormat}}</td>
+                          <td class="number-align-center">{{l.ActualEndDate | date:environment.DateFormat}}</td>
                           <td class="number-align-center">{{l.Batch}}</td>
                           <td class="number-align-center">{{l.BatchDuration}}</td>
                           <td class="number-align-center">{{l.InvoiceNumber}}</td>
@@ -687,9 +789,11 @@
                           <td class="decimal-align-right">{{l.CnicDeductionAmount | number: environment.Decimal}}</td>
                           <td class="number-align-center">{{l.DeductionTraineeDroput}}</td>
                           <td>{{l.DropOutDeductionType}}</td>
-                          <td class="decimal-align-right">{{l.DropOutDeductionAmount | number: environment.Decimal}}</td>
+                          <td class="decimal-align-right">{{l.DropOutDeductionAmount | number: environment.Decimal}}
+                          </td>
                           <td class="number-align-center">{{l.DeductionTraineeAttendance}}</td>
-                          <td class="decimal-align-right">{{l.AttendanceDeductionAmount | number: environment.Decimal}}</td>
+                          <td class="decimal-align-right">{{l.AttendanceDeductionAmount | number: environment.Decimal}}
+                          </td>
                           <td class="number-align-center">{{l.MiscDeductionNo}}</td>
                           <td>{{l.MiscDeductionType}}</td>
                           <td class="decimal-align-right">{{l.MiscDeductionAmount | number: environment.Decimal}}</td>

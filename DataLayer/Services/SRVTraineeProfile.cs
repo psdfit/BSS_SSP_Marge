@@ -196,6 +196,9 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TraineeDisabilityID", traineeProfile.TraineeDisabilityID));
                 param.Add(new SqlParameter("@ReferralSourceID", traineeProfile.ReferralSourceID));
                 param.Add(new SqlParameter("@TraineeEmail", traineeProfile.TraineeEmail));
+                param.Add(new SqlParameter("@IBANNumber", traineeProfile.IBANNumber));
+                param.Add(new SqlParameter("@BankName", traineeProfile.BankName));
+                param.Add(new SqlParameter("@Accounttitle", traineeProfile.Accounttitle));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
 
 
@@ -591,11 +594,14 @@ namespace DataLayer.Services
 
                 // DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "[dbo].[V_CheckDualEmail]", param.ToArray()).Tables[0];
                 DataSet dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, "SELECT DBO.CheckDualEmail('" + traineeEmail + "') as Count");
-                if (dt.Tables[0].Rows.Count > 0)
+                if (dt.Tables[0].Rows.Count > 0 && Convert.ToInt32(dt.Tables[0].Rows[0]["Count"]) > 0)
                 {
-                    int count = Convert.ToInt32(dt.Tables[0].Rows[0].Field<string>("Count").ToString());
-                    isExist = count > 0 ? true : false;
+                    isExist = true;
                     errMsg = "(Email) is already exist in BSS";
+                }
+                else
+                {
+                    isExist = false;
                 }
             }
             catch (Exception ex)
@@ -1467,7 +1473,18 @@ namespace DataLayer.Services
             {
                 TraineeProfile.TraineeCrIsRejected = row.Field<bool>("TraineeCrIsRejected");
             }
-
+            if (row.Table.Columns.Contains("Accounttitle"))
+            {
+                TraineeProfile.Accounttitle = row.Field<string>("Accounttitle");
+            }
+            if (row.Table.Columns.Contains("BankName"))
+            {
+                TraineeProfile.BankName = row.Field<string>("BankName");
+            }
+            if (row.Table.Columns.Contains("IBANNumber"))
+            {
+                TraineeProfile.IBANNumber = row.Field<string>("IBANNumber");
+            }
             return TraineeProfile;
         }
 

@@ -23,7 +23,7 @@ import { DialogueService } from '../../shared/dialogue.service';
 export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   environment = environment;
   tsrDatasource: any[];
-  displayedColumns = ['Sr', 'TraineeCode', 'TraineeName', 'FatherName', 'TraineeCNIC', 'GenderName', 'ContactNumber1', 'TraineeAge', 'ProvinceName', 'TraineeDistrictName', 'GuardianNextToKinName', 'TraineeStatusName', "ClassStatusName", "StartDate", "EndDate", "CertAuthName", "ReligionName", "Disability", "Dvv"];
+  displayedColumns = ['Sr', 'TraineeCode', 'TraineeName', 'FatherName', 'TraineeCNIC', 'GenderName', 'ContactNumber1', 'TraineeAge', 'ProvinceName', 'TraineeDistrictName', 'GuardianNextToKinName', 'TraineeStatusName', "ClassStatusName", "StartDate", "EndDate", "CertAuthName", "ReligionName", "Disability", "Accounttitle", "BankName", "IBANNumber", "Dvv"];
   schemeArray = [];
   tspDetailArray = [];
   classesArray: any[];
@@ -236,6 +236,9 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
           obj['Trainee Employment Status'] = item.TraineeEmploymentStatus;
           obj['Trainee Employment Verification Status'] = item.TraineeEmploymentVerificationStatus;
           obj['Trainee Email'] = item.TraineeEmail;
+          obj['AccountTitle'] = item.Accounttitle;
+          obj['BankName'] = item.BankName;
+          obj['IBANNumber'] = item.IBANNumber;
           return obj;
           
         });
@@ -316,5 +319,8 @@ export class TSRDataModel {
   'Certify Authority' = 'CertAuthName';
   'Religion' = 'ReligionName';
   'Disability': any = 'Disability';
+  'AccountTitle': any = 'Accounttitle';
+  'BankName': any = 'BankName';
+  'IBANNumber': any = 'IBANNumber';
   'Dvv': any = 'Dvv';
 }

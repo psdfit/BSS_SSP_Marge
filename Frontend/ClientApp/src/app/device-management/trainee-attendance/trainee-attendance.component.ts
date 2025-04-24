@@ -34,7 +34,10 @@ export class TraineeAttendanceComponent implements OnInit {
   @ViewChild("tabGroup") tabGroup: MatTabGroup;
 
   attendanceTableData: MatTableDataSource<any>;
-  @ViewChild("paginator") paginator: MatPaginator;
+
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+
+  // @ViewChild("paginator") paginator: MatPaginator;
   @ViewChild("sort") sort: MatSort;
 
   manualAttendanceTableData: MatTableDataSource<any>;
@@ -45,7 +48,7 @@ export class TraineeAttendanceComponent implements OnInit {
   @ViewChild("rPaginator") rPaginator: MatPaginator;
   @ViewChild("rSort") rSort: MatSort;
 
-  
+
 
   CountZeroToHun = [];
   TapIndex: any;
@@ -197,24 +200,24 @@ export class TraineeAttendanceComponent implements OnInit {
       this.DeviceRegistrationForm.reset
     }
   }
-  LoadMatTable(tableData: any[],reportName:string="") {
+  LoadMatTable(tableData: any[], reportName: string = "") {
     const excludeColumnArray: string[] = ['RightIndexFinger', 'RightMiddleFinger', 'LeftIndexFinger', 'LeftMiddleFinger'];
-    
-    
+
+
     if (tableData.length > 0) {
       this.TableColumns = ['Sr#', ...Object.keys(tableData[0]).filter(key => !key.includes('ID') && !excludeColumnArray.includes(key))];
-      
-      this.attendanceTableData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn == "Not Checked In" || x.CheckedOut == "Not Checked Out"));
+
+      this.attendanceTableData = new MatTableDataSource(tableData.filter(x => x.CheckedIn == "Not Checked In" || x.CheckedOut == "Not Checked Out"));
       this.attendanceTableData.paginator = this.paginator;
       this.attendanceTableData.sort = this.sort;
 
-      this.reportTablesData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn == "Not Checked In" && x.CheckedOut == "Not Checked Out"));
+      this.manualAttendanceTableData = new MatTableDataSource(tableData.filter(x => x.CheckedIn != "Not Checked In" && x.CheckedOut != "Not Checked Out"));
+      this.manualAttendanceTableData.paginator = this.maPaginator;
+      this.manualAttendanceTableData.sort = this.maSort;
+
+      this.reportTablesData = new MatTableDataSource(tableData.filter(x => x.CheckedIn == "Not Checked In" && x.CheckedOut == "Not Checked Out"));
       this.reportTablesData.paginator = this.rPaginator;
       this.reportTablesData.sort = this.rSort;
-      
-      this.manualAttendanceTableData = new MatTableDataSource(tableData.filter(x=> x.CheckedIn != "Not Checked In" && x.CheckedOut != "Not Checked Out"));
-      this.reportTablesData.paginator = this.maPaginator;
-      this.reportTablesData.sort = this.maSort;
 
     }
   }

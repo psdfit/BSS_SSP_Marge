@@ -9,6 +9,9 @@ import { TraineeStatusReportComponent } from './trainee-status-report/trainee-st
 import { PrnReportComponent } from './prn-report/prn-report.component';
 import { ClassStatusUpdateComponent } from './class-status-update/class-status-update/class-status-update.component';
 import { GuruRportsComponent } from './gsr/gsr.component';
+import { TraineeEnrollmentReportDVVComponent } from './trainee-enrollment-report-dvv/trainee-enrollment-report-dvv.component';
+import { TraineeAttendanceReportDVVComponent } from './trainee-attendance-report-dvv/trainee-attendance-report-dvv.component';
+import { TraineeAttendanceClassWiseComponent } from './trainee-attendance-report-dvv-classwise/trainee-attendance-report-dvv-classwise.component';
 
 const routes: Routes = [
   {
@@ -90,7 +93,40 @@ const routes: Routes = [
       , inMenu: true
       , title: 'Guru Status Report'
     }
-  }
+  },
+  {
+    // path: 'administration', component: AppLayoutComponent, children: [{
+    path: 'ter'
+    , component: TraineeEnrollmentReportDVVComponent
+    , canActivate: [AuthGuardService]
+    , data: {
+      icon: 'verified_user'
+      , inMenu: true
+      , title: 'Trainee Enrollment Report DVV'
+    }
+  },
+  {
+    // path: 'administration', component: AppLayoutComponent, children: [{
+    path: 'tar'
+    , component: TraineeAttendanceReportDVVComponent
+    , canActivate: [AuthGuardService]
+    , data: {
+      icon: 'verified_user'
+      , inMenu: true
+      , title: 'Trainee Attendance Report DVV'
+    }
+  },
+  {
+    // path: 'administration', component: AppLayoutComponent, children: [{
+    path: 'tarcw'
+    , component: TraineeAttendanceClassWiseComponent
+    , canActivate: [AuthGuardService]
+    , data: {
+      icon: 'verified_user'
+      , inMenu: true
+      , title: 'Trainee Attendance Report Classwise DVV'
+    }
+  },
 
 ];
 @NgModule({

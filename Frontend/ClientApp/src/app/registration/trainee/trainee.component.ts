@@ -108,6 +108,7 @@ export class TraineeComponent implements OnInit {
   SearchPro = new FormControl('');
   IsSkillsScholrship: boolean = false;
   IsSkillsScholrshipProgram: boolean = false;
+  IsInternationalPlacement: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("ngForm") ngFrom: NgForm;
@@ -241,7 +242,9 @@ export class TraineeComponent implements OnInit {
       TraineeAge: ['', [Validators.required]],
       ReligionID: ['', [Validators.required]],
       VoucherHolder: new FormControl(false),
-      IsReferredByGuru: ['', [Validators.required]],
+      // updated by sami 2025-01-03      
+      // IsReferredByGuru: ['', [Validators.required]],
+       IsReferredByGuru: [''],
       ReferralSourceID: ['', [Validators.required]],
       TraineeIndividualIncomeID: ['', [Validators.required]],
       HouseHoldIncomeID: ['', [Validators.required]],
@@ -274,7 +277,11 @@ export class TraineeComponent implements OnInit {
       ResultStatusID: [3],
       IsMigrated: [false],
       ResultStatusChangeDate: [''],
-      ResultStatusChangeReason: ['']
+      ResultStatusChangeReason: [''],
+      /// Added By Rao ALi haider for International Placement
+      Accounttitle: ['', [Validators.required]],
+      BankName: ['', [Validators.required]],
+      IBANNumber: ['', [Validators.required]]
     }, { updateOn: "change" });
     this.VoucherHolder.valueChanges.subscribe(checked => {
       if (checked) {
@@ -312,6 +319,7 @@ export class TraineeComponent implements OnInit {
 
  
   setFormIsDisabled(isDisabled: boolean, errMsg = '') {
+    debugger;
     this.saveBtnTitle = "Save";
     //this.isFormDisabled = state == 'enabled' ? false : state == 'disabled' ? true : true;
     this.isFormDisabled = isDisabled;
@@ -328,11 +336,28 @@ export class TraineeComponent implements OnInit {
     this.save();
   }
   save() {
+    
+    // if (!this.traineeProfileForm.valid) {
+    //   //debugger;
+      
+    //   this.http.ShowError("Something missing or invalid.", "Error");
+    //   console.log(this.traineeProfileForm)
+    //   return;
+    // }
+
     if (!this.traineeProfileForm.valid) {
       //debugger;
-      this.http.ShowError("Something missing or invalid.", "Error");
+      const invalidControls = [];
+      for (const name in this.traineeProfileForm.controls) {
+        if (this.traineeProfileForm.controls[name].invalid) {
+          invalidControls.push(name);
+        }
+      }
+      this.http.ShowError("Something missing or invalid in: " + invalidControls.join(', '), "Error");
+      console.log(this.traineeProfileForm);
       return;
     }
+
     // this.working = true;
     //this.markAsExtraTrainee();
     if (this.TraineeID.value == 0) {
@@ -455,7 +480,7 @@ export class TraineeComponent implements OnInit {
   onEditTrainee(row) {
     //this.registrationError = '';
 
-    if(this.SchemeCode.toUpperCase()=="STV"){
+    if (this.IsSkillsScholrship){
       this.getTraineeGuru(row.TraineeID)
     }
     
@@ -468,7 +493,7 @@ export class TraineeComponent implements OnInit {
       (response: any[]) => {
         this.traineeProfileForm.patchValue(row);
         
-        if(this.SchemeCode.toUpperCase()=="STV" && this.traineeGuruDetailList.length>0){
+        if (this.IsSkillsScholrship && this.traineeGuruDetailList.length>0){
          const sTraineeGuru= this.traineeGuruDetailList.find(tg=>tg.TraineeID==row.TraineeID)
          if(sTraineeGuru){
           this.IsReferredByGuru.setValue(true)
@@ -488,6 +513,7 @@ export class TraineeComponent implements OnInit {
         }
 
         this.tabGroup.selectedIndex = TabGroup.RegistrationForm;
+        debugger;
         if (row.IsSubmitted) {
           this.setFormIsDisabled(true, 'This profile is Submitted so that not available for edit.');
         } else {
@@ -612,6 +638,22 @@ export class TraineeComponent implements OnInit {
     });
   }
 
+  RemoveInternatonplacemntFields() { ///Hide the remove the validation of bank fields
+    if (!this.IsInternationalPlacement) {
+      this.BankName.setValue('');
+      this.BankName.clearValidators();
+      this.BankName.disable();
+
+      this.IBANNumber.setValue('');
+      this.IBANNumber.clearValidators();
+      this.IBANNumber.disable();
+
+
+      this.Accounttitle.setValue('');
+      this.Accounttitle.clearValidators();
+      this.Accounttitle.disable();
+    }
+  }
 
   getData() {
     this.http.getJSON(`api/TraineeProfile/GetData?OID=${this.http.OID.value}`).subscribe(
@@ -653,7 +695,7 @@ export class TraineeComponent implements OnInit {
         let traineeProfileList = response.ListTraineeProfile;
         this.traineeProfileArray = JSON.parse(JSON.stringify(response.ListTraineeProfile));
         let checkRegistrationCriteria = response.CheckRegistrationCriteria;
-
+debugger;
         if (checkRegistrationCriteria.length > 0) {
           //this.registrationError = checkRegistrationCriteria[0].ErrorMessage;
           this.setFormIsDisabled(true, checkRegistrationCriteria[0].ErrorMessage);
@@ -695,7 +737,7 @@ export class TraineeComponent implements OnInit {
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
         }
-        if (scheme.SchemeCode == 'STV') {
+        if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV') {
           this.EDFScheme = true;
         }
         else if (scheme.FundingSourceID !== 12) //EDF Scheme
@@ -705,7 +747,13 @@ export class TraineeComponent implements OnInit {
         else {
           this.EDFScheme = true;
         }
-
+        if (scheme.FundingCategoryID !== 20) {
+          this.IsInternationalPlacement = false;
+        }
+        else {
+          this.IsInternationalPlacement = true;
+          this.RemoveInternatonplacemntFields();
+        }
         if (scheme.ProgramTypeID !== 7) {  //Skills Scolarship
           this.IsSkillsScholrship = false;
         }
@@ -1201,6 +1249,11 @@ export class TraineeComponent implements OnInit {
   get DistrictVerified() { return this.traineeProfileForm.get("DistrictVerified"); }
   get TraineeVerified() { return this.traineeProfileForm.get("TraineeVerified"); }
   get TraineeEmail() { return this.traineeProfileForm.get("TraineeEmail"); }
+  get Accounttitle() { return this.traineeProfileForm.get("Accounttitle"); }
+  get BankName() { return this.traineeProfileForm.get("BankName"); }
+  get IBANNumber() { return this.traineeProfileForm.get("IBANNumber"); }
+
+  
   //get CNICImg() { return this.traineeProfileForm.get("CNICImg"); }
   ////----Getter----E-----////
 
