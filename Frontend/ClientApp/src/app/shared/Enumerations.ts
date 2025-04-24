@@ -62,7 +62,6 @@ export enum EnumApprovalProcess {
   , IPPC = 'IPPC'
   , IPMC = 'IPMC'
   , IPOT = 'IPOT'
-  , IPVS = 'IPVS'
 
 }
 export enum EnumCertificationAuthority {

@@ -210,8 +210,8 @@ export class VisaStampingComponent implements OnInit {
       newRow.ClassEndDate = this.formatDate(newRow.ClassEndDate);
       newRow.TraineeDOB = this.formatDate(newRow.TraineeDOB);
       // Handle "Documents Uploaded" column (0/1 to No/Yes)
-      if ('DocumentsUploaded' in newRow) {
-        newRow['DocumentsUploaded'] = newRow['Documents Uploaded'] === 1 ? 'Yes' : 'No';
+      if ('IsIPVSDocUploaded' in newRow) {
+        newRow['DocumentsUploaded'] = newRow['IsIPVSDocUploaded'] === 1 ? 'Yes' : 'No';
       }
       // Remove unwanted columns
       excludeColumnArray.forEach(col => delete newRow[col]);
