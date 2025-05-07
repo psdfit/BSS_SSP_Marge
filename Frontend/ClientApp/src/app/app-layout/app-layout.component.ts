@@ -94,7 +94,7 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
         }
         
         this.mainMenuItems = this.common.getMenuItems();
-        console.log(this.mainMenuItems);
+        // console.log(this.mainMenuItems);
         this.userOrgs = this.common.getUserOrgs();
       }
       else

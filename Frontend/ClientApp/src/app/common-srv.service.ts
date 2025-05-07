@@ -437,7 +437,7 @@ export class CommonSrvService {
   getMenuItems(): MenuItem[] {
     // debugger;
     this.userrights = JSON.parse(sessionStorage.getItem(environment.RightsToken));
-    console.log(this.userrights)
+    // console.log(this.userrights)
     this.currentUser = this.getUserDetails();
     // console.log(this.userrights);
     debugger;
@@ -530,8 +530,9 @@ export class CommonSrvService {
 
   ExcelExportWithForm(data, ReportName) {
 
-
+debugger;
     const Data = data[0].map(obj => {
+      debugger;
       const newObj = {};
       for (const key in obj) {
         if (!key.toLowerCase().includes('id')) {

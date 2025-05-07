@@ -178,7 +178,6 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         this.SearchFilters = new FormArray([]);
         // console.log(data);
         for (const iterator of data) {
-          console.table(EnumReportsFilters[iterator.FiltersName]);
           const url = `api/Reports/GetFilterData?FilterName=${EnumReportsFilters[iterator.FiltersName]}&UserID=${this.currentUser.UserID}`;
           this.ComSrv.getJSON(url).subscribe(
             (d: any) => {
@@ -231,7 +230,6 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
     const ctrlValue = this.startDate.value;
     ctrlValue.month(normalizedMonth.month());
     this.startDate.setValue(ctrlValue);
-    console.log(ctrlValue);
 
     datepicker.close();
   }
@@ -410,6 +408,14 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         return `projectTypeID=${this.filters[itemIndex].ID}`;
       else
         return `projectTypeID=${0}`;
+    }
+    else if (Name === 'Funding Category') {
+      debugger;
+      itemIndex = this.filters.findIndex((item: { FilterName: string; }) => item.FilterName === 'Funding Category');
+      if (itemIndex > -1)
+        return `fundingCategoryID=${this.filters[itemIndex].ID}`;
+      else
+        return `fundingCategoryID=${0}`;
     }
   }
 
@@ -728,8 +734,8 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         break;
 
       case EnumReports['Bulk Trainees Status Report']:
-        var FundingSource = this.chosenFilter('Project Type').split("=")[1];
-        FundingSource = FundingSource == 'undefined' ? "0" : FundingSource
+        var FundingCategory = this.chosenFilter('Funding Category').split("=")[1];
+        FundingCategory = FundingCategory == 'undefined' ? "0" : FundingCategory
 
         var StartMonth = moment(this.startDate.value).format('YYYY-MM');
         var EndMonth = moment(this.endDate.value).format('YYYY-MM');
@@ -738,7 +744,7 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         this.ExportReportName = 'TSR'
 
         this.paramObject = {
-          FundingSource: FundingSource,
+          FundingCategory: FundingCategory,
           StartMonth: StartMonth != 'Invalid date' ? StartMonth : '',
           EndMonth: StartMonth != 'Invalid date' ? EndMonth : '',
         }
@@ -813,8 +819,9 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
       this.error = error;
     }
   }
-
   ExportToExcel(data: any, FileName: any) {
+    debugger;
+    // this.ComSrv.ExcelExportWithForm({data}, FileName);
     const DateTime = new Date().toLocaleString(undefined, {
       year: 'numeric',
       month: '2-digit',

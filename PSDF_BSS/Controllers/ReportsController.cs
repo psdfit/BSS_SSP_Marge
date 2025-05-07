@@ -235,6 +235,15 @@ namespace PSDF_BSS.Controllers
                         Name = x.UserName,
                     });
                 }
+                if (FilterName == "FundingCategory")
+                {
+                    FilterName = "Funding Category";
+                    obj = new SRVFundingCategory().FetchFundingCategory(false).Select(x => new
+                    {
+                        ID = x.FundingCategoryID,
+                        Name = x.FundingCategoryName,
+                    });
+                }
                 if (FilterName == "Funding")
                 {
                     FilterName = "Project Type";
@@ -244,7 +253,8 @@ namespace PSDF_BSS.Controllers
                         Name = x.FundingSourceName,
                     });
                 }
-                if(FilterName == "EmploymentStatus")
+
+                if (FilterName == "EmploymentStatus")
                 {
                     FilterName = "Employment Status";
                     List<FilterModel> es = new List<FilterModel>
