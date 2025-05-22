@@ -368,4 +368,5 @@ export enum EnumReportsFilters {
   , 'Funding' = 'Funding'
   , 'Employment Status' = 'EmploymentStatus'
   , 'Program Category' = 'ProgramCategory'
+  , 'FundingCategory' = 'FundingCategory'
 }
