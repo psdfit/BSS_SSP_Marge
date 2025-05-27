@@ -87,7 +87,7 @@
                                   required>
                         <mat-option *ngFor="let item of trainingLocation" [value]="item.TrainingLocationID"
                                     [disabled]="isOptionDisabled(item)">
-                          {{ item.TrainingLocationName }}
+                          {{ item.TrainingLocationName}}-{{item.DistrictName }}
                         </mat-option>
                       </mat-select>
                       <mat-error *ngFor="let error of AssociationForm.get('TrainingLocation').errors | keyvalue">
@@ -122,7 +122,7 @@
                       </mat-error>
                     </mat-form-field>
                   </div>
-                  <div class="col-sm-8">
+                  <div class="col-sm-8" *ngIf="TrainerProfile.length==0">
                     <a routerLink="/profile-manage/base-data" class="mt-3" matTooltip=" If no trainer is found in the Trainer drop-down, add a new trainer from BaseData Trainer Tab " color="primary" mat-raised-button>Add Trainer</a>
                   </div>
                 </div>
@@ -130,12 +130,13 @@
                   <fieldset class="border" formArrayName="associationDetail">
                     <legend>{{associationDetail.value[i].CategoryTitle}}</legend>
                     <form *ngIf="associationDetail.length > 0" [formGroupName]="i">
+                      
                       <div class="row">
                         <div class="col-sm-4">
                           <mat-label>Attachment for Evidence</mat-label>
-                          <file-upload formControlName="Evidence" accept="application/pdf,image/jpeg,image/png" required
-                                       maxSize="1024" [nopreview]="true" matInput></file-upload>
+                          <file-upload formControlName="Evidence" accept="application/pdf,image/jpeg,image/png" required maxSize="1024" [nopreview]="true" matInput></file-upload>
                         </div>
+                       
                         <div class="col-sm-8">
                           <mat-form-field>
                             <mat-label>Remarks</mat-label>
@@ -143,7 +144,21 @@
                           </mat-form-field>
                         </div>
                       </div>
+
                       <ng-container *ngFor="let item of CriteriaSubCategory">
+                        <!-- <div class="row">
+                          <div class="col-sm-4">
+                            <mat-label>Attachment for Evidence</mat-label>
+                            <file-upload formControlName="Evidence" accept="application/pdf,application/zip,image/jpeg,image/png" required maxSize="12288" [nopreview]="true" matInput></file-upload>
+                          </div>
+                          <div class="col-sm-8">
+                            <mat-form-field>
+                              <mat-label>Remarks</mat-label>
+                              <input formControlName="Remarks" placeholder="Enter Remarks" matInput required />
+                            </mat-form-field>
+                          </div>
+                        </div> -->
+                        
                         <div class="row border-bottom"
                              *ngIf="item.CriteriaMainCategoryID == CriteriaMainCategory[i].CriteriaMainCategoryID">
                           <div class="col-sm-4">
@@ -223,24 +238,37 @@
                 <ng-container *ngFor="let column of AssociationTableColumns" [matColumnDef]="column">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
+                    <ng-container *ngIf="column == 'Action'">
+                      <!-- <ng-container *ngIf="(row['PaymentStatus'] != 'PAID' && row['EvaluationStatus'] == 'Pending') || 
+                                           (row['PaymentStatus'] == 'PAID' && (row['EvaluationStatus'] == 'Rejected' || row['EvaluationStatus'] == 'Pending'))">
+                        <a (click)="Edit(row)" mat-button color="primary">Edit</a>
+                      </ng-container> -->
+                      <ng-container *ngIf="(row['PaymentStatus'] != 'PAID' && row['EvaluationStatus'] == 'Pending') || 
+                                           (row['PaymentStatus'] == 'PAID' && (row['EvaluationStatus'] == 'Pending'))">
+                        <a (click)="Edit(row)" mat-button color="primary">Edit</a>
+                      </ng-container>
+                    
+                      <!-- <ng-container *ngIf="(row['PaymentStatus'] == 'PAID' && row['EvaluationStatus'] == 'Accepted') ||  (row['EvaluationStatus'] == 'In-Progress')">
+                        <a disabled mat-button color="primary">Edit</a>
+                      </ng-container> -->
+                      <ng-container *ngIf="row['EvaluationStatus']!='Pending'">
+                        <a disabled mat-button color="primary">Edit</a>
+                      </ng-container>
+                    </ng-container>
+                    
                     <ng-container *ngIf="column !='TradeLotTitle' && column !='EvaluationStatus'"> &nbsp; {{ row[column] }}</ng-container>
 
-                    <ng-container *ngIf="column == 'TradeLotTitle' &&  ((row['PaymentStatus'] !='PAID' &&  row['EvaluationStatus'] =='Pending') ||  (row['PaymentStatus'] =='PAID' &&  row['EvaluationStatus'] =='Rejected') ||  (row['PaymentStatus'] =='PAID' &&  row['EvaluationStatus'] =='Pending'))">
-                      &nbsp;
-                      <span (click)="Edit(row)" style="color: #005b9e;cursor: pointer;">
-                        <strong>{{ row[column] }}</strong>
-                      </span>
-                    </ng-container>
+                   
 
-                    <ng-container *ngIf="column =='TradeLotTitle' && (row['PaymentStatus'] =='PAID'  &&  row['EvaluationStatus'] =='Accepted') ">
-                      &nbsp;
-                      <span>
-                        <strong>{{ row[column] }}</strong>
-                      </span>
+                    <ng-container *ngIf="column =='TradeLotTitle'">
+                      {{ row[column] }}
                     </ng-container>
 
                     <ng-container *ngIf="column =='EvaluationStatus'">
-                      <span *ngIf="row[column]=='On-Hold'" class="label label-default">{{row[column]}}</span>
+                      <span *ngIf="row[column]=='Submitted'" class="label label-default">{{row[column]}}</span>
+                      <span *ngIf="row[column]=='Send-Back'" class="label label-default">{{row[column]}}</span>
+                      <span *ngIf="row[column]=='In-Progress'" class="label label-default">{{row[column]}}</span>
+                      <span *ngIf="row[column]=='On-Hold'" class="label label-primary">{{row[column]}}</span>
                       <span *ngIf="row[column]=='Accepted'" class="label label-success">{{row[column]}}</span>
                       <span *ngIf="row[column]=='Pending'" class="label label-warning">{{row[column]}}</span>
                       <span *ngIf="row[column]=='Rejected'" class="label label-danger">{{row[column]}}</span>

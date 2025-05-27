@@ -122,7 +122,7 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
     this.AnnualPlanInfoForm = this.fb.group({
       ProgramID: [''],
       FinancialYearID: ['', Validators.required],
-      PlaningTypeID: ['', Validators.required],
+      PlaningTypeID: [''],
       Program: ['', Validators.required],
       ProgramCode: ['', Validators.required],
       Description: ['', Validators.required],
@@ -142,7 +142,7 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
       TentativeProcessSDate: ['', Validators.required],
       ClassStartDate: ['', Validators.required],
       PaymentStructureID: ['', Validators.required],
-      SelectionMethodID: ['', Validators.required],
+      SelectionMethodID: [''],
       ApprovalRecDetail: [''],
       ApprovalAttachment: [' '],
       SchemeDesignOn: ['', Validators.required],
@@ -176,31 +176,31 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
     this.checkDuplicate('Program', 'Program name is already in use. Please choose another name.', 'Program');
     this.checkDuplicate('ProgramCode', 'Program Code is already in use. Please choose another code.', 'ProgramCode');
   
-    this.AnnualPlanInfoForm.get('PlaningTypeID').valueChanges.subscribe(d => {
-      if (d === 1) {
-        this.ProgramTypeData = this.GetDataObject.GetProgramType.filter(item => item.PTypeID === 10);
-        this.BusinessRuleType = this.GetDataObject.BusinessRuleType.filter(item => item.ID === 1);
-        this.SelectionMethods = this.GetDataObject.SelectionMethods.filter(item => item.ID === 3);
-        this.FundingSourceData = this.GetDataObject.FundingSource.filter(item => item.FundingSourceID !== 8 && item.FundingSourceID !== 9);
-        this.AnnualPlanInfoForm.patchValue({
-          ProgramTypeID: 10,
-          BusinessRuleType: 1,
-          SelectionMethodID: 3,
-        });
-      } else {
-        this.ProgramTypeData = this.GetDataObject.GetProgramType.filter(item => item.PTypeID !== 10 && item.PTypeID !== 7);
-        this.BusinessRuleType = this.GetDataObject.BusinessRuleType.filter(item => item.PlaningTypeID !== 3);
-        this.SelectionMethods = this.GetDataObject.SelectionMethods.filter(item => item.ID !== 3);
-        this.FundingSourceData = this.GetDataObject.FundingSource;
+    // this.AnnualPlanInfoForm.get('PlaningTypeID').valueChanges.subscribe(d => {
+    //   if (d === 1) {
+    //     this.ProgramTypeData = this.GetDataObject.GetProgramType.filter(item => item.PTypeID === 10);
+    //     this.BusinessRuleType = this.GetDataObject.BusinessRuleType.filter(item => item.ID === 1);
+    //     this.SelectionMethods = this.GetDataObject.SelectionMethods.filter(item => item.ID === 3);
+    //     this.FundingSourceData = this.GetDataObject.FundingSource.filter(item => item.FundingSourceID !== 8 && item.FundingSourceID !== 9);
+    //     this.AnnualPlanInfoForm.patchValue({
+    //       ProgramTypeID: 10,
+    //       BusinessRuleType: 1,
+    //       SelectionMethodID: 3,
+    //     });
+    //   } else {
+    //     this.ProgramTypeData = this.GetDataObject.GetProgramType.filter(item => item.PTypeID !== 10 && item.PTypeID !== 7);
+    //     this.BusinessRuleType = this.GetDataObject.BusinessRuleType.filter(item => item.PlaningTypeID !== 3);
+    //     this.SelectionMethods = this.GetDataObject.SelectionMethods.filter(item => item.ID !== 3);
+    //     this.FundingSourceData = this.GetDataObject.FundingSource;
   
-        this.AnnualPlanInfoForm.patchValue({
-          ProgramTypeID: '',
-          BusinessRuleType: '',
-          SelectionMethodID: '',
-          FundingSourceID: '',
-        });
-      }
-    });
+    //     this.AnnualPlanInfoForm.patchValue({
+    //       ProgramTypeID: '',
+    //       BusinessRuleType: '',
+    //       SelectionMethodID: '',
+    //       FundingSourceID: '',
+    //     });
+    //   }
+    // });
   
     this.AnnualPlanInfoForm.get('FundingSourceID').valueChanges.subscribe(fId => {
       if (fId) {
@@ -331,7 +331,22 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
   }
   IsDisabled = false;
   SaveAnnualPlanInfo() {
+    debugger;
     console.log(this.AnnualPlanInfoForm)
+
+if(this.AnnualPlanInfoForm.get('BusinessRuleType').value=="FTI" && this.AnnualPlanInfoForm.get('ProgramTypeID').value==10){
+  this.AnnualPlanInfoForm.get('PlaningTypeID').setValue(1)
+  this.AnnualPlanInfoForm.get('SelectionMethodID').setValue(3)
+
+}else{
+  this.AnnualPlanInfoForm.get('PlaningTypeID').setValue(2)
+  this.AnnualPlanInfoForm.get('SelectionMethodID').setValue(2)
+}
+
+
+
+    debugger;
+
     if (this.AnnualPlanInfoForm.valid) {
       this.IsDisabled = true
       this.http.postJSON('api/ProgramDesign/SaveProgramDesign', this.AnnualPlanInfoForm.getRawValue()).subscribe(

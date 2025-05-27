@@ -12,6 +12,9 @@ using System.Text;
 using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Reflection;
+using DataLayer.Models.DVV;
+using System.Xml.Linq;
 
 namespace DataLayer.Services
 {
@@ -193,14 +196,36 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TraineeDisabilityID", traineeProfile.TraineeDisabilityID));
                 param.Add(new SqlParameter("@ReferralSourceID", traineeProfile.ReferralSourceID));
                 param.Add(new SqlParameter("@TraineeEmail", traineeProfile.TraineeEmail));
+                param.Add(new SqlParameter("@IBANNumber", traineeProfile.IBANNumber));
+                param.Add(new SqlParameter("@BankName", traineeProfile.BankName));
+                param.Add(new SqlParameter("@Accounttitle", traineeProfile.Accounttitle));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
+
+
+
             }
             catch (Exception ex)
             {
                 throw;
             }
 
-            return FetchTraineeProfileByClass(traineeProfile.ClassID);// new List<TraineeProfileModel>();
+
+            if (traineeProfile.IsReferredByGuru)
+            {
+                var trainees = FetchTraineeProfileByClass(traineeProfile.ClassID).FirstOrDefault(t => t.TraineeCNIC == traineeProfile.TraineeCNIC && t.TraineeName == traineeProfile.TraineeName);
+                SaveTraineeGuru(traineeProfile, trainees.TraineeID);
+            }
+            return FetchTraineeProfileByClass(traineeProfile.ClassID);
+        }
+
+        public void SaveTraineeGuru(TraineeProfileModel traineeData, int traineeID)
+        {
+
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@GuruProfileID", traineeData.GuruProfileID));
+            param.Add(new SqlParameter("@TraineeID", traineeID));
+            param.Add(new SqlParameter("@UserID", traineeData.CurUserID));
+            SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeGuruProfile", param.ToArray());
         }
 
         public List<TraineeProfileModel> FetchTraineeProfile(TraineeProfileModel model)
@@ -569,11 +594,14 @@ namespace DataLayer.Services
 
                 // DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "[dbo].[V_CheckDualEmail]", param.ToArray()).Tables[0];
                 DataSet dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, "SELECT DBO.CheckDualEmail('" + traineeEmail + "') as Count");
-                if (dt.Tables[0].Rows.Count > 0)
+                if (dt.Tables[0].Rows.Count > 0 && Convert.ToInt32(dt.Tables[0].Rows[0]["Count"]) > 0)
                 {
-                    int count = Convert.ToInt32(dt.Tables[0].Rows[0].Field<string>("Count").ToString());
-                    isExist = count > 0 ? true : false;
+                    isExist = true;
                     errMsg = "(Email) is already exist in BSS";
+                }
+                else
+                {
+                    isExist = false;
                 }
             }
             catch (Exception ex)
@@ -1119,7 +1147,7 @@ namespace DataLayer.Services
             { throw new Exception(e.Message); }
         }
 
-        public bool SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg)
+        public int SaveTraineeProfileDVV(TraineeProfileDVV model, out string errMsg)
         {
             errMsg = string.Empty;
             try
@@ -1130,7 +1158,7 @@ namespace DataLayer.Services
                 //}
                 if (!IsValidCNICFormat(model.TraineeCNIC, out errMsg))
                 {
-                    return false;
+                    return 0;
                 }
                 //Remove Mobile format by Ali Haider 01-07-22
                 //if (!IsValidMobileNoFormat(model.MobileNumber, out errMsg))
@@ -1140,7 +1168,7 @@ namespace DataLayer.Services
                 int age = CalculateAgeEligibility(model.DateOfBirth, model.ClassID, out errMsg);
                 if (!string.IsNullOrEmpty(errMsg))
                 {
-                    return false;
+                    return 0;
                 }
                 bool isEligible = isEligibleTrainee(new TraineeProfileModel()
                 {
@@ -1150,7 +1178,7 @@ namespace DataLayer.Services
                 }, out errMsg);
                 if (!isEligible)
                 {
-                    return false;
+                    return 0;
                 }
 
                 List<SqlParameter> param = new List<SqlParameter>();
@@ -1186,13 +1214,20 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TemporaryDistrict", model.TemporaryDistrict));
                 param.Add(new SqlParameter("@TemporaryTehsil", model.TemporaryTehsil));
                 param.Add(new SqlParameter("@TemporaryResidence", model.TemporaryResidence));
-                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeProfileDVV", param.ToArray());
-                return true;
+                DataSet dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeProfileDVV", param.ToArray());
+
+                if (dt != null && dt.Tables.Count > 0 && dt.Tables[0].Rows.Count > 0)
+                {
+                    int TraineeID = Convert.ToInt32(dt.Tables[0].Rows[0]["TraineeID"]);
+                    return TraineeID;
+                }
+
+                return 0;
             }
             catch (Exception ex)
             {
                 errMsg = ex.Message;
-                return false;
+                return 0;
             }
         }
 
@@ -1438,7 +1473,18 @@ namespace DataLayer.Services
             {
                 TraineeProfile.TraineeCrIsRejected = row.Field<bool>("TraineeCrIsRejected");
             }
-
+            if (row.Table.Columns.Contains("Accounttitle"))
+            {
+                TraineeProfile.Accounttitle = row.Field<string>("Accounttitle");
+            }
+            if (row.Table.Columns.Contains("BankName"))
+            {
+                TraineeProfile.BankName = row.Field<string>("BankName");
+            }
+            if (row.Table.Columns.Contains("IBANNumber"))
+            {
+                TraineeProfile.IBANNumber = row.Field<string>("IBANNumber");
+            }
             return TraineeProfile;
         }
 
@@ -1922,6 +1968,49 @@ namespace DataLayer.Services
 
             return TraineeProfile;
         }
+
+        public List<CheckRegistrationCriteriaModel> checkTSPTradeCriteria(int programid, int tradeid, int userid)
+
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[3];
+                param[0] = new SqlParameter("@ProgramID", programid);
+                param[1] = new SqlParameter("@TradeID", tradeid);
+                param[2] = new SqlParameter("@TSPID", userid);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SSPTradeTSPTargetcheck", param).Tables[0];
+                if (dt.Rows.Count > 0)
+                {
+                    return LoopinCheckRegistrationCriteria(dt);
+                }
+                else
+                    return new List<CheckRegistrationCriteriaModel>();
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        private List<CheckRegistrationCriteriaModel> LoopinCheckRegistrationCriteria(DataTable dt)
+        {
+            List<CheckRegistrationCriteriaModel> list = new List<CheckRegistrationCriteriaModel>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                list.Add(RowOfheckRegistrationCriteria(r));
+            }
+            return list;
+        }
+
+        private CheckRegistrationCriteriaModel RowOfheckRegistrationCriteria(DataRow r)
+        {
+            CheckRegistrationCriteriaModel model = new CheckRegistrationCriteriaModel();
+            model.ErrorMessage = r.Field<string>("ErrorMessage");
+            model.ErrorTypeID = r.Field<int>("ErrorTypeID");
+            model.ErrorTypeName = r.Field<string>("ErrorTypeName");
+            model.TSPCapacity = r.Field<int>("TSPCapacity");
+            model.TradeCapicity = r.Field<int>("TradeCapacity");
+            model.EnrolledTraineesTSP = r.Field<int>("RemainingCapacity");
+            return model;
+        }
         public List<TraineeProfileModel> SaveTraineeIntrestProfile(TraineeProfileModel traineeProfile)
         {
             string errMsg = string.Empty;
@@ -1960,5 +2049,102 @@ namespace DataLayer.Services
 
         }
 
+        public DataTable FetchReport(int UserID, string SpName)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@CreatedUserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
+            return dt;
+        }
+
+        public DataTable SaveTraineeBiometricData(BiometricTraineeDataModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+
+            param.Add(new SqlParameter("@TraineeID", model.TraineeID));
+            param.Add(new SqlParameter("@RightIndexFinger", model.RightIndexFinger));
+            param.Add(new SqlParameter("@RightMiddleFinger", model.RightMiddleFinger));
+            param.Add(new SqlParameter("@LeftIndexFinger", model.LeftIndexFinger));
+            param.Add(new SqlParameter("@LeftMiddleFinger", model.LeftMiddleFinger));
+            param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricData", param.ToArray()).Tables[0];
+            return dt;
+        }
+
+        public DataTable SaveBiometricAttendance(BiometricTraineeDataModel model)
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+        {
+            new SqlParameter("@TraineeID", model.TraineeID),
+            new SqlParameter("@FingerImpression", model.FingerImpression),
+            new SqlParameter("@CheckIn", model.AttendanceType == "CheckIn" ? 1 : 0),
+            new SqlParameter("@CheckOut", model.AttendanceType == "CheckOut" ? 1 : 0),
+            new SqlParameter("@TimeStamp", DateTime.Now),
+            new SqlParameter("@CurUserID", model.CurUserID)
+        };
+
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_TraineeBiometricAttendance", param.ToArray()).Tables[0];
+            return dt;
+        }
+        public void DeleteTraineeandAttandance(string cnic)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@CNIC", cnic));
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "DeleteTraineeandAttandance", param.ToArray());
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+
+        public int SavebiomatricTraineeProfileDVV(TraineeProfileDVV model, out string errMsg)
+        {
+            errMsg = string.Empty;
+            try
+            {
+
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@TraineeID", model.TraineeID));
+                param.Add(new SqlParameter("@BiometricData1", model.BiometricData1));
+                param.Add(new SqlParameter("@BiometricData2", model.BiometricData2));
+                param.Add(new SqlParameter("@BiometricData3", model.BiometricData3));
+                param.Add(new SqlParameter("@BiometricData4", model.BiometricData4));
+                // Add an output parameter to capture the return value from the stored procedure
+                SqlParameter returnParameter = new SqlParameter
+                {
+                    ParameterName = "@ReturnVal",
+                    Direction = ParameterDirection.ReturnValue
+                };
+                param.Add(returnParameter);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_BioMatricTraineeProfileDVV", param.ToArray());
+
+                // Get the return value from the stored procedure
+                int returnValue = (int)returnParameter.Value;
+
+                // Handle success or failure based on the return value
+                if (returnValue == 0)
+                {
+                    return 0; // Success
+                }
+                else if (returnValue == -1)
+                {
+                    errMsg = "TraineeID not found.";
+                    return -1; // Failure due to invalid TraineeID
+                }
+                else
+                {
+                    errMsg = $"An error occurred. Error Code: {returnValue}";
+                    return returnValue; // Other error codes
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any unexpected exceptions
+                errMsg = ex.Message;
+                return -99; // Indicate unexpected error
+            }
+        }
     }
 }

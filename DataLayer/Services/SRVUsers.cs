@@ -279,10 +279,9 @@ namespace DataLayer.Services
             try
             {
                 SqlParameter[] param = new SqlParameter[3];
-                var decPass = Common.DESDecrypt("wQHKp9fdQsBOaNaQd6Ydvg==");
+                var decPass = Common.DESDecrypt("A92dyzD+8DrlELlMy3CfgA==");
                 //var decPass1 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 //var decPass2 = Common.DESDecrypt("ruPQL8Dq2iY=");
-                param[0] = new SqlParameter("@UserName", UserName);
                 param[0] = new SqlParameter("@UserName", UserName);
                 param[1] = new SqlParameter("@UserPassword", Common.DESEncrypt(UserPassword));
                 // Define the output parameter
@@ -304,7 +303,7 @@ namespace DataLayer.Services
             try
             {
                 SqlParameter[] param = new SqlParameter[3];
-                var decPass = Common.DESDecrypt("Xuw80TlRxPAqKNcRvAFLDQ==");
+                var decPass = Common.DESDecrypt("G0mZkLR0aJlywrU/zxpHuw==");
                 //var decPass1 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 //var decPass2 = Common.DESDecrypt("ruPQL8Dq2iY=");
                 param[0] = new SqlParameter("@UserName", UserName);
@@ -384,7 +383,7 @@ namespace DataLayer.Services
                         {
                     new Claim(ClaimTypes.Name, user.UserID.ToString())
                         }),
-                        Expires = DateTime.UtcNow.AddHours(1),
+                        Expires = DateTime.UtcNow.AddMonths(1),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                     };
                     var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -842,6 +841,21 @@ namespace DataLayer.Services
         //{
         //    return propertyName.ToLower().Contains("password");
         //}
+
+        public DataTable fetchReportBySPName(string spName)
+        {
+            try
+            {
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), spName);
+
+                return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+
+            }
+        }
         public List<SignUpModel> SaveUser(SignUpModel User)
         {
             throw new NotImplementedException();

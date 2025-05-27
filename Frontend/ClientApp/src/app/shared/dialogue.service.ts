@@ -21,6 +21,7 @@ import { NotificationDetaildialoguecomponent } from '../notification/Notificatio
 import { rolerightsdialogueComponent } from '../master-data/rolerights-dialogue/rolerights-dialogue.component';
 import { TraineeJourneyComponent } from '../dashboard/trainee-journey/trainee-journey.component';
 import { ClassJourneyComponent } from '../dashboard/class-journey/class-journey.component';
+import { ApprovalDialogueBatchComponent } from '../custom-components/approval-dialogue-batch/approval-dialogue-batch.component';
 
 @Injectable({
   providedIn: 'root'
@@ -189,6 +190,15 @@ export class DialogueService {
     const dialogRef = this.dialog.open(ClassJourneyComponent, {
       width: '100%',
       data: { data }
+    });
+    return dialogRef.afterClosed();
+  }
+  ///Ali Haider
+  public openApprovalDialogueBatch(): Observable<boolean> {
+
+    const dialogRef = this.dialog.open(ApprovalDialogueBatchComponent, {
+      width: '70%',
+      height: '80%'
     });
     return dialogRef.afterClosed();
   }

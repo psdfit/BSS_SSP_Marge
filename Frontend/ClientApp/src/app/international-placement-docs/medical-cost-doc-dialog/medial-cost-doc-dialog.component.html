@@ -1,0 +1,95 @@
+<mat-card>
+    <mat-toolbar color="accent" class="slim">
+        <mat-icon class="material-icons">add_circle</mat-icon>
+        <span class="spacer">Medical Cost</span>
+    </mat-toolbar>
+
+    <mat-card-content>
+        <mat-card class="mb-2">
+            <div class="row">
+                <div class="col-sm-3">
+                    <mat-form-field>
+                        <mat-label>Trainee Name</mat-label>
+                        <input matInput readonly [value]="uploadForm.value.traineeName" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                    <mat-form-field>
+                        <mat-label>Trainee Code</mat-label>
+                        <input matInput readonly [value]="uploadForm.value.traineeCode" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                    <mat-form-field>
+                        <mat-label>TSP</mat-label>
+                        <input matInput readonly [value]="uploadForm.value.tsp" />
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-3">
+                    <mat-form-field>
+                        <mat-label>Class Code</mat-label>
+                        <input matInput readonly [value]="uploadForm.value.classCode" />
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card>
+
+        <mat-dialog-content class="documentHeight">
+            <mat-tab-group [(selectedIndex)]="tabIndex">
+                <!-- Upload Documents Tab (Always visible if the user is TSP) -->
+                <mat-tab label="Upload Documents" *ngIf="currentUser.UserLevel === enumUserLevel.TSP">
+                    <div class="upload-section">
+                        <div *ngIf="uploadMessage" class="upload-message">
+                            {{ uploadMessage }}
+                        </div>
+                        <div class="drop-zone" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()"
+                            (drop)="onDrop($event)">
+                            <p *ngIf="filesArray.length === 0">Drag & Drop file here or</p>
+                            <button mat-raised-button (click)="fileInput.click()" [disabled]="isUploadDisabled">Choose
+                                File</button>
+                        </div>
+                        <input type="file" (change)="onFileSelected($event)" #fileInput hidden
+                            [disabled]="isUploadDisabled" />
+                        <ul class="file-list" *ngIf="filesArray.length > 0">
+                            <li *ngFor="let file of filesArray.controls; let i = index">
+                                {{ file.value.name }}
+                                <mat-icon color="warn" (click)="removeFile(i)">delete</mat-icon>
+                            </li>
+                        </ul>
+                        <button mat-raised-button color="primary" (click)="uploadFiles()"
+                            [disabled]="filesArray.length === 0 || isUploadDisabled">
+                            Upload
+                        </button>
+                    </div>
+                </mat-tab>
+
+                <!-- View Documents Tab -->
+                <mat-tab label="View Documents">
+                    <div *ngIf="fetchedDocuments.length === 0" class="no-documents">
+                        No documents uploaded.
+                    </div>
+                    <div *ngIf="fetchedDocuments.length > 0" class="document-container">
+                        <div class="document-preview" *ngIf="selectedDocument">
+                            <div class="preview-header">
+                                <h3>{{ selectedDocument.FileName }}</h3>
+                                <!-- <button mat-icon-button (click)="downloadDocument()">
+                                    <mat-icon>download</mat-icon>
+                                </button> -->
+                                <button mat-raised-button color="primary" type="button" mat-button
+                                    (click)="openApprovalDialogue()"
+                                    *ngIf="currentUser.UserLevel !== enumUserLevel.TSP">
+                                    Decision
+                                </button>
+                            </div>
+                            <div class="preview-content">
+                                <iframe *ngIf="selectedDocument.mimeType === 'application/pdf'"
+                                    [src]="selectedDocument.blobUrl" width="100%"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+        </mat-dialog-content>
+    </mat-card-content>
+</mat-card>

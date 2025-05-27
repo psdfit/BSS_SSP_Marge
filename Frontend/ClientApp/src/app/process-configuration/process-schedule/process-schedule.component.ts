@@ -85,6 +85,9 @@ export class ProcessScheduleComponent implements OnInit {
     this.ProcessScheduleForm.get('processDetails').valueChanges.subscribe(d => {
       this.ProcessScheduleForm.get('TotalDays').setValue(d.map((processDetails) => Number(processDetails.ProcessDays)).reduce((a, b) => a + b, 0))
       this.ProcessScheduleForm.get('TotalProcess').setValue(d.length)
+      
+ 
+     
     })
     this.ProcessScheduleForm.get('ProgramID').valueChanges.subscribe(pd => {
       const programExisted: any = this.processScheduleMaster.filter(d => d.ProgramID == pd)
@@ -210,6 +213,18 @@ export class ProcessScheduleComponent implements OnInit {
     //   ProgramStartDate:this.ProcessScheduleForm.get('ProgramStartDate').value,
     //   TotalDays:this.ProcessScheduleForm.get('TotalDays').value
     //  }
+
+    if(this.processDetails.value.length==2){
+      const checkProcessIsExisted=this.processDetails.value[0].ProcessID==this.processDetails.value[1].ProcessID
+      if (checkProcessIsExisted) {
+       return this.ComSrv.ShowError('The process is already associated with the selected program.please choose other process from list.')
+      }
+    }
+
+    if (this.processDetails.length == 0 || this.processDetails.length<2){
+       return  this.ComSrv.ShowError("Both trainee registration and TSP verification are required to proceed");
+    }
+
     if (this.processDetails.length > 0) {
       if (this.ProcessScheduleForm.valid && this.processDetails.valid) {
         this.ComSrv.postJSON("api/ProcessConfiguration/Save", this.ProcessScheduleForm.value).subscribe(

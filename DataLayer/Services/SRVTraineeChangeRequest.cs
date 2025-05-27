@@ -193,6 +193,7 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@FundingCategoryID", mod.FundingCategoryID));
                 param.Add(new SqlParameter("@StartDate", mod.StartDate));
                 param.Add(new SqlParameter("@EndDate", mod.EndDate));
+
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TraineeChangeRequest",param.ToArray()).Tables[0];
                 return LoopinData(dt);
             }
@@ -343,10 +344,14 @@ namespace DataLayer.Services
                 TraineeChangeRequest.SchemeType = r["SchemeType"].ToString();
             if (r.Table.Columns.Contains("SchemeType"))
                 TraineeChangeRequest.KAMName = r["KAMName"].ToString();
+            if (r.Table.Columns.Contains("FundingSourceName"))
+                TraineeChangeRequest.ProjectName = r["FundingSourceName"].ToString();
             if (r.Table.Columns.Contains("FundingCategoryName"))
                 TraineeChangeRequest.ProjectName = r["FundingCategoryName"].ToString();
             if (r.Table.Columns.Contains("AMSName"))
                 TraineeChangeRequest.AMSName = r["AMSName"].ToString();
+
+
             return TraineeChangeRequest;
         }
     }

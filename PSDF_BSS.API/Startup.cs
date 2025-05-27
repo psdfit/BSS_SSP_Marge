@@ -84,41 +84,155 @@ namespace PSDF_BSS.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        //public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        //{
+
+
+        //    app.Use(async (context, next) =>
+        //    {
+        //        context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; frame-ancestors 'none';");
+        //        await next();
+        //    });
+
+
+        //    app.Use(async (context, next) =>
+        //    {
+        //        context.Response.Headers.Add("X-Frame-Options", "DENY");
+        //        await next();
+        //    });
+
+        //    app.Use(async (context, next) =>
+        //    {
+        //        context.Response.Headers.Remove("X-Powered-By");
+        //        await next();
+        //    });
+
+        //    app.Use(async (context, next) =>
+        //    {
+        //        context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+        //        await next();
+        //    });
+
+
+        //    app.Use(async (context, next) =>
+        //    {
+        //        context.Response.Headers.Remove("Server");
+        //        await next();
+        //    });
+
+        //    app.Use(async (context, next) =>
+        //    {
+        //        context.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        //        context.Response.Headers.Add("Pragma", "no-cache");
+        //        await next();
+        //    });
+
+        //    if (!env.IsDevelopment())
+        //    {
+        //        app.UseExceptionHandler("/Error");
+        //        app.UseHsts();
+        //    }
+
+        //    //if (env.IsDevelopment())
+        //    //{
+        //    //    app.UseDeveloperExceptionPage();
+        //    //}
+
+        //    app.UseSignalR(route =>
+        //    {
+        //        route.MapHub<NotificationsHub>("/notifications");
+        //    });
+
+        //    if (env.IsDevelopment())
+        //    {
+        //        app.UseSwagger();
+        //        app.UseSwaggerUI(option =>
+        //        {
+        //            option.SwaggerEndpoint("/swagger/v1/swagger.json", "PSDF-API");
+        //        }); 
+        //    }
+
+        //    app.UseHttpsRedirection();
+
+        //    app.UseRouting();
+
+        //    app.UseCors(_allowOrigins);
+
+        //    app.UseAuthentication();
+
+        //    app.UseAuthorization();
+
+        //    app.UseEndpoints(endpoints =>
+        //    {
+        //        endpoints.MapControllers();
+        //    });
+        //}
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            // Apply security headers
+            app.Use(async (context, next) =>
             {
-                app.UseDeveloperExceptionPage();
+                // Content Security Policy (CSP)
+                context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; frame-ancestors 'none';");
+
+                // X-Frame-Options for clickjacking protection
+                context.Response.Headers.Add("X-Frame-Options", "DENY");
+
+                // X-Content-Type-Options to prevent MIME type sniffing
+                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                // Cache control headers
+                context.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+                context.Response.Headers.Add("Pragma", "no-cache");
+
+                await next();
+            });
+
+            // Remove headers that leak information
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Remove("X-Powered-By");  // Remove X-Powered-By header
+                context.Response.Headers.Remove("Server");        // Remove Server header
+                await next();
+            });
+
+            if (!env.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts(); // Enable HSTS (Strict Transport Security) for production
             }
 
+            if (env.IsDevelopment())
+            {
+                // Enable Swagger only in development
+                app.UseSwagger();
+                app.UseSwaggerUI(option =>
+                {
+                    option.SwaggerEndpoint("/swagger/v1/swagger.json", "PSDF-API");
+                });
+            }
+
+            // Enable SignalR
             app.UseSignalR(route =>
             {
                 route.MapHub<NotificationsHub>("/notifications");
             });
 
-            if (env.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(option =>
-                {
-                    option.SwaggerEndpoint("/swagger/v1/swagger.json", "PSDF-API");
-                }); 
-            }
-
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection();    // Force HTTPS
 
             app.UseRouting();
 
-            app.UseCors(_allowOrigins);
+            app.UseCors(_allowOrigins);   // Apply CORS policy
 
-            app.UseAuthentication();
-
-            app.UseAuthorization();
+            app.UseAuthentication();      // Enable authentication
+            app.UseAuthorization();       // Enable authorization
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers();  // Map controller routes
             });
         }
+
     }
 }

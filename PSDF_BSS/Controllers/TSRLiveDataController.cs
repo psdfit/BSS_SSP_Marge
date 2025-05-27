@@ -60,6 +60,34 @@ namespace PSDF_BSS.Controllers
             }
         }
 
+
+        // GET: Schemes for TCRLiveDataSet
+        [HttpGet]
+        [Route("GetSchemesForGSR")]
+        public IActionResult GetSchemesForGSR([FromQuery] int OID)
+        {
+            try
+            {
+                Dictionary<string, object> list = new Dictionary<string, object>();
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+                if (loggedInUserLevel == (int)EnumUserLevel.TSP)
+                {
+                    list.Add("Schemes", srvDashboard.FetchSchemesByGSRUsers(curUserID));
+                }
+                else
+                {
+                    list.Add("Schemes", srvDashboard.FetchSchemesGSR());
+                }
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
         // GET: TCRLiveDataSet
         [HttpGet]
         [Route("GetTCRLiveData")]
@@ -98,7 +126,7 @@ namespace PSDF_BSS.Controllers
                 int curUserID = Convert.ToInt32(User.Identity.Name);
                 int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
                 curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
-                
+
                 list.Add("TSRLiveData", srvTSRLiveData.FetchTCRLiveDataByFilters(new int[] { 0, 0, 0, 0, OID, curUserID }));
                 return Ok(list);
             }
@@ -154,6 +182,7 @@ namespace PSDF_BSS.Controllers
                 return BadRequest(e.Message);
             }
         }
+
         [HttpPost]
         [Route("GetFilteredTSRData")]
         public IActionResult GetFilteredTSRData(SearchFilter filters)
@@ -190,6 +219,44 @@ namespace PSDF_BSS.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost]
+        [Route("GetFilteredGSRData")]
+        public IActionResult GetFilteredGSRData(SearchFilter filters)
+        {
+            try
+            {
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+                filters.UserID = curUserID;
+                IEnumerable<dynamic> data = srvTSRLiveData.GetFilteredGSRData(filters).Select(
+                    x =>
+                    {
+                        var obj = new Dictionary<string, object>();
+                        filters.SelectedColumns.ForEach(column =>
+                        {
+                            var value = x.GetType().GetProperty(column)?.GetValue(x, null);
+                            if (column == "TraineeImg" || column == "CNICImg" || column == "TraineeImg" || column == "CNICImgNADRA" || column == "ResultDocument")
+                            {
+                                value = (value == null || value == "") ? string.Empty : Common.GetFileBase64(value.ToString());
+                            }
+                            if (!obj.ContainsKey(column))
+                            {
+                                obj.Add(column, value);
+                            }
+                        });
+                        return (dynamic)obj;
+                    });
+                // var data = srvTSRLiveData.GetFilteredTSRData(filters);//.Select(LinqHelpers.DynamicSelectGenerator<TSRLiveDataModel>(string.Join(',', filters.SelectedColumn))).ToList();
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost]
         [Route("RD_TSRPaged")]
         public IActionResult RD_TSRPaged([FromBody] JObject jObject)
@@ -218,6 +285,123 @@ namespace PSDF_BSS.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
+
+        [HttpPost]
+        [Route("RD_TERPaged")]
+        public IActionResult RD_TERPaged([FromBody] JObject jObject)
+        {
+            try
+            {
+                PagingModel pagingModel = jObject["pagingModel"].ToObject<PagingModel>();
+                SearchFilter filterModel = jObject["filterModel"].ToObject<SearchFilter>();
+
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                filterModel.UserID = curUserID;
+
+                int totalCount = 0;
+                List<object> ls = new List<object>();
+
+                ls.Add(srvTSRLiveData.FetchTERPaged(pagingModel, filterModel, out totalCount));
+                pagingModel.TotalCount = totalCount;
+                ls.Add(pagingModel);
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("RD_TARPaged")]
+        public IActionResult RD_TARPaged([FromBody] JObject jObject)
+        {
+            try
+            {
+                PagingModel pagingModel = jObject["pagingModel"]?.ToObject<PagingModel>();
+                SearchFilter filterModel = jObject["filterModel"]?.ToObject<SearchFilter>();
+
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                filterModel.UserID = curUserID;
+
+                int totalCount = 0;
+                List<object> ls = new List<object>();
+
+                ls.Add(srvTSRLiveData.FetchTARPaged(pagingModel, filterModel, out totalCount));
+                pagingModel.TotalCount = totalCount;
+                ls.Add(pagingModel);
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("RD_TARPagedClasswise")]
+        public IActionResult RD_TARPagedClasswise([FromBody] JObject jObject)
+        {
+            try
+            {
+                PagingModel pagingModel = jObject["pagingModel"]?.ToObject<PagingModel>();
+                SearchFilter filterModel = jObject["filterModel"]?.ToObject<SearchFilter>();
+
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                filterModel.UserID = curUserID;
+
+                int totalCount = 0;
+                List<object> ls = new List<object>();
+
+                ls.Add(srvTSRLiveData.FetchTARPagedClasswise(pagingModel, filterModel, out totalCount));
+                pagingModel.TotalCount = totalCount;
+                ls.Add(pagingModel);
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("RD_GSRPaged")]
+        public IActionResult RD_GSRPaged([FromBody] JObject jObject)
+        {
+            try
+            {
+                PagingModel pagingModel = jObject["pagingModel"].ToObject<PagingModel>();
+                SearchFilter filterModel = jObject["filterModel"].ToObject<SearchFilter>();
+
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                filterModel.UserID = curUserID;
+
+                int totalCount = 0;
+                List<object> ls = new List<object>();
+
+                ls.Add(srvTSRLiveData.FetchGSRPaged(pagingModel, filterModel));
+                pagingModel.TotalCount = totalCount;
+                ls.Add(pagingModel);
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
         [HttpPost]
         [Route("RD_TSUPaged")]
         public IActionResult RD_TSUPaged([FromBody] JObject jObject)

@@ -252,7 +252,7 @@
                   <img src="../../assets/images/classes.png" alt="" />
                 </div>
               </mat-grid-tile>
-              <mat-grid-tile class="row" style="cursor: pointer;" >
+              <mat-grid-tile class="row" style="cursor: pointer;">
                 <div class="col-sm-8">
                   <h1>
                     <span style="font-size:20px">
@@ -300,10 +300,15 @@
         <div class="main-content">
           <mat-card-content>
             <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
-              <mat-tab label="Scheme(s)">
-                <div>
+              <mat-tab label="Scheme(s)" class="mb-1">
+                <div class="card mt-1">
+                  <mat-toolbar color="accent" class="slim mb-1 mt-1">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Manage and View Scheme(s)</span>
+                    <div class="spacer"></div>
+                  </mat-toolbar>
                   <div class="table-responsive">
-                    <mat-table [dataSource]="Scheme" #SortScheme="matSort" matSort>
+                    <mat-table [dataSource]="Scheme" #SortScheme="matSort" matSort class="table table-bordered mt-0">>
                       <ng-container matColumnDef="SchemeName">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Scheme Name</mat-header-cell>
                         <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
@@ -385,9 +390,14 @@
                 </div>
               </mat-tab>
               <mat-tab label="TSP(s)">
-                <div>
+                <div class="card">
+                  <mat-toolbar color="accent" class="slim mb-1 mt-1">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Manage and View TSP(s)</span>
+                    <div class="spacer"></div>
+                  </mat-toolbar>
                   <div fxLayout="column" class="table-responsive">
-                    <mat-table [dataSource]="TSPs" #SortTSP="matSort" matSort>
+                    <mat-table [dataSource]="TSPs" #SortTSP="matSort" matSort class="table-bordered mt-0">
                       <ng-container matColumnDef="TSPName">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> TSP Name</mat-header-cell>
                         <mat-cell *matCellDef="let Row"> {{Row.TSPName}} </mat-cell>
@@ -449,9 +459,14 @@
                 </div>
               </mat-tab>
               <mat-tab label="Class(s)">
-                <div>
+                <div class="card">
+                  <mat-toolbar color="accent" class="slim mb-1 mt-1">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Manage and View Class(s)</span>
+                    <div class="spacer"></div>
+                  </mat-toolbar>
                   <div class="table-responsive">
-                    <mat-table [dataSource]="Class" #SortClass="matSort" matSort class="custom-width">
+                    <mat-table [dataSource]="Class" #SortClass="matSort" matSort class="table-bordered mt-0">
                       <ng-container matColumnDef="sn">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Sr#</mat-header-cell>
                         <mat-cell *matCellDef="let Row; let i = index;"><strong>{{ Row.Sr || ""}}</strong></mat-cell>
@@ -594,13 +609,24 @@
                 </div>
               </mat-tab>
               <mat-tab label="Trainee(s)" (click)="getTraineeData()">
-                <div>
+                <div class="card">
+                  <mat-toolbar color="accent" class="slim mb-1 mt-1">
+                    <mat-icon class="material-icons">view_comfy</mat-icon>
+                    <span class="spacer">Manage and View Trainee(s)</span>
+                    <div class="spacer"></div>
+                    <button mat-icon-button *ngIf="selection.selected.length > 0"
+                      (click)="getTraineeProfileRegistration_Report()">
+                      <mat-icon matTooltip="Print selected trainee(s) registration report">print</mat-icon>
+                    </button>
+                  </mat-toolbar>
                   <div fxLayout="column" class="table-responsive">
-                    <mat-table [dataSource]="Trainees" #SortTrainee="matSort" matSort>
+                    <mat-table [dataSource]="Trainees" #SortTrainee="matSort" matSort class="table-bordered mt-0">
                       <ng-container matColumnDef="sn">
                         <mat-header-cell *matHeaderCellDef mat-sort-header>Sr#</mat-header-cell>
                         <mat-cell *matCellDef="let Row; let i = index;">
-                          {{ (PageTrainee.pageIndex * PageTrainee.pageSize) + i+1}}</mat-cell>
+                          <mat-checkbox (click)="$event.stopPropagation()" (change)="onCheckboxChange($event, Row)" 
+                             [checked]="selection.isSelected(Row)">
+                          </mat-checkbox>|{{ (PageTrainee.pageIndex * PageTrainee.pageSize) + i+1}}</mat-cell>
                       </ng-container>
                       <ng-container matColumnDef="TraineeName">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee Name</mat-header-cell>

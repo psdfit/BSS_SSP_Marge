@@ -35,7 +35,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-2">
+               <div class="col-sm-2" hidden>
                   <mat-form-field>
                      <mat-label>Planning Type</mat-label>
                      <mat-select (openedChange)="EmptyCtrl()" formControlName="PlaningTypeID" matInput required>
@@ -67,7 +67,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-4">
+               <div class="col-sm-2">
                   <mat-form-field>
                      <mat-label>Program Type</mat-label>
                      <mat-select (openedChange)="EmptyCtrl()" formControlName="ProgramTypeID" matInput required>
@@ -231,7 +231,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-4">
+               <div class="col-sm-2">
                   <mat-form-field>
                      <mat-select multiple (openedChange)="EmptyCtrl()" required #Applicability matInput
                      formControlName="ApplicabilityID" placeholder="Trainee Support Items"
@@ -254,7 +254,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-4">
+               <div class="col-sm-2">
                   <mat-form-field>
                      <mat-label>Trainee Support Item Cost</mat-label>
                      <input formControlName="TraineeSupportCost" matTooltip="Trainee Support Item Cost"  min="1" NumberOnly  type="number"
@@ -310,7 +310,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-2">
+               <div class="col-sm-2" hidden>
                   <mat-form-field>
                      <mat-label>Selection Method</mat-label>
                      <mat-select formControlName="SelectionMethodID" matInput required>
@@ -323,7 +323,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-4">
+               <div class="col-sm-2">
                   <mat-form-field>
                      <mat-label>Employment Commitment</mat-label>
                      <mat-select (openedChange)="EmptyCtrl()" formControlName="EmploymentCommitment" matInput required>
@@ -427,7 +427,7 @@
                      </mat-error>
                   </mat-form-field>
                </div>
-               <div class="col-sm-6" hidden>
+               <div class="col-sm-2" hidden>
                   <mat-form-field>
                      <mat-label>Approval Recommended Detail</mat-label>
                      <input formControlName="ApprovalRecDetail" placeholder="Approval Recommended Detail"
@@ -477,7 +477,7 @@
                <div class="col-sm-8">
                   <mat-form-field>
                      <mat-label>Program Objective</mat-label>
-                     <input formControlName="Description" placeholder="Enter Objective" matInput required />
+                     <input formControlName="Description" placeholder="Program Objective" matInput required />
                      <mat-error *ngFor="let error of AnnualPlanInfoForm.get('Description').errors | keyvalue">{{
                         getErrorMessage(error.key, error.value) }}
                      </mat-error>

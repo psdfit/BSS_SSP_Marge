@@ -90,7 +90,7 @@ namespace DataLayer.Services
         {
             try
             {
-                SqlParameter[] param = new SqlParameter[58];
+                SqlParameter[] param = new SqlParameter[64];
                 param[0] = new SqlParameter("@ClassID", Class.ClassID);
                 param[1] = new SqlParameter("@ClassCode", Class.ClassCode);
                 param[2] = new SqlParameter("@ClassStatusID", 1);
@@ -156,6 +156,12 @@ namespace DataLayer.Services
                 param[56] = new SqlParameter("@ProgramFocusID", Class.ProgramFocusID);
                 /// Added by Rao Ali Haider on 22-July-2024
                 param[57] = new SqlParameter("@balloonpayment", Class.balloonpayment);
+                param[58] = new SqlParameter("@GuruPayment", Class.GuruPayment);
+                param[59] = new SqlParameter("@Transportation", Class.Transportation);
+                param[60] = new SqlParameter("@ProtectorateandVisa", Class.ProtectorateandVisa);
+                param[61] = new SqlParameter("@MedicalCost", Class.MedicalCost);
+                param[62] = new SqlParameter("@PrometricCost", Class.PrometricCost);
+                param[63] = new SqlParameter("@OtherTrainingCost", Class.OtherTrainingCost);
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_Class]", param);
                 int k = Convert.ToInt32(param[50].Value);
                 return GetByClassID(k);
@@ -454,7 +460,10 @@ namespace DataLayer.Services
         private ClassModel RowOfClass(DataRow r)
         {
             ClassModel Class = new ClassModel();
+
             Class.ClassID = Convert.ToInt32(r["ClassID"]);
+
+
             Class.ClassCode = r["ClassCode"].ToString();
             Class.ClassStatusID = Convert.ToInt32(r["ClassStatusID"]);
             Class.ClassStatusName = r["ClassStatusName"].ToString();
@@ -552,10 +561,20 @@ namespace DataLayer.Services
             {
                 Class.RegistrationAuthorityName = r["RegistrationAuthorityName"].ToString();
             }
-            //if (r.Table.Columns.Contains("ProgramFocusID"))
-            //{
-            //    Class.ProgramFocusID = Convert.ToInt32(r["ProgramFocusID"]);
-            //}
+
+            if (r.Table.Columns.Contains("EmploymentCommitmentSelf"))
+            {
+                Class.EmploymentCommitmentSelf = Convert.ToInt32(r["EmploymentCommitmentSelf"]);
+            }
+            if (r.Table.Columns.Contains("EmploymentCommitmentFormal"))
+            {
+                Class.EmploymentCommitmentFormal = Convert.ToInt32(r["EmploymentCommitmentFormal"]);
+            }
+            if (r.Table.Columns.Contains("OverallEmploymentCommitment"))
+            {
+                Class.OverallEmploymentCommitment = Convert.ToInt32(r["OverallEmploymentCommitment"]);
+            }
+
             //if (r.Table.Columns.Contains("RegistrationAuthorityID"))
             //{
             //    Class.RegistrationAuthorityID = Convert.ToInt32(r["RegistrationAuthorityID"]);
@@ -563,6 +582,30 @@ namespace DataLayer.Services
             if (r.Table.Columns.Contains("balloonpayment"))
             {
                 Class.balloonpayment = r["balloonpayment"] != DBNull.Value ? Convert.ToInt32(r["balloonpayment"]) : 0;
+            }
+            if (r.Table.Columns.Contains("GuruPayment"))
+            {
+                Class.GuruPayment = r["GuruPayment"] != DBNull.Value ? Convert.ToInt32(r["GuruPayment"]) : 0;
+            }
+            if (r.Table.Columns.Contains("Transportation"))
+            {
+                Class.Transportation = r["Transportation"] != DBNull.Value ? Convert.ToInt32(r["Transportation"]) : 0;
+            }
+            if (r.Table.Columns.Contains("ProtectorateandVisa"))
+            {
+                Class.ProtectorateandVisa = r["ProtectorateandVisa"] != DBNull.Value ? Convert.ToInt32(r["ProtectorateandVisa"]) : 0;
+            }
+            if (r.Table.Columns.Contains("MedicalCost"))
+            {
+                Class.MedicalCost = r["MedicalCost"] != DBNull.Value ? Convert.ToInt32(r["MedicalCost"]) : 0;
+            }
+            if (r.Table.Columns.Contains("PrometricCost"))
+            {
+                Class.PrometricCost = r["PrometricCost"] != DBNull.Value ? Convert.ToInt32(r["PrometricCost"]) : 0;
+            }
+            if (r.Table.Columns.Contains("OtherTrainingCost"))
+            {
+                Class.OtherTrainingCost = r["OtherTrainingCost"] != DBNull.Value ? Convert.ToInt32(r["OtherTrainingCost"]) : 0;
             }
             return Class;
         }
@@ -1029,6 +1072,13 @@ namespace DataLayer.Services
                 return null;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public DataTable FetchDeveiceStatus(int UserID)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@CreatedUserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GetDeveiceStatus", param.ToArray()).Tables[0];
+            return dt;
         }
     }
 }

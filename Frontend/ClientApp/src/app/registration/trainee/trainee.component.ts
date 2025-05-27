@@ -17,7 +17,9 @@ import { SchemeModel } from '../../appendix-module/appendix/appendix.component';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import * as JSZip from 'jszip';
+import { TraineeGuruDialogComponent } from '../trainee-guru-dialog/trainee-guru-dialog.component';
 
 @Component({
   selector: 'app-trainee',
@@ -57,7 +59,6 @@ export class TraineeComponent implements OnInit {
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${1}`;
   }
-  ///Mat-Table checkbox Config - End
 
   traineeProfileArray: any[] = [];
   orgConfig: IOrgConfig;
@@ -104,8 +105,10 @@ export class TraineeComponent implements OnInit {
   EnText: string = "";
   error: string;
   EDFScheme: boolean = false;
+  SearchPro = new FormControl('');
   IsSkillsScholrship: boolean = false;
   IsSkillsScholrshipProgram: boolean = false;
+  IsInternationalPlacement: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("ngForm") ngFrom: NgForm;
@@ -113,7 +116,7 @@ export class TraineeComponent implements OnInit {
   //working: boolean;
   isValidForm: boolean = true;
   registrationReport: any;
-  constructor(private fb: FormBuilder, private https: HttpClient, private http: CommonSrvService, private router: Router, private domSanitizer: DomSanitizer, private route: ActivatedRoute) {
+  constructor(    private Dialog: MatDialog, private fb: FormBuilder, private https: HttpClient, private http: CommonSrvService, private router: Router, private domSanitizer: DomSanitizer, private route: ActivatedRoute) {
     this.createTraineeProfileForm();
     route.params.subscribe(
       params => { this.paramClassId = params["id"]; });
@@ -165,12 +168,17 @@ export class TraineeComponent implements OnInit {
       this.setFormIsDisabled(true);
       this.ControlProvince();
       this.ControlDocumentUploading();
+      
     });
 
   }
 
   ControlDocumentUploading() {
     if (this.IsSkillsScholrship) {
+      this.TraineeDoc.setValue('');
+      this.TraineeDoc.setValidators([Validators.required]);
+      this.TraineeDoc.updateValueAndValidity();
+    } else if(this.SchemeCode=="STV"){
       this.TraineeDoc.setValue('');
       this.TraineeDoc.setValidators([Validators.required]);
       this.TraineeDoc.updateValueAndValidity();
@@ -234,6 +242,9 @@ export class TraineeComponent implements OnInit {
       TraineeAge: ['', [Validators.required]],
       ReligionID: ['', [Validators.required]],
       VoucherHolder: new FormControl(false),
+      // updated by sami 2025-01-03      
+      // IsReferredByGuru: ['', [Validators.required]],
+       IsReferredByGuru: [''],
       ReferralSourceID: ['', [Validators.required]],
       TraineeIndividualIncomeID: ['', [Validators.required]],
       HouseHoldIncomeID: ['', [Validators.required]],
@@ -266,7 +277,11 @@ export class TraineeComponent implements OnInit {
       ResultStatusID: [3],
       IsMigrated: [false],
       ResultStatusChangeDate: [''],
-      ResultStatusChangeReason: ['']
+      ResultStatusChangeReason: [''],
+      /// Added By Rao ALi haider for International Placement
+      Accounttitle: ['', [Validators.required]],
+      BankName: ['', [Validators.required]],
+      IBANNumber: ['', [Validators.required]]
     }, { updateOn: "change" });
     this.VoucherHolder.valueChanges.subscribe(checked => {
       if (checked) {
@@ -279,8 +294,32 @@ export class TraineeComponent implements OnInit {
       }
       this.traineeProfileForm.updateValueAndValidity();
     })
+
+    //this.IsReferredByGuru.valueChanges.subscribe(checked => {
+
+    //  if (checked) {
+    //    this.traineeProfileForm.addControl('GuruProfileID', this.fb.control('', [Validators.required]));
+    //  } else {
+    //    this.traineeProfileForm.removeControl('GuruProfileID');
+    //  }
+    //  this.traineeProfileForm.updateValueAndValidity();
+    //})
+    this.traineeProfileForm.get('IsReferredByGuru').valueChanges.subscribe((isReferred) => {
+      if (isReferred) {
+        this.traineeProfileForm.addControl(
+          'GuruProfileID',
+          this.fb.control('', [Validators.required])
+        );
+      } else {
+        this.traineeProfileForm.removeControl('GuruProfileID');
+      }
+      this.traineeProfileForm.updateValueAndValidity();
+    });
   }
+
+ 
   setFormIsDisabled(isDisabled: boolean, errMsg = '') {
+    debugger;
     this.saveBtnTitle = "Save";
     //this.isFormDisabled = state == 'enabled' ? false : state == 'disabled' ? true : true;
     this.isFormDisabled = isDisabled;
@@ -297,11 +336,28 @@ export class TraineeComponent implements OnInit {
     this.save();
   }
   save() {
+    
+    // if (!this.traineeProfileForm.valid) {
+    //   //debugger;
+      
+    //   this.http.ShowError("Something missing or invalid.", "Error");
+    //   console.log(this.traineeProfileForm)
+    //   return;
+    // }
+
     if (!this.traineeProfileForm.valid) {
       //debugger;
-      this.http.ShowError("Something missing or invalid.", "Error");
+      const invalidControls = [];
+      for (const name in this.traineeProfileForm.controls) {
+        if (this.traineeProfileForm.controls[name].invalid) {
+          invalidControls.push(name);
+        }
+      }
+      this.http.ShowError("Something missing or invalid in: " + invalidControls.join(', '), "Error");
+      console.log(this.traineeProfileForm);
       return;
     }
+
     // this.working = true;
     //this.markAsExtraTrainee();
     if (this.TraineeID.value == 0) {
@@ -340,7 +396,7 @@ export class TraineeComponent implements OnInit {
         //this.reset();
         //this.http.openSnackBar("Saved Successfully");
         let titleConfirm = 'Success';
-        let messageConfirm = `Trainee profile ${item.IsSubmitted ? "submitted" : "saved"} successfully, Press 'Yes' for forther registration.`;
+        let messageConfirm = `Trainee profile ${item.IsSubmitted ? "submitted" : "saved"} successfully, Press 'Yes' for farther registration.`;
 
         this.http.confirm(titleConfirm, messageConfirm).subscribe(
           (isConfirm: Boolean) => {
@@ -418,10 +474,17 @@ export class TraineeComponent implements OnInit {
     this.createTraineeProfileForm();
 
     this.getSetDataByClass();
+
+  
   }
   onEditTrainee(row) {
     //this.registrationError = '';
 
+    if (this.IsSkillsScholrship){
+      this.getTraineeGuru(row.TraineeID)
+    }
+    
+    // this.traineeGuruList.find(g=>g.TraineeID)
     if (sessionStorage.getItem('potentialTrainee')) {
       sessionStorage.removeItem('potentialTrainee')
     }
@@ -429,6 +492,15 @@ export class TraineeComponent implements OnInit {
     this.CheckRegistrationCriteria(this.classId).subscribe(
       (response: any[]) => {
         this.traineeProfileForm.patchValue(row);
+        
+        if (this.IsSkillsScholrship && this.traineeGuruDetailList.length>0){
+         const sTraineeGuru= this.traineeGuruDetailList.find(tg=>tg.TraineeID==row.TraineeID)
+         if(sTraineeGuru){
+          this.IsReferredByGuru.setValue(true)
+          this.GuruProfileID.setValue(sTraineeGuru.GuruProfileID)
+         }
+          
+        }
         if (!row.IsManual) {
           //this.traineeProfileForm.controls.IsManual.setValue(false);
           this.TraineeName.disable();
@@ -441,6 +513,7 @@ export class TraineeComponent implements OnInit {
         }
 
         this.tabGroup.selectedIndex = TabGroup.RegistrationForm;
+        debugger;
         if (row.IsSubmitted) {
           this.setFormIsDisabled(true, 'This profile is Submitted so that not available for edit.');
         } else {
@@ -495,6 +568,8 @@ export class TraineeComponent implements OnInit {
       this.ControlProvince();
     }
     this.ControlDocumentUploading();
+
+  
   }
 
   checkOnTraineeCNIC() {
@@ -517,6 +592,69 @@ export class TraineeComponent implements OnInit {
   CheckRegistrationCriteria(classid: number) {
     return this.http.getJSON(`api/TraineeProfile/CheckRegistrationCriteria?classId=${classid}`);
   }
+  traineeGuruList:any;
+  getGuruProfiles() {
+    const userID = this.http.getUserDetails().UserID;
+    this.http.getJSON(`api/traineeGuruProfile/getTraineeGuru?UserID=${userID}`).subscribe(
+      (response) => {
+        this.traineeGuruList = response;
+      },
+      (error) => {
+        console.error('Error fetching trainee guru data:', error);
+      }
+    );
+  }
+  traineeGuruDetailList:any=[]
+
+  async getTraineeGuru(traineeID:number): Promise<void> {
+    try {
+      this.traineeGuruDetailList = await this.http.getJSON(`api/traineeGuruProfile/getTraineeGuruDetail?traineeID=${traineeID}`).toPromise();
+    } catch (error) {
+      console.error('Error fetching trainee guru data:', error);
+    }
+  }
+  
+
+  getGuruDetail(GuruDetail:any){
+    if(GuruDetail==0){
+      this.addTraineeGuru()
+    }
+  }
+  
+
+  addTraineeGuru() {
+    const dialogRef = this.Dialog.open(TraineeGuruDialogComponent, {
+      width: '80%',
+      // height: '90%',
+      data: [],
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.GuruProfileID.setValue("")
+      this.getGuruProfiles()
+      if(this.traineeGuruList.length>0){
+      this.GuruProfileID.setValue(this.traineeGuruList[0].GuruProfileID)
+      }
+    });
+  }
+
+  RemoveInternatonplacemntFields() { ///Hide the remove the validation of bank fields
+    if (!this.IsInternationalPlacement) {
+      this.BankName.setValue('');
+      this.BankName.clearValidators();
+      this.BankName.disable();
+
+      this.IBANNumber.setValue('');
+      this.IBANNumber.clearValidators();
+      this.IBANNumber.disable();
+
+
+      this.Accounttitle.setValue('');
+      this.Accounttitle.clearValidators();
+      this.Accounttitle.disable();
+    }
+  }
+
   getData() {
     this.http.getJSON(`api/TraineeProfile/GetData?OID=${this.http.OID.value}`).subscribe(
       (d: any) => {
@@ -544,6 +682,7 @@ export class TraineeComponent implements OnInit {
       }, error => this.error = error // error path
     );
   }
+  SchemeCode:string=""
   getSetDataByClass() {
     if (this.isTspUser && !this.paramClassId) {
       this.isFormDisabled = true;
@@ -556,7 +695,7 @@ export class TraineeComponent implements OnInit {
         let traineeProfileList = response.ListTraineeProfile;
         this.traineeProfileArray = JSON.parse(JSON.stringify(response.ListTraineeProfile));
         let checkRegistrationCriteria = response.CheckRegistrationCriteria;
-
+debugger;
         if (checkRegistrationCriteria.length > 0) {
           //this.registrationError = checkRegistrationCriteria[0].ErrorMessage;
           this.setFormIsDisabled(true, checkRegistrationCriteria[0].ErrorMessage);
@@ -572,6 +711,7 @@ export class TraineeComponent implements OnInit {
         this.TraineeProfile_seqNextVal = response.NextTraineeCode;
         let scheme: SchemeModel = response.Schemes;
 
+      
 
         ///
         if (inceptionReportList.length <= 0) {
@@ -597,19 +737,32 @@ export class TraineeComponent implements OnInit {
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
         }
-
-        if (scheme.FundingSourceID !== 12) //EDF Scheme
+        if (scheme.FundingCategoryID == 16) {
+          this.EDFScheme = true;
+        }
+        else if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV') {
+          this.EDFScheme = true;
+        }
+        else if (scheme.FundingSourceID !== 12) //EDF Scheme
         {
           this.EDFScheme = false;
         }
         else {
           this.EDFScheme = true;
         }
-
+        if (scheme.FundingCategoryID !== 20) {
+          this.IsInternationalPlacement = false;
+            this.RemoveInternatonplacemntFields();
+        }
+        else {
+          this.IsInternationalPlacement = true;
+          this.RemoveInternatonplacemntFields();
+        }
         if (scheme.ProgramTypeID !== 7) {  //Skills Scolarship
           this.IsSkillsScholrship = false;
         }
         else {
+          this.getGuruProfiles();
           this.IsSkillsScholrship = true;
         }
         if (scheme.ProgramTypeID == 10) {  //Skills Scolarship Program
@@ -698,8 +851,17 @@ export class TraineeComponent implements OnInit {
   toggleGenderState(genderID: Number) {
     switch (genderID) {
       case EnumGender.Both:
-        this.ddlGender = this.Gender.filter(x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female);
-        this.GenderID.enable()
+          if (this.IsSkillsScholrship) {
+                this.ddlGender = this.Gender.filter(
+                  x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female || x.GenderID == EnumGender.Transgender
+                );
+                this.GenderID.enable();
+              } else {
+                this.ddlGender = this.Gender.filter(
+                  x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female
+                );
+                this.GenderID.enable();
+        }
         break;
       case EnumGender._3way:
         this.ddlGender = this.Gender.filter(x => x.GenderID == EnumGender.Male || x.GenderID == EnumGender.Female || x.GenderID == EnumGender.Transgender);
@@ -779,23 +941,47 @@ export class TraineeComponent implements OnInit {
     );
     //}
   }
+  //isEligibleTraineeEmail(): void {
+  //  let values = this.traineeProfileForm.getRawValue();
+  //  if (values.TraineeEmail == '') {
+  //    return;
+  //  }
+  //  //if (values.TraineeCNIC.length == 15) {
+  //  let filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`
+  //  this.http.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
+  //    (data: any) => {
+  //      //BR (Business Rule)
+  //      if (!data.isValid) {
+  //        this.TraineeEmail.setErrors({ isValid: data.isValid, message: data.errMsg });
+  //      }
+  //      else {
+  //        this.TraineeEmail.setErrors(null);
+  //        this.TraineeEmail.setValidators([Validators.email, Validators.required]);
+  //        this.TraineeEmail.updateValueAndValidity();
+  //      }
+  //    }, (error) => {
+  //      this.error = error // error path
+  //    }
+  //  );
+  //  //}
+  //}
   isEligibleTraineeEmail(): void {
     let values = this.traineeProfileForm.getRawValue();
-    
+
     if (values.TraineeEmail == '') {
       return;
     }
-  
+
     const filter = `?traineeId=${values.TraineeID}&email=${values.TraineeEmail}&classId=${values.ClassID}`;
-  
+
     this.http.fetchAndValidateTLD(values.TraineeEmail)
-  .subscribe(
-    (isValidTLD: boolean) => {
-      if (!isValidTLD) {
-        this.TraineeEmail.setErrors({ isValid: false, message: 'Invalid email address' });
-        return;
-      }
-  
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.TraineeEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+
           // If TLD is valid, proceed with your existing validation
           this.http.getJSON(`api/TraineeProfile/isEligibleTraineeEmail` + filter).subscribe(
             (data: any) => {
@@ -806,7 +992,7 @@ export class TraineeComponent implements OnInit {
                 this.TraineeEmail.setValidators([Validators.email, Validators.required]);
                 this.TraineeEmail.updateValueAndValidity();
               }
-            }, 
+            },
             (error) => {
               this.error = error; // Handle error
             }
@@ -817,7 +1003,7 @@ export class TraineeComponent implements OnInit {
         }
       );
   }
-  
+
   calculateAgeEligibility() {
     let dateOfBirth: Date = typeof (this.DateOfBirth.value) === 'string' ? new Date(this.DateOfBirth.value) : this.DateOfBirth.value;
     let classID: number = this.ClassID.value;
@@ -935,11 +1121,13 @@ export class TraineeComponent implements OnInit {
       (data: any) => {
         let file = this.base64ToFile(data.Response);
         const fileURL = window.URL.createObjectURL(file);
-        if (window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(file, fileURL.split(':')[1] + '.pdf');
-        } else {
-          window.open(fileURL);
-        }
+        // if (window.navigator.msSaveOrOpenBlob) {
+        //   window.navigator.msSaveOrOpenBlob(file, fileURL.split(':')[1] + '.pdf');
+        // } else {
+          //   window.open(fileURL);
+          // }
+            window.open(fileURL);
+
       },
       (error) => {
         this.error = error // error path
@@ -1038,6 +1226,11 @@ export class TraineeComponent implements OnInit {
   get TraineeAge() { return this.traineeProfileForm.get("TraineeAge"); }
   get ReligionID() { return this.traineeProfileForm.get("ReligionID"); }
   get VoucherHolder() { return this.traineeProfileForm.get("VoucherHolder"); }
+
+  get IsReferredByGuru() { return this.traineeProfileForm.get("IsReferredByGuru"); }
+  get GuruProfileID() { return this.traineeProfileForm.get("GuruProfileID"); }
+
+
   get VoucherNumber() { return this.traineeProfileForm.get("VoucherNumber"); }
   get VoucherOrganization() { return this.traineeProfileForm.get("VoucherOrganization"); }
   get ReferralSourceID() { return this.traineeProfileForm.get("ReferralSourceID"); }
@@ -1060,6 +1253,11 @@ export class TraineeComponent implements OnInit {
   get DistrictVerified() { return this.traineeProfileForm.get("DistrictVerified"); }
   get TraineeVerified() { return this.traineeProfileForm.get("TraineeVerified"); }
   get TraineeEmail() { return this.traineeProfileForm.get("TraineeEmail"); }
+  get Accounttitle() { return this.traineeProfileForm.get("Accounttitle"); }
+  get BankName() { return this.traineeProfileForm.get("BankName"); }
+  get IBANNumber() { return this.traineeProfileForm.get("IBANNumber"); }
+
+  
   //get CNICImg() { return this.traineeProfileForm.get("CNICImg"); }
   ////----Getter----E-----////
 

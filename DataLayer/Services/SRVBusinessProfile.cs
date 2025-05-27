@@ -165,7 +165,7 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@POCEmail", user.POCEmail));
             param.Add(new SqlParameter("@POCMobile", user.POCMobile));
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPContactPerson", param.ToArray()).Tables[0];
-            return ProfileLoopinData(dt); ;
+            return ProfileLoopinData(dt);
         }
         private void UpdateAttachment(DataRow row, string columnName)
         {
@@ -211,12 +211,12 @@ namespace DataLayer.Services
         {
             try
             {
-                
+
                 dynamic DataObject = JsonConvert.DeserializeObject<dynamic>(data.ToString());
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@StartDate", DataObject.StartDate.ToString()));
                 param.Add(new SqlParameter("@EndDate", DataObject.EndDate.ToString()));
-               
+
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, SpName, param.ToArray()).Tables[0];
                 return dt; ;
             }

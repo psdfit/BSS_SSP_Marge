@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+// using CrystalDecisions.ReportAppServer.DataDefModel;
+using System.Xml.Linq;
 using DataLayer.Interfaces;
 using DataLayer.Models;
 using DataLayer.Services;
@@ -32,7 +35,23 @@ namespace PSDF_BSS.Controllers
         {
             try
             {
-                return Ok(this.srvBSSReports.FetchReport(Param));
+                var data = Param.Split("/");
+                if (data[0] == "RD_SSPTSPAssociationDetail")
+                {
+
+
+                    DataTable dataTable = this.srvBSSReports.FetchReport(Param);
+                    string[] attachments = new string[] { "Evidence" };
+                    var dataWithAttachment = srvBSSReports.LoopingData(dataTable, attachments);
+                    return Ok(dataWithAttachment);
+
+
+                }
+                else
+                {
+                    return Ok(this.srvBSSReports.FetchReport(Param));
+
+                }
             }
             catch (Exception e)
             {

@@ -116,7 +116,7 @@
                               <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
                                     [formControl]="tSearchCtr" /></mat-optgrp>
                               <div class="select-all" *ngIf="!tSearchCtr.value">
-                                 <mat-checkbox [checked]="SelectedAll_TSPDropDown"
+                              <mat-checkbox [checked]="SelectedAll_TSPDropDown"
                                     (change)="SelectAll($event,1,'TspAssociationEvaluationID','TspAssignmentInfoForm')">All</mat-checkbox>
                               </div>
 

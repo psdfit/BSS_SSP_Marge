@@ -18,6 +18,11 @@ namespace PSDF_BSS.Reports.Controllers
 {
      public class TraineeProfileController : Controller
     {
+
+        public TraineeProfileController()
+        {
+            
+        }
         #region Trainee Profile
         [HttpGet]
         public JsonResult GetRegistrationReport(string id)

@@ -37,33 +37,52 @@
       <br />
       <mat-card *ngIf="!isAlreadyApproved && isValidApprover && latest.ProcessKey=='AP_PD' && latestid.PTypeID==7">
         <h6>Add Trainee Target</h6>
-          <table class="table-responsive" style="overflow: hidden">
-            <thead>
-              <tr class="row">
-                <th class="col-4"><h6>Cluster Name</h6></th>
-                <th class="col-4"><h6>Trade Name</h6></th>
-                <th class="col-3"><h6>Trade Target</h6></th>
+
+        <!-- Dropdown for selecting Cluster-wise or District-wise -->
+        <mat-form-field appearance="fill" class="dropdown">
+          <mat-label>Filter By</mat-label>
+          <mat-select [(value)]="filterBy" (selectionChange)="[getTradeData()]">
+            <mat-option [value]="'1'">Cluster wise</mat-option>
+            <mat-option [value]="'2'">District wise</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <table class="table-responsive" style="overflow: hidden">
+          <thead>
+            <tr class="row">
+              <th class="col-3">
+                <h6>Cluster Name</h6>
+              </th>
+              <th *ngIf="filterBy === '2'" class="col-3">
+                <h6>District Name</h6>
+              </th>
+              <th class="col-3">
+                <h6>Trade Name</h6>
+              </th>
+              <th class="col-3">
+                <h6>Trade Target</h6>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container>
+              <tr *ngFor="let t of TradeTargetDetail; let i = index" class="row">
+                <td class="col-3" style="padding-top:30px">{{t.ClusterName}}</td>
+                <td *ngIf="filterBy === '2'" class="col-3" style="padding-top:30px">{{t.DistrictName}}</td>
+                <td class="col-3" style="padding-top:30px">{{t.TradeName}}</td>
+                <td class="col-3">
+                  <mat-form-field>
+                    <input matInput placeholder="Trade Target" [(ngModel)]="t.TradeTarget" type="number">
+                    <mat-error
+                      *ngIf="approvalForm.get('TradeTarget').invalid && approvalForm.get('TradeTarget').errors.required"><strong>required</strong></mat-error>
+                  </mat-form-field>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <ng-container>
-                <tr *ngFor="let t of TradeTargetDetail; let i = index" class="row">
-                  <td class="col-4" style="padding-top:30px">{{t.ClusterName}}</td>
-                  <td class="col-4" style="padding-top:30px">{{t.TradeName}}</td>
-                  <td class="col-3">
-                    <!--<form #nform="ngForm" [formGroup]="approvalForm">-->
-                    <mat-form-field>
-                      <input matInput placeholder="Trade Target"  [(ngModel)]="t.TradeTarget" type="number">
-                      <mat-error *ngIf="approvalForm.get('TradeTarget').invalid && approvalForm.get('TradeTarget').errors.required"><strong>required</strong></mat-error>
-                    </mat-form-field>
-                    <!--</form>-->
-                  </td>
-                </tr>
-              </ng-container>
-              
-            </tbody>
-          </table>
+            </ng-container>
+          </tbody>
+        </table>
       </mat-card>
+
       <br />
       <mat-card *ngIf="!isAlreadyApproved && isValidApprover">
         <!--<h3 class="text-danger" *ngIf="!isValidApprover">You are Unauthorized</h3>-->
@@ -75,7 +94,8 @@
               <mat-form-field fxFlex>
                 <!--<textarea matInput [(ngModel)]="data.Comments" placeholder="Remarks" required></textarea>-->
                 <textarea matInput formControlName="Remarks" placeholder="Remarks" required></textarea>
-                <mat-error *ngIf="approvalForm.get('Remarks').invalid && approvalForm.get('Remarks').errors.required"><strong>required</strong></mat-error>
+                <mat-error
+                  *ngIf="approvalForm.get('Remarks').invalid && approvalForm.get('Remarks').errors.required"><strong>required</strong></mat-error>
               </mat-form-field>
             </div>
           </div>
@@ -93,12 +113,13 @@
   </div>
   <div mat-dialog-actions>
     <ng-container *ngIf="!isAlreadyApproved && isValidApprover">
-      <button mat-button class="btn-success" (click)="onApprove(enumApprovalStatus.Approved)">Approve {{latest.IsFinalStep ? '(Final)' : ''}}</button>
-      <button mat-button class="btn-warning" (click)="save(enumApprovalStatus.SendBack)" *ngIf="latest.Step != 1">Send Back</button>
-      <button mat-button class="btn-danger" *ngIf="RejectedButtonHideBit"  (click)="save(enumApprovalStatus.Rejected)">Reject</button>
+      <button mat-button class="btn-success" (click)="onApprove(enumApprovalStatus.Approved)"
+        *ngIf="!isRejected">Approve {{latest.IsFinalStep ? '(Final)' : ''}}</button>
+      <button mat-button class="btn-warning" (click)="save(enumApprovalStatus.SendBack)" *ngIf="latest.Step != 1">Send
+        Back</button>
+      <button mat-button class="btn-danger" *ngIf="RejectedButtonHideBit && !isRejected"
+        (click)="approvalForm.valid ? save(enumApprovalStatus.Rejected) : approvalForm.markAllAsTouched()">Reject</button>
     </ng-container>
     <button mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>Close</button>
   </div>
 </div>
-
-

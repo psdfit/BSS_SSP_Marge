@@ -180,6 +180,7 @@ export class RegistrationEvaluationComponent implements OnInit {
     }
   }
   applyFilter(data: MatTableDataSource<any>, event: any) {
+    
     data.filter = event.target.value.trim().toLowerCase();
     if (data.paginator) {
       data.paginator.firstPage();

@@ -81,25 +81,47 @@ namespace DataLayer.Classes
             }
         }
 
-        public static string AddFile(string Base64, string folder)
+        public static string AddFile(string Base64, string folder,string FileExtension="")
         {
             if (!IsBase64(Base64)) return Base64;
+
             string appRoot;
-            var fname = Guid.NewGuid() + "." + GetExtension(Base64.Substring(5, Base64.IndexOf(";") - 5));
+            var fname = "";
+            if (FileExtension=="")
+            {
+            fname = Guid.NewGuid() + "." + GetExtension(Base64.Substring(5, Base64.IndexOf(";") - 5));
+            }
+            else
+            {
+                fname = "PBTE-"+DateTime.Now.ToString("yyyyMMdd-HHmmss_") + Guid.NewGuid() + "." + FileExtension;
+                //fname = Guid.NewGuid() + "." + FileExtension;
+            }
+
             if (AppContext.BaseDirectory.IndexOf("bin") > 0)
                 appRoot = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin") - 1);
             else
                 appRoot = AppContext.BaseDirectory;
             bool exists = Directory.Exists(appRoot + folder);
+
             if (!exists)
                 System.IO.Directory.CreateDirectory(appRoot + folder);
             var path = appRoot + folder + fname;
             int index = Base64.IndexOf(",");
+
             if (index > 0)
                 Base64 = Base64.Substring(index + 1);
             Byte[] bytes = Convert.FromBase64String(Base64);
             File.WriteAllBytes(path, bytes);
-            return folder + fname;
+
+            if (FileExtension == "")
+            {
+                return folder + fname;
+            }
+            else
+            {
+                return fname;
+            }
+           
         }
 
         public static string GetFileBase64(string path)
@@ -482,7 +504,7 @@ namespace DataLayer.Classes
             mail.To.Add(MailTo);
             mail.Subject = Subject;
             mail.IsBodyHtml = false;
-                mail.Body = Body;
+            mail.Body = Body;
             
             SmtpClient SmtpServer = new SmtpClient(mailServer)
             {
@@ -878,7 +900,7 @@ namespace DataLayer.Classes
             switch (extension.ToLower())
             {
                 #region Big freaking list of mime types
-
+                case "bak":return "application/octet-stream";
                 case "323": return "text/h323";
                 case "3g2": return "video/3gpp2";
                 case "3gp": return "video/3gpp";

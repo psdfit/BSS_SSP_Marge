@@ -1,4 +1,4 @@
-using DataLayer.Models;using System.Collections.Generic;namespace DataLayer.Interfaces{
+using DataLayer.Models;using System.Collections.Generic;using System.Data;namespace DataLayer.Interfaces{
 
     public interface ISRVInstructor
     {
@@ -12,6 +12,7 @@ using DataLayer.Models;using System.Collections.Generic;namespace DataLayer.I
         List<InstructorModel> FetchInstructor(bool InActive);
         void ActiveInActive(int InstrID, bool? InActive, int CurUserID);
         bool SaveInstructorAttendance(InstructorAttendanceDVV model, out string errMsg);
+        bool SavebiomatricInstructorDVV(InstructorDVV model, out string errMsg);
         bool SaveInstructorDVV(InstructorDVV model, out string errMsg);
         public List<InstructorModel> FetchInstructorDataByUser(int UserID);
         public List<InstructorModel> GetByClassID(int ClassID);
@@ -24,7 +25,7 @@ using DataLayer.Models;using System.Collections.Generic;namespace DataLayer.I
         public List<ClassCodeByInstrID> GetClassCodeByInstrID(int instrID);
 
 
-
+        public DataTable FetchReport(int UserID, string SpName);
 
 
     }}

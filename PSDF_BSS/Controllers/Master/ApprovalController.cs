@@ -234,6 +234,125 @@ namespace MasterDataModule.Controllers
             }
         }
         [HttpPost]
+        [Route("SaveGURNApprovalHistory")]
+        public IActionResult SaveGURNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveGURNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendSRNApprovalNotification(wrapperModel);
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("SaveTPRNApprovalHistory")]
+        public IActionResult SaveTPRNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveTPRNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendTPRNApprovalNotification(wrapperModel);
+                
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("SavePVRNApprovalHistory")]
+        public IActionResult SavePVRNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SavePVRNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendTPRNApprovalNotification(wrapperModel);
+
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("SaveMRNApprovalHistory")]
+        public IActionResult SaveMRNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveMRNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendTPRNApprovalNotification(wrapperModel);
+
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("SavePCRNApprovalHistory")]
+        public IActionResult SavePCRNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SavePCRNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendTPRNApprovalNotification(wrapperModel);
+
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("SaveOTRNApprovalHistory")]
+        public IActionResult SaveOTRNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveOTRNApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendTPRNApprovalNotification(wrapperModel);
+
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
         [Route("GetApprovalHistory")]
         public IActionResult GetApprovalHistory(ApprovalHistoryModel model)
         {

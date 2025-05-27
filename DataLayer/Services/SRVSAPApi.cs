@@ -59,6 +59,7 @@ namespace DataLayer.Services
                     var myJson = JsonConvert.SerializeObject(model);
                     using (var httpClient = new HttpClient())
                     {
+                    
                         //var httpClient = new HttpClient();
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                         httpClient.Timeout = TimeSpan.FromMilliseconds(requestTimeoutInMiliSeconds);

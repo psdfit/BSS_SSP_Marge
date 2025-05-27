@@ -138,6 +138,32 @@ namespace PSDF_BSS.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("UpdateProgramDesign")]
+        public IActionResult UpdateProgramDesign(ProgramDesignModel model)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), Split[2], Split[3]);
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    model.UserID = Convert.ToInt32(User.Identity.Name);
+                    srv.UpdateProgramDesign(model);
+                    return Ok(true);
+
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }
+
 
         [HttpPost]
         [Route("LoadData")]
@@ -200,11 +226,15 @@ namespace PSDF_BSS.Controllers
                 var programDesignSummary = srv.FetchDropDownList("RD_SSPProgramDesignSummary");
                 var tradeWiseTarget = srv.FetchDropDownList("RD_SSPTradeWiseTarget");
                 var lotWiseTarget = srv.FetchDropDownList("RD_SSPLotWiseTarget");
+                var PlaningType = srv.FetchDropDownList("RD_SSPPlaningType");
+                var SelectionMethods = srv.FetchDropDownList("RD_SSPSelectionMethods");
                 var data = new
                 {
                     programDesignSummary = programDesignSummary,
                     tradeWiseTarget = tradeWiseTarget,
                     lotWiseTarget = lotWiseTarget,
+                    planingType = PlaningType,
+                    selectionMethods=SelectionMethods
                 };
 
                 return Ok(data);

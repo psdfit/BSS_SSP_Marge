@@ -4,11 +4,9 @@
     <span class="spacer">Association Evaluation</span>
     <input placeholder="Search" *ngIf="TapIndex==0" (keyup)="applyFilter(TablesData,$event)" class="search" />
     <button mat-raised-button *ngIf="TapIndex==0" style="float:right;margin: 0px 7px;background: #c3d9ff"
-            (click)="DataExcelExport(TablesData.filteredData,'Program_Evaluation_Report')">
+      (click)="DataExcelExport(TablesData.filteredData,'Program_Evaluation_Report')">
       <i class="fas fa-file-export"></i> Export Excel
     </button>
-
-
   </mat-toolbar>
   <mat-card-content>
     <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
@@ -18,13 +16,14 @@
             <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <ng-container *ngIf=" column !='AssociationStartDate' && column !='AssociationEndDate' && column !='ProgramStatus' && column !='Action'">
+                <ng-container
+                  *ngIf=" column !='AssociationStartDate' && column !='AssociationEndDate' && column !='ProgramStatus' && column !='Action'">
                   &nbsp;{{ row[column] }}
                 </ng-container>
                 <ng-container *ngIf="column =='Action'">
                   <ng-container *ngIf="column === 'Action'; else elseBlock1">
                     <a color="primary" (click)="ShowDetail(row)" mat-button
-                       matTooltip="Click to start TSP Evaluation ">TSP(s) Evaluation </a>
+                      matTooltip="Click to start TSP Evaluation ">TSP(s) Evaluation </a>
                   </ng-container>
                   <ng-template #elseBlock1>
                     <a color="primary" disabled="true" mat-button> Closed</a>
@@ -36,7 +35,7 @@
                   <span *ngIf="row[column]=='InActive'" class="label label-warning">{{row[column]}}</span>
                 </ng-container>
                 <ng-container *ngIf=" column =='AssociationStartDate' || column =='AssociationEndDate'">
-                  &nbsp; {{ row[column]  }}
+                  &nbsp; {{ row[column] }}
                 </ng-container>
               </mat-cell>
             </ng-container>
@@ -52,14 +51,17 @@
           <mat-toolbar color="accent" class=" slim slim">
             <mat-icon class="material-icons"> add_circle </mat-icon>
             <span class="spacer">{{SpacerTitle}}</span>
-            <button matTooltip="Program_Wise_Evaluation_Report" mat-raised-button *ngIf="TapIndex==1" style="float:right;margin: 0px 7px;background: #c3d9ff"
-                    (click)="DataExcelExport(hTablesData.filteredData,'Program_Wise_Evaluation_Report')">
-              <i class="fas fa-file-export"></i>(Program Evaluation) Export Excel
+            <button matTooltip="Program_Wise_Evaluation_Report" mat-raised-button *ngIf="TapIndex==1"
+              style="float:right;margin: 0px 7px;background: #c3d9ff"
+              (click)="DataExcelExport(hTablesData.filteredData,'Program_Wise_Evaluation_Report')">
+              <i class="fas fa-file-export"></i> Evaluation Report
             </button>
-            <button matTooltip="Evaluation_Trail_Report" mat-raised-button *ngIf="TapIndex==1" style="float:right;margin: 0px 7px;background: #c3d9ff"
-                    (click)="DataExcelExport(AssociationEvaluationTrailData,'Program_Wise_Evaluation_Trail_Report')">
-              <i class="fas fa-file-export"></i> (Evaluation Trail) Export Excel
+            <button matTooltip="Evaluation_Trail_Report" mat-raised-button *ngIf="TapIndex==1"
+              style="float:right;margin: 0px 7px;background: #c3d9ff"
+              (click)="DataExcelExport(AssociationEvaluationTrailData,'Program_Wise_Evaluation_Trail_Report')">
+              <i class="fas fa-file-export"></i> Trail Report
             </button>
+            <input placeholder="Search" *ngIf="TapIndex==1" (keyup)="applyFilter(hTablesData,$event)" class="search" />
           </mat-toolbar>
           <mat-card-content>
             <div class="table-responsive">
@@ -67,25 +69,32 @@
                 <ng-container *ngFor="let column of hTableColumns" [matColumnDef]="column">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
-
-                    <ng-container *ngIf=" column !='Action' && column !='EvaluationStatus' && column !='Attachment' ">
+                    <ng-container
+                      *ngIf=" column !='Action' && column !='Remarks' && column !='EvaluationStatus' && column !='Attachment' ">
                       &nbsp;{{ row[column] }}
                     </ng-container>
-
                     <ng-container *ngIf="column =='Action'">
                       <a *ngIf="CheckAssociation==false" mat-button
-                         matTooltip="TSP evaluation is blocked due to an ongoing program association">Evaluation Blocked </a>
+                        matTooltip="TSP evaluation is blocked due to an ongoing program association">Evaluation Blocked
+                      </a>
                       <a *ngIf="CheckAssociation==true" color="primary" (click)="OpenDialogue(row)" mat-button
-                         matTooltip="Click to start TSP Evaluation ">Proceed Evaluation </a>
+                        matTooltip="Click to start TSP Evaluation ">Proceed Evaluation </a>
                     </ng-container>
 
                     <ng-container *ngIf="column =='Attachment'">
                       &nbsp; <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
-                                matTooltip="Preview document" class="file-lable">
+                        matTooltip="Preview document" class="file-lable">
                         <mat-icon>get_app</mat-icon>
                       </a>
                     </ng-container>
 
+                    <ng-container *ngIf="column =='Remarks' && row[column]">
+                      {{row[column] | uppercase }}
+                    </ng-container>
+
+                    <ng-container *ngIf="column =='Remarks' && !row[column]">
+                       {{"Pending Evaluation"| uppercase}}
+                    </ng-container>
                     <ng-container *ngIf="column =='EvaluationStatus'">
                       <span *ngIf="row[column]=='On-Hold'" class="label label-default">{{row[column]}}</span>
                       <span *ngIf="row[column]=='In-Progress'" class="label label-info">{{row[column]}}</span>
@@ -100,7 +109,7 @@
                 <mat-row *matRowDef="let row; columns: hTableColumns;"></mat-row>
               </mat-table>
               <mat-paginator #hpaginator="matPaginator" [pageSize]="10"
-                             [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+                [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
             </div>
             <!-- record list start -->
           </mat-card-content>

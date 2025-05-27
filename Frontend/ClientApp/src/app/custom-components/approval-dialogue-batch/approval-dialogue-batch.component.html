@@ -1,0 +1,258 @@
+
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Pending Approvals (Class Re-Schedule Request Form (CRRF)</span>
+          <div class="spacer"></div>
+          <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
+        </mat-toolbar>
+        <!--<button (click)="OK()">click</button>-->
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (selectionChange)="[GetClassDatesCRs()]" id="SchemeId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of Scheme" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Status" [formControl]="searchFilter"
+                          (selectionChange)="GetClassDatesCRs()" id="StatusId" matInput required>
+                <mat-optgroup disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchStatus" />
+                </mat-optgroup>
+                <mat-option value="0" selected>-- All --</mat-option>
+                <mat-option value="1">Pending</mat-option>
+                <mat-option value="2">Approved</mat-option>
+                <mat-option value="3">Reject</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #scheme placeholder="BatchNo" [formControl]="BatchNoFilter" id="BatchNo" (selectionChange)="[GetClassDatesCRs()]" matInput required>
+                <mat-option value="0" selected>-- All --</mat-option>
+                <mat-option *ngFor="let s of BatchNos" [value]="s.BatchNo">{{s.DisplayBatchNo}}</mat-option>
+
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="text-center" *ngIf="!ClassRecommendation">
+          <p>Recommendation detail</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Total TSP count</th>
+                <th>Number of Classes</th>
+                <th>Number of Trade</th>
+                <th>Contracting Trainee number</th>
+                <th>Total Trainee Cost</th>
+
+
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of ClassRecommendation">
+
+                <tr>
+                  <td>{{r.TotalTSPCount}}</td>
+                  <td>{{r.NumberOfClasses}}</td>
+                  <td>{{r.NumberOfTrades}}</td>
+                  <td>{{r.ContractingTraineeNumber}}</td>
+                  <td>{{r.TotalTraineeCost}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center" *ngIf="!classesList">
+          <p>No Pending Approval</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>
+                  <mat-checkbox [(ngModel)]="selectAll" (change)="onSelectAllChange()"></mat-checkbox>
+                </th>
+                <th>Action</th>
+                <th>Class Code</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Duration(Months)</th>
+                <th>SchemeName</th>
+                <th>TradeName</th>
+                <th>TSPName</th>
+                <th>TrainingAddressLocation</th>
+                <th></th>
+
+
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of classesList">
+
+                <tr>
+                  <td>
+                    <mat-checkbox [(ngModel)]="r.isChecked" [checked]="selection.isSelected(r)" (change)="onCheckboxChange(r)"></mat-checkbox>
+
+                  </td>
+                  <td>
+                    <a color="primary" matTooltip="Check current Class Dates" *ngIf="!r.IsApproved"
+                       mat-icon-button (click)="GetCurrentClassDatesByID(r)">
+                      <mat-icon>{{r.currentClassDates ?'remove_circle':'control_point' }}</mat-icon>
+                    </a>
+                  </td>
+                  <td class="myAnchor"> <a style="color: #005b9e;" (click)="openClassJourneyDialogue(r.ClassID)"> <strong>{{r.ClassCode}}</strong> </a></td>
+                  <td>{{r.StartDate | date:environment.DateFormat}}</td>
+                  <td>{{r.EndDate | date:environment.DateFormat}}</td>
+                  <td>{{r.Duration}}</td>
+                  <td>{{r.SchemeName}}</td>
+                  <td>{{r.TradeName}}</td>
+                  <td>{{r.TSPName}}</td>
+                  <td>{{r.TrainingAddressLocation}}</td>
+                  <td style="color:orangered">Requested</td>
+
+
+                </tr>
+                <tr *ngIf="r.currentClassDates">
+                  <td colspan="12">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+
+                            <th>Class Code</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration(Months)</th>
+                            <th>TSP Name</th>
+                            <th>Trade Name</th>
+                            <th>Contractual Trainee</th>
+                            <th>Total Trainee Cost</th>
+                            <th>
+
+                            </th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let l of r.currentClassDates">
+                            <td class="myAnchor"> <a style="color: #005b9e;" (click)="openClassJourneyDialogue(l.ClassID)"> <strong>{{l.ClassCode}}</strong> </a></td>
+                            <td>{{l.StartDate | date:environment.DateFormat}}</td>
+                            <td>{{l.EndDate | date:environment.DateFormat}}</td>
+                            <td>{{l.Duration}}</td>
+                            <td>{{l.TSPName}}</td>
+                            <td>{{l.TradeName}}</td>
+                            <td>{{l.TraineesPerClass}}</td>
+                            <td>{{l.TotalPerTraineeCostInTax}}</td>
+                            <td style="color:green">Existing</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+
+            </tbody>
+          </table>
+        </div>
+        <!--</mat-step>-->
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div mat-dialog-content style="overflow:unset;">
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <h6>Approval History</h6>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Datetime</th>
+                <th>Approver</th>
+                <th>Approver Name</th>
+                <th>Status</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container>
+                <tr *ngFor="let r of approvalHistory">
+                  <td>{{r.ModifiedDate | date:environment.DateTimeFormat}}</td>
+                  <td>{{r.Step ==1?'1st':r.Step==2?'2nd': r.Step==3?'3rd': r.Step+'th'}}</td>
+                  <td>{{r.ApproverName}}</td>
+                  <td>{{r.StatusDisplayName}}</td>
+                  <td>{{r.Comments}}</td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="approvalHistory.length==0">
+                <tr>
+                  <td colspan="4" class="text-center">No record found</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </mat-card>
+
+      <br />
+      <mat-card>
+        <!--<h3 class="text-danger" *ngIf="!isValidApprover">You are Unauthorized</h3>-->
+        <!--<ng-container *ngIf="!isAlreadyApproved && isValidApprover">-->
+        <h6>Add Your Remarks</h6>
+        <form #nform="ngForm" [formGroup]="approvalForm">
+          <div class="row">
+            <div class="col-12">
+              <mat-form-field fxFlex>
+                <!--<textarea matInput [(ngModel)]="data.Comments" placeholder="Remarks" required></textarea>-->
+                <textarea matInput formControlName="Remarks" placeholder="Remarks" required></textarea>
+                <mat-error *ngIf="approvalForm.get('Remarks').invalid && approvalForm.get('Remarks').errors.required"><strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <mat-form-field fxFlex>
+                <!--<textarea matInput [(ngModel)]="data.Comments" placeholder="Remarks" required></textarea>-->
+                <textarea matInput formControlName="BatchNo" placeholder="BatchNo" required></textarea>
+                <mat-error *ngIf="approvalForm.get('BatchNo').invalid && approvalForm.get('BatchNo').errors.required"><strong>required</strong></mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
+        <!--</ng-container>-->
+      </mat-card>
+      <br />
+      <div *ngIf="alert!=null" class="alert alert-{{alert.Type}} alert-dismissible" role="alert">
+        <strong>{{alert.Title}} !</strong> {{alert.Message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <ng-container *ngIf="!isAlreadyApproved && isValidApprover">
+
+      <button mat-button class="btn-success" (click)="onApprove(enumApprovalStatus.Approved)">Approve {{latest.IsFinalStep ? '(Final)' : ''}}</button>
+      <button mat-button class="btn-warning" (click)="save(enumApprovalStatus.SendBack)" *ngIf="latest.Step != 1">Send Back</button>
+      <button mat-button class="btn-danger" *ngIf="RejectedButtonHideBit" (click)="save(enumApprovalStatus.Rejected)">Reject</button>
+
+    </ng-container>
+    <button mat-button class="btn-info" (click)="onNoClick()" cdkFocusInitial>Close</button>
+  </div>
+</div>
+

@@ -40,4 +40,15 @@ namespace DataLayer.Models
         public bool CrClassDatesIsRejected { get; set; }
         public int CrClassDatesID { get; set; }
 
-    }}
+        //Added  by Rao Ali Haider 30-Nov-2023
+        public string BatchNo { get; set; }
+        public int TotalTSPCount { get; set; }
+        public int NumberOfClasses { get; set; }
+        public int NumberOfTrades { get; set; }
+        public int ContractingTraineeNumber { get; set; }
+        public int TotalTraineeCost { get; set; }
+        public string TSPName { get; set; }
+        public string SchemeName { get; set; }
+
+    }
+}

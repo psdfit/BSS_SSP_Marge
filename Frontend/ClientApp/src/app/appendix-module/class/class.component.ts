@@ -133,11 +133,16 @@ export class ClassComponent implements OnInit {
       EmploymentCommitmentFormal: [0, Validators.required],
       OverallEmploymentCommitment: [0, Validators.required],
       Stipend: [0, Validators.required],
-      balloonpayment: 0,
       //StipendMode: ['Digital', Validators.required],
       TotalCostPerClass: [0, Validators.required],
       //TradeDetailMapID: ['']
-
+      balloonpayment: 0,
+      GuruPayment: 0,
+      Transportation: 0,
+      ProtectorateandVisa: 0,  //Added by Rao Ali Haider for International Plac
+      MedicalCost: 0,
+      PrometricCost: 0,
+      OtherTrainingCost: 0,
     }
     this.notForm = this._formBuilder.group({ ...this.classFormGroup, TotalClasses: [0, Validators.required] });
 
@@ -238,7 +243,7 @@ export class ClassComponent implements OnInit {
 
     this.populatedTableList.forEach(rowForm => {
       rowForm.Stipend = schemeList[0].Stipend;
-      rowForm.UniformBagCost = schemeList[0].UniformAndBag;
+      //rowForm.UniformBagCost = schemeList[0].UniformAndBag;
       //rowForm.controls.ClassCode.patchValue(`${this.scheme[0]?.SchemeCode}-${foundItem.TSPCode ?? ''}-${seq}`)
     }
     );
@@ -261,12 +266,12 @@ export class ClassComponent implements OnInit {
       rowForm.controls.Stipend.patchValue(value);
     });
   }
-  onChangeUniformBag(value: any) {
-    this.notForm.controls.UniformBagCost.patchValue(value);
-    this.Class.controls.forEach((rowForm: FormGroup) => {
-      rowForm.controls.UniformBagCost.patchValue(value);
-    });
-  }
+  //onChangeUniformBag(value: any) {
+  //  this.notForm.controls.UniformBagCost.patchValue(value);
+  //  this.Class.controls.forEach((rowForm: FormGroup) => {
+  //    rowForm.controls.UniformBagCost.patchValue(value);
+  //  });
+  //}
   getData() {
     this.http.getJSON('api/Class/GetClass').subscribe((d: any) => {
       // console.log(d);
@@ -419,6 +424,13 @@ export class ClassComponent implements OnInit {
               parseInt(this.notForm.controls.Stipend.value),
               parseInt(this.notForm.controls.PerTraineeTestCertCost.value),
               parseInt(this.notForm.controls.UniformBagCost.value),
+              parseInt(this.notForm.controls.balloonpayment.value),
+              parseInt(this.notForm.controls.GuruPayment.value),
+              parseInt(this.notForm.controls.Transportation.value),
+              parseInt(this.notForm.controls.ProtectorateandVisa.value),
+              parseInt(this.notForm.controls.MedicalCost.value),
+              parseInt(this.notForm.controls.PrometricCost.value),
+              parseInt(this.notForm.controls.OtherTrainingCost.value),
               parseInt(item.trainees)
             );
 
@@ -516,12 +528,17 @@ export class ClassComponent implements OnInit {
               this.tableList['EmploymentCommitmentFormal'] = this.notForm.controls.EmploymentCommitmentFormal.value,
               this.tableList['OverallEmploymentCommitment'] = this.notForm.controls.OverallEmploymentCommitment.value,
               this.tableList['Stipend'] = Math.round(this.notForm.controls.Stipend.value),
-              this.tableList['balloonpayment'] = this.notForm.controls.balloonpayment.value,
               this.tableList['TotalCostPerClass'] = this.notForm.controls.TotalCostPerClass.value,
               this.tableList['TradeDetailMapID'] = tradeDetailID,
-              this.tableList['IsEditable'] = false
-
-            this.populatedTableList.push(this.tableList);
+              this.tableList['IsEditable'] = false,
+              this.tableList['balloonpayment'] = this.notForm.controls.balloonpayment.value,
+              this.tableList['GuruPayment'] = this.notForm.controls.GuruPayment.value,
+              this.tableList['Transportation'] = this.notForm.controls.Transportation.value,
+              this.tableList['MedicalCost'] = this.notForm.controls.MedicalCost.value,  //Added by Rao Ali Haider for International Plac
+              this.tableList['PrometricCost'] = this.notForm.controls.PrometricCost.value,
+              this.tableList['OtherTrainingCost'] = this.notForm.controls.OtherTrainingCost.value,
+              this.tableList['ProtectorateandVisa'] = this.notForm.controls.ProtectorateandVisa.value
+              this.populatedTableList.push(this.tableList);
             this.tableList = [];
 
             form.patchValue({
@@ -563,8 +580,15 @@ export class ClassComponent implements OnInit {
               EmploymentCommitmentFormal: this.notForm.controls.EmploymentCommitmentFormal.value,
               OverallEmploymentCommitment: this.notForm.controls.OverallEmploymentCommitment.value,
               Stipend: this.notForm.controls.Stipend.value,
+              TotalCostPerClass: TotalCost_temp,
               balloonpayment: this.notForm.controls.balloonpayment.value,
-              TotalCostPerClass: TotalCost_temp
+              GuruPayment: this.notForm.controls.GuruPayment.value,
+              Transportation: this.notForm.controls.Transportation.value,
+              ProtectorateandVisa: this.notForm.controls.ProtectorateandVisa.value,  //Added by Rao Ali Haider for International Plac
+              MedicalCost: this.notForm.controls.MedicalCost.value,
+              PrometricCost: this.notForm.controls.PrometricCost.value,
+              OtherTrainingCost: this.notForm.controls.OtherTrainingCost.value
+              
             }, { emitEvent: true });
           });
       });
@@ -774,12 +798,12 @@ export class ClassComponent implements OnInit {
     }
   }
   populateFieldsFromFile(_classData: any, stepper: MatStepper = null) {
+    debugger;
     this.stepper = stepper;
     this.Class.clear();
     if (_classData.length == 0) {
       return;
     }
-
     for (let f of _classData) {
       f = this.http.TrimFields(f);
 
@@ -902,9 +926,15 @@ export class ClassComponent implements OnInit {
               //parseInt(f['Stipend']),
               parseInt(this.notForm.controls.Stipend.value),
               parseInt(f['Testing & Certification Fee per Trainee']),
-              //parseInt(f['Uniform & Bag Cost per Trainee']),
-              parseInt(this.notForm.controls.UniformBagCost.value),
-
+              parseInt(f['Uniform & Bag Cost per Trainee / Hostel']),
+              //parseInt(this.notForm.controls.UniformBagCost.value),
+              parseInt(f['On Job Training (OJT)']),
+              parseInt(f['Guru Payment']),
+              parseInt(f['Transportation']),
+              parseInt(f['Protectorate and Visa Stamping']),
+              parseInt(f['Medical cost']),
+              parseInt(f['Prometric costs']),
+              parseInt(f['Other Training and supporting cost']),
               item.trainees
 
               //this.notForm.controls.TrainingCostPerTraineePerMonthInTax.value,
@@ -979,17 +1009,23 @@ export class ClassComponent implements OnInit {
             this.tableList['TrainingCostPerTraineePerMonthExTax'] = TrainingCostPerTraineePerMonthExTaxes_temp,
             this.tableList['SalesTax'] = Math.round(SalesTax_temp),
             this.tableList['TrainingCostPerTraineePerMonthInTax'] = TrainingCostPerTraineePerMonthIncTaxes_temp,
-            this.tableList['UniformBagCost'] = Math.round(f['Uniform & Bag Cost per Trainee']),
+            this.tableList['UniformBagCost'] = f['Uniform & Bag Cost per Trainee / Hostel'],
             this.tableList['PerTraineeTestCertCost'] = Math.round(f['Testing & Certification Fee per Trainee']),
             this.tableList['BoardingAllowancePerTrainee'] = Math.round(f['Boarding & Other Allowances per trainee']),
             this.tableList['EmploymentCommitmentSelf'] = Math.round(f['Employment Commitment Self']),
             this.tableList['EmploymentCommitmentFormal'] = Math.round(f['Employment Commitment Formal']),
             this.tableList['OverallEmploymentCommitment'] = Math.round(f['Employment Commitment Self'] + f['Employment Commitment Formal']),
             this.tableList['Stipend'] = Math.round(f['Stipend']),
-            this.tableList['balloonpayment'] = f['Balloon payment'] ?? 0,
             this.tableList['TotalCostPerClass'] = Math.round(TotalCost_temp),
+            this.tableList['balloonpayment'] = f['On Job Training (OJT)'] ?? 0,
+            this.tableList['GuruPayment'] = f['Guru Payment'] ?? 0, 
+            this.tableList['Transportation'] = f['Transportation'] ?? 0,
+            this.tableList['ProtectorateandVisa'] = f['Protectorate and Visa Stamping'] ?? 0, //Added by Rao Ali Haider for International Placement
+            this.tableList['MedicalCost'] = f['Medical cost'] ?? 0,
+            this.tableList['PrometricCost'] = f['Prometric costs'] ?? 0,
+            this.tableList['OtherTrainingCost'] = f['Other Training and supporting cost'] ?? 0,
             this.tableList['IsEditable'] = false
-
+          
           ///
 
           let tradeDetailID = this.checkAssignTradeDetailMapID(this.tableList);
@@ -1045,14 +1081,20 @@ export class ClassComponent implements OnInit {
             TrainingCostPerTraineePerMonthExTax: TrainingCostPerTraineePerMonthExTaxes_temp,
             SalesTax: Math.round(SalesTax_temp),
             TrainingCostPerTraineePerMonthInTax: TrainingCostPerTraineePerMonthIncTaxes_temp,
-            UniformBagCost: Math.round(f['Uniform & Bag Cost per Trainee']),
+            UniformBagCost: f['Uniform & Bag Cost per Trainee / Hostel'],
             PerTraineeTestCertCost: Math.round(f['Testing & Certification Fee per Trainee']),
             BoardingAllowancePerTrainee: Math.round(f['Boarding & Other Allowances per trainee']),
             EmploymentCommitmentSelf: Math.round(f['Employment Commitment Self']),
             EmploymentCommitmentFormal: Math.round(f['Employment Commitment Formal']),
             OverallEmploymentCommitment: Math.round(f['Employment Commitment Self'] + f['Employment Commitment Formal']),
             Stipend: Math.round(f['Stipend']),
-            balloonpayment: Math.round(f['balloonpayment']),
+            balloonpayment: Math.round(f['On Job Training (OJT)']), 
+            GuruPayment: Math.round(f['Guru Payment']),
+            Transportation: Math.round(f['Transportation']),
+            ProtectorateandVisa: Math.round(f['Protectorate and Visa Stamping']),  //Added by Rao Ali Haider for International Plac
+            MedicalCost: Math.round(f['Medical cost']),
+            PrometricCost: Math.round(f['Prometric costs']),
+            OtherTrainingCost: Math.round(f['Other Training and supporting cost']),
             TotalCostPerClass: Math.round(TotalCost_temp)
           }, { emitEvent: true });
           form.markAllAsTouched();
@@ -1086,10 +1128,10 @@ export class ClassComponent implements OnInit {
     //return (TrainingCostPerTraineePerMonthIncTaxes / (1 + SalesTaxRate))?.toFixed(2);
     return parseFloat((TrainingCostPerTraineePerMonthIncTaxes / (1 + SalesTaxRate)).toFixed(this.decimalPlaces));
   }
-  calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend, testingCert, uniformBag, trainees) {
+  calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend, testingCert, uniformBag, ojt, Guru, transportation, ProtectorateandVisa, MedicalCost, PrometricCost, OtherTrainingCost, trainees) {
     let val = 0
-    if (duration < 1) { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + boarding + (duration * stipend) + testingCert + uniformBag) * trainees); }
-    else { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + boarding + (duration * stipend) + testingCert + uniformBag) * trainees); }
+    if (duration < 1) { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru) + ProtectorateandVisa + MedicalCost + PrometricCost +  OtherTrainingCost) * trainees); }
+    else { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)) * trainees); }
     return parseFloat(val.toFixed(this.decimalPlaces));
   }
   emptyClass() {
@@ -1250,14 +1292,21 @@ export class ClassComponent implements OnInit {
       (row['SalesTaxRate'] >= 1) ||
       (!row['SalesTax'] && row['SalesTax'] != 0) ||
       (!row['TrainingCostPerTraineePerMonthInTax'] && row['TrainingCostPerTraineePerMonthInTax'] != 0) ||
-      (isNaN(row.UniformBagCost)) ||
+      (!row['UniformBagCost'] && row['UniformBagCost'] != 0) ||
+      //(isNaN(row.UniformBagCost)) ||
       (isNaN(row.Stipend)) ||
       (!row['balloonpayment'] && row['balloonpayment'] != 0) ||
+      (!row['GuruPayment'] && row['GuruPayment'] != 0) ||
+      (!row['Transportation'] && row['Transportation'] != 0) ||
       (!row['PerTraineeTestCertCost'] && row['PerTraineeTestCertCost'] != 0) ||
       (!row['EmploymentCommitmentSelf'] && row['EmploymentCommitmentSelf'] != 0) ||
       (!row['EmploymentCommitmentFormal'] && row['EmploymentCommitmentFormal'] != 0) ||
       (!row['OverallEmploymentCommitment'] && row['OverallEmploymentCommitment'] != 0) ||
       (!row['TotalCostPerClass'] && row['TotalCostPerClass'] != 0) ||
+      (!row['ProtectorateandVisa'] && row['ProtectorateandVisa'] != 0) || //Added by Rao Ali Haider for International Plac
+      (!row['MedicalCost'] && row['MedicalCost'] != 0) ||
+      (!row['PrometricCost'] && row['PrometricCost'] != 0) ||
+      (!row['OtherTrainingCost'] && row['OtherTrainingCost'] != 0) ||
       (row.RequiredLocationGeoTag && !regEx.test(row.GeoTagging)) ||
       !row['TradeDetailMapID']
     ) {
@@ -1274,6 +1323,7 @@ export class ClassComponent implements OnInit {
   checkClassGridValidity() {
     let notValidRowsCount = 0;
     let unsavedRowsCount = 0;
+    debugger;
     this.populatedTableList.forEach(x => {
       if (x.NotValid) {
         notValidRowsCount++;
@@ -1407,11 +1457,16 @@ export class ClassComponent implements OnInit {
       OverallEmploymentCommitment: [0, Validators.required],
       Stipend: [0, Validators.required],
       //StipendMode: ['Digital', Validators.required],
-      balloonpayment: 0,
       TotalCostPerClass: [0, Validators.required],
       TradeDetailMapID: ['', Validators.required],
-      RequiredLocationGeoTag: ['', Validators.required]
-
+      RequiredLocationGeoTag: ['', Validators.required],
+      balloonpayment: 0,
+      GuruPayment: 0,
+      Transportation: 0,      
+      ProtectorateandVisa: 0,
+      MedicalCost:0,
+      PrometricCost: 0,
+      OtherTrainingCost: 0
     },
       { updateOn: "change" }
 
@@ -1461,7 +1516,6 @@ export class ClassModel extends ModelBase {
   PerTraineeTestCertCost: number;
   TotalCostPerClass: number;
   Stipend: number;
-  balloonpayment: number;
   //StipendMode: string;
   BoardingAllowancePerTrainee: number;
   BidPrice: number;
@@ -1471,7 +1525,13 @@ export class ClassModel extends ModelBase {
   OrganizationID: number;
   MinAge: number;
   MaxAge: number;
-
+  balloonpayment: number;
+  GuruPayment: number;
+  Transportation: number;
+  ProtectorateandVisa: number;
+  MedicalCost: number;
+  PrometricCost: number;
+  OtherTrainingCost: number;
 }
 
 

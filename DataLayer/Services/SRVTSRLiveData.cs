@@ -236,6 +236,29 @@ namespace DataLayer.Services
             }
             return list;
         }
+         public List<GSRLiveDataModel> GetFilteredGSRData(SearchFilter filters)
+        {
+            List<GSRLiveDataModel> list = new List<GSRLiveDataModel>();
+            if (filters != null)
+            {
+                try
+                {
+                    SqlParameter[] param = new SqlParameter[10];
+                    param[0] = new SqlParameter("@SchemeID", filters.SchemeID);
+                    param[1] = new SqlParameter("@TSPID", filters.TSPID);
+                    param[2] = new SqlParameter("@ClassID", filters.ClassID);
+                    param[3] = new SqlParameter("@TraineeID", filters.TraineeID);
+
+                    DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GSRData", param).Tables[0];
+                    list = LoopinGSRData(dt);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return list;
+        }
 
         public List<TSRLiveDataModel> FetchTCRLiveDataByFilters(int[] filters)
         {
@@ -276,6 +299,15 @@ namespace DataLayer.Services
                 tsrLiveModel.Add(RowOfTSRData(r));
             }
             return tsrLiveModel;
+        }
+        private List<GSRLiveDataModel> LoopinGSRData(DataTable dt)
+        {
+            List<GSRLiveDataModel> gsrLiveModel = new List<GSRLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                gsrLiveModel.Add(RowOfGSRData(r));
+            }
+            return gsrLiveModel;
         }
 
         private List<TSRLiveDataModel> LoopinTCRLiveData(DataTable dt)
@@ -400,7 +432,29 @@ namespace DataLayer.Services
                 tsr.ClassStatusName = row.Field<string>("ClassStatusName");
                 tsr.ProvinceName = row.Field<string>("ProvinceName");
             }
+            if (row.Table.Columns.Contains("IBANNumber"))
+            {
+                tsr.IBANNumber = row.Field<string>("IBANNumber");
+                tsr.BankName = row.Field<string>("BankName");
+                tsr.Accounttitle = row.Field<string>("Accounttitle");
+            }
             return tsr;
+        }
+
+        private GSRLiveDataModel RowOfGSRData(DataRow row)
+        {
+            GSRLiveDataModel gsr = new GSRLiveDataModel();
+            gsr.TraineeCode = row.Field<string>("TraineeCode");
+            gsr.TraineeName = row.Field<string>("TraineeName");
+            gsr.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            gsr.FatherName = row.Field<string>("FatherName");
+            gsr.TSPName = row.Field<string>("TSPName");
+            gsr.GuruContactNumber = row.Field<string>("GuruContactNumber");
+            gsr.ClassCode = row.Field<string>("ClassCode");
+            gsr.GuruCNIC = row.Field<string>("GuruCNIC");
+            gsr.GuruName = row.Field<string>("GuruName");
+
+            return gsr;
         }
 
         public List<TSRLiveDataModel> UpdateTraineeStatusExpell(TSRLiveDataModel traineestatus)
@@ -520,6 +574,111 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<TERLiveDataModel> FetchTERPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
+                // param.Add(new SqlParameter("@UserID", filterModel.UserID));
+                // param.Add(new SqlParameter("@OID", filterModel.OID));
+                param.AddRange(Common.GetPagingParams(pagingModel));
+
+                DataTable dt = new DataTable();
+                dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TERPaged", param.ToArray()).Tables[0];
+
+                if (dt.Rows.Count > 0)
+                    totalCount = Convert.ToInt32(dt.Rows[0]["TotalCount"]);
+                else
+                    totalCount = 0;
+                return LoopinTERLiveDataPaged(dt);
+
+               
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<TARLiveDataModel> FetchTARPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
+                // New parameters for filtering by Month and Year
+                param.Add(new SqlParameter("@Month", filterModel.Month ?? (object)DBNull.Value));
+                param.Add(new SqlParameter("@Year", filterModel.Year ?? (object)DBNull.Value));
+                param.Add(new SqlParameter("@UserID", filterModel.UserID));
+                // param.Add(new SqlParameter("@OID", filterModel.OID));
+                param.AddRange(Common.GetPagingParams(pagingModel));
+
+                DataTable dt = new DataTable();
+                dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TAR_Paged", param.ToArray()).Tables[0];
+
+                if (dt.Rows.Count > 0)
+                    totalCount = Convert.ToInt32(dt.Rows[0]["TotalCount"]);
+                else
+                    totalCount = 0;
+                return LoopinTARLiveDataPaged(dt);
+
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+
+        public List<TARCWLiveDataModel> FetchTARPagedClasswise(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                // New parameters for filtering by Month and Year
+                param.Add(new SqlParameter("@Month", filterModel.Month ?? (object)DBNull.Value));
+                param.Add(new SqlParameter("@Year", filterModel.Year ?? (object)DBNull.Value));
+                param.Add(new SqlParameter("@UserID", filterModel.UserID));
+                // param.Add(new SqlParameter("@OID", filterModel.OID));
+                 param.AddRange(Common.GetPagingParams(pagingModel));
+
+                DataTable dt = new DataTable();
+                dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TARPagedClasswise", param.ToArray()).Tables[0];
+
+                if (dt.Rows.Count > 0)
+                    totalCount = Convert.ToInt32(dt.Rows[0]["TotalCount"]);
+                else
+                    totalCount = 0;
+                return LoopinTARCWLiveDataPaged(dt);
+
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<GSRLiveDataModel> FetchGSRPaged(PagingModel pagingModel, SearchFilter filterModel)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
+                param.AddRange(Common.GetPagingParams(pagingModel));
+
+                DataTable dt = new DataTable();
+                dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GSRDataPaged", param.ToArray()).Tables[0];
+
+                return LoopinGSRLiveDataPaged(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
 
         private List<TSRLiveDataModel> LoopinTSRLiveDataPaged(DataTable dt)
@@ -530,6 +689,43 @@ namespace DataLayer.Services
                 tsrLiveModel.Add(RowOfTSRLiveDatapaged(r));
             }
             return tsrLiveModel;
+        } 
+        private List<TERLiveDataModel> LoopinTERLiveDataPaged(DataTable dt)
+        {
+            List<TERLiveDataModel> terLiveModel = new List<TERLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                terLiveModel.Add(RowOfTERLiveDatapaged(r));
+            }
+            return terLiveModel;
+        } 
+        private List<TARLiveDataModel> LoopinTARLiveDataPaged(DataTable dt)
+        {
+            List<TARLiveDataModel> tarLiveModel = new List<TARLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                tarLiveModel.Add(RowOfTARLiveDatapaged(r));
+            }
+            return tarLiveModel;
+        } 
+        private List<TARCWLiveDataModel> LoopinTARCWLiveDataPaged(DataTable dt)
+        {
+            List<TARCWLiveDataModel> tarcwLiveModel = new List<TARCWLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                tarcwLiveModel.Add(RowOfTARCWLiveDatapaged(r));
+            }
+            return tarcwLiveModel;
+        } 
+        
+        private List<GSRLiveDataModel> LoopinGSRLiveDataPaged(DataTable dt)
+        {
+            List<GSRLiveDataModel> gsrLiveModel = new List<GSRLiveDataModel>();
+            foreach (DataRow r in dt.Rows)
+            {
+                gsrLiveModel.Add(RowOfGSRLiveDatapaged(r));
+            }
+            return gsrLiveModel;
         }
 
         private TSRLiveDataModel RowOfTSRLiveDatapaged(DataRow row)
@@ -554,7 +750,98 @@ namespace DataLayer.Services
             tsr.Disability = row.Field<string>("Disability");
             tsr.ReligionName = row.Field<string>("ReligionName");
             tsr.CertAuthName = row.Field<string>("CertAuthName");
+            if (row.Table.Columns.Contains("IBANNumber"))
+            {
+                tsr.IBANNumber = row.Field<string>("IBANNumber");
+                tsr.BankName = row.Field<string>("BankName");
+                tsr.Accounttitle = row.Field<string>("Accounttitle");
+            }
             return tsr;
+        }
+         private TERLiveDataModel RowOfTERLiveDatapaged(DataRow row)
+        {
+            TERLiveDataModel ter = new TERLiveDataModel();
+            ter.TraineeCode = row.Field<string>("TraineeCode");
+            ter.TraineeID = row.Field<int>("TraineeID");
+            ter.TraineeName = row.Field<string>("TraineeName");
+            ter.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            ter.FatherName = row.Field<string>("FatherName");
+            ter.SchemeName = row.Field<string>("SchemeName");
+            ter.ClassCode = row.Field<string>("ClassCode");
+            ter.IsEnrolled = row.Field<bool>("IsEnrolled");
+            return ter;
+        }
+        private TARLiveDataModel RowOfTARLiveDatapaged(DataRow row)
+        {
+            TARLiveDataModel tar = new TARLiveDataModel();
+
+            tar.TraineeCode = row.Field<string>("TraineeCode");
+            tar.TraineeID = row.Field<int>("TraineeID");
+            tar.TraineeName = row.Field<string>("TraineeName");
+            tar.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            tar.FatherName = row.Field<string>("FatherName");
+            tar.SchemeName = row.Field<string>("SchemeName");
+            tar.ClassID = row.Field<int>("ClassID");
+            tar.ClassCode = row.Field<string>("ClassCode");
+            tar.AttendanceDate = row["AttendanceDate"] == DBNull.Value ? (DateTime?)null : row.Field<DateTime>("AttendanceDate");
+            tar.CheckIn = row["CheckInTime"] == DBNull.Value ? (DateTime?)null : row.Field<DateTime>("CheckInTime");
+            tar.CheckOut = row["CheckOutTime"] == DBNull.Value ? (DateTime?)null : row.Field<DateTime>("CheckOutTime");
+            tar.ClassStartTime = row["ClassStartTime"] == DBNull.Value ? (DateTime?)null : row.Field<DateTime>("ClassStartTime");
+            tar.ClassEndTime = row["ClassEndTime"] == DBNull.Value ? (DateTime?)null : row.Field<DateTime>("ClassEndTime");
+            tar.ClassTotalHours = row.Field<string>("ClassTotalHours");
+            tar.EnrolledTrainees = row.Field<int>("EnrolledTrainees");
+            tar.Shift = row.Field<string>("Shift");
+            tar.TrainingDaysNo = row.Field<int>("TrainingDaysNo");
+            tar.TrainingDays = row.Field<string>("TrainingDays");
+            tar.KAM = row.Field<string>("KAM");
+            tar.TraineeStatusName = row.Field<string>("TraineeStatusName");
+            tar.ClassDistrictName = row.Field<string>("ClassDistrictName");
+            tar.ClassStartDate = row.Field<DateTime>("ClassStartDate");
+            tar.ClassEndDate = row.Field<DateTime>("ClassEndDate");
+            tar.ClassStatusName = row.Field<string>("ClassStatusName");
+            tar.TSPName = row.Field<string>("TSPName");
+            tar.MPRTraineeStatus = row.Field<string>("MPRTraineeStatus");
+            tar.TPMVisitDateMarking1 = row.IsNull("TPMVisitDateMarking1") ? (DateTime?)null : row.Field<DateTime>("TPMVisitDateMarking1");
+            tar.TPMVisitDateMarking2 = row.IsNull("TPMVisitDateMarking2") ? (DateTime?)null : row.Field<DateTime>("TPMVisitDateMarking2");
+
+            return tar;
+        }
+        private TARCWLiveDataModel RowOfTARCWLiveDatapaged(DataRow row)
+        {
+            TARCWLiveDataModel tarcw = new TARCWLiveDataModel();
+
+            tarcw.Scheme = row.Field<string>("Scheme");
+            tarcw.TSP = row.Field<string>("TSP");
+            tarcw.ClassCode = row.Field<string>("ClassCode");
+            tarcw.District = row.Field<string>("District");
+            tarcw.ClassStartDate = row.Field<DateTime>("ClassStartDate");
+            tarcw.ClassEndDate = row.Field<DateTime>("ClassEndDate");
+            tarcw.AttendanceDate = row.Field<DateTime>("AttendanceDate");
+            tarcw.NumberOfTrainees = row.Field<int>("NumberOfTrainees");
+            tarcw.TotalTraineesPerClass = row.Field<int>("TotalTraineesPerClass");
+            tarcw.OnRollCompletedTraineesPresent = row.Field<int>("OnRollCompletedTraineesPresent");
+            tarcw.OnRollCompletedTraineesAbsent = row.Field<int>("OnRollCompletedTraineesAbsent");
+            tarcw.DataSource = row.Field<string>("DataSource");
+            tarcw.TotalOnRollCompletedTrainees = row.Field<int>("TotalOnRollCompletedTrainees");
+            tarcw.OnRollCompletedTraineesRatio = Convert.ToSingle(row.Field<decimal>("OnRollCompletedTraineesRatio"));
+
+            return tarcw;
+        }
+
+
+        private GSRLiveDataModel RowOfGSRLiveDatapaged(DataRow row)
+        {
+            GSRLiveDataModel gsr = new GSRLiveDataModel();
+            gsr.TraineeCode = row.Field<string>("TraineeCode");
+            gsr.TraineeName = row.Field<string>("TraineeName");
+            gsr.TraineeCNIC = row.Field<string>("TraineeCNIC");
+            gsr.FatherName = row.Field<string>("FatherName");
+            gsr.TSPName = row.Field<string>("TSPName");
+            gsr.GuruContactNumber = row.Field<string>("GuruContactNumber");
+            gsr.ClassCode = row.Field<string>("ClassCode");
+            gsr.GuruCNIC = row.Field<string>("GuruCNIC");
+            gsr.GuruName = row.Field<string>("GuruName");
+            return gsr;
         }
 
         public List<TSRLiveDataModel> FetchTSULiveData(PagingModel pagingModel, SearchFilter filterModel, out int totalCount)

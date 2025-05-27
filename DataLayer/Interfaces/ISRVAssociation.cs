@@ -14,7 +14,8 @@ namespace DataLayer.Interfaces
         public DataTable SaveAssociationEvaluation(AssociationEvaluationModel data);
         public void SaveTSPAssignment(TSPAssignmentModel data);
         public DataTable FetchDataListBySPName(string spName);
-        public DataTable LoopinData(DataTable dt, string[] attachmentColumns);
+        public DataTable LoopingData(DataTable dt, string[] attachmentColumns);
+        DataTable FetchReportBySPNameAndParam(string spName, string param, int value);
 
     }
 }

@@ -331,6 +331,219 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
-        //RD_GetKAMUserByClassCode
+        public ApprovalHistoryModel GET_ConcateClassescodebyTPRNID_Notification(string TPRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_ConcateClasscodebyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ConcateClasscodebyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+
+                List<ApprovalHistoryModel> KAMTSPUser = Helper.ConvertDataTableToModel<ApprovalHistoryModel>(dt);
+                KAMTSPUser[0].ForMonth = String.Format("{0:y}", KAMTSPUser[0].Month);  // "March, 2008"
+                return KAMTSPUser[0];
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public ApprovalHistoryModel GET_ConcateClassescodebyPVRNID_Notification(string PVRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_ConcateClasscodebyPVRNID_Notification", new SqlParameter("@PVRNID", PVRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ConcateClasscodebyPVRNID_Notification", new SqlParameter("@PVRNID", PVRNIDs)).Tables[0];
+                }
+
+                List<ApprovalHistoryModel> KAMTSPUser = Helper.ConvertDataTableToModel<ApprovalHistoryModel>(dt);
+                KAMTSPUser[0].ForMonth = String.Format("{0:y}", KAMTSPUser[0].Month);  // "March, 2008"
+                return KAMTSPUser[0];
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public ApprovalHistoryModel GET_ConcateClassescodebyOTRNID_Notification(string OTRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_ConcateClasscodebyOTRNID_Notification", new SqlParameter("@OTRNID", OTRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ConcateClasscodebyOTRNID_Notification", new SqlParameter("@OTRNID", OTRNIDs)).Tables[0];
+                }
+
+                List<ApprovalHistoryModel> KAMTSPUser = Helper.ConvertDataTableToModel<ApprovalHistoryModel>(dt);
+                KAMTSPUser[0].ForMonth = String.Format("{0:y}", KAMTSPUser[0].Month);  // "March, 2008"
+                return KAMTSPUser[0];
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public ApprovalHistoryModel GET_ConcateClassescodebyMRNID_Notification(string MRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_ConcateClasscodebyMRNID_Notification", new SqlParameter("@MRNID", MRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ConcateClasscodebyMRNID_Notification", new SqlParameter("@MRNID", MRNIDs)).Tables[0];
+                }
+
+                List<ApprovalHistoryModel> KAMTSPUser = Helper.ConvertDataTableToModel<ApprovalHistoryModel>(dt);
+                KAMTSPUser[0].ForMonth = String.Format("{0:y}", KAMTSPUser[0].Month);  // "March, 2008"
+                return KAMTSPUser[0];
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public ApprovalHistoryModel GET_ConcateClassescodebyPCRNID_Notification(string PCRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_ConcateClasscodebyPCRNID_Notification", new SqlParameter("@PCRNID", PCRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ConcateClasscodebyPCRNID_Notification", new SqlParameter("@PCRNID", PCRNIDs)).Tables[0];
+                }
+                List<ApprovalHistoryModel> KAMTSPUser = Helper.ConvertDataTableToModel<ApprovalHistoryModel>(dt);
+                KAMTSPUser[0].ForMonth = String.Format("{0:y}", KAMTSPUser[0].Month);  // "March, 2008"
+                return KAMTSPUser[0];
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public string GET_KAMAndTspUserByTPRNIDs_Notification(string TPRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyTPRNID_Notification", new SqlParameter("@TPRNID", TPRNIDs)).Tables[0];
+                }
+
+                List<TSPMasterModel> KAMTSPUser = Helper.ConvertDataTableToModel<TSPMasterModel>(dt);
+                string TSPIds = (string.Join(",", KAMTSPUser.Select(x => x.UserID.ToString())));
+                List<string> Distinct_uniqueValues = TSPIds.ToLower().Split(',').Distinct().ToList();
+                string UniqueString = string.Join(",", Distinct_uniqueValues);
+
+                return UniqueString;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public string GET_KAMAndTspUserByPVRNIDs_Notification(string PVRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyPVRNID_Notification", new SqlParameter("@PVRNID", PVRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyPVRNID_Notification", new SqlParameter("@PVRNID", PVRNIDs)).Tables[0];
+                }
+
+                List<TSPMasterModel> KAMTSPUser = Helper.ConvertDataTableToModel<TSPMasterModel>(dt);
+                string TSPIds = (string.Join(",", KAMTSPUser.Select(x => x.UserID.ToString())));
+                List<string> Distinct_uniqueValues = TSPIds.ToLower().Split(',').Distinct().ToList();
+                string UniqueString = string.Join(",", Distinct_uniqueValues);
+
+                return UniqueString;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public string GET_KAMAndTspUserByOTRNIDs_Notification(string OTRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyOTRNID_Notification", new SqlParameter("@OTRNID", OTRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyOTRNID_Notification", new SqlParameter("@OTRNID", OTRNIDs)).Tables[0];
+                }
+
+                List<TSPMasterModel> KAMTSPUser = Helper.ConvertDataTableToModel<TSPMasterModel>(dt);
+                string TSPIds = (string.Join(",", KAMTSPUser.Select(x => x.UserID.ToString())));
+                List<string> Distinct_uniqueValues = TSPIds.ToLower().Split(',').Distinct().ToList();
+                string UniqueString = string.Join(",", Distinct_uniqueValues);
+
+                return UniqueString;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public string GET_KAMAndTspUserByMRNIDs_Notification(string MRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyMRNID_Notification", new SqlParameter("@MRNID", MRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyMRNID_Notification", new SqlParameter("@MRNID", MRNIDs)).Tables[0];
+                }
+
+                List<TSPMasterModel> KAMTSPUser = Helper.ConvertDataTableToModel<TSPMasterModel>(dt);
+                string TSPIds = (string.Join(",", KAMTSPUser.Select(x => x.UserID.ToString())));
+                List<string> Distinct_uniqueValues = TSPIds.ToLower().Split(',').Distinct().ToList();
+                string UniqueString = string.Join(",", Distinct_uniqueValues);
+
+                return UniqueString;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public string GET_KAMAndTspUserByPCRNIDs_Notification(string PCRNIDs, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyPCRNID_Notification", new SqlParameter("@PCRNID", PCRNIDs)).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPAndKAMUSerbyPCRNID_Notification", new SqlParameter("@PCRNID", PCRNIDs)).Tables[0];
+                }
+
+                List<TSPMasterModel> KAMTSPUser = Helper.ConvertDataTableToModel<TSPMasterModel>(dt);
+                string TSPIds = (string.Join(",", KAMTSPUser.Select(x => x.UserID.ToString())));
+                List<string> Distinct_uniqueValues = TSPIds.ToLower().Split(',').Distinct().ToList();
+                string UniqueString = string.Join(",", Distinct_uniqueValues);
+
+                return UniqueString;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace DataLayer.Models
         public string TraineeCNIC { get; set; }
         public string FatherName { get; set; }
         public int GenderID { get; set; }
+        public int TSPID { get; set; }
         public string GenderName { get; set; }
         public int TradeID { get; set; }
         public string TradeName { get; set; }
@@ -34,7 +35,6 @@ namespace DataLayer.Models
         public DateTime? UpdatedDate { get; set; }
         public int SchemeID { get; set; }
         public string SchemeName { get; set; }
-        public int TSPID { get; set; }
         public string TSPName { get; set; }
         public int ClassID { get; set; }
         public string ClassCode { get; set; }
@@ -111,4 +111,22 @@ namespace DataLayer.Models
         public string Disability { get; set; }
         public string TraineeIntrestStatus { get; set; }
         public string Shift { get; set; }
-    }}
+
+    
+    
+        public bool IsReferredByGuru { get; set; }
+        public int GuruProfileID { get; set; }
+
+        public string RightIndexFinger { get; set; }
+        public string RightMiddleFinger { get; set; }
+        public string LeftIndexFinger { get; set; }
+        public string LeftMiddleFinger { get; set; }
+        //added By ali Haider for International Placement
+        public string Accounttitle { get; set; }
+        public string BankName { get; set; }
+        public string IBANNumber { get; set; }
+
+
+
+    }
+}

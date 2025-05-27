@@ -1,5 +1,6 @@
 ﻿using DataLayer.Interfaces;
 using DataLayer.Models;
+using DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using PSDF_BSS.API.Models;
 using System;
@@ -34,6 +35,7 @@ namespace PSDF_BSS.API.Controllers
                     Message = "Bad request. You are requested to an invalid class."
                 });
             }
+
             var trainees = _srvTraineeProfile.FetchTraineeProfileByClass_DVV(id)
                 .Select(x => new
                 {
@@ -134,7 +136,7 @@ namespace PSDF_BSS.API.Controllers
                     Message = "Bad request. Did you pass valid body?"
                 });
 
-                
+
             }
             if (string.IsNullOrEmpty(model.TraineeName)
                 || string.IsNullOrEmpty(model.FatherName)
@@ -167,7 +169,7 @@ namespace PSDF_BSS.API.Controllers
                     StatusCode = (int)HttpStatusCode.BadRequest,
                     Message = "Bad request. Did you pass valid body?"
                 });
-               
+
             }
             //if (!IsValidCNICFormat(model.CNIC, out errMsg))
             //{
@@ -193,13 +195,26 @@ namespace PSDF_BSS.API.Controllers
             //    });
             //}
             model.CurUserID = Convert.ToInt32(User.Identity.Name);
-            bool result = _srvTraineeProfile.SaveTraineeProfileDVV(model, out errMsg);
-            return Ok(new ApiResponse()
+            int result = _srvTraineeProfile.SaveTraineeProfileDVV(model, out errMsg);
+            if (result == 0)
             {
-                StatusCode = (int)HttpStatusCode.OK,
-                Message = result ? "Success" : errMsg,
-                Data = new { isSaved = result }
-            });
+                return Ok(new ApiResponse
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = string.IsNullOrEmpty(errMsg) ? "Error occurred while saving the profile." : errMsg,
+                    Data = new { isSaved = false }
+                });
+            }
+            else
+            {
+                return Ok(new ApiResponse
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = new { TraineeID = result }
+                });
+            }
+
         }
         [HttpPost("~/api/Trainee/Attendance")]
         public IActionResult TraineeAttendance(TraineeAttendanceDVV model)
@@ -283,5 +298,103 @@ namespace PSDF_BSS.API.Controllers
                 Data = new { isSaved = result }
             });
         }
+
+        [HttpGet("~/api/trainee/attendance")]
+        public IActionResult GetTrainee()
+        {
+
+
+            int userID = Convert.ToInt32(User.Identity.Name);
+
+            var _traineeAttendance = _srvTraineeProfile.FetchReport(userID, "RD_DVVTraineeAttendance");
+
+
+            var Data = new
+            {
+                traineeAttendanceList = _traineeAttendance,
+            };
+
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Success",
+                Data = Data
+            });
+        }
+        [HttpGet("~/api/trainee/deleteattendance/{cnic}")]
+        public IActionResult DeleteTraineeAndAttandance(string cnic)
+        {
+
+            _srvTraineeProfile.DeleteTraineeandAttandance(cnic);
+
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Success"
+            });
+        }
+
+
+        [HttpPost("~/api/Trainee/BiomatricRegistration")]
+        public IActionResult BiomatricRegistration(TraineeProfileDVV model)
+        {
+            string errMsg = string.Empty;
+            if (model == null)
+            {
+                _srvTraineeProfile.SaveTraineeProfileDVVResponse(model);
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+
+
+            }
+            if (model.TraineeID == 0
+                || string.IsNullOrEmpty(model.BiometricData1)
+                || string.IsNullOrEmpty(model.BiometricData2)
+                || string.IsNullOrEmpty(model.BiometricData3)
+                || string.IsNullOrEmpty(model.BiometricData4)
+                )
+            {
+                _srvTraineeProfile.SaveTraineeProfileDVVResponse(model);
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+
+            }
+            model.CurUserID = Convert.ToInt32(User.Identity.Name);
+            int result = _srvTraineeProfile.SavebiomatricTraineeProfileDVV(model, out errMsg);
+            if (result == 0)
+            {
+                return Ok(new ApiResponse
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = new { TraineeID = result }
+                });
+                
+            }
+            else
+            {
+                return Ok(new ApiResponse
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = string.IsNullOrEmpty(errMsg) ? "Error occurred while saving the Trainee biomatrics." : errMsg,
+                    Data = new { isSaved = false }
+                });
+            }
+
+        }
+
+
+
+
     }
+
+
+
+
 }

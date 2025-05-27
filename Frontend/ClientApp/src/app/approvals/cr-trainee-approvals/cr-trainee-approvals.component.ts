@@ -185,7 +185,6 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
   GetCurrentTraineeByID(r) {
     if (r.currentTrainee) {
       r.currentTrainee = null;
-
       return;
     }
     this.http.postJSON('api/TraineeProfile/RD_TraineeProfileBy/', { TraineeID: r.TraineeID }).subscribe((d: any) => {
@@ -276,7 +275,6 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
       //location.reload();
     });
   }
-
 }
 
 export interface ICRTraineeListFilter {

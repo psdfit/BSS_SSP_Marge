@@ -371,6 +371,7 @@ export class TspAssignmentComponent implements OnInit {
     if (this.TspAssignmentInfoForm.valid) {
       this.ComSrv.postJSON("api/Association/SaveTSPAssignment", this.TspAssignmentInfoForm.getRawValue()).subscribe(
         (response) => {
+          this.SelectedAll_TSPDropDown=false;
           this.TspAssignmentInfoForm.reset()
           this.LoadData()
           this.InitTspAssignmentInfo()

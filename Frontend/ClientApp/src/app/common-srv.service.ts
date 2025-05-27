@@ -37,6 +37,27 @@ export class MenuItem {
 
 
 export class CommonSrvService {
+
+
+  base64ToFile(res: string, mimeType: string = 'application/pdf') {
+    let byteCharacters = atob(res);
+
+    let byteNumbers = new Array(byteCharacters.length);
+
+    for (var i = 0; i < byteCharacters.length; i++)
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+
+    let byteArray = new Uint8Array(byteNumbers);
+    let file = new Blob([byteArray], { type: 'application/pdf' });
+    //return this.domSanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(file));
+    return file;
+  }
+  dateFilter = (d: Date | null): boolean => {
+    const date = (d || new Date());
+    // Prevent after current date selection .
+    return date <= new Date();
+  }
+
   // appSettings: any = (appSettings as any).default;
   appConfig: any;
   userrights: any;
@@ -76,12 +97,12 @@ export class CommonSrvService {
   }
 
   PreviewDocument(fileName: string) {
-    if (fileName == '' || fileName ==undefined) {
+    if (fileName == '' || fileName == undefined) {
       this.ShowError('There is no Attachment');
       return
     }
-    
-    
+
+
     const filePath = fileName;
     const updatedPath = filePath.slice(1);
     const updatedDocPath = updatedPath.replace(/[\/\\]/g, '||');
@@ -106,12 +127,12 @@ export class CommonSrvService {
           link.click();
           document.body.removeChild(link);
         }
-        
-      
+
+
 
       },
       (error: string) => {
-        this.ShowError(`${error}`, "Close", 500000);
+        this.ShowError(`${error}`, "Close", 2000);
       }
     )
   }
@@ -162,6 +183,24 @@ export class CommonSrvService {
   postJSONPromisis(URL: string, data: any) {
     return this.http.post(this.appConfig.UsersAPIURL + URL, JSON.stringify(data), { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.getUserDetails().Token}` } });
   }
+  getMobileApp(apiUrl: string, options: any): Observable<Blob> {
+    return this.http.get(this.appConfig.UsersAPIURL + apiUrl, { ...options, responseType: 'blob' }).pipe(
+      map((response: Blob | ArrayBuffer) => {
+        if (response instanceof ArrayBuffer) {
+          return new Blob([response]);
+        }
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error while fetching mobile app:', error);
+        return throwError(() => new Error('Error while fetching the mobile app.'));
+      })
+    );
+  }
+
+
+
+
   openSnackBar(message: string, action?: string | null, Duration?: number | 3000) {
     // return this.snackBar.open(message, action, {
     return this.snackBar.openFromComponent(SnackBarComponent, {
@@ -396,11 +435,12 @@ export class CommonSrvService {
     return headers;
   }
   getMenuItems(): MenuItem[] {
-    debugger;
+    // debugger;
     this.userrights = JSON.parse(sessionStorage.getItem(environment.RightsToken));
     // console.log(this.userrights)
     this.currentUser = this.getUserDetails();
     // console.log(this.userrights);
+    debugger;
     if (this.currentUser.UserLevel == EnumUserLevel.TSP) {
       this.FormIDRemoveForTSP.forEach(element => {
         this.userrights = this.userrights.filter(item => item.FormID != element);
@@ -490,8 +530,9 @@ export class CommonSrvService {
 
   ExcelExportWithForm(data, ReportName) {
 
-
+debugger;
     const Data = data[0].map(obj => {
+      debugger;
       const newObj = {};
       for (const key in obj) {
         if (!key.toLowerCase().includes('id')) {
@@ -527,7 +568,9 @@ export class CommonSrvService {
     const Data = ExportDataObject.map(obj => {
       const newObj = {};
       for (const key in obj) {
-        if (!key.toLowerCase().includes('id')) {
+        if (!key.toLowerCase().includes('id') &&
+          !key.toLowerCase().includes('attachment') &&
+          !key.toLowerCase().includes('evidence')) {
           newObj[key] = obj[key];
         }
       }

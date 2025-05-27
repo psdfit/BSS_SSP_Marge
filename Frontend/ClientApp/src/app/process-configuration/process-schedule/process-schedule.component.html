@@ -136,7 +136,7 @@
                 </td>
               </tr>
             </tbody>
-            <tfoot>
+            <tfoot  *ngIf="processDetails.value.length<2">
               <tr>
                 <td colspan="8">
                   <a (click)="AddProcessScheduleDetails()" color="primary" mat-raised-button>+ Add</a>

@@ -2,9 +2,13 @@
   <div class="row">
     <div class="col-sm-4">
       <mat-form-field fxFlex>
-        <mat-select #class placeholder="Class" matInput [(ngModel)]="classId" [name]="classId" [disabled]="(!paramClassId && isTspUser) || paramClassId" (ngModelChange)="onEditTraineeClass()" (openedChange)="EmptyCtrl()">
-          <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" /></mat-optgrp>
-          <mat-option *ngFor="let s of classesArray | like:['ClassCode',SearchCls.value]" [value]="s.ClassID">{{s.ClassCode}}</mat-option>
+        <mat-select #class placeholder="Class" matInput [(ngModel)]="classId" [name]="classId"
+          [disabled]="(!paramClassId && isTspUser) || paramClassId" (ngModelChange)="onEditTraineeClass()"
+          (openedChange)="EmptyCtrl()">
+          <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+              [formControl]="SearchCls" /></mat-optgrp>
+          <mat-option *ngFor="let s of classesArray | like:['ClassCode',SearchCls.value]"
+            [value]="s.ClassID">{{s.ClassCode}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -68,28 +72,37 @@
                         <div class="row">
                           <div class="col-sm-6">
                             <mat-form-field fxFlex>
-                              <input matInput type="text" [formControl]="traineeProfileForm.controls['TraineeCNIC']" placeholder="_____-_______-_" [imask]="{mask:'00000-0000000-0'}" [unmask]="false" (blur)="checkOnTraineeCNIC()" required />
+                              <input matInput type="text" [formControl]="traineeProfileForm.controls['TraineeCNIC']"
+                                placeholder="_____-_______-_" [imask]="{mask:'00000-0000000-0'}" [unmask]="false"
+                                (blur)="checkOnTraineeCNIC()" required />
                               <mat-label>CNIC</mat-label>
-                              <mat-error *ngIf="TraineeCNIC.invalid && TraineeCNIC.errors.required"><strong>required</strong></mat-error>
-                              <mat-error *ngIf="TraineeCNIC.invalid && TraineeCNIC.errors.minlength"><strong>invalid length</strong></mat-error>
-                              <mat-error *ngIf="TraineeCNIC.invalid && TraineeCNIC.errors.maxlength"><strong>invalid length</strong></mat-error>
-                              <mat-error *ngIf="TraineeCNIC.invalid && !TraineeCNIC.errors?.isValid"><strong>{{TraineeCNIC.errors.message}}</strong></mat-error>
+                              <mat-error
+                                *ngIf="TraineeCNIC.invalid && TraineeCNIC.errors.required"><strong>required</strong></mat-error>
+                              <mat-error *ngIf="TraineeCNIC.invalid && TraineeCNIC.errors.minlength"><strong>invalid
+                                  length</strong></mat-error>
+                              <mat-error *ngIf="TraineeCNIC.invalid && TraineeCNIC.errors.maxlength"><strong>invalid
+                                  length</strong></mat-error>
+                              <mat-error
+                                *ngIf="TraineeCNIC.invalid && !TraineeCNIC.errors?.isValid"><strong>{{TraineeCNIC.errors.message}}</strong></mat-error>
                             </mat-form-field>
                           </div>
                           <div class="col-sm-6">
                             <mat-form-field fxFlex>
                               <mat-label>CNIC Issue Date</mat-label>
-                              <input matInput [matDatepicker]="cnicissuedate" [matDatepickerFilter]="dateFilter" placeholder="Choose a date" formControlName="CNICIssueDate" readonly required>
+                              <input matInput [matDatepicker]="cnicissuedate" [matDatepickerFilter]="dateFilter"
+                                placeholder="Choose a date" formControlName="CNICIssueDate" readonly required>
                               <mat-datepicker-toggle matSuffix [for]="cnicissuedate"></mat-datepicker-toggle>
                               <mat-datepicker #cnicissuedate></mat-datepicker>
-                              <mat-error *ngIf="CNICIssueDate.invalid && CNICIssueDate.errors.required"><strong>required</strong></mat-error>
+                              <mat-error
+                                *ngIf="CNICIssueDate.invalid && CNICIssueDate.errors.required"><strong>required</strong></mat-error>
                             </mat-form-field>
                           </div>
                         </div>
                         <div class="row">
                           <div class="col-6">
                             <mat-form-field fxFlex>
-                              <input type="text" [disabled]="true" formControlName="TraineeCode" placeholder="TraineeCode" matInput maxlength="250" />
+                              <input type="text" [disabled]="true" formControlName="TraineeCode"
+                                placeholder="TraineeCode" matInput maxlength="250" />
                               <mat-label>Trainee Code</mat-label>
                               <mat-hint>It could be changed after saving due to concurrent registration.</mat-hint>
                             </mat-form-field>
@@ -99,33 +112,42 @@
                               <input type="email" formControlName="TraineeEmail" placeholder="TraineeEmail" matInput
                                 maxlength="50" (blur)="checkOnTraineeEmail()" />
                               <mat-label>Trainee Email</mat-label>
-                              <mat-error *ngIf="TraineeEmail.invalid && TraineeEmail.errors.email">Invalid Email
-                                address</mat-error>
+                              <mat-error *ngIf="TraineeEmail.invalid && TraineeEmail.errors.email">
+                                Invalid Email
+                                address
+                              </mat-error>
                               <mat-error
                                 *ngIf="TraineeEmail.invalid && TraineeEmail.errors.required">required</mat-error>
                               <mat-error
                                 *ngIf="TraineeEmail.invalid && !TraineeEmail.errors?.isValid"><strong>{{TraineeEmail.errors.message}}</strong></mat-error>
                             </mat-form-field>
+
                           </div>
                         </div>
-                        </div>
+                      </div>
                       <div class="col-sm-6">
                         <div class="row">
 
                           <div class="col-sm-6">
                             <div class="row">
                               <div class="col-sm-12">
-                                <h6>Image <small class="text-danger" *ngIf="TraineeImg.invalid && TraineeImg.errors.required"> required </small></h6>
+                                <h6>Image <small class="text-danger"
+                                    *ngIf="TraineeImg.invalid && TraineeImg.errors.required"> required </small></h6>
                                 <!-- accept =accept="file_extension(e.g: .gif, .jpg, .png, .doc)|audio/*|video/*|image/*|media_type" -->
                                 <!-- maxSize in kilobytes -->
-                                <file-upload formControlName="TraineeImg" [pattren]="'image.*'" accept="image/*" maxSize="1024‬‬" [disabled]="isFormDisabled"></file-upload>
+                                <file-upload formControlName="TraineeImg" [pattren]="'image.*'" accept="image/*"
+                                  maxSize="1024‬‬" [disabled]="isFormDisabled"></file-upload>
                               </div>
                             </div>
                             <div class="row">
                               <div class="col-sm-12">
-                                <h6>Upload Documents <small class="text-danger" *ngIf="TraineeDoc.invalid && TraineeDoc.errors.required"> required </small></h6>
-                                <file-upload formControlName="TraineeDoc" id="{{TraineeCode}}" [nopreview]="true"  maxSize="1024‬‬" matInput [accept]="" [disabled]="!this.selection.selected.length" [disabled]="isFormDisabled"></file-upload>
+                                <h6>Upload Documents <small class="text-danger"
+                                    *ngIf="TraineeDoc.invalid && TraineeDoc.errors.required"> required </small></h6>
+                                <file-upload formControlName="TraineeDoc" id="{{TraineeCode}}" [nopreview]="true"
+                                  maxSize="1024‬‬" matInput [accept]="" [disabled]="!this.selection.selected.length"
+                                  [disabled]="isFormDisabled"></file-upload>
                                 <p>Maximum upload file size : 1 MB</p>
+                                
                               </div>
                             </div>
                           </div>
@@ -143,78 +165,104 @@
       </div>-->
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input matInput type="text" formControlName="TraineeName" placeholder="TraineeName" maxlength="100" TitleCase required />
+                          <input matInput type="text" formControlName="TraineeName" placeholder="TraineeName"
+                            maxlength="100" TitleCase required />
                           <mat-label>Name</mat-label>
-                          <mat-error *ngIf="TraineeName.invalid && TraineeName.errors.required"><strong>required</strong></mat-error>
-                          <mat-error *ngIf="TraineeName.invalid && TraineeName.errors.pattern"><strong>letters only</strong></mat-error>
+                          <mat-error
+                            *ngIf="TraineeName.invalid && TraineeName.errors.required"><strong>required</strong></mat-error>
+                          <mat-error *ngIf="TraineeName.invalid && TraineeName.errors.pattern"><strong>letters
+                              only</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="FatherName" placeholder="FatherName" matInput maxlength="100" TitleCase required />
+                          <input type="text" formControlName="FatherName" placeholder="FatherName" matInput
+                            maxlength="100" TitleCase required />
                           <mat-label>Father's Name</mat-label>
-                          <mat-error *ngIf="FatherName.invalid && FatherName.errors.required"><strong>required</strong></mat-error>
-                          <mat-error *ngIf="FatherName.invalid && FatherName.errors.pattern"><strong>letters only</strong></mat-error>
+                          <mat-error
+                            *ngIf="FatherName.invalid && FatherName.errors.required"><strong>required</strong></mat-error>
+                          <mat-error *ngIf="FatherName.invalid && FatherName.errors.pattern"><strong>letters
+                              only</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-2">
                         <mat-form-field fxFlex>
                           <mat-label>Date Of Birth</mat-label>
-                          <input matInput #ref [matDatepicker]="dateofbirth" [matDatepickerFilter]="dateFilter" placeholder="Choose a date" formControlName="DateOfBirth" (dateChange)="calculateAgeEligibility()" readonly required>
+                          <input matInput #ref [matDatepicker]="dateofbirth" [matDatepickerFilter]="dateFilter"
+                            placeholder="Choose a date" formControlName="DateOfBirth"
+                            (dateChange)="calculateAgeEligibility()" readonly required>
                           <mat-datepicker-toggle matSuffix [for]="dateofbirth"></mat-datepicker-toggle>
                           <mat-datepicker #dateofbirth></mat-datepicker>
-                          <mat-error *ngIf="DateOfBirth.invalid && DateOfBirth.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="DateOfBirth.invalid && DateOfBirth.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-1">
                         <mat-form-field fxFlex>
                           <!--<input type="text" id="traineeage" placeholder="Age" NumberOnly formControlName="TraineeAge" matInput readonly>-->
-                          <input type="text" id="traineeage" placeholder="Age" NumberOnly formControlName="TraineeAge" (blur)="calculateAgeEligibility()" matInput readonly>
-                          <mat-error *ngIf="TraineeAge.invalid && TraineeAge.errors.required"><strong>required</strong></mat-error>
-                          <mat-error *ngIf="TraineeAge.invalid && !TraineeAge.errors?.isValid"><strong>{{TraineeAge.errors.message}}</strong></mat-error>
+                          <input type="text" id="traineeage" placeholder="Age" NumberOnly formControlName="TraineeAge"
+                            (blur)="calculateAgeEligibility()" matInput readonly>
+                          <mat-error
+                            *ngIf="TraineeAge.invalid && TraineeAge.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="TraineeAge.invalid && !TraineeAge.errors?.isValid"><strong>{{TraineeAge.errors.message}}</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <mat-select placeholder="Gender" formControlName="GenderID" [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
+                          <mat-select placeholder="Gender" formControlName="GenderID"
+                            [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
                             <mat-option *ngFor="let s of ddlGender" [value]="s.GenderID">{{s.GenderName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="GenderID.invalid && GenderID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="GenderID.invalid && GenderID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <mat-select placeholder="Religion" formControlName="ReligionID" [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
-                            <mat-option *ngFor="let s of Religion" [value]="s.ReligionID">{{s.ReligionName}}</mat-option>
+                          <mat-select placeholder="Religion" formControlName="ReligionID"
+                            [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
+                            <mat-option *ngFor="let s of Religion"
+                              [value]="s.ReligionID">{{s.ReligionName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="ReligionID.invalid && ReligionID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="ReligionID.invalid && ReligionID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <mat-select placeholder="Education" formControlName="EducationID" [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
-                            <mat-option *ngFor="let s of ddlEducationTypes" [value]="s.EducationTypeID">{{s.Education}}</mat-option>
+                          <mat-select placeholder="Education" formControlName="EducationID"
+                            [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
+                            <mat-option *ngFor="let s of ddlEducationTypes"
+                              [value]="s.EducationTypeID">{{s.Education}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="EducationID.invalid && EducationID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="EducationID.invalid && EducationID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field>
-                          <mat-select placeholder="Disability" formControlName="TraineeDisabilityID" [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
+                          <mat-select placeholder="Disability" formControlName="TraineeDisabilityID"
+                            [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
                             <mat-option *ngFor="let s of TraineeDisability" [value]="s.Id">{{s.Disability}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="TraineeDisabilityID.invalid && TraineeDisabilityID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="TraineeDisabilityID.invalid && TraineeDisabilityID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="ContactNumber1" placeholder="03xx-xxxxxxx" [imask]="{mask:'0000-0000000'}" [unmask]="false" matInput required />
+                          <input type="text" formControlName="ContactNumber1" placeholder="03xx-xxxxxxx"
+                            [imask]="{mask:'0000-0000000'}" [unmask]="false" matInput required />
                           <mat-label>Contact Number</mat-label>
-                          <mat-error *ngIf="ContactNumber1.invalid && ContactNumber1.errors.required"><strong>required</strong></mat-error>
-                          <mat-error *ngIf="ContactNumber1.invalid && ContactNumber1.errors.minlength"><strong>invalid length</strong></mat-error>
-                          <mat-error *ngIf="ContactNumber1.invalid && ContactNumber1.errors.maxlength"><strong>invalid length</strong></mat-error>
+                          <mat-error
+                            *ngIf="ContactNumber1.invalid && ContactNumber1.errors.required"><strong>required</strong></mat-error>
+                          <mat-error *ngIf="ContactNumber1.invalid && ContactNumber1.errors.minlength"><strong>invalid
+                              length</strong></mat-error>
+                          <mat-error *ngIf="ContactNumber1.invalid && ContactNumber1.errors.maxlength"><strong>invalid
+                              length</strong></mat-error>
                         </mat-form-field>
                       </div>
                     </div>
@@ -224,44 +272,59 @@
                     <div class="row">
                       <div class="col-sm-1">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="TraineeHouseNumber" placeholder="House #" matInput maxlength="10" TitleCase required />
-                          <mat-error *ngIf="TraineeHouseNumber.invalid && TraineeHouseNumber.errors.required"><strong>required</strong></mat-error>
+                          <input type="text" formControlName="TraineeHouseNumber" placeholder="House #" matInput
+                            maxlength="10" TitleCase required />
+                          <mat-error
+                            *ngIf="TraineeHouseNumber.invalid && TraineeHouseNumber.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-2">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="TraineeStreetMohalla" placeholder="Street # / Mohalla" matInput maxlength="20" TitleCase required />
-                          <mat-error *ngIf="TraineeStreetMohalla.invalid && TraineeStreetMohalla.errors.required"><strong>required</strong></mat-error>
+                          <input type="text" formControlName="TraineeStreetMohalla" placeholder="Street # / Mohalla"
+                            matInput maxlength="20" TitleCase required />
+                          <mat-error
+                            *ngIf="TraineeStreetMohalla.invalid && TraineeStreetMohalla.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="TraineeMauzaTown" placeholder="Mauza / Town" matInput maxlength="50" TitleCase required />
-                          <mat-error *ngIf="TraineeMauzaTown.invalid && TraineeMauzaTown.errors.required"><strong>required</strong></mat-error>
+                          <input type="text" formControlName="TraineeMauzaTown" placeholder="Mauza / Town" matInput
+                            maxlength="50" TitleCase required />
+                          <mat-error
+                            *ngIf="TraineeMauzaTown.invalid && TraineeMauzaTown.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-2">
                         <mat-form-field fxFlex>
-                          <mat-select placeholder="Province" formControlName="ProvinceID" [disabled]="IsFieldDisabled" matInput required>
-                            <mat-option *ngFor="let s of province" [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                          <mat-select placeholder="Province" formControlName="ProvinceID" [disabled]="IsFieldDisabled"
+                            matInput required>
+                            <mat-option *ngFor="let s of province"
+                              [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="ProvinceID.invalid && ProvinceID.errors.required">T<strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="ProvinceID.invalid && ProvinceID.errors.required">T<strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-2">
                         <mat-form-field fxFlex>
-                          <mat-select placeholder="District" formControlName="TraineeDistrictID" [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
-                            <mat-option *ngFor="let s of District | where:['ProvinceID',ProvinceID.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                          <mat-select placeholder="District" formControlName="TraineeDistrictID"
+                            [disabled]="isProgramFieldDisabled || isFormDisabled" matInput required>
+                            <mat-option *ngFor="let s of District | where:['ProvinceID',ProvinceID.value]"
+                              [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="TraineeDistrictID.invalid && TraineeDistrictID.errors.required">T<strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="TraineeDistrictID.invalid && TraineeDistrictID.errors.required">T<strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-2">
                         <mat-form-field fxFlex>
-                          <mat-select placeholder="Tehsil" formControlName="TraineeTehsilID" [disabled]="isFormDisabled" matInput required>
-                            <mat-option *ngFor="let s of Tehsil | where:['DistrictID',TraineeDistrictID.value]" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+                          <mat-select placeholder="Tehsil" formControlName="TraineeTehsilID" [disabled]="isFormDisabled"
+                            matInput required>
+                            <mat-option *ngFor="let s of Tehsil | where:['DistrictID',TraineeDistrictID.value]"
+                              [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="TraineeTehsilID.invalid && TraineeTehsilID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="TraineeTehsilID.invalid && TraineeTehsilID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                     </div>
@@ -271,55 +334,64 @@
                     <div class="row">
                       <div class="col-sm-6">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="TemporaryResidence" disabled="disabled" placeholder="Trainee Address" matInput maxlength="20" />
+                          <input type="text" formControlName="TemporaryResidence" disabled="disabled"
+                            placeholder="Trainee Address" matInput maxlength="20" />
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="TemporaryResidence" disabled="disabled" placeholder="Street # / Mohalla" matInput maxlength="20" />
+                          <input type="text" formControlName="TemporaryResidence" disabled="disabled"
+                            placeholder="Street # / Mohalla" matInput maxlength="20" />
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="TraineeMauzaTownTemp" disabled="disabled" placeholder="Mauza / Town" matInput maxlength="50" />
+                          <input type="text" formControlName="TraineeMauzaTownTemp" disabled="disabled"
+                            placeholder="Mauza / Town" matInput maxlength="50" />
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <mat-select placeholder="Province" formControlName="TemporaryProvince" disabled="disabled">
-                            <mat-option *ngFor="let s of TemporaryProvince" [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                            <mat-option *ngFor="let s of TemporaryProvince"
+                              [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
                           </mat-select>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <mat-select placeholder="District" formControlName="TemporaryDistrict" disabled="disabled">
-                            <mat-option *ngFor="let s of TempDistrict | where:['ProvinceID',TemporaryProvince.value]" [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
+                            <mat-option *ngFor="let s of TempDistrict | where:['ProvinceID',TemporaryProvince.value]"
+                              [value]="s.DistrictID">{{s.DistrictName}}</mat-option>
                           </mat-select>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <mat-select placeholder="Tehsil" formControlName="TemporaryTehsil" disabled="disabled">
-                            <mat-option *ngFor="let s of TempTehsil | where:['DistrictID',TemporaryDistrict.value]" [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
+                            <mat-option *ngFor="let s of TempTehsil | where:['DistrictID',TemporaryDistrict.value]"
+                              [value]="s.TehsilID">{{s.TehsilName}}</mat-option>
                           </mat-select>
                         </mat-form-field>
                       </div>
                     </div>
                   </fieldset>
                   <fieldset class="border" [disabled]="isFormDisabled">
-                    <legend><mat-checkbox formControlName="VoucherHolder" [disabled]="isFormDisabled"></mat-checkbox>Voucher Holder</legend>
+                    <legend><mat-checkbox formControlName="VoucherHolder"
+                        [disabled]="isFormDisabled"></mat-checkbox>Voucher Holder</legend>
                     <div class="row">
                       <div class="col-sm-6" *ngIf="VoucherHolder && VoucherNumber">
                         <mat-form-field fxFlex>
                           <mat-label>Voucher Number</mat-label>
-                          <input type="text" formControlName="VoucherNumber" placeholder="Voucher Number" NumberOnly matInput maxlength="50" required />
-                          <mat-error *ngIf="VoucherNumber.invalid && VoucherNumber.errors.required"><strong>required</strong></mat-error>
+                          <input type="text" formControlName="VoucherNumber" placeholder="Voucher Number" NumberOnly
+                            matInput maxlength="50" required />
+                          <mat-error
+                            *ngIf="VoucherNumber.invalid && VoucherNumber.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-6" *ngIf="VoucherHolder && VoucherOrganization">
-                        <!-- <mat-label>Voucher Organization</mat-label> -->
-                        <mat-form-field>
+                        <mat-form-field fxFlex>
+                          <mat-label>Voucher Organization</mat-label>
                           <input type="text" formControlName="VoucherOrganization" placeholder="Voucher Organization"
                             matInput required maxlength="250" />
                           <mat-error *ngIf="VoucherOrganization.invalid && VoucherOrganization.errors.required">
@@ -332,6 +404,39 @@
                       </div>
                     </div>
                   </fieldset>
+                  <ng-container *ngIf="IsSkillsScholrship">
+                    <fieldset class="border" [disabled]="isFormDisabled">
+                      <!--<mat-checkbox formControlName="IsReferredByGuru"
+  [disabled]="isFormDisabled"></mat-checkbox>Referred By Guru-->
+                      <div class="col-sm-3">
+                          <mat-form-field fxFlex>
+                            <mat-select placeholder="Referred By Guru" formControlName="IsReferredByGuru" [disabled]="isFormDisabled">
+                              <mat-option [value]="true">Yes</mat-option>
+                              <mat-option [value]="false">No</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-6" *ngIf="IsReferredByGuru && GuruProfileID">
+                          <mat-form-field fxFlex>
+                            <mat-label>Select Guru</mat-label>
+
+                            <mat-select placeholder="Select Guru" formControlName="GuruProfileID" (valueChange)="getGuruDetail($event)" matInput>
+                              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchPro" autofocus /></mat-optgrp>
+                              <mat-option value="0">Create Guru Profile </mat-option>
+                              <mat-option *ngFor="let s of traineeGuruList | like:['FullName',SearchPro.value]" [value]="s.GuruProfileID">{{s.FullName | uppercase}} | {{s.ContactNumber}} | {{s.CNIC}} </mat-option>
+                            </mat-select>
+                              <mat-error *ngIf="GuruProfileID.invalid && GuruProfileID.errors.required"><strong>required</strong></mat-error>
+
+                          </mat-form-field>
+
+
+                        </div>
+
+                      </div>
+
+                    </fieldset>
+                  </ng-container>
                   <fieldset class="border" [disabled]="isFormDisabled">
                     <legend>General Information</legend>
                     <div class="row">
@@ -339,7 +444,8 @@
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="ClassCode" placeholder="ClassCode" matInput />
                           <mat-label>Class Code</mat-label>
-                          <mat-error *ngIf="ClassCode.invalid && ClassCode.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="ClassCode.invalid && ClassCode.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
@@ -347,7 +453,8 @@
                           <mat-select placeholder="Section" formControlName="SectionID" matInput>
                             <mat-option *ngFor="let s of Sections" [value]="s.SectionID">{{s.SectionName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="SectionID.invalid && SectionID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="SectionID.invalid && SectionID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
@@ -355,7 +462,8 @@
                           <mat-select placeholder="Trade" formControlName="TradeID" id="tradeid" matInput>
                             <mat-option *ngFor="let s of Trade" [value]="s.TradeID">{{s.TradeName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="TradeID.invalid && TradeID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="TradeID.invalid && TradeID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
@@ -363,17 +471,21 @@
                           <mat-select placeholder="TSP" formControlName="TSPID" id="TSPID" matInput>
                             <mat-option *ngFor="let s of TSPDetail" [value]="s.TSPID">{{s.TSPName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="TSPID.invalid && TSPID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="TSPID.invalid && TSPID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-sm-3">
                         <mat-form-field>
-                          <mat-select placeholder="Where did You Hear About Us?" formControlName="ReferralSourceID" [disabled]="isFormDisabled" matInput required>
-                            <mat-option *ngFor="let s of ReferralSource" [value]="s.ReferralSourceID">{{s.Name}}</mat-option>
+                          <mat-select placeholder="Where did You Hear About Us?" formControlName="ReferralSourceID"
+                            [disabled]="isFormDisabled" matInput required>
+                            <mat-option *ngFor="let s of ReferralSource"
+                              [value]="s.ReferralSourceID">{{s.Name}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="ReferralSourceID.invalid && ReferralSourceID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="ReferralSourceID.invalid && ReferralSourceID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                         <!--<mat-form-field fxFlex>
           <input type="text" formControlName="WheredidYouHearAboutUs" placeholder="Where did You Hear About Us" matInput maxlength="50" required />
@@ -383,69 +495,134 @@
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <mat-select placeholder="Employment Status Before Training" formControlName="EmploymentStatusBeforeTrainingID" [disabled]="isFormDisabled" (selectionChange)="onEmploymentStatusBeforeTrainingChange($event)"  matInput required>
-                            <mat-option *ngFor="let s of EmploymentStatus" [value]="s.EmploymentStatusID">{{s.EmploymentStatusName}}</mat-option>
+                          <mat-select placeholder="Employment Status Before Training"
+                            formControlName="EmploymentStatusBeforeTrainingID" [disabled]="isFormDisabled"
+                            (selectionChange)="onEmploymentStatusBeforeTrainingChange($event)" matInput required>
+                            <mat-option *ngFor="let s of EmploymentStatus"
+                              [value]="s.EmploymentStatusID">{{s.EmploymentStatusName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="EmploymentStatusBeforeTrainingID.invalid && EmploymentStatusBeforeTrainingID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="EmploymentStatusBeforeTrainingID.invalid && EmploymentStatusBeforeTrainingID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field>
-                          <mat-select placeholder="Individual Income" formControlName="TraineeIndividualIncomeID" [disabled]="isFormDisabled" matInput required>
-                            <mat-option *ngFor="let s of IncomeRange" [value]="s.IncomeRangeID">{{s.RangeName}}</mat-option>
+                          <mat-select placeholder="Individual Income" formControlName="TraineeIndividualIncomeID"
+                            [disabled]="isFormDisabled" matInput required>
+                            <mat-option *ngFor="let s of IncomeRange"
+                              [value]="s.IncomeRangeID">{{s.RangeName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="TraineeIndividualIncomeID.invalid && TraineeIndividualIncomeID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="TraineeIndividualIncomeID.invalid && TraineeIndividualIncomeID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
 
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field>
-                          <mat-select placeholder="HouseHold Income" formControlName="HouseHoldIncomeID" [disabled]="isProgramFieldDisabled ||isFormDisabled" matInput required>
-                            <mat-option *ngFor="let s of IncomeRange" [value]="s.IncomeRangeID">{{s.RangeName}}</mat-option>
+                          <mat-select placeholder="HouseHold Income" formControlName="HouseHoldIncomeID"
+                            [disabled]="isProgramFieldDisabled ||isFormDisabled" matInput required>
+                            <mat-option *ngFor="let s of IncomeRange"
+                              [value]="s.IncomeRangeID">{{s.RangeName}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="HouseHoldIncomeID.invalid && HouseHoldIncomeID.errors.required"><strong>required</strong></mat-error>
+                          <mat-error
+                            *ngIf="HouseHoldIncomeID.invalid && HouseHoldIncomeID.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="GuardianNextToKinName" placeholder="Name" matInput maxlength="50" TitleCase required />
+                          <input type="text" formControlName="GuardianNextToKinName" placeholder="Name" matInput
+                                 maxlength="50" TitleCase required />
                           <mat-label>Guardian/(Next To Kin) Name</mat-label>
                           <mat-error *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.required"><strong>required</strong></mat-error>
-                          <mat-error *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.pattern"><strong>letters only</strong></mat-error>
+                          <mat-error *ngIf="GuardianNextToKinName.invalid && GuardianNextToKinName.errors.pattern">
+                            <strong>
+                              letters
+                              only
+                            </strong>
+                          </mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-3">
                         <mat-form-field fxFlex>
-                          <input type="text" formControlName="GuardianNextToKinContactNo" placeholder="Mobile / Landline" matInput NumberOnly maxlength="11" required />
+                          <input type="text" formControlName="GuardianNextToKinContactNo"
+                                 placeholder="Mobile / Landline" matInput NumberOnly maxlength="11" required />
                           <mat-label>Guardian/(Next To Kin) Contact Number</mat-label>
                           <mat-error *ngIf="GuardianNextToKinContactNo.invalid && GuardianNextToKinContactNo.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
+                      <!---Added by Ali Haider for International Placement--->
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="Accounttitle"
+                                 placeholder="Account title" matInput required />
+                          <mat-label>Account title</mat-label>
+                          <mat-error *ngIf="Accounttitle.invalid && Accounttitle.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="BankName"
+                                 placeholder="Bank Name" matInput required />
+                          <mat-label>Bank Name</mat-label>
+                          <mat-error *ngIf="BankName.invalid && BankName.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="IBANNumber"
+                                 placeholder="IBAN Number" matInput required />
+                          <mat-label>IBAN Number</mat-label>
+                          <mat-error *ngIf="IBANNumber.invalid && IBANNumber.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
                     </div>
                   </fieldset>
+
+
+
                   <div class="row">
                     <div class="col-sm-12">
                       <p>
-                        <b>UNDERTAKING :</b>  I hereby declare that I have neither participated in any of the PSDF funded training earlier, nor will I participate after this training. Further, I also affirm that I have never been enrolled or completed DAE. If found I may be expelled from training course and PSDF may take legal action against me. I authorise PSDF to check my data through NADRA Verisys and share my CV with potential employers through various mediums without any liability.
+                        <b>UNDERTAKING :</b> I hereby declare that I have neither participated in any of the PSDF funded
+                        training earlier, nor will I participate after this training. Further, I also affirm that I have
+                        never been enrolled or completed DAE. If found I may be expelled from training course and PSDF
+                        may take legal action against me. I authorise PSDF to check my data through NADRA Verisys and
+                        share my CV with potential employers through various mediums without any liability.
                       </p>
+                      <div *ngIf="IsSkillsScholrship">
+                        <p>
+                          I hereby solemnly affirm that I belong to the transgender community.
+                          I further affirm that I have voluntarily selected the associate partner of PSDF to receive training
+                          in that trade. I understand that this is a provisional registration with the associate partner, and
+                          I will be eligible for the scholarship if my class enrolment number is 10 or above. I hereby also
+                          give PSDF the consent to pay my scholarship fee to the associate partner once I complete the training
+                          according to the terms and conditions.
+                        </p>
+                      </div>
                       <mat-checkbox formControlName="Undertaking" [disabled]="isFormDisabled">Undertaking</mat-checkbox>
-                      <mat-error *ngIf="Undertaking.invalid && Undertaking.errors.required"><strong>It must be checked.</strong></mat-error>
+                      <mat-error *ngIf="Undertaking.invalid && Undertaking.errors.required"><strong>It must be
+                          checked.</strong></mat-error>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-12 mt-3">
                       <div class="float-right">
-                        <button mat-raised-button color="primary" *ngIf="!isFormDisabled" [disabled]="!traineeProfileForm.valid" NoDoubleClick (click)="onSave()" matTooltip="Click to {{saveBtnTitle}}" attr.aria-label="Click to {{saveBtnTitle}}">
+                        <button mat-raised-button color="primary" *ngIf="!isFormDisabled"
+                          [disabled]="!traineeProfileForm.valid" NoDoubleClick (click)="onSave()"
+                          matTooltip="Click to {{saveBtnTitle}}" attr.aria-label="Click to {{saveBtnTitle}}">
                           <!--[disabled]="working  || (TraineeID.value<1 && !formrights.CanAdd)"-->
                           {{saveBtnTitle}}
                         </button>&nbsp;&nbsp;
-                        <button mat-raised-button color="primary" *ngIf="!isFormDisabled" [disabled]="!traineeProfileForm.valid" NoDoubleClick (click)="onSaveAndSubmit()" matTooltip="Click to  {{saveBtnTitle}} and Submit">
+                        <button mat-raised-button color="primary" *ngIf="!isFormDisabled"
+                          [disabled]="!traineeProfileForm.valid" NoDoubleClick (click)="onSaveAndSubmit()"
+                          matTooltip="Click to  {{saveBtnTitle}} and Submit">
                           {{saveBtnTitle}} & Submit
                         </button>&nbsp;&nbsp;
                         <!-- <button mat-raised-button color="warn" matTooltip="Click to Reset form data" attr.aria-label="Click to Reset form data" *ngIf="!isClosedBracketDays && !isCompletedAllowedTrainees" (click)="reset()">-->
-                        <button mat-raised-button color="warn" matTooltip="Click to Reset form data" attr.aria-label="Click to Reset form data" *ngIf="registrationError =='' " (click)="reset()">
+                        <button mat-raised-button color="warn" matTooltip="Click to Reset form data"
+                          attr.aria-label="Click to Reset form data" *ngIf="registrationError =='' " (click)="reset()">
                           Reset
                         </button>
                       </div>
@@ -467,10 +644,12 @@
               <span class="spacer">Manage and View Trainee(s)</span>
               <div class="spacer"></div>
               <!--<button mat-raised-button *ngIf="hiddenSaveExtra && !isClosedBracketDays" [disabled]="!enableSaveExtra" matTooltip="Save Extra Trainees " (click)="saveExtraTrainees()">Save Extra Trainees</button>-->
-              <button mat-raised-button *ngIf="hiddenSaveExtra && registrationError !='' " [disabled]="!enableSaveExtra" matTooltip="Save Extra Trainees " (click)="saveExtraTrainees()">Save Extra Trainees</button>
+              <button mat-raised-button *ngIf="hiddenSaveExtra && registrationError !='' " [disabled]="!enableSaveExtra"
+                matTooltip="Save Extra Trainees " (click)="saveExtraTrainees()">Save Extra Trainees</button>
               &nbsp;
               <input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />
-              <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="getTraineeProfileRegistration_Report()">
+              <button mat-icon-button *ngIf="selection.selected.length > 0"
+                (click)="getTraineeProfileRegistration_Report()">
                 <mat-icon matTooltip="Print slected trainee(s) registration report">print</mat-icon>
               </button>
               &nbsp;
@@ -487,17 +666,14 @@
                 <ng-container matColumnDef="Check">
                   <mat-header-cell *matHeaderCellDef>
                     <mat-checkbox (change)="$event ? masterToggle() : null"
-                                  [checked]="selection.hasValue() && isAllSelected()"
-                                  [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                  [aria-label]="checkboxLabel()">
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
                     </mat-checkbox>
                     <span *ngIf="selection.selected.length > 0">({{selection.selected.length}})</span>
                   </mat-header-cell>
                   <mat-cell *matCellDef="let Row">
-                    <mat-checkbox (click)="$event.stopPropagation()"
-                                  (change)="$event ? selection.toggle(Row) : null"
-                                  [checked]="selection.isSelected(Row)"
-                                  [aria-label]="checkboxLabel(Row)">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(Row) : null"
+                      [checked]="selection.isSelected(Row)" [aria-label]="checkboxLabel(Row)">
                     </mat-checkbox>
                   </mat-cell>
                 </ng-container>
@@ -553,21 +729,23 @@
                   <mat-header-cell *matHeaderCellDef mat-sort-header>Is Extra</mat-header-cell>
                   <mat-cell *matCellDef="let Row">
                     <!--<mat-slide-toggle *ngIf="Row.IsSubmitted" [disabled]="isClosedBracketDays" (change)="onChangeIsExtra()" [(ngModel)]="Row.IsExtra">-->
-                  <!--  <mat-slide-toggle [disabled]="isClosedBracketDays" (change)="onChangeIsExtra()" [(ngModel)]="Row.IsExtra">-->
+                    <!--  <mat-slide-toggle [disabled]="isClosedBracketDays" (change)="onChangeIsExtra()" [(ngModel)]="Row.IsExtra">-->
                     <!--<mat-slide-toggle [disabled]="registrationError !='' " (change)="onChangeIsExtra()" [(ngModel)]="Row.IsExtra">-->
-                      {{Row.IsExtra?'Yes':'No'}}
+                    {{Row.IsExtra?'Yes':'No'}}
                     <!--</mat-slide-toggle>-->
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Action">
                   <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
                   <mat-cell *matCellDef="let Row">
-                    <button mat-icon-button color="primary" *ngIf="!Row.IsSubmitted && !IsSkillsScholrshipProgram"(click)="deleteDraftTrainee(Row.TraineeID)">
+                    <button mat-icon-button color="primary" *ngIf="!Row.IsSubmitted && !IsSkillsScholrshipProgram"
+                      (click)="deleteDraftTrainee(Row.TraineeID)">
                       <mat-icon matTooltip="Delete forever">delete_forever</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary"  (click)="onEditTrainee(Row)">
+                    <button mat-icon-button color="primary" (click)="onEditTrainee(Row)">
                       <mat-icon matTooltip="Edit trainee details.">edit</mat-icon>
-                      <span *ngIf="!Row.IsSubmitted" class="text-danger" style="font-size: x-small;font-style: italic">[Draft]</span>
+                      <span *ngIf="!Row.IsSubmitted" class="text-danger"
+                        style="font-size: x-small;font-style: italic">[Draft]</span>
                     </button>
                     <!--<button mat-icon-button color="primary" (click)="getTraineeProfileRegistration_Report(Row)">
                       <mat-icon aria-label="Print Registration Report">print</mat-icon>

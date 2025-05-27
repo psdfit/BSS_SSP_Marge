@@ -20,7 +20,7 @@
 
                 <div class="col-sm-6 col-md-4 col-lg-3">
                   <mat-form-field>
-                    <mat-select [(ngModel)]="OrganizationID" placeholder="Organization" name="Organization" (ngModelChange)="GetConfig()" required>
+                    <mat-select [(ngModel)]="OrganizationID" placeholder="Organization" name="Organization" required>
                       <mat-option *ngFor="let o of Organizations" [value]="o.OID">
                         {{o.OName}}
                       </mat-option>
@@ -30,7 +30,7 @@
                 <div class="col-sm-6 col-md-4 col-lg-3">
                   <mat-form-field>
                     <!--<input matInput placeholder="Business Rule Type" formControlName="BusinessRuleType" required>-->
-                    <mat-select placeholder="Business Rule Type" name="BusinessRuleType" [(ngModel)]="BusinessRuleType" (ngModelChange)="GetDataScheme();GetConfig()" required [disabled]="!OrganizationID">
+                    <mat-select placeholder="Business Rule Type" name="BusinessRuleType" [(ngModel)]="BusinessRuleType" (ngModelChange)="GetDataScheme()" required [disabled]="!OrganizationID">
                       <mat-option value="FTI">FTI</mat-option>
                       <mat-option value="Community">Community</mat-option>
                       <mat-option value="Industry">Industry</mat-option>
@@ -287,6 +287,13 @@
                                   </div>
                                 </td>
                                 <td>
+                                  <div class="form-group">
+                                    <label>TSP Configurable Counter</label>
+                                    <input type="text" inputmode="numeric" id="TSPCounter" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(OrgCon.TSPConfigurationCounter,OrgConfigs,'TSPConfigurationCounter');" [(ngModel)]="OrgCon.TSPConfigurationCounter" class="form-control">
+                                    <span class="placeholder">TSP Configurable Counter</span>
+                                  </div>
+                                </td>
+                                <td>
                                   <mat-checkbox [ngModelOptions]="{standalone: true}" name="ISDVVOrga" (change)="SelProp(OrgCon.ISDVV,OrgConfigs,'ISDVV');" [(ngModel)]="OrgCon.ISDVV">DVV Class</mat-checkbox>
                                 </td>
                               </tr>
@@ -499,6 +506,13 @@
                                             </div>
                                           </td>
 
+                                          <td>
+                                            <div class="form-group">
+                                              <label>TSP Configurable Counter</label>
+                                              <input type="text" inputmode="numeric" id="TSPCounter" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(Scheme.TSPConfigurationCounter,Sch.value,'TSPConfigurationCounter');" [(ngModel)]="Scheme.TSPConfigurationCounter" class="form-control">
+                                              <span class="placeholder">TSP Configurable Counter</span>
+                                            </div>
+                                          </td>
                                           <td>
 
                                             <mat-checkbox [ngModelOptions]="{standalone: true}" name="ISDVVOrga" (change)="SelProp(Scheme.ISDVV,Sch.value,'ISDVV');" [(ngModel)]="Scheme.ISDVV">DVV Class</mat-checkbox>
@@ -714,6 +728,14 @@
                                                       <span class="placeholder">Extra Trainees % age</span>
                                                     </div>
                                                   </td>
+
+                                                  <td>
+                                                    <div class="form-group">
+                                                      <label>TSP Configurable Counter</label>
+                                                      <input type="text" inputmode="numeric" id="TSPCounter" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" (change)="SelProp(TSP.TSPConfigurationCounter,Sch.value,'TSPConfigurationCounter');" [(ngModel)]="TSP.TSPConfigurationCounter" class="form-control">
+                                                      <span class="placeholder">TSP Configurable Counter</span>
+                                                    </div>
+                                                  </td>
                                                   <td>
 
                                                     <mat-checkbox [ngModelOptions]="{standalone: true}" name="ISDVVOrga" (change)="SelProp(TSP.ISDVV,AllTSP.value,'ISDVV');" [(ngModel)]="TSP.ISDVV">DVV Class</mat-checkbox>
@@ -918,6 +940,14 @@
                                                         <label>Extra Trainees % age</label>
                                                         <input type="text" inputmode="numeric" id="TraineesPerClassThersholdOrga" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.TraineesPerClassThershold" class="form-control">
                                                         <span class="placeholder">Extra Trainees % age</span>
+                                                      </div>
+                                                    </td>
+
+                                                    <td>
+                                                      <div class="form-group">
+                                                        <label>TSP Configurable Counter</label>
+                                                        <input type="text" inputmode="numeric" id="TSPCounter" placeholder="" NumberOnly [ngModelOptions]="{standalone: true}" [(ngModel)]="class.TSPConfigurationCounter" class="form-control">
+                                                        <span class="placeholder">TSP Configurable Counter</span>
                                                       </div>
                                                     </td>
                                                     <td>

@@ -26,7 +26,7 @@ import parse from 'date-fns/esm/parse';
 
 export class InceptionReportComponent implements OnInit {
   inceptionreportform: FormGroup;
-
+  invalidTLD: boolean = false;
   title: string; savebtn: string;
   displayedColumns = ['ClassID', 'ClassStartTime', 'ClassEndTime', 'ClassTotalHours', 'EnrolledTrainees', 'Shift', 'FinalSubmitted', 'InActive', "Action"];
   inceptionreport: MatTableDataSource<any>;
@@ -473,27 +473,26 @@ export class InceptionReportComponent implements OnInit {
       return false;
     }
 
-    // if (this.ContactPerson.length > 0) {
-    //   this.ContactPerson.forEach(x => {
-    //     if (x.ContactPersonType == '' || x.ContactPersonName == '' || x.ContactPersonEmail == '' || x.ContactPersonLandline == '' || x.ContactPersonMobile == '') {
-    //       this.errorContactPerson = "Please enter all required fields of a contact person";
-    //     }
-    //   }
-    //   );
+    //if (this.ContactPerson.length > 0) {
+    //  this.ContactPerson.forEach(x => {
+    //    if (x.ContactPersonType == '' || x.ContactPersonName == '' || x.ContactPersonEmail == '' || x.ContactPersonLandline == '' || x.ContactPersonMobile == '') {
+    //      this.errorContactPerson = "Please enter all required fields of a contact person";
+    //    }
+    //  }
+    //  );
 
-    //   if (this.errorContactPerson) {
-    //     this.ComSrv.ShowError(this.errorContactPerson.toString(), "Error");
-    //     this.errorContactPerson = null;
-    //     this.FinalSubmitted.setValue(false)
-    //     return false;
-    //   }
+    //  if (this.errorContactPerson) {
+    //    this.ComSrv.ShowError(this.errorContactPerson.toString(), "Error");
+    //    this.errorContactPerson = null;
+    //    this.FinalSubmitted.setValue(false)
+    //    return false;
+    //  }
 
-    // }
-
+    //}
 
     if (this.ContactPerson.length > 0) {
       let tldValidationPromises = [];
-    
+
       this.ContactPerson.forEach(x => {
         if (x.ContactPersonType == '' || x.ContactPersonName == '' || x.ContactPersonEmail == '' || x.ContactPersonLandline == '' || x.ContactPersonMobile == '') {
           this.errorContactPerson = "Please enter all required fields of a contact person";
@@ -515,11 +514,11 @@ export class InceptionReportComponent implements OnInit {
                 }
               );
           });
-    
+
           tldValidationPromises.push(tldPromise);
         }
       });
-    
+
       // Handle the results of all TLD validations
       Promise.all(tldValidationPromises).then(() => {
         if (this.errorContactPerson) {
@@ -641,25 +640,26 @@ export class InceptionReportComponent implements OnInit {
       }
     }, error => this.error = error// error path
     );
+
   }
 
 
   checkOnCPEmail(email: any) {
-   
-    this.ComSrv.fetchAndValidateTLD(email)
-    .subscribe(
-      (isValidTLD: boolean) => {
-        if (isValidTLD) {
-          this.invalidTLD = false;  // Set to false if TLD is valid
-        } else {
-          this.invalidTLD = true;  // Set to true if TLD is invalid
-        }
-      }, (error) => {
-        this.error = error // error path
-      }
-    );
 
-    }
+    this.ComSrv.fetchAndValidateTLD(email)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (isValidTLD) {
+            this.invalidTLD = false;  // Set to false if TLD is valid
+          } else {
+            this.invalidTLD = true;  // Set to true if TLD is invalid
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+  }
+
 
   formatTimeToHHMM(date: Date): string {
     const hours = date.getHours();

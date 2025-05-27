@@ -13,7 +13,14 @@ namespace DataLayer.Interfaces
 
         List<TSRLiveDataModel> GetFilteredTSRData(SearchFilter filters);
 
+        List<GSRLiveDataModel> GetFilteredGSRData(SearchFilter filters);
+
         List<TSRLiveDataModel> FetchPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount);
+        List<TERLiveDataModel> FetchTERPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount);
+        List<TARLiveDataModel> FetchTARPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount);
+        List<TARCWLiveDataModel> FetchTARPagedClasswise(PagingModel pagingModel, SearchFilter filterModel, out int totalCount);
+
+        List<GSRLiveDataModel> FetchGSRPaged(PagingModel pagingModel, SearchFilter filterModel);
 
         List<TSRLiveDataModel> FetchTSULiveData(PagingModel pagingModel, SearchFilter filterModel, out int totalCount);
 

@@ -82,7 +82,7 @@ export class KAMComponent implements OnInit {
             this.RegionArray =d[3];
             this.DistrictArray = d[4];
             //this.Users = this.Users.filter(user => (user.UserLevel == 1 || user.UserLevel == 2));    // previous this check was functional
-            this.Users = this.Users.filter(user => (user.RoleID == 4));
+            this.Users = this.Users.filter(user => (user.RoleID == 24));
 
             this.RegionArray = this.RegionArray.filter(x => this.TSPs.map(y => y.RegionID).includes(x.RegionID));
             //this.DistrictArray = this.DistrictArray.filter(x => this.TSPs.map(y => y.DistrictID).includes(x.DistrictID))

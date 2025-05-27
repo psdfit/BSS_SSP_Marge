@@ -72,7 +72,7 @@
               <div class="col-sm-3" hidden>
                 <mat-form-field>
                   <mat-label>Select Registration Authority</mat-label>
-                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority"
+                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority" 
                     matInput required>
                     <mat-option *ngFor="let s of registrationAuthority"
                       [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
@@ -166,7 +166,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Front Main
                     Entrance Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="FrontMainEntrancePhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="FrontMainEntrancePhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('FrontMainEntrancePhoto').errors | keyvalue">
@@ -179,7 +179,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Class Room
                     Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="ClassroomPhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="ClassroomPhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('ClassroomPhoto').errors | keyvalue">
@@ -192,7 +192,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Practical
                     Area Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="PracticalAreaPhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="PracticalAreaPhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('PracticalAreaPhoto').errors | keyvalue">
@@ -205,7 +205,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Computer Lab
                     Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="ComputerLabPhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip, application/pdf" formControlName="ComputerLabPhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('ComputerLabPhoto').errors | keyvalue">
@@ -218,7 +218,7 @@
                   <mat-label class="custom-label"
                     style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Upload Tools And
                     Equipments Picture</mat-label>
-                  <file-upload accept="image/jpeg,image/png" formControlName="ToolsAndEquipmentsPhoto" maxSize="1024"
+                  <file-upload accept="image/jpeg, image/png, application/zip" formControlName="ToolsAndEquipmentsPhoto" maxSize="1024"
                     [nopreview]="true" matInput></file-upload>
                   <mat-error style="font-size: 11px;"
                     *ngFor="let error of TrainingForm.get('ToolsAndEquipmentsPhoto').errors | keyvalue">
@@ -385,7 +385,7 @@
                   <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID" matInput
                     required>
                     <mat-option *ngFor="let s of TrainingLocation"
-                      [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
+                      [value]="s.TrainingLocationID"  [matTooltip] ="s.TrainingLocationName">{{s.TrainingLocationName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of Certificate.get('TrainingLocationID').errors | keyvalue">
                     {{
@@ -397,7 +397,7 @@
               <div class="col-sm-3">
                 <mat-form-field>
                   <mat-label>Select Registration Authority</mat-label>
-                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority"
+                  <mat-select placeholder="Select Registration Authority" formControlName="RegistrationAuthority" (ngModelChange)="onChangeRegistration()"
                     matInput required>
                     <mat-option *ngFor="let s of registrationAuthority"
                       [value]="s.RegistrationAuthorityID">{{s.RegistrationAuthorityName}}</mat-option>
@@ -436,7 +436,7 @@
                   </mat-error>
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-3" *ngIf="Certificate.get('RegistrationAuthority').value != 5">
                 <mat-form-field>
                   <mat-label>Issuance Date</mat-label>
                   <input formControlName="IssuanceDate" [max]="maxDate" [matDatepicker]="IssuanceDate" readonly matInput
@@ -450,7 +450,7 @@
                   </mat-error>
                 </mat-form-field>
               </div>
-              <div class="col-sm-3" *ngIf="Certificate.get('RegistrationStatus').value != 3">
+              <div class="col-sm-3" *ngIf="Certificate.get('RegistrationStatus').value != 3 && Certificate.get('RegistrationAuthority').value != 5">
                 <mat-form-field>
                   <mat-label>Expiry Date</mat-label>
                   <input formControlName="ExpiryDate" [max]="maxDate" [matDatepicker]="ExpiryDate" readonly matInput
@@ -516,11 +516,11 @@
                   *ngIf="column !='TrainingLocationName' && column !='ExpiryDate' && column !='IssuanceDate' && column !='RegistrationCertificateEvidence'">
                   &nbsp;{{ row[column] }}
                 </ng-container>
-               
+
 
                 <ng-container *ngIf="column === 'TrainingLocationName' && (row['TotalMappedTrade'] != 0)">
                   &nbsp;
-                  <span  matTooltip="This training Certificate currently locked."
+                  <span matTooltip="This training Certificate currently locked."
                     style="color: #5a5c5e;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }}</strong>
                   </span>
@@ -533,8 +533,12 @@
                   </span>
                 </ng-container>
 
-                <ng-container *ngIf="column =='IssuanceDate'">
+            
+                <ng-container *ngIf="column =='IssuanceDate' && row[column] !='---'">
                   &nbsp; {{ row[column] | date:environment.DateFormat }}
+                </ng-container>
+                <ng-container *ngIf="column =='IssuanceDate' && row[column] =='---'">
+                  &nbsp; {{ row[column] }}
                 </ng-container>
                 <ng-container *ngIf="column =='ExpiryDate' && row[column] !='---'">
                   &nbsp; {{ row[column] | date:environment.DateFormat }}
@@ -581,7 +585,7 @@
                   <mat-select placeholder="Select Training Location" formControlName="TrainingLocationID" matInput
                     required>
                     <mat-option *ngFor="let s of TrainingLocation"
-                      [value]="s.TrainingLocationID">{{s.TrainingLocationName}}</mat-option>
+                      [value]="s.TrainingLocationID" [matTooltip] ="s.TrainingLocationName">{{s.TrainingLocationName}}</mat-option>
                   </mat-select>
                   <mat-error *ngFor="let error of TradeForm.get('TrainingLocationID').errors | keyvalue">
                     {{
@@ -850,7 +854,7 @@
                   CNIC Front
                   Photo
                 </mat-label>
-                <file-upload accept="application/pdf,image/jpeg,image/png"  formControlName="CnicFrontPhoto"
+                <file-upload accept="application/pdf,image/jpeg,image/png" formControlName="CnicFrontPhoto"
                   maxSize="1024" [nopreview]="true" matInput></file-upload>
                 <mat-error style="font-size: 11px;"
                   *ngFor="let error of TrainerForm.get('CnicFrontPhoto').errors | keyvalue">

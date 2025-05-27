@@ -255,14 +255,15 @@
                       <td>
                         <mat-form-field fxFlex>
                           <input type="email" [(ngModel)]="c.ContactPersonEmail" [ngModelOptions]="{standalone: true}"
-                            placeholder="Email" matInput maxlength="100" required
-                            (blur)="checkOnCPEmail(c.ContactPersonEmail)">
+                                 placeholder="Email" matInput maxlength="100" required
+                                 (blur)="checkOnCPEmail(c.ContactPersonEmail)">
                           <mat-label>Contact Person Email</mat-label>
                           <mat-error *ngIf="c.ContactPersonEmail === ''">Email is required</mat-error>
                         </mat-form-field>
                         <span *ngIf="invalidTLD && c.ContactPersonEmail !== ''" class="mat-error"
-                          style="font-size: 10.5px; padding-top: 0; position: relative; bottom: 15px;">Invalid email address</span>
+                              style="font-size: 10.5px; padding-top: 0; position: relative; bottom: 15px;">Invalid email address</span>
                       </td>
+
                       <td><button class="btn btn-warning" type="button" [disabled]="inceptionreportform.disabled" (click)="RemovePerson(c)">Remove</button></td>
                     </tr>
                   </tbody>

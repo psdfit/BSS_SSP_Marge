@@ -469,7 +469,7 @@ export class ChangeRequestDialogComponent implements OnInit {
 
   }
   getClassData() {
-    this.ComSrv.getJSON('api/ClassChangeRequest/GetClassesByUser/' + this.userid).subscribe((d: any) => {
+    this.ComSrv.getJSON('api/ClassChangeRequest/GetClassesByUsers/' + this.userid + '/' + this.filters.SchemeID).subscribe((d: any) => {
       this.classArray = new MatTableDataSource(d[0]);
       this.classArrayForDateChange = new MatTableDataSource(d[0]);
       this.classTehsils = d[1];
@@ -1790,84 +1790,6 @@ export class ChangeRequestDialogComponent implements OnInit {
     );
   }
 
-  getCurrentClassTiming(classCode: any): void {
-    this.ComSrv.getJSON('api/InceptionReport/GetActiveClassTimingCR/' + classCode).subscribe((d: any) => {
-      let CurrentClassTimingList = d[0];
-      console.log(CurrentClassTimingList, 'CurrentClassTimingList')
-      this.InceptionReportIDRI = CurrentClassTimingList[0].IncepReportID;
-      this.GetCurrentStartDateforReplacementI = CurrentClassTimingList[0].ActualStartDate;
-      this.GetCurrentEndDateforReplacementI = CurrentClassTimingList[0].ActualEndDate;
-    }, (error) => {
-      console.error('Error occurred while fetching active class timing:', error);
-    });
-  }
-
-  checkClassCodesForActiveTiming(classCodes: any[]): void {
-    for (let i = 0; i < classCodes.length; i++) {
-      const classCode = classCodes[i];
-      console.log(`Checking class code: ${classCode.ClassCode}`);
-
-      this.getActiveClassTiming(classCode);
-
-      if (this.doOverlapRI) {
-        // Stop the loop if overlap is found
-        break;
-      }
-    }
-  }
-
-  getActiveClassTiming(classCode: any): void {
-    console.log(classCode, classCode.ClassCode, 'ClassTimingList');
-    this.ComSrv.getJSON('api/InceptionReport/GetActiveClassTimingCR/' + classCode.ClassCode).subscribe((d: any) => {
-      let ActiveClassTimingList = d[0];
-      console.log(ActiveClassTimingList, 'ActiveClassTimingList')
-      this.GetActiveStartDateforReplacementI = ActiveClassTimingList[0]?.ActualStartDate;
-      this.GetActiveEndDateforReplacementI = ActiveClassTimingList[0]?.ActualEndDate;
-
-      if (ActiveClassTimingList.length > 0) {
-
-        const currentClassStartTime = this.GetCurrentStartDateforReplacementI;
-        const currentClassEndTime = this.GetCurrentEndDateforReplacementI;
-
-        const otherClassStartTime = this.GetActiveStartDateforReplacementI;
-        const otherClassEndTime = this.GetActiveEndDateforReplacementI;
-
-
-        console.log(currentClassStartTime, currentClassEndTime, otherClassStartTime, otherClassEndTime, 'timeeeee');
-
-        this.doOverlapRI = doClassTimesOverlapRI(
-          currentClassStartTime,
-          currentClassEndTime,
-          otherClassStartTime,
-          otherClassEndTime
-        );
-
-        console.log(this.doOverlapRI, 'timeee')
-        if (this.doOverlapRI) {
-          console.log('Instructor already assigned to another class in the same time bracket!');
-          this.error = "Instructor already assigned to another class in the same time bracket!";
-          this.ComSrv.ShowError(this.error.toString(), "Error");
-          this.FinalSubmitted.setValue(false);
-          return;
-        }
-      } else {
-        console.log('No active class timing found for the class code.');
-        this.doOverlapRI = false;
-      }
-    }, (error) => {
-      console.error('Error occurred while fetching active class timing:', error);
-    });
-  }
-
-  onCurrentInstructorChange(event: MatSelectChange): void {
-    const selectedValue = event.value;
-    this.replaceInstructorForm.get('CurrentInstructorID').setValue(selectedValue);
-  }
-
-  onReplacementInstructorChange(event: MatSelectChange): void {
-    const selectedValue = event.value;
-    this.replaceInstructorForm.get('ReplacementInstructorID').setValue(selectedValue);
-  }
 
   checkZipFile(ev: Event) {
     let file = (ev.target as HTMLInputElement).files[0];
@@ -1901,6 +1823,39 @@ export class ChangeRequestDialogComponent implements OnInit {
     debugger;
     this.dialogueService.openClassJourneyDialogue(data);
   }
+
+  checkOnHeadEmail() {
+    let values = this.changerequestTSPform.getRawValue();
+    this.ComSrv.fetchAndValidateTLD(values.HeadEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.HeadEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+
+  }
+
+  checkOnCPEmail() {
+    let values = this.changerequestTSPform.getRawValue();
+    this.ComSrv.fetchAndValidateTLD(values.CPEmail)
+      .subscribe(
+        (isValidTLD: boolean) => {
+          if (!isValidTLD) {
+            this.CPEmail.setErrors({ isValid: false, message: 'Invalid email address' });
+            return;
+          }
+        }, (error) => {
+          this.error = error // error path
+        }
+      );
+
+  }
+
   get TSPChangeRequestID() { return this.changerequestTSPform.get("TSPChangeRequestID"); }
   get TSPID() { return this.changerequestTSPform.get("TSPID"); }
   get Type() { return this.changerequestTSPform.get("Type"); }

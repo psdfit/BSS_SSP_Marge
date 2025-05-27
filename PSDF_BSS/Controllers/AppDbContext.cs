@@ -1,0 +1,4 @@
+﻿// DTO
+public class AppDbContext
+{
+}

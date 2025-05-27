@@ -1,0 +1,143 @@
+<mat-card>
+  <mat-card-content>
+    <div fxLayoutAlign="space-around space-around" fxLayout="column">
+
+      <div class="card mb-2 pl-1 pr-1">
+
+        <form [formGroup]="genForm">
+          <div class="row">
+            <div class="col-3">
+              <mat-form-field fxFlex>
+                <mat-label>Select Report's Name</mat-label>
+                <mat-select #report placeholder="Report Name's" (openedChange)="EmptyCtrl()"
+                  (selectionChange)="getSubReportsName(report.value)" formControlName="ReportName" matInput>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                      [formControl]="SearchRName" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of reportsArray | like:['ReportName',SearchRName.value]"
+                    [value]="s">{{s.ReportName}}</mat-option>
+                  <mat-error *ngFor="let error of genForm.get('ReportName').errors | keyvalue">{{
+                    getErrorMessage(error.key, error.value) }}
+                  </mat-error>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-3">
+              <mat-form-field fxFlex>
+                <mat-label>Select Sub Report's Name</mat-label>
+                <mat-select #subreport placeholder="Sub Report Name's" (openedChange)="EmptyCtrl()"
+                  (selectionChange)="getSubReportsFilters(subreport.value)" formControlName="SubReportName" matInput>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                      [formControl]="SearchSRName" autofocus /></mat-optgrp>
+                  <mat-option *ngFor="let s of subReportsArray | like:['SubReportName',SearchSRName.value]"
+                    [value]="s">{{s.SubReportName}}</mat-option>
+                  <mat-error *ngFor="let error of genForm.get('SubReportName').errors | keyvalue">{{
+                    getErrorMessage(error.key, error.value) }}
+                  </mat-error>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- <div class="col-3">
+              <mat-form-field>
+                 <mat-label>Start Date</mat-label>
+                 <input formControlName="StartDate" [max]="maxDate"
+                 [matDatepicker]="StartDate" readonly matInput required>
+                 <mat-datepicker-toggle matSuffix [for]="StartDate"
+                    matTooltip="Start Date"></mat-datepicker-toggle>
+                 <mat-datepicker #StartDate disabled="false"></mat-datepicker>
+                 <mat-error
+                    *ngFor="let error of genForm.get('StartDate').errors | keyvalue">{{
+                    getErrorMessage(error.key, error.value) }}
+                 </mat-error>
+              </mat-form-field>
+           </div>
+            <div class="col-3">
+              <mat-form-field>
+                 <mat-label>End Date</mat-label>
+                 <input formControlName="EndDate" [max]="maxDate"
+                 [matDatepicker]="EndDate" readonly matInput required>
+                 <mat-datepicker-toggle matSuffix [for]="EndDate"
+                    matTooltip="End Date"></mat-datepicker-toggle>
+                 <mat-datepicker #EndDate disabled="false"></mat-datepicker>
+                 <mat-error
+                    *ngFor="let error of genForm.get('EndDate').errors | keyvalue">{{
+                    getErrorMessage(error.key, error.value) }}
+                 </mat-error>
+              </mat-form-field>
+           </div> -->
+          </div>
+        </form>
+    </div>
+
+    <div class="card">
+      
+      <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
+        <mat-icon class="material-icons">view_comfy</mat-icon>
+        <span class="spacer">{{SpacerTitle}}</span>
+        <div class="spacer"></div>
+        <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+          (click)="DataExcelExport(this.TableData.filteredData,'Report')">
+          <i class="fas fa-file-export"></i> Export Excel</button>
+        <input type="text" placeholder="Search" (keyup)="applyFilter(TableData,$event.target.value)" class="search" />
+      </mat-toolbar>
+
+      <div class="table-responsive">
+
+        <mat-table [dataSource]="TableData" #Sort="matSort" matSort class="table table-bordered">
+          <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index">
+
+              <ng-container [ngSwitch]="column">
+
+                <ng-container *ngSwitchCase="'SrNo'">
+                  &nbsp; {{i+1}}
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'CreatedDate'">
+                  &nbsp; {{ DatePipe.transform(row[column] , 'yyyy-MM-dd HH:mm:ss') }}
+               </ng-container>
+
+                <!-- <ng-container *ngSwitchCase="'RegistrationDate'">
+                  &nbsp; {{ DatePipe.transform(row[column] , 'yyyy-MM-dd HH:mm:ss') }}
+               </ng-container> -->
+
+
+                
+                
+
+                <ng-container *ngSwitchDefault>
+
+                  <ng-container *ngIf="attachmentColumnArray.includes(column)">
+                    &nbsp;
+                    
+                    <a style="cursor: pointer;" *ngIf=" row[column] != '' && row[column] !=undefined" (click)="ShowPreview(row[column])" color="primary" matTooltip="Preview document" class="file-label">
+                      <mat-icon>get_app</mat-icon>
+                    </a>
+                  
+                    
+                    <span *ngIf=" row[column] == '' || row[column] ==undefined">---</span>
+                  </ng-container>
+                  
+                  
+                  <ng-container *ngIf="!attachmentColumnArray.includes(column)">
+                    &nbsp; {{ row[column] }}
+                  </ng-container>
+
+                </ng-container>
+
+              </ng-container>
+
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #Paginator="matPaginator" [pageSize]="5" [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
+      </div>
+    </div>
+
+    </div>
+  </mat-card-content>
+</mat-card>

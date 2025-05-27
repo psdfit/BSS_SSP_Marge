@@ -45,7 +45,7 @@ export class AppendixComponent implements OnInit {
   educationTypes: any;
   age: any[] = [];
   minAge = 18;
-  maxAge = 45;
+  maxAge = 75;
   formrights: UserRightsModel;
   enText: string = "Scheme";
   error: String;
@@ -82,7 +82,10 @@ export class AppendixComponent implements OnInit {
     this.schemesDataSourceSSP = new MatTableDataSource([]);
     this.formrights = http.getFormRights();
   }
+  currentUser:any;
   ngOnInit() {
+    this.currentUser = this.http.getUserDetails();
+
     this.http.OID.subscribe(OID => {
       this.loadAppendix()
 
@@ -123,7 +126,7 @@ export class AppendixComponent implements OnInit {
       BusinessRuleType: ['', Validators.required],
       Stipend: ['', Validators.required],
       StipendMode: ['', Validators.required],
-      UniformAndBag: ['', Validators.required],
+      //UniformAndBag: ['', Validators.required],
       MinimumEducation: ['', Validators.required],
       MaximumEducation: ['', Validators.required],
       MinAge: ['', Validators.required],
@@ -142,13 +145,14 @@ export class AppendixComponent implements OnInit {
     let programTypeIDControl = this.schemeForm.get('ProgramTypeID');
     let maximumEducationControl = this.schemeForm.get('MaximumEducation');
     let stipendControl = this.schemeForm.get('Stipend');
-    let uniformAndBagControl = this.schemeForm.get('UniformAndBag');
+   // let uniformAndBagControl = this.schemeForm.get('UniformAndBag');
+    debugger;
     schemeNameControl.valueChanges.subscribe(
       value => {
         if (value) {
           if (!this.insertedScheme[0]?.FinalSubmitted) {
             this.getAllSchemes().subscribe(schemes => {
-              let duplicate = schemes.find(x => (x.SchemeName.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
+              let duplicate =  schemes.find(x => (x.SchemeName.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
               if (duplicate) {
                 schemeNameControl.setErrors({ exists: true });
                 schemeNameControl.markAsDirty();
@@ -163,7 +167,7 @@ export class AppendixComponent implements OnInit {
         if (value) {
           if (!this.insertedScheme[0]?.FinalSubmitted) {
             this.getAllSchemes().subscribe(schemes => {
-              let duplicate = schemes.find(x => (x.SchemeCode.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
+              let duplicate =  schemes.find(x => (x.SchemeCode.trim().toLowerCase() == value.trim().toLowerCase()) && (x.FinalSubmitted == true));
               if (duplicate) {
                 schemeCodeControl.setErrors({ exists: true });
                 schemeCodeControl.markAsDirty();
@@ -190,9 +194,9 @@ export class AppendixComponent implements OnInit {
     stipendControl.valueChanges.subscribe(value => {
       this.childClass.onChangeStipend(value);
     })
-    uniformAndBagControl.valueChanges.subscribe(value => {
-      this.childClass.onChangeUniformBag(value);
-    })
+    //uniformAndBagControl.valueChanges.subscribe(value => {
+    // // this.childClass.onChangeUniformBag(value);
+    //})
     this.schemeFileForm = this._formBuilder.group({
       SchemeExcel: ['', Validators.required]
     });
@@ -202,7 +206,9 @@ export class AppendixComponent implements OnInit {
     this.schemeForm.markAllAsTouched();
     this.isLoadedAppendixForm = true;
   }
+
   onFileChange(ev: any) {
+    
     let workBook = null;
     let jsonData = null;
     const reader = new FileReader();
@@ -289,6 +295,7 @@ export class AppendixComponent implements OnInit {
       SchemeCode: _schemData['Scheme Code'],
       Description: _schemData['Description'],
       PaymentSchedule: this.paymentSchedule.find(x => _schemData['Payment Schedule'].toLowerCase() == x.PaymentStructure.toLowerCase())?.PaymentStructure || '',
+      OrganizationID: this.organizations .find(x => _schemData['Organization'].toLowerCase() == x.OName.toLowerCase())?.OID || '',
       ProgramTypeID: program,
       PCategoryID: this.programCategories.find(x => _schemData['Program Category'].toLowerCase() == x.PCategoryName.toLowerCase())?.PCategoryID || '',
       FundingSourceID: fundingSrc,
@@ -297,7 +304,7 @@ export class AppendixComponent implements OnInit {
       //BusinessRuleType: _schemData['Business Rules'],
       Stipend: _schemData['Stipend'],
       StipendMode: _schemData['Stipend Mode'],
-      UniformAndBag: _schemData['Uniform and Bag'],
+      //UniformAndBag: _schemData['Uniform and Bag'],
       MinimumEducation: this.educationTypes.find(x => _schemData['Minimum Education'].toLowerCase() == x.Education.toLowerCase())?.EducationTypeID || '',
       MaximumEducation: this.educationTypes.find(x => _schemData['Maximum Education'].toLowerCase() == x.Education.toLowerCase())?.EducationTypeID || '',
       MinAge: parseInt(_schemData['Minimum Age(Years)']),
@@ -575,7 +582,7 @@ export class AppendixComponent implements OnInit {
         , "Program Category": scheme.PCategoryName
         , "Stipend": scheme.Stipend
         , "Stipend Mode": scheme.StipendMode
-        , "Uniform and Bag": scheme.UniformAndBag
+        //, "Uniform and Bag": scheme.UniformAndBag
         , "Minimum Education": scheme.MinimumEducationName
         , "Maximum Education": scheme.MaximumEducationName
         , "Minimum Age(Years)": scheme.MinAge
@@ -739,7 +746,7 @@ export class SchemeModel extends ModelBase {
   BusinessRuleType: string;
   Stipend: number;
   StipendMode: string;
-  UniformAndBag: number;
+  //UniformAndBag: number;
   MinimumEducation: number;
   MaximumEducation: number;
   MinAge: number;

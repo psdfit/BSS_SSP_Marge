@@ -83,7 +83,7 @@
                   </div>
                   <div class="col-sm-6 col-md-6 col-lg-6">
                     <mat-form-field>
-                      <input matInput placeholder="Description" formControlName="Description" maxlength="1000">
+                      <input matInput placeholder="Description" formControlName="Description"  maxlength="1000">
                     </mat-form-field>
                   </div>
                   <div class="col-sm-6 col-md-3 col-lg-3">
@@ -192,7 +192,7 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div class="col-sm-6 col-md-3 col-lg-3">
+                  <!--<div class="col-sm-6 col-md-3 col-lg-3">
                     <mat-form-field>
                       <input matInput placeholder="Uniform and Bag" formControlName="UniformAndBag" required type="text"
                              DecimelOnly>
@@ -200,7 +200,7 @@
                         <strong>required</strong>
                       </mat-error>
                     </mat-form-field>
-                  </div>
+                  </div>-->
                   <div class="col-sm-6 col-md-3 col-lg-3">
                     <mat-form-field>
                       <mat-select formControlName="MinimumEducation" placeholder="Minimum Education"
@@ -291,23 +291,29 @@
             </mat-step>
             <mat-step>
               <ng-template matStepLabel><span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> TSP(s)</ng-template>
+
               <app-tsp [scheme]="insertedScheme" [incompTSP]="tspsInserted" (tsp)="bindTSPs($event)"
                        (next)="moveForward($event, stepper)" [childClassComponent]="appClass"
                        [childInstructorComponent]="appInstructor"></app-tsp>
+
             </mat-step>
             <mat-step>
               <ng-template matStepLabel>
                 <span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> Class(s)
               </ng-template>
+
               <app-class #appClass [scheme]="insertedScheme" [tsps]="tspsInserted" [classes]="classesInserted"
                          (classData)="bindClasses($event)" (next)="moveForward($event, stepper)"></app-class>
+
             </mat-step>
             <mat-step>
               <ng-template matStepLabel>
                 <span *ngIf="!insertedScheme[0]?.FinalSubmitted">Add</span> Instructor(s)
               </ng-template>
+
               <app-instructor #appInstructor [scheme]="insertedScheme" [tsps]="tspsInserted" [classes]="classesInserted"
                               [incompInstr]="instructorsInserted"></app-instructor>
+                              
             </mat-step>
           </mat-horizontal-stepper>
         </fieldset>
@@ -325,7 +331,7 @@
             <input type="text" placeholder="Search" [(ngModel)]="searchFilter" (keyup)="applyFilter()" class="search" />
           </mat-toolbar>
           <div fxLayout="column">
-            <mat-table [dataSource]="schemesDataSource" matSort>
+            <mat-table [dataSource]="schemesDataSource" #sSort="matSort"  matSort>
               <ng-container matColumnDef="Scheme Name">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Name</mat-header-cell>
                 <mat-cell *matCellDef="let Row"> {{Row.SchemeName}} </mat-cell>
@@ -369,13 +375,13 @@
               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
               <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
-            <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            <mat-paginator [pageSize]="10"   #sPaginator="matPaginator" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
   </mat-tab>
-  <mat-tab label="Skills Shcolarship Program Appendix(s)">
+  <mat-tab label="Skills Scholarship Program Appendix(s)">
     <mat-card>
       <mat-card-content>
         <div>

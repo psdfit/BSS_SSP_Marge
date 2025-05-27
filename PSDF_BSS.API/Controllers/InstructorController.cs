@@ -1,5 +1,6 @@
 ﻿using DataLayer.Interfaces;
 using DataLayer.Models;
+using DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using PSDF_BSS.API.Models;
 using System;
@@ -173,5 +174,73 @@ namespace PSDF_BSS.API.Controllers
             return isValid;
 
         }
+
+        [HttpGet("~/api/instructor/attendance")]
+        public IActionResult GetTrainee()
+        {
+
+
+            int userID = Convert.ToInt32(User.Identity.Name);
+
+            var _instructorAttendance = _srvInstructor.FetchReport(userID, "RD_DVVInstructorAttendance");
+
+
+            var Data = new
+            {
+                instructorAttendanceList = _instructorAttendance,
+            };
+
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Success",
+                Data = Data
+            });
+        }
+
+        [HttpPost("~/api/Instructor/biomatricRegistration")]
+        public IActionResult biomatricRegistration(InstructorDVV model)
+        {
+            string errMsg = string.Empty;
+            if (model == null)
+            {
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+            }
+            if (model.InstructorID == 0)
+            {
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Invalid InstructorID."
+                });
+            }
+            if (model.InstructorID == 0
+                || string.IsNullOrEmpty(model.BiometricData1)
+                || string.IsNullOrEmpty(model.BiometricData2)
+                || string.IsNullOrEmpty(model.BiometricData3)
+                || string.IsNullOrEmpty(model.BiometricData4)
+                )
+            {
+                return BadRequest(new ApiResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Bad request. Did you pass valid body?"
+                });
+            }
+
+            model.CurUserID = Convert.ToInt32(User.Identity.Name);
+            bool result = _srvInstructor.SavebiomatricInstructorDVV(model, out errMsg);
+            return Ok(new ApiResponse()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = result ? "Success" : errMsg,
+                Data = new { isSaved = result }
+            });
+        }
+
     }
 }

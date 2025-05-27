@@ -12,6 +12,8 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Microsoft.AspNetCore.Components.Routing;
+using System.Data.Common;
+using System.Linq;
 
 
 namespace DataLayer.Services
@@ -33,7 +35,7 @@ namespace DataLayer.Services
             }
         }
 
-        public DataTable LoopinData(DataTable dt, string[] attachmentColumns)
+        public DataTable LoopingData(DataTable dt, string[] attachmentColumns)
         {
             DataTable modifiedDataTable = dt.Clone();
 
@@ -133,22 +135,30 @@ namespace DataLayer.Services
 
         public int BatchInsert(List<AssociationDetail> ls, int BatchFkey, int CurUserID, string TSPName, SqlTransaction transaction = null)
         {
-            int rowsAffected = 0;
-            foreach (var item in ls)
+            try
             {
-                string AssociationEvidence = SaveAttachment("TSPName", "AssociationEvidence", item.Evidence);
+                int rowsAffected = 0;
+                foreach (var item in ls)
+                {
+                    string AssociationEvidence = SaveAttachment("TSPName", "AssociationEvidence", item.Evidence);
 
-                List<SqlParameter> param = new List<SqlParameter>();
-                param.Add(new SqlParameter("@UserID", CurUserID));
-                param.Add(new SqlParameter("@TspAssociationDetailID", item.TspAssociationDetailID));
-                param.Add(new SqlParameter("@TspAssociationMasterID", BatchFkey));
-                param.Add(new SqlParameter("@CriteriaMainCategoryID", item.CriteriaMainCategoryID));
-                param.Add(new SqlParameter("@Attachment", AssociationEvidence));
-                param.Add(new SqlParameter("@Remarks", item.Remarks));
+                    List<SqlParameter> param = new List<SqlParameter>();
+                    param.Add(new SqlParameter("@UserID", CurUserID));
+                    param.Add(new SqlParameter("@TspAssociationDetailID", item.TspAssociationDetailID));
+                    param.Add(new SqlParameter("@TspAssociationMasterID", BatchFkey));
+                    param.Add(new SqlParameter("@CriteriaMainCategoryID", item.CriteriaMainCategoryID));
+                    param.Add(new SqlParameter("@Attachment", AssociationEvidence));
+                    param.Add(new SqlParameter("@Remarks", item.Remarks));
 
-                rowsAffected += SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "AU_SSPTSPAssociationDetail", param.ToArray());
+                    rowsAffected += SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "AU_SSPTSPAssociationDetail", param.ToArray());
+                }
+                return rowsAffected;
             }
-            return rowsAffected;
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
         }
 
         public DataTable SaveAssociationEvaluation(AssociationEvaluationModel data)
@@ -169,10 +179,6 @@ namespace DataLayer.Services
                     EvaluationAttachment = data.Attachment;
                 }
 
-
-
-
-
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@UserID", data.UserID));
                 param.Add(new SqlParameter("@TspAssociationEvaluationID", data.TspAssociationEvaluationID));
@@ -187,7 +193,12 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@Attachment", EvaluationAttachment));
 
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTSPAssociationEvaluation", param.ToArray()).Tables[0];
-                SendNotification(data);
+
+                int[] _notificationStatuses = new int[] {4,5};
+                if (_notificationStatuses.Contains(data.Status))
+                {
+                    SendNotification(data);
+                }
                 return dt;
             }
             catch (Exception ex)
@@ -269,5 +280,12 @@ namespace DataLayer.Services
 
         }
 
+        public DataTable FetchReportBySPNameAndParam(string spName, string parameter, int value)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@" + parameter, value));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, spName, param.ToArray()).Tables[0];
+            return dt;
+        }
     }
 }

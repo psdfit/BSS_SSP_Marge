@@ -94,7 +94,7 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
         }
         
         this.mainMenuItems = this.common.getMenuItems();
-        console.log(this.mainMenuItems);
+        // console.log(this.mainMenuItems);
         this.userOrgs = this.common.getUserOrgs();
       }
       else
@@ -111,38 +111,38 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
   //Author: Ali Haider
   //Date: 20-Jun-2023
   //Specification: Logout triggred on closing of browser or tab.
-  @HostListener('window:beforeunload', ['$event'])
-  unloadHandler(event: Event) {
-    var inFormOrLink;
-    $('a').on('click', function () { inFormOrLink = true; });
-    $('form').bind('submit', function () { inFormOrLink = true; });
-    // Remove the event listeners for 'click' on 'a' elements and 'submit' on 'form' elements
-    $('a').off('click');
-    $('form').off('submit');
-    if (this.IsTspUser) {
-      if (!inFormOrLink) {
-        this.logout();
-      }
-    }
-  }
+  // @HostListener('window:beforeunload', ['$event'])
+  // unloadHandler(event: Event) {
+  //   var inFormOrLink;
+  //   $('a').on('click', function () { inFormOrLink = true; });
+  //   $('form').bind('submit', function () { inFormOrLink = true; });
+  //   // Remove the event listeners for 'click' on 'a' elements and 'submit' on 'form' elements
+  //   $('a').off('click');
+  //   $('form').off('submit');
+  //   if (this.IsTspUser) {
+  //     if (!inFormOrLink) {
+  //       this.logout();
+  //     }
+  //   }
+  // }
   // -----------------//Checking login for every click.
-  @HostListener('document:click', ['$event'])
-  documentClick(event: MouseEvent) {
-    //Checking session is logout or not
-    if (this.IsTspUser) {
-      if (this.router.url !== "/profile-manage/profile" && this.router.url !== "/profile-manage/base-data") {
-        this.common.getJSON('api/Users/GetSession?SessionID=' + sessionStorage.getItem("SessionID") + '&UserID=' + sessionStorage.getItem("UserID")).subscribe((d: any) => {
-          this.userSessionDetail = d;
-          if (this.userSessionDetail === null) {
-            if (this.IsTspUser) {
-              this.logout();
-            }
-          }
-        }, error => this.error = error);
-      }
+  // @HostListener('document:click', ['$event'])
+  // documentClick(event: MouseEvent) {
+  //   //Checking session is logout or not
+  //   if (this.IsTspUser) {
+  //     if (this.router.url !== "/profile-manage/profile" && this.router.url !== "/profile-manage/base-data") {
+  //       this.common.getJSON('api/Users/GetSession?SessionID=' + sessionStorage.getItem("SessionID") + '&UserID=' + sessionStorage.getItem("UserID")).subscribe((d: any) => {
+  //         this.userSessionDetail = d;
+  //         if (this.userSessionDetail === null) {
+  //           if (this.IsTspUser) {
+  //             this.logout();
+  //           }
+  //         }
+  //       }, error => this.error = error);
+  //     }
 
-    }
-  }
+  //   }
+  // }
   ngOnInit(): void {
     // debugger;
     this.Notification();
@@ -292,4 +292,27 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
     return true;
     // this.router.navigate(['/notification/viewallnotification',data]);
   }
+
+  private apiUrl = 'api/MobileAppDownload/GetMobileApp';
+
+
+  downloadMobileApp() {
+    this.ComSrv.getMobileApp(this.apiUrl, { responseType: 'blob' }).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'myApp.zip';
+      
+      // Append the anchor tag to the body and trigger the click
+      document.body.appendChild(a);
+      a.click();
+      
+      // Remove the anchor tag and revoke the object URL after the download
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, error => {
+      console.error('Download failed:', error);
+    });
+}
+
 }

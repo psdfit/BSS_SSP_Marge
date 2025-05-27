@@ -46,6 +46,7 @@ export class SkillsScholarshipComponent implements OnInit {
       this.filters.TSPID = 0;
       this.filters.Locality = 0;
       this.filters.Cluster = 0;
+      this.filters.District = 0;
       this.getSkillsScholarshipData();
       // this.initPagedData();
     })
@@ -55,7 +56,7 @@ export class SkillsScholarshipComponent implements OnInit {
   }
   
   hideColumn = true;
-  displayedColumns: string[] = this.hideColumn ? ['TradeName', 'TradeTarget', 'EnrolmentsCompleted', 'OverallEnrolments', 'RemainingSeats'] : ['Action', 'TradeName', 'NoOfAssociate', 'TradeTarget', 'EnrolmentsCompleted', 'RemainingSeats'];
+  displayedColumns: string[] = this.hideColumn ? ['DistrictName', 'TradeName', 'TradeTarget', 'EnrolmentsCompleted', 'OverallEnrolments', 'RemainingSeats'] : ['Action', 'DistrictName', 'TradeName', 'NoOfAssociate', 'TradeTarget', 'EnrolmentsCompleted', 'RemainingSeats'];
   columnsForTable2: string[] = ['Action', 'TSPName', 'UserName', 'LoginDateTime', 'SessionID', 'IPAddress'];
   updateColumnVisibility() {
     // Update hideColumn based on your condition
@@ -66,7 +67,7 @@ export class SkillsScholarshipComponent implements OnInit {
       this.hideColumn = false;
     }
 
-    this.displayedColumns = this.hideColumn ? ['TradeName', 'TradeTarget', 'EnrolmentsCompleted', 'OverallEnrolments', 'RemainingSeats'] : ['Action', 'TradeName','NoOfAssociate', 'TradeTarget', 'EnrolmentsCompleted', 'RemainingSeats'];
+    this.displayedColumns = this.hideColumn ? ['DistrictName', 'TradeName', 'TradeTarget', 'EnrolmentsCompleted', 'OverallEnrolments', 'RemainingSeats'] : ['Action', 'DistrictName', 'TradeName', 'NoOfAssociate', 'TradeTarget', 'EnrolmentsCompleted', 'RemainingSeats'];
   }
 
   enumUserLevel = EnumUserLevel;
@@ -75,6 +76,7 @@ export class SkillsScholarshipComponent implements OnInit {
   Scheme = [];
   TSP = [];
   Cluster = [];
+  District = [];
 
 
   formrights: UserRightsModel;
@@ -86,7 +88,7 @@ export class SkillsScholarshipComponent implements OnInit {
     page: 1
   };
   // Some array of things.
-  filters: ISkillscholarshipFilter = { SchemeID: 0, TSPID: 0, Locality: 0, Cluster: 0 };
+  filters: ISkillscholarshipFilter = { SchemeID: 0, TSPID: 0, Locality: 0, Cluster: 0, District: 0 };
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   working: boolean;
@@ -101,6 +103,7 @@ export class SkillsScholarshipComponent implements OnInit {
   TSPFilter = new FormControl(1);
   LocalityFilter = new FormControl(2);
   ClusterFilter = new FormControl(3);
+  DistrictFilter = new FormControl(4);
   constructor(private fb: FormBuilder, private http: CommonSrvService, private ComSrv: CommonSrvService, public dialog: MatDialog,
     public dialogueService: DialogueService
     , private groupByPipe: GroupByPipe
@@ -121,6 +124,16 @@ export class SkillsScholarshipComponent implements OnInit {
         })
   }
 
+  getDistrictDropdown() {
+    this.ComSrv.getJSON(`api/SkillsScholarshipInitiative/GetFilteredDistricts/` + this.filters.Cluster)
+      .subscribe((data: any) => {
+        this.District = data[0];
+      },
+        error => {
+          this.error = error;
+        })
+  }
+
  
 
   getStartRaceOfRow(r) {
@@ -128,12 +141,13 @@ export class SkillsScholarshipComponent implements OnInit {
     var Clusterid = r.ClusterID;
     var Tradeid = r.TradeID;
     var Schemeid = r.SchemeID;
+    var Districtid = r.DistrictID;
     let titleConfirm = "Confirmation";
     let messageConfirm = "Do you want to Start the Race?";
     this.http.confirm(titleConfirm, messageConfirm).subscribe(
       (isConfirm: Boolean) => {
         if (isConfirm) {
-          this.http.getJSON(`api/SkillsScholarshipInitiative/StartRace/` + Schemeid + `/`+ Clusterid + `/` + Tradeid ).subscribe(
+          this.http.getJSON(`api/SkillsScholarshipInitiative/StartRace/` + Schemeid + `/` + Clusterid  + `/` + Districtid + `/` + Tradeid ).subscribe(
             (d: any) => {
               if (d) {
                 this.getSkillsScholarshipData();
@@ -159,12 +173,13 @@ export class SkillsScholarshipComponent implements OnInit {
     var Clusterid = r.ClusterID;
     var Tradeid = r.TradeID;
     var Schemeid = r.SchemeID;
+    var Districtid = r.DistrictID;
     let titleConfirm = "Confirmation";
     let messageConfirm = "Do you want to Stop the Race?";
     this.http.confirm(titleConfirm, messageConfirm).subscribe(
       (isConfirm: Boolean) => {
         if (isConfirm) {
-          this.http.getJSON(`api/SkillsScholarshipInitiative/StopRace/` + Schemeid + `/` + Clusterid + `/` + Tradeid).subscribe(
+          this.http.getJSON(`api/SkillsScholarshipInitiative/StopRace/` + Schemeid + `/` + Clusterid + `/` + Districtid + `/` + Tradeid).subscribe(
             (d: any) => {
               if (d) {
                 this.getSkillsScholarshipData();
@@ -183,7 +198,7 @@ export class SkillsScholarshipComponent implements OnInit {
 
   getSkillsScholarshipData() {
     if (this.isTSPUser) {
-      this.ComSrv.getJSON(`api/SkillsScholarshipInitiative/GetFilteredSkillsScholarshipInitiative/` + this.filters.SchemeID + `/` + this.filters.TSPID + `/` + this.filters.Locality + `/` + this.filters.Cluster)
+      this.ComSrv.getJSON(`api/SkillsScholarshipInitiative/GetFilteredSkillsScholarshipInitiative/` + this.filters.SchemeID + `/` + this.filters.TSPID + `/` + this.filters.Locality + `/` + this.filters.Cluster + `/` + this.filters.District)
         .subscribe((data: any) => {
           // this.mastersheet = new MatTableDataSource(data[0]); 
           this.Scheme = data[0];
@@ -200,7 +215,7 @@ export class SkillsScholarshipComponent implements OnInit {
             this.error = error;
           })
     } else {
-      this.ComSrv.getJSON(`api/SkillsScholarshipInitiative/GetFilteredSkillsScholarshipInitiative/` + this.filters.SchemeID + `/` + this.filters.TSPID + `/` + this.filters.Locality + `/` + this.filters.Cluster)
+      this.ComSrv.getJSON(`api/SkillsScholarshipInitiative/GetFilteredSkillsScholarshipInitiative/` + this.filters.SchemeID + `/` + this.filters.TSPID + `/` + this.filters.Locality + `/` + this.filters.Cluster + `/` + this.filters.District)
         .subscribe((data: any) => {
           // this.mastersheet = new MatTableDataSource(data[0]);
           this.Scheme = data[1];
@@ -241,6 +256,7 @@ export class SkillsScholarshipComponent implements OnInit {
       this.filters.TSPID = 0;
       this.filters.Locality = 0;
       this.filters.Cluster = 0;
+      this.filters.District = 0;
       // this.getMasterSheet();
       // this.initPagedData();
     })
@@ -305,4 +321,5 @@ export interface ISkillscholarshipFilter {
   TSPID: number;
   Locality: number;
   Cluster: number;
+  District: number;
  }

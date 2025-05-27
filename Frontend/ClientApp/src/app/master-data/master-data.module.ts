@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AcademicDisciplineComponent } from './academic-discipline/academic-discipline.component';
 import { AppFormsComponent } from './appforms/app-forms.component';
 import { ApprovalComponent } from './approval/approval.component';
+import { ApplicationLogComponent } from './application-log/application-log.component';
 import { CenterComponent } from './centres/centers.component';
 import { CertificationAuthorityComponent } from './certification-authority/certification-authority.component';
 import { CertificationCategoryComponent } from './certification-category/certification-category.component';
@@ -22,7 +23,7 @@ import { FundingCategoryComponent } from './funding-category/funding-category.co
 import { FundingSourceComponent } from './funding-source/funding-source.component';
 import { GenderComponent } from './genders/gender.component';
 import { InfrastructureComponent } from './infrastructure/infrastructure.component';
-import { KAMComponent } from './KAM/KAM.component';
+import { KAMComponent } from './KAM/kam.component';
 import { KAMInformationDialogComponent } from './kam-information-dialog/kam-information-dialog.component';
 import { MasterDataRoutingModule } from './master-data-routing';
 import { NotificationsComponent } from './notifications/notifications.component';
@@ -88,6 +89,7 @@ import { PrnApprovalPenaltyComponent } from './prn-approval-penalty/prn-approval
     // TradeComponent,
     FundingSourceComponent,
     FundingCategoryComponent,
+    ApplicationLogComponent,
     // ProgramCategoryComponent,
     // InflationRateComponent,
     NotificationsComponent,
@@ -97,7 +99,7 @@ import { PrnApprovalPenaltyComponent } from './prn-approval-penalty/prn-approval
     rolerightsdialogueComponent,
     // TSPListComponent,
     ClassSectionsComponent,
-    KAMComponent,
+    // KAMComponent,
     KAMInformationDialogComponent,
     CertificationAuthorityComponent,
     DurationComponent,
@@ -147,7 +149,7 @@ import { PrnApprovalPenaltyComponent } from './prn-approval-penalty/prn-approval
     ApprovalComponent,
     // TSPListComponent,
     ClassSectionsComponent,
-    KAMComponent,
+    // KAMComponent,
     CertificationAuthorityComponent,
     DurationComponent,
     AcademicDisciplineComponent,

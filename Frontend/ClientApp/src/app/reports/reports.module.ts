@@ -4,9 +4,10 @@ import { ViewReportsComponent } from './view-reports/view-reports.component';
 import { ViewAmsReportsComponent } from './view-ams-reports/view-ams-reports.component';
 import { SharedModule } from '../shared/shared.module';
 import { ReportRouting } from './reports.routing';
+import { ViewSspReportsComponent } from './view-ssp-reports/view-ssp-reports.component';
 
 @NgModule({
-  declarations: [ViewReportsComponent, ViewAmsReportsComponent],
+  declarations: [ViewReportsComponent, ViewAmsReportsComponent, ViewSspReportsComponent],
   imports: [CommonModule, SharedModule, ReportRouting],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -64,5 +64,8 @@ namespace DataLayer.Interfaces
 
         bool CheckUserPass(string userName, string userPassword);
         bool SSP_CheckUserPass(string userName, string userPassword);
+
+        public DataTable fetchReportBySPName(string Param);
+
     }
 }

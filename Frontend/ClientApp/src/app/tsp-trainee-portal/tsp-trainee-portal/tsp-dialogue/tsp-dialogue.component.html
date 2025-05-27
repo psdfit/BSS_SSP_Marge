@@ -27,7 +27,7 @@
             <mat-option disabled>Select Status</mat-option>
             <mat-option value="Accept">Accept</mat-option>
             <mat-option value="Release">Release</mat-option>
-            <mat-option value="Reject">Reject</mat-option>
+            <mat-option value="Reject" hidden="hidden">Reject</mat-option>
           </mat-select>
           <mat-error *ngIf="tsrForm.get('TraineeReason').invalid && tsrForm.get('TraineeReason').errors.required"><strong>Required</strong></mat-error>
         </mat-form-field>

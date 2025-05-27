@@ -1,5 +1,4 @@
 
-<div>
   <mat-card>
     <mat-card-content>
       <div fxLayoutAlign="space-around space-around" fxLayout="column">
@@ -10,15 +9,72 @@
           <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
         </mat-toolbar>
         <!--<button (click)="OK()">click</button>-->
-
         <div class="text-center" *ngIf="schemes.length==0">
           <p>No Pending Approval</p>
         </div>
-
-        <mat-horizontal-stepper linear #stepper *ngIf="schemes.length>0">
+        <mat-horizontal-stepper linear #stepper *ngIf="schemes.length>0" (selectionChange)="onStepChange($event)">
           <mat-step>
+            <div class="card p-1">
+
             <ng-template matStepLabel>Schemes</ng-template>
+            <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Schemes</span>
+              <div class="spacer"></div>
+              <input type="text" placeholder="Search" (keyup)="applyFilter(schemeTableData,$event.target.value)"
+                class="search" />
+            </mat-toolbar>
             <div class="table-responsive">
+              <mat-table [dataSource]="schemeTableData" #schemeSort="matSort" matSort class="table table-bordered">
+                <ng-container *ngFor="let column of schemeTableColumns" [matColumnDef]="column">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                  <mat-cell *matCellDef="let row; let i = index">
+                    <ng-container [ngSwitch]="column">
+                      <ng-container *ngSwitchCase="'No.'">
+                        &nbsp; {{i+1}}
+                      </ng-container>
+                      <!-- Display the column data for all columns except 'Action' and 'TSP' -->
+                      <ng-container *ngSwitchCase="'Navigate'">
+                        <button matd-button color="primary" type="button"  mat-button
+                          (click)="GetTsps(row.SchemeID)">
+                          TSPs
+                        </button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'Actions'">
+                        <a mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)">
+                          Export <mat-icon>keyboard_arrow_down</mat-icon>
+                        </a>
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item (click)="ExportToExcel(row)">
+                            <span>FactSheet.xlsx</span>
+                          </button>
+                          <button mat-menu-item (click)="exportExcel(row.SchemeID, false)">
+                            <span>Appendix.xlsx</span>
+                          </button>
+                          <button mat-menu-item (click)="exportExcel(row.SchemeID, true)">
+                            <span>Appendix (with Financial Information).xlsx</span>
+                          </button>
+                        </mat-menu>
+                        <span class="p-4 text-dark" *ngIf="row.IsApproved=='YES'">Approved</span>
+                        <a mat-button (click)="openApprovalDialogue(row)" *ngIf="row.IsApproved=='NO'">Decision</a>
+                      </ng-container>
+                      
+                      <!-- Display the column data for all other columns -->
+                      <ng-container *ngSwitchDefault>
+                        &nbsp; {{ row[column] }}
+                      </ng-container>
+                    </ng-container>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="schemeTableColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: schemeTableColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #schemePaginator="matPaginator" [pageSize]="5"
+                [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
+            </div>
+          </div>
+            
+            <!-- <div class="table-responsive">
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -45,13 +101,13 @@
                     <th>Contract Award Date</th>
                     <th>Business Rule Type</th>
                     <th>Organization</th>
-
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let r of schemes">
                     <td>
-                      <a color="primary" mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)"> Export <mat-icon>keyboard_arrow_down</mat-icon></a>
+                      <a color="primary" mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)">
+                        Export <mat-icon>keyboard_arrow_down</mat-icon></a>
                       <mat-menu #menu="matMenu">
                         <button mat-menu-item (click)="ExportToExcel(r)">
                           <span>FactSheet.xlsx</span>
@@ -63,12 +119,13 @@
                           <span>Appendix (with Financial Information).xlsx</span>
                         </button>
                       </mat-menu>
-
                       <span class="p-4 text-dark" *ngIf="r.IsApproved">Approved</span>
-                      <a color="primary" mat-button (click)="openApprovalDialogue(r)" *ngIf="!r.IsApproved"> Decision</a>
+                      <a color="primary" mat-button (click)="openApprovalDialogue(r)" *ngIf="!r.IsApproved">
+                        Decision</a>
                     </td>
                     <td>
-                      <button mat-icon-button color="primary" type="button" mat-button matStepperNext (click)="GetTsps(r.SchemeID)">
+                      <button mat-icon-button color="primary" type="button" mat-button matStepperNext
+                        (click)="GetTsps(r.SchemeID)">
                         TSPs
                       </button>
                     </td>
@@ -96,248 +153,412 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </div> -->
           </mat-step>
-
           <mat-step>
             <ng-template matStepLabel>TSPs</ng-template>
-            <div class="row">
-              <div class="col-lg-11 col-md-11 tableSetting">
-                <div *ngIf="tsps" class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th class="cust_tbl">TSP Name</th>
-                        <th class="cust_tbl">TSP Code</th>
-                        <th class="cust_tbl">TSP Color</th>
-                        <th class="cust_tbl">Address</th>
-                        <th class="cust_tbl">Tier</th>
-                        <th class="cust_tbl">NTN</th>
-                        <th class="cust_tbl">PNTN</th>
-                        <th class="cust_tbl">GST</th>
-                        <th class="cust_tbl">FTN</th>
-                        <th class="cust_tbl">District</th>
-                        <th class="cust_tbl">Head name</th>
-                        <th class="cust_tbl">Organization Head Designation</th>
-                        <th class="cust_tbl">Organization Head Email</th>
-                        <th class="cust_tbl">Organization Head Landline/Mobile</th>
-                        <th class="cust_tbl">Organization Landline</th>
-                        <th class="cust_tbl">Website</th>
-                        <th class="cust_tbl">Contact Person Name</th>
-                        <th class="cust_tbl">Contact Person Designation</th>
-                        <th class="cust_tbl">Contact Person Landline/Mobile</th>
-                        <th class="cust_tbl">Contact Person Email</th>
-                        <th class="cust_tbl">Contact Person for Admission Name</th>
-                        <th class="cust_tbl">Contact Person for Admission Designation</th>
-                        <th class="cust_tbl">Contact Person for Admission Landline/Mobile</th>
-                        <th class="cust_tbl">Contact Person for Admission Email</th>
-                        <th class="cust_tbl">Contact Person for Accounts Name</th>
-                        <th class="cust_tbl">Contact Person for Accounts Designation</th>
-                        <th class="cust_tbl">Contact Person for Accounts Landline/Mobile</th>
-                        <th class="cust_tbl">Contact Person for Accounts Email</th>
-                        <th class="cust_tbl">BankName of TSP</th>
-                        <th class="cust_tbl">Account No./IBAN of TSP</th>
-                        <th class="cust_tbl">Account Title</th>
-                        <th class="cust_tbl">Bank Branch</th>
-                        <!--<th class="cust_tbl">Action</th>-->
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr *ngFor="let r of tsps">
-
-                        <td>{{r.TSPName}}</td>
-                        <td>{{r.TSPCode}}</td>
-                        <td>{{r.TSPColor}}</td>
-                        <td>{{r.Address}}</td>
-                        <td>{{r.TierName}}</td>
-                        <td class="number-align-center">{{r.NTN}}</td>
-                        <td class="number-align-center">{{r.PNTN}}</td>
-                        <td class="number-align-center">{{r.GST}}</td>
-                        <td class="number-align-center">{{r.FTN}}</td>
-                        <td>{{r.DistrictName}}</td>
-                        <td>{{r.HeadName}}</td>
-                        <td>{{r.HeadDesignation}}</td>
-                        <td>{{r.HeadEmail}}</td>
-                        <td class="number-align-center">{{r.HeadLandline | phoneNumber:environment.Mobile }}</td>
-                        <td class="number-align-center">{{r.OrgLandline }}</td>
-                        <td>{{r.Website}}</td>
-                        <td>{{r.CPName}}</td>
-                        <td>{{r.CPDesignation}}</td>
-                        <td class="number-align-center">{{r.CPLandline  | phoneNumber:environment.Mobile }}</td>
-                        <td>{{r.CPEmail}}</td>
-                        <td>{{r.CPAdmissionsName}}</td>
-                        <td>{{r.CPAdmissionsDesignation}}</td>
-                        <td class="number-align-center">{{r.CPAdmissionsLandline | phoneNumber:environment.Mobile }}</td>
-                        <td>{{r.CPAdmissionsEmail}}</td>
-                        <td>{{r.CPAccountsName}}</td>
-                        <td>{{r.CPAccountsDesignation}}</td>
-                        <td class="number-align-center">{{r.CPAccountsLandline | phoneNumber:environment.Mobile }}</td>
-                        <td>{{r.CPAccountsEmail}}</td>
-                        <td>{{r.BankName}}</td>
-                        <td>{{r.BankAccountNumber}}</td>
-                        <td>{{r.AccountTitle}}</td>
-                        <td>{{r.BankBranch}}</td>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="col-lg-1 col-md-1 nextButton">
-                <button class="btn-warning block" mat-button matStepperNext (click)="GetClasses()">
+            <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">TSPs</span>
+              <div class="spacer"></div>
+              <input type="text" placeholder="Search" (keyup)="applyFilter(tspTableData,$event.target.value)"
+                class="search" />
+              <button class="ml-2" mat-raised-button color="accent" mat-button matStepperNext
+                (click)="GetClasses()">Classes</button>
+            </mat-toolbar>
+            <div class="table-responsive">
+              <mat-table [dataSource]="tspTableData" #tspSort="matSort" matSort class="table table-bordered">
+                <ng-container *ngFor="let column of tspTableColumns" [matColumnDef]="column">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                  <mat-cell *matCellDef="let row; let i = index">
+                    <ng-container [ngSwitch]="column">
+                      <!-- Display the column data for all columns except 'Action' and 'TSP' -->
+                      <!-- <ng-container *ngSwitchCase="'TSP'">
+                        <button matd-button color="primary" type="button" matStepperNext mat-button (click)="GetTsps(row.SchemeID)">
+                          TSPs
+                        </button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'Action'">
+                        <a mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)">
+                          Export <mat-icon>keyboard_arrow_down</mat-icon>
+                        </a>
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item (click)="ExportToExcel(row)">
+                            <span>FactSheet.xlsx</span>
+                          </button>
+                          <button mat-menu-item (click)="exportExcel(row.SchemeID, false)">
+                            <span>Appendix.xlsx</span>
+                          </button>
+                          <button mat-menu-item (click)="exportExcel(row.SchemeID, true)">
+                            <span>Appendix (with Financial Information).xlsx</span>
+                          </button>
+                        </mat-menu>
+                        <span class="p-4 text-dark" *ngIf="row.IsApproved">Approved</span>
+                        <a mat-button (click)="openApprovalDialogue(row)" *ngIf="!row.IsApproved">Decision</a>
+                      </ng-container> -->
+                      <ng-container *ngSwitchCase="'No.'">
+                        &nbsp; {{i+1}}
+                      </ng-container>
+                      <!-- Display the column data for all other columns -->
+                      <ng-container *ngSwitchDefault>
+                        &nbsp; {{ row[column] }}
+                      </ng-container>
+                    </ng-container>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="tspTableColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: tspTableColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #tspPaginator="matPaginator" [pageSize]="5"
+                [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
+            </div>
+            <!-- <div class="row">
+                            <div class="col-lg-11 col-md-11 tableSetting">
+                                <div *ngIf="tsps" class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="cust_tbl">TSP Name</th>
+                                                <th class="cust_tbl">TSP Code</th>
+                                                <th class="cust_tbl">TSP Color</th>
+                                                <th class="cust_tbl">Address</th>
+                                                <th class="cust_tbl">Tier</th>
+                                                <th class="cust_tbl">NTN</th>
+                                                <th class="cust_tbl">PNTN</th>
+                                                <th class="cust_tbl">GST</th>
+                                                <th class="cust_tbl">FTN</th>
+                                                <th class="cust_tbl">District</th>
+                                                <th class="cust_tbl">Head name</th>
+                                                <th class="cust_tbl">Organization Head Designation</th>
+                                                <th class="cust_tbl">Organization Head Email</th>
+                                                <th class="cust_tbl">Organization Head Landline/Mobile</th>
+                                                <th class="cust_tbl">Organization Landline</th>
+                                                <th class="cust_tbl">Website</th>
+                                                <th class="cust_tbl">Contact Person Name</th>
+                                                <th class="cust_tbl">Contact Person Designation</th>
+                                                <th class="cust_tbl">Contact Person Landline/Mobile</th>
+                                                <th class="cust_tbl">Contact Person Email</th>
+                                                <th class="cust_tbl">Contact Person for Admission Name</th>
+                                                <th class="cust_tbl">Contact Person for Admission Designation</th>
+                                                <th class="cust_tbl">Contact Person for Admission Landline/Mobile</th>
+                                                <th class="cust_tbl">Contact Person for Admission Email</th>
+                                                <th class="cust_tbl">Contact Person for Accounts Name</th>
+                                                <th class="cust_tbl">Contact Person for Accounts Designation</th>
+                                                <th class="cust_tbl">Contact Person for Accounts Landline/Mobile</th>
+                                                <th class="cust_tbl">Contact Person for Accounts Email</th>
+                                                <th class="cust_tbl">BankName of TSP</th>
+                                                <th class="cust_tbl">Account No./IBAN of TSP</th>
+                                                <th class="cust_tbl">Account Title</th>
+                                                <th class="cust_tbl">Bank Branch</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let r of tsps">
+                                                <td>{{r.TSPName}}</td>
+                                                <td>{{r.TSPCode}}</td>
+                                                <td>{{r.TSPColor}}</td>
+                                                <td>{{r.Address}}</td>
+                                                <td>{{r.TierName}}</td>
+                                                <td class="number-align-center">{{r.NTN}}</td>
+                                                <td class="number-align-center">{{r.PNTN}}</td>
+                                                <td class="number-align-center">{{r.GST}}</td>
+                                                <td class="number-align-center">{{r.FTN}}</td>
+                                                <td>{{r.DistrictName}}</td>
+                                                <td>{{r.HeadName}}</td>
+                                                <td>{{r.HeadDesignation}}</td>
+                                                <td>{{r.HeadEmail}}</td>
+                                                <td class="number-align-center">{{r.HeadLandline | phoneNumber:environment.Mobile }}</td>
+                                                <td class="number-align-center">{{r.OrgLandline }}</td>
+                                                <td>{{r.Website}}</td>
+                                                <td>{{r.CPName}}</td>
+                                                <td>{{r.CPDesignation}}</td>
+                                                <td class="number-align-center">{{r.CPLandline | phoneNumber:environment.Mobile }}</td>
+                                                <td>{{r.CPEmail}}</td>
+                                                <td>{{r.CPAdmissionsName}}</td>
+                                                <td>{{r.CPAdmissionsDesignation}}</td>
+                                                <td class="number-align-center">{{r.CPAdmissionsLandline | phoneNumber:environment.Mobile }}
+                                                </td>
+                                                <td>{{r.CPAdmissionsEmail}}</td>
+                                                <td>{{r.CPAccountsName}}</td>
+                                                <td>{{r.CPAccountsDesignation}}</td>
+                                                <td class="number-align-center">{{r.CPAccountsLandline | phoneNumber:environment.Mobile }}</td>
+                                                <td>{{r.CPAccountsEmail}}</td>
+                                                <td>{{r.BankName}}</td>
+                                                <td>{{r.BankAccountNumber}}</td>
+                                                <td>{{r.AccountTitle}}</td>
+                                                <td>{{r.BankBranch}}</td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-1 nextButton">
+                                <button class="btn-warning block" mat-button matStepperNext (click)="GetClasses()">
                   Classes
                 </button>
-              </div>
-            </div>
+                            </div>
+                        </div> -->
           </mat-step>
-
           <mat-step>
             <ng-template matStepLabel>Classes</ng-template>
-            <div class="row">
-              <div class="col-lg-11 col-md-11 tableSetting">
-                <div *ngIf="classes" class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>No.</th>
-                        <th>Class Code</th>
-                        <th>TSP Code</th>
-                        <th>Sector</th>
-                        <th>Trade</th>
-                        <th>Duration (Months)</th>
-                        <th>Source of Curriculum</th>
-                        <th>Entry Qualification</th>
-                        <th>Certification Authority</th>
-                        <th>Registration Authority</th>
-                        <th>Program Focus</th>
-                        <!-- <th>Attendance Standard(%)</th>-->
-                        <th>Contractual Trainees</th>
-                        <th>Batch Number</th>
-                        <th>Min training hours/month</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Trainee Gender</th>
-                        <th>Training Location Address</th>
-                        <th>Geo Tagging (Lat,Long)</th>
-                        <th>Province</th>
-                        <th>District</th>
-                        <th>Tehsil</th>
-                        <th>Cluster</th>
-                        <th>Total Trainee Bid Price</th>
-                        <th>Total Trainee BM Price</th>
-                        <th>Total Trainee Cost</th>
-                        <th> Sales Tax Rate</th>
-                        <th>Training Cost per Trainee per Month (Exclusive of Taxes)</th>
-                        <th>Sales Tax</th>
-                        <th>Training Cost per Trainee per Month (Inclusive  of Taxes)</th>
-                        <th>Uniform & Bag Cost per Trainee</th>
-                        <th>Testing & Certification Fee per Trainee</th>
-                        <th>Boarding & Other Allowances per trainee</th>
-                        <th>Employment Commitment Self</th>
-                        <th>Employment Commitment Formal</th>
-                        <th>Overall Employment Commitment</th>
-                        <th>Stipend</th>
-                        <th>Baloon Payment</th>
-                        <th>Total Cost</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr *ngFor="let r of classes; let i=index">
-                        <td>{{i+1}}</td>
-                        <td>{{r.ClassCode}}</td>
-                        <td>{{r.TSPCode}}</td>
-                        <td>{{r.SectorName}}</td>
-                        <td>{{r.TradeName}}</td>
-                        <td class="number-align-center">{{r.Duration}}</td>
-                        <td>{{r.SourceOfCurriculum}}</td>
-                        <td>{{r.EntryQualificationName}}</td>
-                        <td>{{r.CertAuthName}}</td>
-                        <td>{{r.RegistrationAuthorityName}}</td>
-                        <td>{{r.ProgramFocusName}}</td>
-                        <td>{{r.TraineesPerClass}}</td>
-                        <!--<td>{{r.AttendanceStandardPercentage}}</td>-->
-                        <!-- <td class="number-align-center">{{r.TraineesPerClass}}</td>-->
-                        <td class="number-align-center">{{r.Batch}}</td>
-                        <td class="number-align-center">{{r.MinHoursPerMonth}}</td>
-                        <td class="number-align-center">{{r.StartDate | date: environment.DateFormat}}</td>
-                        <td class="number-align-center">{{r.EndDate | date: environment.DateFormat}}</td>
-                        <td>{{r.GenderName}}</td>
-                        <td>{{r.TrainingAddressLocation}}</td>
-                        <td class="number-align-center">{{r.GeoTagging}}</td>
-                        <td>{{r.ProvinceName}}</td>
-                        <td>{{r.DistrictName}}</td>
-                        <td>{{r.TehsilName}}</td>
-                        <td>{{r.ClusterName}}</td>
-                        <td class="decimal-align-right">{{r.BidPrice | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.BMPrice | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.SalesTaxRate | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthExTax | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.SalesTax | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthInTax | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.UniformBagCost | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.PerTraineeTestCertCost | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.BoardingAllowancePerTrainee | number: environment.Decimal}}</td>
-                        <td>{{r.EmploymentCommitmentSelf}}</td>
-                        <td>{{r.EmploymentCommitmentFormal}}</td>
-                        <td>{{r.OverallEmploymentCommitment}}</td>
-                        <td class="decimal-align-right">{{r.Stipend | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.balloonpayment | number: environment.Decimal}}</td>
-                        <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="col-lg-1 col-md-1 nextButton">
-                <button class="btn-warning block" mat-button matStepperNext (click)="GetInstructors()">
-                  Instructors
+            <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Classes</span>
+              <div class="spacer"></div>
+              <input type="text" placeholder="Search" (keyup)="applyFilter(classTableData,$event.target.value)"
+                     class="search" />
+              <button class="ml-2" mat-raised-button color="accent" mat-button matStepperNext
+                      (click)="GetInstructors()">
+                Instructors
+              </button>
+            </mat-toolbar>
+            <div class="table-responsive">
+              <mat-table [dataSource]="classTableData" #classSort="matSort" matSort class="table table-bordered">
+                <ng-container *ngFor="let column of classTableColumns" [matColumnDef]="column">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                  <mat-cell *matCellDef="let row; let i = index">
+                    <ng-container [ngSwitch]="column">
+                      <!-- Display the column data for all columns except 'Action' and 'TSP' -->
+                      <!-- <ng-container *ngSwitchCase="'TSP'">
+              <button matd-button color="primary" type="button" matStepperNext mat-button (click)="GetTsps(row.SchemeID)">
+                TSPs
+              </button>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Action'">
+              <a mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)">
+                Export <mat-icon>keyboard_arrow_down</mat-icon>
+              </a>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="ExportToExcel(row)">
+                  <span>FactSheet.xlsx</span>
                 </button>
-              </div>
+                <button mat-menu-item (click)="exportExcel(row.SchemeID, false)">
+                  <span>Appendix.xlsx</span>
+                </button>
+                <button mat-menu-item (click)="exportExcel(row.SchemeID, true)">
+                  <span>Appendix (with Financial Information).xlsx</span>
+                </button>
+              </mat-menu>
+              <span class="p-4 text-dark" *ngIf="row.IsApproved">Approved</span>
+              <a mat-button (click)="openApprovalDialogue(row)" *ngIf="!row.IsApproved">Decision</a>
+            </ng-container> -->
+                      <ng-container *ngSwitchCase="'No.'">
+                        &nbsp; {{i+1}}
+                      </ng-container>
+                      <!-- Display the column data for all other columns -->
+                      <ng-container *ngSwitchDefault>
+                        &nbsp; {{ row[column] }}
+                      </ng-container>
+                    </ng-container>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="classTableColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: classTableColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #classPaginator="matPaginator" [pageSize]="5"
+                             [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
             </div>
+            <!-- <div class="row">
+    <div class="col-lg-11 col-md-11 tableSetting">
+      <div *ngIf="classes" class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Class Code</th>
+              <th>TSP Code</th>
+              <th>Sector</th>
+              <th>Trade</th>
+              <th>Duration (Months)</th>
+              <th>Source of Curriculum</th>
+              <th>Entry Qualification</th>
+              <th>Certification Authority</th>
+              <th>Registration Authority</th>
+              <th>Program Focus</th>
 
+              <th>Contractual Trainees</th>
+              <th>Batch Number</th>
+              <th>Min training hours/month</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Trainee Gender</th>
+              <th>Training Location Address</th>
+              <th>Geo Tagging (Lat,Long)</th>
+              <th>Province</th>
+              <th>District</th>
+              <th>Tehsil</th>
+              <th>Cluster</th>
+              <th>Total Trainee Bid Price</th>
+              <th>Total Trainee BM Price</th>
+              <th>Total Trainee Cost</th>
+              <th> Sales Tax Rate</th>
+              <th>Training Cost per Trainee per Month (Exclusive of Taxes)</th>
+              <th>Sales Tax</th>
+              <th>Training Cost per Trainee per Month (Inclusive of Taxes)</th>
+              <th>Uniform & Bag Cost per Trainee</th>
+              <th>Testing & Certification Fee per Trainee</th>
+              <th>Boarding & Other Allowances per trainee</th>
+              <th>Employment Commitment Self</th>
+              <th>Employment Commitment Formal</th>
+              <th>Overall Employment Commitment</th>
+              <th>Stipend</th>
+              <th>On Job Training (OJT)</th>
+              <th>Guru Payment</th>
+              <th>Total Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of classes; let i=index">
+              <td>{{i+1}}</td>
+              <td>{{r.ClassCode}}</td>
+              <td>{{r.TSPCode}}</td>
+              <td>{{r.SectorName}}</td>
+              <td>{{r.TradeName}}</td>
+              <td class="number-align-center">{{r.Duration}}</td>
+              <td>{{r.SourceOfCurriculum}}</td>
+              <td>{{r.EntryQualificationName}}</td>
+              <td>{{r.CertAuthName}}</td>
+              <td>{{r.RegistrationAuthorityName}}</td>
+              <td>{{r.ProgramFocusName}}</td>
+              <td>{{r.TraineesPerClass}}</td>
+              <td class="number-align-center">{{r.Batch}}</td>
+              <td class="number-align-center">{{r.MinHoursPerMonth}}</td>
+              <td class="number-align-center">{{r.StartDate | date: environment.DateFormat}}</td>
+              <td class="number-align-center">{{r.EndDate | date: environment.DateFormat}}</td>
+              <td>{{r.GenderName}}</td>
+              <td>{{r.TrainingAddressLocation}}</td>
+              <td class="number-align-center">{{r.GeoTagging}}</td>
+              <td>{{r.ProvinceName}}</td>
+              <td>{{r.DistrictName}}</td>
+              <td>{{r.TehsilName}}</td>
+              <td>{{r.ClusterName}}</td>
+              <td class="decimal-align-right">{{r.BidPrice | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.BMPrice | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.SalesTaxRate | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthExTax | number:
+                environment.Decimal}}
+              </td>
+              <td class="decimal-align-right">{{r.SalesTax | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TrainingCostPerTraineePerMonthInTax | number:
+                environment.Decimal}}
+              </td>
+              <td class="decimal-align-right">{{r.UniformBagCost | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.PerTraineeTestCertCost | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.BoardingAllowancePerTrainee | number: environment.Decimal}}
+              </td>
+              <td>{{r.EmploymentCommitmentSelf}}</td>
+              <td>{{r.EmploymentCommitmentFormal}}</td>
+              <td>{{r.OverallEmploymentCommitment}}</td>
+              <td class="decimal-align-right">{{r.Stipend | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.balloonpayment | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.Transportation | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.GuruPayment | number: environment.Decimal}}</td>
+              <td class="decimal-align-right">{{r.TotalCostPerClass | number: environment.Decimal}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-1 nextButton">
+      <button class="btn-warning block" mat-button matStepperNext (click)="GetInstructors()">
+        Instructors
+      </button>
+    </div>
+  </div> -->
           </mat-step>
-
           <mat-step>
             <ng-template matStepLabel>Instructors</ng-template>
-            <div *ngIf="classes" class="table-responsive">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>No.</th>
-                    <th class="cust_tbl">Organization</th>
-                    <th class="cust_tbl">Instructor Name</th>
-                    <th class="cust_tbl">Gender</th>
-                    <th class="cust_tbl">Profile Picture</th>
-                    <th class="cust_tbl">Total Experience</th>
-                    <th class="cust_tbl">Highest Qualification</th>
-                    <th class="cust_tbl">Instructor CNIC</th>
-                    <th class="cust_tbl">Trade</th>
-                    <th class="cust_tbl">Training Location</th>
-                    <th class="cust_tbl">Class Code</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr *ngFor="let r of instructors; let i=index">
-                    <td>{{i+1}}</td>
-                    <td>{{r.NameOfOrganization}}</td>
-                    <td>{{r.InstructorName}}</td>
-                    <td>{{r.GenderName}}</td>
-                    <td><img src="{{r.PicturePath}}" /></td>
-                    <td class="number-align-center">{{r.TotalExperience}}</td>
-                    <td>{{r.QualificationHighest}}</td>
-                    <td class="number-align-center">{{r.CNICofInstructor}}</td>
-                    <td>{{r.TradeName}}</td>
-                    <td>{{r.LocationAddress}}</td>
-                    <td>{{r.ClassCode}}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <mat-toolbar color="accent" class=" slim slim mt-1 mb-1">
+              <mat-icon class="material-icons">view_comfy</mat-icon>
+              <span class="spacer">Instructors</span>
+              <div class="spacer"></div>
+              <input type="text" placeholder="Search" (keyup)="applyFilter(instructorTableData,$event.target.value)"
+                class="search" />
+            </mat-toolbar>
+            <div class="table-responsive">
+              <mat-table [dataSource]="instructorTableData" #instructorSort="matSort" matSort
+                class="table table-bordered">
+                <ng-container *ngFor="let column of instructorTableColumns" [matColumnDef]="column">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                  <mat-cell *matCellDef="let row; let i = index">
+                    <ng-container [ngSwitch]="column">
+                      <!-- Display the column data for all columns except 'Action' and 'TSP' -->
+                      <!-- <ng-container *ngSwitchCase="'TSP'">
+                        <button matd-button color="primary" type="button" matStepperNext mat-button (click)="GetTsps(row.SchemeID)">
+                          TSPs
+                        </button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'Action'">
+                        <a mat-button [matMenuTriggerFor]="menu" aria-label="Export in excel(.xlsx)">
+                          Export <mat-icon>keyboard_arrow_down</mat-icon>
+                        </a>
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item (click)="ExportToExcel(row)">
+                            <span>FactSheet.xlsx</span>
+                          </button>
+                          <button mat-menu-item (click)="exportExcel(row.SchemeID, false)">
+                            <span>Appendix.xlsx</span>
+                          </button>
+                          <button mat-menu-item (click)="exportExcel(row.SchemeID, true)">
+                            <span>Appendix (with Financial Information).xlsx</span>
+                          </button>
+                        </mat-menu>
+                        <span class="p-4 text-dark" *ngIf="row.IsApproved">Approved</span>
+                        <a mat-button (click)="openApprovalDialogue(row)" *ngIf="!row.IsApproved">Decision</a>
+                      </ng-container> -->
+                      <ng-container *ngSwitchCase="'No.'">
+                        &nbsp; {{i+1}}
+                      </ng-container>
+                      <!-- Display the column data for all other columns -->
+                      <ng-container *ngSwitchDefault>
+                        &nbsp; {{ row[column] }}
+                      </ng-container>
+                    </ng-container>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="instructorTableColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: instructorTableColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #instructorPaginator="matPaginator" [pageSize]="5"
+                [pageSizeOptions]="[5, 10, 20, 100]"></mat-paginator>
             </div>
+            <!-- <div *ngIf="classes" class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th class="cust_tbl">Organization</th>
+                                        <th class="cust_tbl">Instructor Name</th>
+                                        <th class="cust_tbl">Gender</th>
+                                        <th class="cust_tbl">Profile Picture</th>
+                                        <th class="cust_tbl">Total Experience</th>
+                                        <th class="cust_tbl">Highest Qualification</th>
+                                        <th class="cust_tbl">Instructor CNIC</th>
+                                        <th class="cust_tbl">Trade</th>
+                                        <th class="cust_tbl">Training Location</th>
+                                        <th class="cust_tbl">Class Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let r of instructors; let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{r.NameOfOrganization}}</td>
+                                        <td>{{r.InstructorName}}</td>
+                                        <td>{{r.GenderName}}</td>
+                                        <td><img src="{{r.PicturePath}}" /></td>
+                                        <td class="number-align-center">{{r.TotalExperience}}</td>
+                                        <td>{{r.QualificationHighest}}</td>
+                                        <td class="number-align-center">{{r.CNICofInstructor}}</td>
+                                        <td>{{r.TradeName}}</td>
+                                        <td>{{r.LocationAddress}}</td>
+                                        <td>{{r.ClassCode}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> -->
           </mat-step>
         </mat-horizontal-stepper>
       </div>
     </mat-card-content>
   </mat-card>
-</div>

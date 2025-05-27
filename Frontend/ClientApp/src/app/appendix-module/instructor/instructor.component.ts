@@ -116,10 +116,12 @@ export class InstructorComponent implements OnInit {
     }
   }
   submitInstructor() {
+    debugger;
     if (!this.checkInstructorGridValidity()) {
       return;
     }
 
+    console.log(this.tsps)
     if (this.scheme.length == 0) {
       this.http.ShowError("Save scheme firstly.");
       return;
@@ -138,6 +140,7 @@ export class InstructorComponent implements OnInit {
           , SchemeID: this.scheme[0].SchemeID
         }
       });
+      
       this.http.postJSON('api/Instructor/Save', JSON.stringify(list))
         .subscribe((d: any) => {
           this.allowFinalSubmit = true;

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { CommonSrvService } from '../../common-srv.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -19,10 +19,13 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
     displayedColumnsClass = ['ClassCode',
         'TradeName', 'SourceOfCurriculumName', 'EntryQualification', 'CertAuthName',
         'StartDate', 'EndDate', "Action"];
-
+  SearchSch = new FormControl('',);
+  SearchStatus = new FormControl('',);
     classes: [];
     currentClassDates: [];
-
+    Scheme = [];
+    schemeFilter = new FormControl(0);
+    searchFilter = new FormControl(0);
     ActiveFormApprovalID: number;
     ChosenTradeID: number;
     title: string;
@@ -47,13 +50,14 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
     ngOnInit(): void {
         this.http.setTitle("Class Dates Change Request");
         this.title = "";
-        this.savebtn = "Approve";
+      this.savebtn = "Approve";
+      this.GetSchemes();
       this.GetClassDatesCRs();
     }
 
     GetClassDatesCRs() {
-        this.http.getJSON('api/ClassChangeRequest/GetClassDatesChangeRequest').subscribe((d: any) => {
-            this.classes = d[0];
+        this.http.getJSON('api/ClassChangeRequest/GetClassDatesChangeRequest/' + this.schemeFilter.value + '/' + this.searchFilter.value + '/' + null).subscribe((d: any) => {
+          this.classes = d[0];
             //this.tsps.paginator = this.paginator;
             //this.tsps.sort = this.sort;
         },
@@ -61,6 +65,17 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
             , () => {
                 this.working = false;
             });
+  }
+  GetSchemes() {
+    this.http.getJSON('api/ClassChangeRequest/GetClassScheme').subscribe((d: any) => {
+     this.Scheme = d[0];
+      //this.tsps.paginator = this.paginator;
+      //this.tsps.sort = this.sort;
+    },
+      error => this.error = error // error path
+      , () => {
+        this.working = false;
+      });
   }
   
   GetCurrentClassDatesByID(r) {
@@ -73,7 +88,12 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
       r.currentClassDates = d;
     });
   }
+  /// Develop by Rao Ali Haider 20-Nov-2023
 
+  EmptyCtrl() {
+    this.SearchSch.setValue('');
+    this.SearchStatus.setValue('');
+  }
     openApprovalDialogue(row: any): void {
         let processKey = EnumApprovalProcess.CR_CLASS_DATES;
         
@@ -82,12 +102,17 @@ export class ClassDatesChangeRequestApprovalsComponent implements OnInit {
             //location.reload();
           this.GetClassDatesCRs();
         });
-    }
+  }
     openClassJourneyDialogue(data: any): void 
     {
       debugger;
       this.dialogue.openClassJourneyDialogue(data);
     }
-  
+  openApprovalDialogueBatch(): void {
+    debugger;
+    this.dialogue.openApprovalDialogueBatch().subscribe(result => {
+      this.GetClassDatesCRs();
+    });
+  }
 
 }

@@ -161,12 +161,15 @@
           <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-select placeholder="Status" [(ngModel)]="filters.StatusID" (openedChange)="EmptyCtrl()"
-                (selectionChange)="GetPRNMasterForApproval()" id="StatusId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
-                    [formControl]="SearchStatus" /></mat-optgrp>
+                          (selectionChange)="GetPRNMasterForApproval()" id="StatusId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()"
+                         [formControl]="SearchStatus" />
+                </mat-optgrp>
                 <mat-option value="0" selected>-- All --</mat-option>
                 <mat-option value="1">Pending (Step 1)</mat-option>
                 <mat-option value="2">Pending (Step 2)</mat-option>
+                <mat-option value="4">Pending (Step 3)</mat-option>
                 <mat-option value="3">Approved</mat-option>
               </mat-select>
             </mat-form-field>

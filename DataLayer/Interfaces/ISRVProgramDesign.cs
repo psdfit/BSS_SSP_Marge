@@ -12,6 +12,7 @@ namespace DataLayer.Interfaces
         DataTable FetchAnalysisReportFilters(int[] filters);
         DataTable FetchAnalysisReport();
         void SaveProgramDesign(ProgramDesignModel programDesign);
+        void UpdateProgramDesign(ProgramDesignModel programDesign);
         public DataTable FetchDropDownList(string Param);
         public DataTable SaveTradeDesign(TradeLotDesignModel data);
         public DataTable UpdateSchemeInitialization(ProgramDesignModel data);

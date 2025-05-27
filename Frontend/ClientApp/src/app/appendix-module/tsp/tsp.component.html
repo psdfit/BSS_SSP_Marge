@@ -1,10 +1,10 @@
-
 <mat-card *ngIf="!scheme[0]?.FinalSubmitted">
   <mat-card-content>
     <div id="accordion" role="tablist" aria-multiselectable="true">
       <div class="card">
         <div class="card-header" role="tab" id="headingOne">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapseScheme" aria-expanded="true" aria-controls="collapseOne" class="collapsed">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapseScheme" aria-expanded="true"
+            aria-controls="collapseOne" class="collapsed">
             <mat-icon class="material-icons">view_comfy</mat-icon>
             <h3>Scheme</h3>
           </a>
@@ -43,560 +43,672 @@
     </div>
   </mat-card-content>
 </mat-card>
+
 <div class="container">
-  <form novalidate #noForm="ngForm" [formGroup]="notForm" *ngIf="!scheme[0]?.FinalSubmitted">
-    <div class="row" *ngIf="notForm.controls.IsNew.value == true && notForm.controls.NTN.value != ''">
-      <div class="col-12 alert alert-warning font-smaller" role="alert">
-        <strong>Warning!</strong> This TSP considered as <strong>new</strong> according to the NTN until the <strong>Scheme</strong> is funally submitted.
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field class="example-chip-list">
-          <mat-chip-list #chipList aria-label="TSP selection">
-            <mat-chip *ngIf="isObject && manualTSP" [selectable]="selectable"
-                      [removable]="removable"
-                      (removed)="remove()">
-              {{manualTSP.TSPName}}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
-            <mat-chip *ngIf="!isObject && manualTSP" [selectable]="selectable"
-                      [removable]="removable"
-                      (removed)="remove()">
-              {{manualTSP}}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
-            <input placeholder="TSP *"
-                   #InstrInput
-                   formControlName="TSPName"
-                   [matAutocomplete]="auto"
-                   [matChipInputFor]="chipList"
-                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   (matChipInputTokenEnd)="add($event)" Alpha>
-          </mat-chip-list>
-          <mat-autocomplete #auto="matAutocomplete" [readonly]="readOnly" (optionSelected)="selected($event)">
-            <mat-option *ngFor="let t of oldTSPs" [value]="t">{{t.TSPName}}</mat-option>
-          </mat-autocomplete>
-          <mat-hint>Select / Type and press Enter manually</mat-hint>
-          <mat-error *ngIf="notForm.controls.TSPName.invalid && notForm.controls.TSPName.errors.required">required</mat-error>
-          <!--  <mat-error *ngIf="notForm.controls.TSPName.errors?.duplicate">already exist in the same scheme</mat-error> -->
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Address" formControlName="Address" required [readonly]="readOnly" maxlength="50">
-          <mat-error *ngIf="notForm.controls.Address.invalid && notForm.controls.Address.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <!-- <input matInput placeholder="NTN (XXXXXX-X)" formControlName="NTN" required [readonly]="readOnly" type="text" [imask]="maskNTN" [unmask]="false">-->
-          <input matInput placeholder="NTN" formControlName="NTN" required [readonly]="readOnly" type="text" maxlength="50">
-          <mat-error *ngIf="notForm.controls.NTN.invalid && notForm.controls.NTN.errors.required"><strong>required</strong></mat-error>
-          <!--  <mat-error *ngIf="notForm.controls.NTN.errors?.duplicateInSameScheme">already exist in the same scheme</mat-error> -->
-          <!--<mat-error *ngIf="notForm.controls.NTN.errors?.isNew">found new NTN (considered as new TSP)</mat-error>-->
-          <!--<mat-error *ngIf="notForm.controls.NTN.invalid && notForm.controls.NTN.errors.maxlength">invalid length</mat-error>
-          <mat-error *ngIf="notForm.controls.NTN.invalid && notForm.controls.NTN.errors.minlength">invalid length</mat-error>-->
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <!--<input matInput placeholder="PNTN (XXXXXXX-X)" formControlName="PNTN" [readonly]="readOnly" type="text" [imask]="maskPNTN" [unmask]="false">-->
-          <input matInput placeholder="PNTN" formControlName="PNTN" [readonly]="readOnly" type="text" maxlength="50">
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <!-- <input matInput placeholder="GST Number (XXXXXXX-X)" formControlName="GST" [readonly]="readOnly" type="text" [imask]="maskGST" [unmask]="false">-->
-          <input matInput placeholder="GST Number" formControlName="GST" [readonly]="readOnly" type="text" maxlength="250">
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <!--<input matInput placeholder="FTN  (XXXXXX-X)" formControlName="FTN" [readonly]="readOnly" type="text" [imask]="maskFTN" [unmask]="false">-->
-          <input matInput placeholder="FTN" formControlName="FTN" [readonly]="readOnly" type="text" maxlength="50">
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <mat-select formControlName="DistrictID" placeholder="District" required>
-            <mat-option *ngFor="let d of districts" [value]="d.DistrictID"> {{d.DistrictName}}</mat-option>
-            <mat-error *ngIf="notForm.controls.DistrictID.invalid && notForm.controls.DistrictID.errors.required">required</mat-error>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Head Name" formControlName="HeadName" required Alpha maxlength="50">
-          <mat-error *ngIf="notForm.controls.HeadName.invalid && notForm.controls.HeadName.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Head Designation" formControlName="HeadDesignation" required Alpha maxlength="50">
-          <mat-error *ngIf="notForm.controls.HeadDesignation.invalid && notForm.controls.HeadDesignation.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Head Email" formControlName="HeadEmail" required type="text" maxlength="80" (blur)="checkOnHeadEmail()">
-          <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.email">Invalid Email address</mat-error>
-          <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.required">required</mat-error>
-          <mat-error *ngIf="HeadEmail.invalid && !HeadEmail.errors?.isValid"><strong>{{HeadEmail.errors.message}}</strong></mat-error>
-
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Head Landline " formControlName="HeadLandline" required type="text" NumberOnly>
-          <mat-error *ngIf="notForm.controls.HeadLandline.invalid && notForm.controls.HeadLandline.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Organization Landline " formControlName="OrgLandline" required type="text" NumberOnly>
-          <mat-error *ngIf="notForm.controls.OrgLandline.invalid && notForm.controls.OrgLandline.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Website" formControlName="Website" maxlength="100">
-          <mat-error *ngIf="notForm.controls.Website.invalid">Invalid URL</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Contact Person Name" formControlName="CPName" required Alpha maxlength="50">
-          <mat-error *ngIf="notForm.controls.CPName.invalid && notForm.controls.CPName.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Contact Person Designation" formControlName="CPDesignation" required Alpha maxlength="50">
-          <mat-error *ngIf="notForm.controls.CPDesignation.invalid && notForm.controls.CPDesignation.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Contact Person Landline " formControlName="CPLandline" required type="text" maxlength="12" NumberOnly>
-          <mat-error *ngIf="notForm.controls.CPLandline.invalid && notForm.controls.CPLandline.errors.required">required</mat-error>
-          <mat-error *ngIf="notForm.controls.CPLandline.invalid && notForm.controls.CPLandline.errors.maxlength"><strong>Length must be less than or equal to 12.</strong></mat-error>
-
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Contact Person Email" formControlName="CPEmail" required type="text" maxlength="80" (blur)="checkOnCPEmail()">
-          <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.email">Invalid Email address</mat-error>
-          <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.required">required</mat-error>
-          <mat-error *ngIf="CPEmail.invalid && !CPEmail.errors?.isValid"><strong>{{CPEmail.errors.message}}</strong></mat-error>
-        </mat-form-field>
-      </div>
-
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Bank Name" formControlName="BankName" required AlphaNumeric maxlength="50">
-          <mat-error *ngIf="notForm.controls.BankName.invalid && notForm.controls.BankName.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Bank Account Number" formControlName="BankAccountNumber" required AlphaNumeric maxlength="24">
-          <mat-error *ngIf="notForm.controls.BankAccountNumber.invalid && notForm.controls.BankAccountNumber.errors.required">required</mat-error>
-          <mat-error *ngIf="notForm.controls.BankAccountNumber.invalid && notForm.controls.BankAccountNumber.errors.maxlength"><strong>Length must be less than or equal to 24.</strong></mat-error>
-          <mat-error *ngIf="notForm.controls.BankAccountNumber.invalid && notForm.controls.BankAccountNumber.errors.AlphaNumeric"><strong>Please Enter Alpha Numeric Value.</strong></mat-error>
-
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Account Title" formControlName="AccountTitle" required AlphaNumeric maxlength="50">
-          <mat-error *ngIf="notForm.controls.AccountTitle.invalid && notForm.controls.AccountTitle.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-6 col-md-3 col-lg-3">
-        <mat-form-field>
-          <input matInput placeholder="Bank Branch" formControlName="BankBranch" required AlphaNumeric maxlength="50">
-          <mat-error *ngIf="notForm.controls.BankBranch.invalid && notForm.controls.BankBranch.errors.required">required</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-sm-12 ">
-        <div class="float-right">
-          <button mat-raised-button color="primary" type="submit" (click)="entry()" mat-button [disabled]="notForm.invalid">
-            Add
-          </button>&nbsp;&nbsp;
-          <button mat-raised-button color="warn" matTooltip="Click to Reset form data" type="reset" (click)="reset(noForm)" [disabled]="!notForm.dirty">
-            Reset
-          </button>
+  <div class="card p-2 mb-2">
+    <form novalidate #noForm="ngForm" [formGroup]="notForm" *ngIf="!scheme[0]?.FinalSubmitted">
+      <div class="row" *ngIf="notForm.controls.IsNew.value == true && notForm.controls.NTN.value != ''">
+        <div class="col-12 alert alert-warning font-smaller" role="alert">
+          <strong>Warning!</strong> This TSP considered as <strong>new</strong> according to the NTN until the
+          <strong>Scheme</strong> is finally submitted.
         </div>
       </div>
-    </div>
-  </form>
-  <br />
-  <form novalidate #nform="ngForm" [formGroup]="tspsForm" (submit)="submitTSP(nform)">
-    <div class="table-responsive" formArrayName="Tsps">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Actions</th>
-            <th>Sr#</th>
-            <th class="cust_tbl">TSP Name</th>
-            <th class="cust_tbl" *ngIf="scheme[0]?.FinalSubmitted">TSP Code</th>
-            <th class="cust_tbl">Address</th>
-            <th class="cust_tbl">NTN</th>
-            <th class="cust_tbl">PNTN</th>
-            <th class="cust_tbl">GST Number</th>
-            <th class="cust_tbl">FTN</th>
-            <th class="cust_tbl">District</th>
-            <th class="cust_tbl">Head name</th>
-            <th class="cust_tbl">Organization Head Designation</th>
-            <th class="cust_tbl">Organization Head Email</th>
-            <th class="cust_tbl">Organization Head Landline/Mobile
-            <th class="cust_tbl">Organization Landline
-            <th class="cust_tbl">Website</th>
-            <th class="cust_tbl">Contact Person Name</th>
-            <th class="cust_tbl">Contact Person Designation</th>
-            <th class="cust_tbl">Contact Person Landline/Mobile
-            <th class="cust_tbl">Contact Person Email</th>
-            <!--<th class="cust_tbl">Contact Person for Admission Name</th>
-            <th class="cust_tbl">Contact Person for Admission Designation</th>
-            <th class="cust_tbl">Contact Person for Admission Landline/Mobile
-            <th class="cust_tbl">Contact Person for Admission Email</th>
-            <th class="cust_tbl">Contact Person for Accounts Name</th>
-            <th class="cust_tbl">Contact Person for Accounts Designation</th>
-            <th class="cust_tbl">Contact Person for Accounts Landline/Mobile
-            <th class="cust_tbl">Contact Person for Accounts Email</th>-->
-            <th class="cust_tbl">BankName of TSP</th>
-            <th class="cust_tbl">Account No./IBAN of TSP</th>
-            <th class="cust_tbl">Account Title</th>
-            <th class="cust_tbl">Bank Branch</th>
-            <th class="cust_tbl" *ngIf="!scheme[0]?.FinalSubmitted">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let row of populatedTableList; let i = index;">
-            <tr #form="ngForm" [formGroup]="inlineForm" [style.background]="row.NotValid? '#F4F7EA' : ''">
-              <td>
-                <a color="primary" *ngIf="!scheme[0]?.FinalSubmitted" mat-button (click)="removeTsp(i, row)">Remove</a>
-                <ng-container *ngIf="!row.IsEditable">
-                  <a color="primary" mat-button (click)="edit(i,row);">Edit</a>
-                </ng-container>
-                <ng-container *ngIf="row.IsEditable">
+      <div class="row">
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field class="example-chip-list">
+            <mat-chip-list #chipList aria-label="TSP selection">
+              <mat-chip *ngIf="isObject && manualTSP" [selectable]="selectable" [removable]="removable"
+                (removed)="remove()">
+                {{manualTSP.TSPName}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <mat-chip *ngIf="!isObject && manualTSP" [selectable]="selectable" [removable]="removable"
+                (removed)="remove()">
+                {{manualTSP}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="TSP *" #InstrInput formControlName="TSPName" [matAutocomplete]="auto"
+                [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="add($event)" Alpha>
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" [readonly]="readOnly" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let t of oldTSPs" [value]="t">{{t.TSPName}}</mat-option>
+            </mat-autocomplete>
+            <mat-hint>Select / Type and press Enter manually</mat-hint>
+            <mat-error
+              *ngIf="notForm.controls.TSPName.invalid && notForm.controls.TSPName.errors.required">required</mat-error>
+            <!--  <mat-error *ngIf="notForm.controls.TSPName.errors?.duplicate">already exist in the same scheme</mat-error> -->
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Address" formControlName="Address" required [readonly]="readOnly" maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.Address.invalid && notForm.controls.Address.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <!-- <input matInput placeholder="NTN (XXXXXX-X)" formControlName="NTN" required [readonly]="readOnly" type="text" [imask]="maskNTN" [unmask]="false">-->
+            <input matInput placeholder="NTN" formControlName="NTN" required [readonly]="readOnly" type="text">
+            <mat-error
+              *ngIf="notForm.controls.NTN.invalid && notForm.controls.NTN.errors.required"><strong>required</strong></mat-error>
+            <!--  <mat-error *ngIf="notForm.controls.NTN.errors?.duplicateInSameScheme">already exist in the same scheme</mat-error> -->
+            <!--<mat-error *ngIf="notForm.controls.NTN.errors?.isNew">found new NTN (considered as new TSP)</mat-error>-->
+            <!--<mat-error *ngIf="notForm.controls.NTN.invalid && notForm.controls.NTN.errors.maxlength">invalid length</mat-error>
+            <mat-error *ngIf="notForm.controls.NTN.invalid && notForm.controls.NTN.errors.minlength">invalid length</mat-error>-->
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <!--<input matInput placeholder="PNTN (XXXXXXX-X)" formControlName="PNTN" [readonly]="readOnly" type="text" [imask]="maskPNTN" [unmask]="false">-->
+            <input matInput placeholder="PNTN" formControlName="PNTN" [readonly]="readOnly" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <!-- <input matInput placeholder="GST Number (XXXXXXX-X)" formControlName="GST" [readonly]="readOnly" type="text" [imask]="maskGST" [unmask]="false">-->
+            <input matInput placeholder="GST Number" formControlName="GST" [readonly]="readOnly" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <!--<input matInput placeholder="FTN  (XXXXXX-X)" formControlName="FTN" [readonly]="readOnly" type="text" [imask]="maskFTN" [unmask]="false">-->
+            <input matInput placeholder="FTN" formControlName="FTN" [readonly]="readOnly" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <mat-select formControlName="DistrictID" placeholder="District" required>
+              <mat-option *ngFor="let d of districts" [value]="d.DistrictID"> {{d.DistrictName}}</mat-option>
+              <mat-error
+                *ngIf="notForm.controls.DistrictID.invalid && notForm.controls.DistrictID.errors.required">required</mat-error>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Head Name" formControlName="HeadName" required Alpha maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.HeadName.invalid && notForm.controls.HeadName.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Head Designation" formControlName="HeadDesignation" required Alpha
+              maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.HeadDesignation.invalid && notForm.controls.HeadDesignation.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Head Email" formControlName="HeadEmail" required type="text" maxlength="80" (blur)="checkOnHeadEmail()">
+            <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.email">Invalid Email address</mat-error>
+            <mat-error *ngIf="notForm.controls.HeadEmail.invalid && notForm.controls.HeadEmail.errors.required">required</mat-error>
+            <mat-error *ngIf="HeadEmail.invalid && !HeadEmail.errors?.isValid"><strong>{{HeadEmail.errors.message}}</strong></mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Head Landline " formControlName="HeadLandline" required type="text" NumberOnly>
+            <mat-error
+              *ngIf="notForm.controls.HeadLandline.invalid && notForm.controls.HeadLandline.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Organization Landline " formControlName="OrgLandline" required type="text"
+              NumberOnly>
+            <mat-error
+              *ngIf="notForm.controls.OrgLandline.invalid && notForm.controls.OrgLandline.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Website" formControlName="Website" maxlength="100">
+            <mat-error *ngIf="notForm.controls.Website.invalid">Invalid URL</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Contact Person Name" formControlName="CPName" required Alpha maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.CPName.invalid && notForm.controls.CPName.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Contact Person Designation" formControlName="CPDesignation" required Alpha
+              maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.CPDesignation.invalid && notForm.controls.CPDesignation.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Contact Person Landline " formControlName="CPLandline" required type="text"
+              maxlength="12" NumberOnly>
+            <mat-error
+              *ngIf="notForm.controls.CPLandline.invalid && notForm.controls.CPLandline.errors.required">required</mat-error>
+            <mat-error
+              *ngIf="notForm.controls.CPLandline.invalid && notForm.controls.CPLandline.errors.maxlength"><strong>Length
+                must be less than or equal to 12.</strong></mat-error>
+  
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Contact Person Email" formControlName="CPEmail" required type="text" maxlength="80" (blur)="checkOnCPEmail()">
+            <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.email">Invalid Email address</mat-error>
+            <mat-error *ngIf="notForm.controls.CPEmail.invalid && notForm.controls.CPEmail.errors.required">required</mat-error>
+            <mat-error *ngIf="CPEmail.invalid && !CPEmail.errors?.isValid"><strong>{{CPEmail.errors.message}}</strong></mat-error>
+          </mat-form-field>
 
-                  <a color="primary" mat-button (click)="saveInlineForm(i,row)" [disabled]="!row.IsEditable"> Save</a>
-                </ng-container>
-
-              </td>
-              <td>
-                {{i+1}}
-                <br />
-                <!--<span *ngIf="r.controls.IsNew.value == 2 && r.controls.NTN.value != ''"
-          matTooltip="This TSP considered as new because NTN and TSPName are both new"
-          style="color: #f2a21e;">
-      New
-    </span>
-    <span *ngIf="r.controls.IsNew.value == 3 && r.controls.NTN.value != ''"
-          matTooltip="This TSP considered as new because TSPName New And NTN are old  "
-          style="color: #ff0022;">
-      Alert ! NTN Already Exist
-    </span>
-    <span *ngIf="r.controls.IsNew.value == 4 && r.controls.NTN.value != ''"
-          matTooltip="This TSP considered as new because NTN New and TSPName are old"
-          style="color: #ff0022;">
-      Alert ! TSP Name Already Exist
-    </span>-->
-                <span *ngIf="row.IsNew == 2 && row.NTN != ''"
-                      matTooltip="This TSP considered as new because NTN and TSPName are both new"
-                      style="color: #f2a21e;">
-                  New
-                </span>
-                <span *ngIf="row.IsNew == 3 && row.NTN != ''"
-                      matTooltip="This TSP considered as new because TSPName New And NTN are old  "
-                      style="color: #ff0022;">
-                  Alert ! NTN Already Exist
-                </span>
-                <span *ngIf="row.IsNew == 4 && row.NTN != ''"
-                      matTooltip="This TSP considered as new because NTN New and TSPName are old"
-                      style="color: #ff0022;">
-                  Alert ! TSP Name Already Exist
-                </span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="TSP Name" formControlName="TSPName" [(ngModel)]="row.TSPName" required>
-                    <!--<mat-error *ngIf="r.controls.TSPName.invalid && r.controls.TSPName.errors.required">required</mat-error>
-      <mat-error *ngIf="r.controls.TSPName.errors?.duplicate">already exist in the same scheme</mat-error>-->
-
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.TSPName}}</ng-container>
-                <br />
-                <span *ngIf="row.nullTSP || !row.TSPName" [style.color]="row.nullTSP? 'red': ''">required</span>
-                <span *ngIf="row.DuplicateTSP" [style.color]="row.DuplicateTSP? 'red': ''">already exist in the same scheme</span>
-
-              </td>
-              <td *ngIf="scheme[0]?.FinalSubmitted">
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="TSP Code" formControlName="TSPCode" [(ngModel)]="row.TSPCode" required readonly>
-                    <!--<mat-error *ngIf="r.controls.TSPCode.invalid && r.controls.TSPCode.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.TSPCode}}</ng-container>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Address" formControlName="Address" [(ngModel)]="row.Address" required>
-                    <!--<mat-error *ngIf="r.controls.Address.invalid && r.controls.Address.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.Address}}</ng-container>
-                <br />
-                <span *ngIf="!row.Address" [style.color]="!row.Address? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <!-- <input matInput placeholder="NTN" formControlName="NTN" required type="text" [imask]="maskNTN" [unmask]="false" >-->
-                    <input matInput placeholder="NTN" formControlName="NTN" [(ngModel)]="row.NTN" required type="text">
-                    <!--<mat-error *ngIf="r.controls.NTN.invalid && r.controls.NTN.errors.required">required</mat-error>
-      <mat-error *ngIf="r.controls.NTN.errors?.duplicateInSameScheme">already exist in the same scheme</mat-error>-->
-                    <!-- <mat-error *ngIf="r.controls.NTN.errors?.isNew">found new NTN (considered as new TSP)</mat-error>-->
-                    <!--<mat-error *ngIf="r.controls.NTN.invalid && r.controls.NTN.errors.maxlength">invalid length</mat-error>
-      <mat-error *ngIf="r.controls.NTN.invalid && r.controls.NTN.errors.minlength">invalid length</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.NTN}}</ng-container>
-                <br />
-                <span *ngIf="row.nullNTN || !row.NTN" [style.color]="!row.nullNTN || !row.NTN? 'red': ''">required</span>
-                <span *ngIf="row.DuplicateNTN" [style.color]="row.DuplicateNTN? 'red': ''">already exist in the same scheme</span>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <!--<input matInput placeholder="PNTN" formControlName="PNTN" type="text" [imask]="maskPNTN" [unmask]="false">-->
-                    <input matInput placeholder="PNTN" formControlName="PNTN" [(ngModel)]="row.PNTN" type="text">
-                    <!--<mat-error *ngIf="r.controls.PNTN.invalid && r.controls.PNTN.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.PNTN}}</ng-container>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <!--<input matInput placeholder="GST Number" formControlName="GST" [imask]="maskGST" [unmask]="false">-->
-                    <input matInput placeholder="GST Number" formControlName="GST" [(ngModel)]="row.GST">
-                    <!--<mat-error *ngIf="r.controls.GST.invalid && r.controls.GST.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.GST}}</ng-container>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <!--<input matInput placeholder="FTN" formControlName="FTN" type="text" [imask]="maskFTN" [unmask]="false">-->
-                    <input matInput placeholder="FTN" formControlName="FTN" [(ngModel)]="row.FTN" type="text">
-                    <!--<mat-error *ngIf="r.controls.FTN.invalid && r.controls.FTN.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.FTN}}</ng-container>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <mat-select formControlName="DistrictID" placeholder="District" [(ngModel)]="row.DistrictID" required [disabled]="scheme[0]?.FinalSubmitted">
-                      <mat-option *ngFor="let d of districts" [value]="d.DistrictID"> {{d.DistrictName}} </mat-option>
-                    </mat-select>
-                    <!--<mat-error *ngIf="r.controls.DistrictID.invalid && r.controls.DistrictID.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.DistrictName}}</ng-container>
-                <br />
-                <span *ngIf="!row.DistrictID" [style.color]="!row.DistrictID? 'red': ''">required</span>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Head Name" formControlName="HeadName" [(ngModel)]="row.HeadName" required>
-                    <!--<mat-error *ngIf="r.controls.HeadName.invalid && r.controls.HeadName.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.HeadName}}</ng-container>
-                <br />
-                <span *ngIf="!row.HeadName" [style.color]="!row.HeadName? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Head Designation" formControlName="HeadDesignation" [(ngModel)]="row.HeadDesignation" required>
-                    <!--<mat-error *ngIf="r.controls.HeadDesignation.invalid && r.controls.HeadDesignation.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.HeadDesignation}}</ng-container>
-                <br />
-                <span *ngIf="!row.HeadDesignation" [style.color]="!row.HeadDesignation? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Head Email" formControlName="HeadEmail" [(ngModel)]="row.HeadEmail" required type="text" maxlength="80">
-                    <!--<mat-error *ngIf="r.controls.HeadEmail.invalid && r.controls.HeadEmail.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.HeadEmail}}</ng-container>
-                <br />
-                <span *ngIf="!row.HeadEmail" [style.color]="!row.HeadEmail? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Head Landline" formControlName="HeadLandline" [(ngModel)]="row.HeadLandline" required type="text" maxlength="20">
-                    <!--<mat-error *ngIf="r.controls.HeadLandline.invalid && r.controls.HeadLandline.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.HeadLandline}}</ng-container>
-                <br />
-                <span *ngIf="!row.HeadLandline" [style.color]="!row.HeadLandline? 'red': ''">required</span>
-                <span *ngIf="row.HeadLandline.length > 20" [style.color]="row.HeadLandline.length > 20? 'red': ''">max length should be 20 characters</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Organization Landline" formControlName="OrgLandline" [(ngModel)]="row.OrgLandline" required type="text" maxlength="24">
-                    <!--<mat-error *ngIf="r.controls.OrgLandline.invalid && r.controls.OrgLandline.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.OrgLandline}}</ng-container>
-                <br />
-                <span *ngIf="!row.OrgLandline" [style.color]="!row.OrgLandline? 'red': ''">required</span>
-                <span *ngIf="row.OrgLandline.length > 20" [style.color]="row.OrgLandline.length > 20? 'red': ''">max length should be 20 characters</span>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Website" formControlName="Website" [(ngModel)]="row.Website">
-                    <!--<mat-error *ngIf="r.controls.Website.invalid && r.controls.Website.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.Website}}</ng-container>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Contact Person Name" formControlName="CPName" [(ngModel)]="row.CPName" required>
-                    <!--<mat-error *ngIf="r.controls.CPName.invalid && r.controls.CPName.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.CPName}}</ng-container>
-                <br />
-                <span *ngIf="!row.CPName" [style.color]="!row.CPName? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Contact Person Designation" formControlName="CPDesignation" [(ngModel)]="row.CPDesignation" required>
-                    <!--<mat-error *ngIf="r.controls.CPDesignation.invalid && r.controls.CPDesignation.errors.required">required</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.CPDesignation}}</ng-container>
-                <br />
-                <span *ngIf="!row.CPDesignation" [style.color]="!row.CPDesignation? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Contact Person Landline" formControlName="CPLandline" [(ngModel)]="row.CPLandline" required type="text" maxlength="20">
-                    <!--<mat-error *ngIf="r.controls.CPLandline.invalid && r.controls.CPLandline.errors.required">required</mat-error>
-      <mat-error *ngIf="r.controls.CPLandline.invalid && r.controls.CPLandline.errors.maxlength"><strong>Length must be less than or equal to 12.</strong></mat-error>-->
-
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.CPLandline}}</ng-container>
-
-                <br />
-                <span *ngIf="!row.CPLandline" [style.color]="!row.CPLandline? 'red': ''">required</span>
-                <span *ngIf="row.CPLandline.length > 20" [style.color]="row.CPLandline.length > 20? 'red': ''">max length should be 20 characters</span>
-
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Contact Person Email" formControlName="CPEmail" [(ngModel)]="row.CPEmail" required type="text" maxlength="80">
-                    <!--<mat-error *ngIf="r.controls.CPEmail.invalid && r.controls.CPEmail.errors.email">Invalid Email address</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.CPEmail}}</ng-container>
-                <br />
-                <span *ngIf="!row.CPEmail" [style.color]="!row.CPEmail? 'red': ''">required</span>
-              </td>
-
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Bank Name" formControlName="BankName" [(ngModel)]="row.BankName" required>
-                    <!--<mat-error *ngIf="r.controls.BankName.invalid && r.controls.BankName.errors.email">Invalid Email address</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.BankName}}</ng-container>
-                <br />
-                <span *ngIf="!row.BankName" [style.color]="!row.BankName? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Bank Account Number" formControlName="BankAccountNumber" [(ngModel)]="row.BankAccountNumber" required AlphNumeric maxlength="24">
-                    <!--<mat-error *ngIf="r.controls.BankAccountNumber.invalid && r.controls.BankAccountNumber.errors.email">Invalid Email address</mat-error>
-      <mat-error *ngIf="r.controls.BankAccountNumber.invalid && r.controls.BankAccountNumber.errors.maxlength"><strong>Length must be less than or equal to 24.</strong></mat-error>
-      <mat-error *ngIf="r.controls.BankAccountNumber.invalid && r.controls.BankAccountNumber.errors.AlphaNumeric"><strong>Please Enter Alpha Numeric Value.</strong></mat-error>-->
-
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.BankAccountNumber}}</ng-container>
-                <br />
-                <span *ngIf="!row.BankAccountNumber" [style.color]="!row.BankAccountNumber? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Account Title" formControlName="AccountTitle" [(ngModel)]="row.AccountTitle" required>
-                    <!--<mat-error *ngIf="r.controls.AccountTitle.invalid && r.controls.AccountTitle.errors.email">Invalid Email address</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.AccountTitle}}</ng-container>
-                <br />
-                <span *ngIf="!row.AccountTitle" [style.color]="!row.AccountTitle? 'red': ''">required</span>
-              </td>
-              <td>
-                <ng-container *ngIf="row.IsEditable">
-                  <mat-form-field>
-                    <input matInput placeholder="Bank Branch" formControlName="BankBranch" [(ngModel)]="row.BankBranch" required>
-                    <!--<mat-error *ngIf="r.controls.BankBranch.invalid && r.controls.BankBranch.errors.email">Invalid Email address</mat-error>-->
-                  </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="!row.IsEditable">{{row.BankBranch}}</ng-container>
-                <br />
-                <span *ngIf="!row.BankBranch" [style.color]="!row.BankBranch? 'red': ''">required</span>
-              </td>
-              <td *ngIf="!scheme[0]?.FinalSubmitted">
-                <button type="button" (click)="removeTsp(i, row)">Remove</button>
-              </td>
+        </div>
+  
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Bank Name" formControlName="BankName" required AlphaNumeric maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.BankName.invalid && notForm.controls.BankName.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Bank Account Number" formControlName="BankAccountNumber" required AlphaNumeric
+              maxlength="24">
+            <mat-error
+              *ngIf="notForm.controls.BankAccountNumber.invalid && notForm.controls.BankAccountNumber.errors.required">required</mat-error>
+            <mat-error
+              *ngIf="notForm.controls.BankAccountNumber.invalid && notForm.controls.BankAccountNumber.errors.maxlength"><strong>Length
+                must be less than or equal to 24.</strong></mat-error>
+            <mat-error
+              *ngIf="notForm.controls.BankAccountNumber.invalid && notForm.controls.BankAccountNumber.errors.AlphaNumeric"><strong>Please
+                Enter Alpha Numeric Value.</strong></mat-error>
+  
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Account Title" formControlName="AccountTitle" required AlphaNumeric
+              maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.AccountTitle.invalid && notForm.controls.AccountTitle.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Bank Branch" formControlName="BankBranch" required AlphaNumeric maxlength="50">
+            <mat-error
+              *ngIf="notForm.controls.BankBranch.invalid && notForm.controls.BankBranch.errors.required">required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-12 ">
+          <div class="float-right">
+            <button mat-raised-button color="primary" type="submit" (click)="entry()" mat-button
+              [disabled]="notForm.invalid">
+              Add
+            </button>&nbsp;&nbsp;
+            <button mat-raised-button color="warn" matTooltip="Click to Reset form data" type="reset"
+              (click)="reset(noForm)" [disabled]="!notForm.dirty">
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card p-2">
+    <mat-toolbar color="accent" class="slim">
+      <mat-icon class="material-icons">view_comfy</mat-icon>
+      <span class="spacer">Manage and View TSP(s)</span>
+      <div class="spacer"></div>
+    </mat-toolbar>
+    <form novalidate #nform="ngForm" [formGroup]="tspsForm" (submit)="submitTSP(nform)">
+      <div formArrayName="Tsps" class="table-responsive" style="overflow: auto !important;">
+        <div class="table-responsive" style="overflow: auto !important;">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Actions</th>
+              <th>Sr#</th>
+              <th class="cust_tbl">TSP Name</th>
+              <th class="cust_tbl" *ngIf="scheme[0]?.FinalSubmitted">TSP Code</th>
+              <th class="cust_tbl">Address</th>
+              <th class="cust_tbl">NTN</th>
+              <th class="cust_tbl">PNTN</th>
+              <th class="cust_tbl">GST Number</th>
+              <th class="cust_tbl">FTN</th>
+              <th class="cust_tbl">District</th>
+              <th class="cust_tbl">Head name</th>
+              <th class="cust_tbl">Organization Head Designation</th>
+              <th class="cust_tbl">Organization Head Email</th>
+              <th class="cust_tbl">Organization Head Landline/Mobile
+              <th class="cust_tbl">Organization Landline
+              <th class="cust_tbl">Website</th>
+              <th class="cust_tbl">Contact Person Name</th>
+              <th class="cust_tbl">Contact Person Designation</th>
+              <th class="cust_tbl">Contact Person Landline/Mobile
+              <th class="cust_tbl">Contact Person Email</th>
+              <!--<th class="cust_tbl">Contact Person for Admission Name</th>
+              <th class="cust_tbl">Contact Person for Admission Designation</th>
+              <th class="cust_tbl">Contact Person for Admission Landline/Mobile
+              <th class="cust_tbl">Contact Person for Admission Email</th>
+              <th class="cust_tbl">Contact Person for Accounts Name</th>
+              <th class="cust_tbl">Contact Person for Accounts Designation</th>
+              <th class="cust_tbl">Contact Person for Accounts Landline/Mobile
+              <th class="cust_tbl">Contact Person for Accounts Email</th>-->
+              <th class="cust_tbl">BankName of TSP</th>
+              <th class="cust_tbl">Account No./IBAN of TSP</th>
+              <th class="cust_tbl">Account Title</th>
+              <th class="cust_tbl">Bank Branch</th>
+              <th class="cust_tbl" *ngIf="!scheme[0]?.FinalSubmitted">Action</th>
             </tr>
-          </ng-container>
-        </tbody>
-      </table>
-    </div>
-    <div class="float-right" *ngIf="!scheme[0]?.FinalSubmitted">
-      <button mat-raised-button color="primary" type="submit" *ngIf="formrights.CanAdd" [disabled]="tspsForm.value.Tsps.length == 0 || tspsForm.invalid" mat-button> Save TSP(s) </button>
-    </div>
-  </form>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let row of populatedTableList; let i = index;">
+              <tr (dblclick)="edit(i,row);"  #form="ngForm" [formGroup]="inlineForm" [style.background]="row.NotValid? '#F4F7EA' : ''">
+                <td>
+                  <a color="primary" *ngIf="!scheme[0]?.FinalSubmitted" mat-button (click)="removeTsp(i, row)">Remove</a>
+                  <ng-container *ngIf="!row.IsEditable">
+                    <a color="primary" mat-button (click)="edit(i,row);">Edit</a>
+                  </ng-container>
+                  <ng-container *ngIf="row.IsEditable">
+  
+                    <a color="primary" mat-button (click)="saveInlineForm(i,row)" [disabled]="!row.IsEditable"> Save</a>
+                  </ng-container>
+  
+                 </td>
+                 <td>
+                  {{i+1}}
+                  <br />
+                              <!--<span *ngIf="r.controls.IsNew.value == 2 && r.controls.NTN.value != ''"
+                        matTooltip="This TSP considered as new because NTN and TSPName are both new"
+                        style="color: #f2a21e;">
+                    New
+                  </span>
+                  <span *ngIf="r.controls.IsNew.value == 3 && r.controls.NTN.value != ''"
+                        matTooltip="This TSP considered as new because TSPName New And NTN are old  "
+                        style="color: #ff0022;">
+                    Alert ! NTN Already Exist
+                  </span>
+                  <span *ngIf="r.controls.IsNew.value == 4 && r.controls.NTN.value != ''"
+                        matTooltip="This TSP considered as new because NTN New and TSPName are old"
+                        style="color: #ff0022;">
+                    Alert ! TSP Name Already Exist
+                  </span>-->
+                  <span *ngIf="row.IsNew == 2 && row.NTN != ''"
+                    matTooltip="This TSP considered as new because NTN and TSPName are both new" style="color: #f2a21e;">
+                    New
+                  </span>
+                  <span *ngIf="row.IsNew == 3 && row.NTN != ''"
+                    matTooltip="This TSP considered as new because TSPName New And NTN are old  " style="color: #ff0022;">
+                    Alert ! NTN Already Exist
+                  </span>
+                  <span *ngIf="row.IsNew == 4 && row.NTN != ''"
+                    matTooltip="This TSP considered as new because NTN New and TSPName are old" style="color: #ff0022;">
+                    Alert ! TSP Name Already Exist
+                  </span>
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="TSP Name" formControlName="TSPName" [(ngModel)]="row.TSPName" required>
+                      <!--<mat-error *ngIf="r.controls.TSPName.invalid && r.controls.TSPName.errors.required">required</mat-error>
+        <mat-error *ngIf="r.controls.TSPName.errors?.duplicate">already exist in the same scheme</mat-error>-->
+  
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.TSPName}}</ng-container>
+                  <br />
+                  <span *ngIf="row.nullTSP || !row.TSPName" [style.color]="row.nullTSP? 'red': ''">required</span>
+                  <span *ngIf="row.DuplicateTSP" [style.color]="row.DuplicateTSP? 'red': ''">already exist in the same
+                    scheme</span>
+  
+                </td>
+                <td *ngIf="scheme[0]?.FinalSubmitted">
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="TSP Code" formControlName="TSPCode" [(ngModel)]="row.TSPCode" required
+                        readonly>
+                      <!--<mat-error *ngIf="r.controls.TSPCode.invalid && r.controls.TSPCode.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.TSPCode}}</ng-container>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Address" formControlName="Address" [(ngModel)]="row.Address" required>
+                      <!--<mat-error *ngIf="r.controls.Address.invalid && r.controls.Address.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.Address}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.Address" [style.color]="!row.Address? 'red': ''">required</span>
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <!-- <input matInput placeholder="NTN" formControlName="NTN" required type="text" [imask]="maskNTN" [unmask]="false" >-->
+                      <input matInput placeholder="NTN" formControlName="NTN" [(ngModel)]="row.NTN" required type="text">
+                      <!--<mat-error *ngIf="r.controls.NTN.invalid && r.controls.NTN.errors.required">required</mat-error>
+        <mat-error *ngIf="r.controls.NTN.errors?.duplicateInSameScheme">already exist in the same scheme</mat-error>-->
+                      <!-- <mat-error *ngIf="r.controls.NTN.errors?.isNew">found new NTN (considered as new TSP)</mat-error>-->
+                      <!--<mat-error *ngIf="r.controls.NTN.invalid && r.controls.NTN.errors.maxlength">invalid length</mat-error>
+        <mat-error *ngIf="r.controls.NTN.invalid && r.controls.NTN.errors.minlength">invalid length</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.NTN}}</ng-container>
+                  <br />
+                  <span *ngIf="row.nullNTN || !row.NTN"
+                    [style.color]="!row.nullNTN || !row.NTN? 'red': ''">required</span>
+                  <span *ngIf="row.DuplicateNTN" [style.color]="row.DuplicateNTN? 'red': ''">already exist in the same
+                    scheme</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <!--<input matInput placeholder="PNTN" formControlName="PNTN" type="text" [imask]="maskPNTN" [unmask]="false">-->
+                      <input matInput placeholder="PNTN" formControlName="PNTN" [(ngModel)]="row.PNTN" type="text">
+                      <!--<mat-error *ngIf="r.controls.PNTN.invalid && r.controls.PNTN.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.PNTN}}</ng-container>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <!--<input matInput placeholder="GST Number" formControlName="GST" [imask]="maskGST" [unmask]="false">-->
+                      <input matInput placeholder="GST Number" formControlName="GST" [(ngModel)]="row.GST">
+                      <!--<mat-error *ngIf="r.controls.GST.invalid && r.controls.GST.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.GST}}</ng-container>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <!--<input matInput placeholder="FTN" formControlName="FTN" type="text" [imask]="maskFTN" [unmask]="false">-->
+                      <input matInput placeholder="FTN" formControlName="FTN" [(ngModel)]="row.FTN" type="text">
+                      <!--<mat-error *ngIf="r.controls.FTN.invalid && r.controls.FTN.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.FTN}}</ng-container>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <mat-select formControlName="DistrictID" placeholder="District" [(ngModel)]="row.DistrictID"
+                        required [disabled]="scheme[0]?.FinalSubmitted">
+                        <mat-option *ngFor="let d of districts" [value]="d.DistrictID"> {{d.DistrictName}} </mat-option>
+                      </mat-select>
+                      <!--<mat-error *ngIf="r.controls.DistrictID.invalid && r.controls.DistrictID.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.DistrictName}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.DistrictID" [style.color]="!row.DistrictID? 'red': ''">required</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Head Name" formControlName="HeadName" [(ngModel)]="row.HeadName"
+                        required>
+                      <mat-error *ngIf="row.HeadName.toLowerCase()==row.CPName.toLowerCase()"
+                        [style.color]="row.HeadName.toLowerCase()==row.CPName.toLowerCase()? 'red': ''">Head and POC names
+                        must differ.</mat-error>
+                      <!--<mat-error *ngIf="r.controls.HeadName.invalid && r.controls.HeadName.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.HeadName}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.HeadName" [style.color]="!row.HeadName? 'red': ''">required</span>
+                  <span *ngIf="row.HeadName.toLowerCase()==row.CPName.toLowerCase()"
+                    [style.color]="row.HeadName.toLowerCase()==row.CPName.toLowerCase()? 'red': ''">Head and POC names
+                    must differ.</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Head Designation" formControlName="HeadDesignation"
+                        [(ngModel)]="row.HeadDesignation" required>
+                      <mat-error *ngIf="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()"
+                        [style.color]="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()? 'red': ''">Head
+                        and POC Designation must differ.</mat-error>
+                      <!--<mat-error *ngIf="r.controls.HeadDesignation.invalid && r.controls.HeadDesignation.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.HeadDesignation}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.HeadDesignation" [style.color]="!row.HeadDesignation? 'red': ''">required</span>
+                  <span *ngIf="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()"
+                    [style.color]="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()? 'red': ''">Head and
+                    POC Designation must differ.</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Head Email" formControlName="HeadEmail" [(ngModel)]="row.HeadEmail"
+                        required type="text" maxlength="80">
+                      <mat-error *ngIf="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()"
+                        [style.color]="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()? 'red': ''">Head and POC
+                        Email must differ.</mat-error>
+  
+                      <!--<mat-error *ngIf="r.controls.HeadEmail.invalid && r.controls.HeadEmail.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.HeadEmail}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.HeadEmail" [style.color]="!row.HeadEmail? 'red': ''">required</span>
+                  <span *ngIf="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()"
+                    [style.color]="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()? 'red': ''">Head and POC Email
+                    must differ.</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Head Landline" formControlName="HeadLandline"
+                        [(ngModel)]="row.HeadLandline" required type="text" maxlength="20">
+                      <mat-error *ngIf="row.HeadLandline==row.CPLandline"
+                        [style.color]="row.HeadLandline==row.CPLandline? 'red': ''">Head and POC Landline must
+                        differ.</mat-error>
+  
+                      <!--<mat-error *ngIf="r.controls.HeadLandline.invalid && r.controls.HeadLandline.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.HeadLandline}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.HeadLandline" [style.color]="!row.HeadLandline? 'red': ''">required</span>
+                  <span *ngIf="row.HeadLandline==row.CPLandline"
+                    [style.color]="row.HeadLandline==row.CPLandline? 'red': ''">Head and POC Landline must differ.</span>
+  
+                  <span *ngIf="row.HeadLandline.length > 20" [style.color]="row.HeadLandline.length > 20? 'red': ''">max
+                    length should be 20 characters</span>
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Organization Landline" formControlName="OrgLandline"
+                        [(ngModel)]="row.OrgLandline" required type="text" maxlength="24">
+                      <!--<mat-error *ngIf="r.controls.OrgLandline.invalid && r.controls.OrgLandline.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.OrgLandline}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.OrgLandline" [style.color]="!row.OrgLandline? 'red': ''">required</span>
+                  <span *ngIf="row.OrgLandline.length > 20" [style.color]="row.OrgLandline.length > 20? 'red': ''">max
+                    length should be 20 characters</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Website" formControlName="Website" [(ngModel)]="row.Website">
+                      <!--<mat-error *ngIf="r.controls.Website.invalid && r.controls.Website.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.Website}}</ng-container>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Contact Person Name" formControlName="CPName" [(ngModel)]="row.CPName"
+                        required>
+                      <mat-error *ngIf="row.HeadName.toLowerCase()==row.CPName.toLowerCase()"
+                        [style.color]="row.HeadName.toLowerCase()==row.CPName.toLowerCase()? 'red': ''">Head and POC names
+                        must differ.</mat-error>
+  
+  
+                      <!--<mat-error *ngIf="r.controls.CPName.invalid && r.controls.CPName.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.CPName}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.CPName" [style.color]="!row.CPName? 'red': ''">required</span>
+                  <span *ngIf="row.HeadName.toLowerCase()==row.CPName.toLowerCase()"
+                    [style.color]="row.HeadName.toLowerCase()==row.CPName.toLowerCase()? 'red': ''">Head and POC names
+                    must differ.</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Contact Person Designation" formControlName="CPDesignation"
+                        [(ngModel)]="row.CPDesignation" required>
+                      <mat-error *ngIf="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()"
+                        [style.color]="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()? 'red': ''">Head
+                        and POC Designation must differ.</mat-error>
+  
+                      <!--<mat-error *ngIf="r.controls.CPDesignation.invalid && r.controls.CPDesignation.errors.required">required</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.CPDesignation}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.CPDesignation" [style.color]="!row.CPDesignation? 'red': ''">required</span>
+                  <span *ngIf="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()"
+                    [style.color]="row.HeadDesignation.toLowerCase()==row.CPDesignation.toLowerCase()? 'red': ''">Head and
+                    POC Designation must differ.</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Contact Person Landline" formControlName="CPLandline"
+                        [(ngModel)]="row.CPLandline" required type="text" maxlength="20">
+                      <mat-error *ngIf="row.HeadLandline==row.CPLandline"
+                        [style.color]="row.HeadLandline==row.CPLandline? 'red': ''">Head and POC Landline must
+                        differ.</mat-error>
+                      <!--<mat-error *ngIf="r.controls.CPLandline.invalid && r.controls.CPLandline.errors.required">required</mat-error>
+        <mat-error *ngIf="r.controls.CPLandline.invalid && r.controls.CPLandline.errors.maxlength"><strong>Length must be less than or equal to 12.</strong></mat-error>-->
+  
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.CPLandline}}</ng-container>
+  
+                  <br />
+                  <span *ngIf="!row.CPLandline" [style.color]="!row.CPLandline? 'red': ''">required</span>
+                  <span *ngIf="row.HeadLandline==row.CPLandline"
+                    [style.color]="row.HeadLandline==row.CPLandline? 'red': ''">Head and POC Landline must differ.</span>
+                  <span *ngIf="row.CPLandline.length > 20" [style.color]="row.CPLandline.length > 20? 'red': ''">max
+                    length should be 20 characters</span>
+  
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Contact Person Email" formControlName="CPEmail"
+                        [(ngModel)]="row.CPEmail" required type="text" maxlength="80">
+                      <mat-error *ngIf="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()"
+                        [style.color]="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()? 'red': ''">Head and POC
+                        Email must differ.</mat-error>
+                      <!--<mat-error *ngIf="r.controls.CPEmail.invalid && r.controls.CPEmail.errors.email">Invalid Email address</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.CPEmail}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.CPEmail" [style.color]="!row.CPEmail? 'red': ''">required</span>
+                  <span *ngIf="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()"
+                    [style.color]="row.HeadEmail.toLowerCase()==row.CPEmail.toLowerCase()? 'red': ''">Head and POC Email
+                    must differ.</span>
+                </td>
+  
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Bank Name" formControlName="BankName" [(ngModel)]="row.BankName"
+                        required>
+                      <!--<mat-error *ngIf="r.controls.BankName.invalid && r.controls.BankName.errors.email">Invalid Email address</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.BankName}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.BankName" [style.color]="!row.BankName? 'red': ''">required</span>
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Bank Account Number" formControlName="BankAccountNumber"
+                        [(ngModel)]="row.BankAccountNumber" required AlphNumeric maxlength="24">
+                      <!--<mat-error *ngIf="r.controls.BankAccountNumber.invalid && r.controls.BankAccountNumber.errors.email">Invalid Email address</mat-error>
+        <mat-error *ngIf="r.controls.BankAccountNumber.invalid && r.controls.BankAccountNumber.errors.maxlength"><strong>Length must be less than or equal to 24.</strong></mat-error>
+        <mat-error *ngIf="r.controls.BankAccountNumber.invalid && r.controls.BankAccountNumber.errors.AlphaNumeric"><strong>Please Enter Alpha Numeric Value.</strong></mat-error>-->
+  
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.BankAccountNumber}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.BankAccountNumber" [style.color]="!row.BankAccountNumber? 'red': ''">required</span>
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Account Title" formControlName="AccountTitle"
+                        [(ngModel)]="row.AccountTitle" required>
+                      <!--<mat-error *ngIf="r.controls.AccountTitle.invalid && r.controls.AccountTitle.errors.email">Invalid Email address</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.AccountTitle}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.AccountTitle" [style.color]="!row.AccountTitle? 'red': ''">required</span>
+                </td>
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput placeholder="Bank Branch" formControlName="BankBranch" [(ngModel)]="row.BankBranch"
+                        required>
+                      <!--<mat-error *ngIf="r.controls.BankBranch.invalid && r.controls.BankBranch.errors.email">Invalid Email address</mat-error>-->
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.BankBranch}}</ng-container>
+                  <br />
+                  <span *ngIf="!row.BankBranch" [style.color]="!row.BankBranch? 'red': ''">required</span>
+                </td>
+                <td *ngIf="!scheme[0]?.FinalSubmitted">
+                  <button type="button" (click)="removeTsp(i, row)">Remove</button>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      </div>
+      <div  class="float-right m-1" *ngIf="!scheme[0]?.FinalSubmitted">
+        <button  style="float:right !important" mat-raised-button color="primary" type="submit" *ngIf="formrights.CanAdd"
+          [disabled]="tspsForm.value.Tsps.length == 0 || tspsForm.invalid" mat-button> Save TSP(s) </button>
+      </div>
+    </form>
+  
 </div>
+
