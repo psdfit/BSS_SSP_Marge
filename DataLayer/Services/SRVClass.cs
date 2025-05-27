@@ -273,6 +273,16 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        public List<ClassModel> FetchClassByTspOnJob(int tspId)
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassByTspOnJob", new SqlParameter("@TSPId", tspId)).Tables[0];
+                return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
         public List<ClassModel> FetchClassByScheme(int SchemeID, SqlTransaction transaction = null)
         {
             try
@@ -730,6 +740,22 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@ClassID", filters.ClassID));
                 param.Add(new SqlParameter("@OID", filters.OID));
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassesByUser", param.ToArray()).Tables[0];
+                return LoopinDashboardData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<ClassModel> FetchClassesByUserOnJOb(QueryFilters filters)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filters.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filters.TSPID));
+                param.Add(new SqlParameter("@UserID", filters.UserID));
+                param.Add(new SqlParameter("@ClassID", filters.ClassID));
+                param.Add(new SqlParameter("@OID", filters.OID));
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassesByUserOnJob", param.ToArray()).Tables[0];
                 return LoopinDashboardData(dt);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }

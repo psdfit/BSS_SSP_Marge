@@ -120,7 +120,7 @@ export class OnjobTraineePlacementComponent implements OnInit {
       })
   }
   getClassesByTsp(tspId: number) {
-    this.ComSrv.getJSON(`api/Class/GetClassesByTsp/` + tspId)
+    this.ComSrv.getJSON(`api/Class/GetClassesByTspOnJob/` + tspId)
       .subscribe(data => {
         this.classesArray = <any[]>data;
       }, error => {
@@ -129,7 +129,7 @@ export class OnjobTraineePlacementComponent implements OnInit {
   }
 
   getClassesBySchemes(schemeId: number) {
-    this.ComSrv.postJSON(`api/Class/FetchClassesByUser/`, { UserID: this.userid, OID: this.ComSrv.OID.value, SchemeID: schemeId })
+    this.ComSrv.postJSON(`api/Class/FetchClassesByUserOnJOb/`, { UserID: this.userid, OID: this.ComSrv.OID.value, SchemeID: schemeId })
       .subscribe(data => {
         this.classesArray = <any[]>data;
       }, error => {
@@ -141,7 +141,7 @@ export class OnjobTraineePlacementComponent implements OnInit {
 classData:any=[]
   GetClasses() {
     if (this.currentUser.UserLevel == EnumUserLevel.TSP) {
-      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClass/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.userid}&filter=${this.ComSrv.OID.value}`).subscribe(
+      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClassOnJob/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.userid}&filter=${this.ComSrv.OID.value}`).subscribe(
         (d: any) => {
           this.ClassList = d[0]
           this.classData = d[0];
@@ -162,7 +162,7 @@ classData:any=[]
       );
     }
     else {
-      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClass/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${0}&filter=${this.ComSrv.OID.value}`).subscribe(
+      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClassonjon/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${0}&filter=${this.ComSrv.OID.value}`).subscribe(
         (d: any) => {
           this.ClassList = d[0];
           this.Scheme = d[1];
@@ -210,7 +210,7 @@ classData:any=[]
     if (r.Trainees) {
       return;
     }
-    this.ComSrv.getJSON("api/TSPEmployment/GetCompletedTraineesOfClassForEmployment/" + ClassID).subscribe(
+    this.ComSrv.getJSON("api/TSPEmployment/GetTraineesOfClassForOnJob/" + ClassID).subscribe(
       (d: any) => {
         r.Trainees = d.TraineeList;
         r.HasTrainees = true;

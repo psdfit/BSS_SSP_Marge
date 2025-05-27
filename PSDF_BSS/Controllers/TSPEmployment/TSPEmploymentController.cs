@@ -812,5 +812,57 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             }
         }
 
+
+        [HttpGet]
+        [Route("GetFilteredClassOnJob/{filter}")]
+        public IActionResult GetFilteredClassOnJob([FromQuery(Name = "filter")] int[] filter)
+        {
+            try
+            {
+                int userID = filter?[3] ?? 0;
+                int oID = filter?[4] ?? 0;
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                List<object> ls = new List<object>();
+
+                ls.Add(srv.FetchClassFiltersOnJob(filter));
+                if (loggedInUserLevel == (int)EnumUserLevel.TSP)
+                {
+                    ls.Add(srvScheme.FetchSchemesByTSPUserOnJob(curUserID));
+                }
+                else
+                {
+                    ls.Add(srvScheme.FetchSchemesByTSPUserOnJob(curUserID));
+                }
+                //return Ok(srv.FetchMasterSheetByFilters(filter));
+                //ls.Add(srvScheme.FetchSchemeForFilter(false));
+
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTraineesOfClassForOnJob/{ClassID}")]
+        public IActionResult GetTraineesOfClassForOnJob(string ClassID)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    TraineeList = srv.GetCompletedTraineeByClassOnJob(Convert.ToInt32(ClassID)),
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
     }
 }

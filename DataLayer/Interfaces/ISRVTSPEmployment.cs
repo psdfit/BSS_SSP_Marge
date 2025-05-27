@@ -15,6 +15,7 @@ namespace DataLayer.Interfaces
 
         //public DataSet GetCompletedTraineeByClass(int ClassID);
         List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClass(int ClassID);
+        List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOnJob(int ClassID);
 
         bool SavePlacementFormE(TSPEmploymentModel TSPEmploymentModel);
 
@@ -36,6 +37,7 @@ namespace DataLayer.Interfaces
 
         bool ForwardedToTelephonic(ForwardToTelephonicVerification Model);
         public List<RD_ClassForTSPModel> FetchClassFilters(int[] filters);
+        public List<RD_ClassForTSPModel> FetchClassFiltersOnJob(int[] filters);
 
         public DeoDashboardModel GetDeoDashboardStats();
         public List<RD_ClassForTSPModel> GetClassesForEmploymentVerification(int PlacementID, int VerificationMethodID, int TspID, int ClassID);

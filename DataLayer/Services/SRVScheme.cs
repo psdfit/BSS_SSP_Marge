@@ -643,6 +643,16 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        public List<SchemeModel> FetchSchemesByTSPUserOnJob(int userID = 0)
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SchemesByTSPUserOnJob", new SqlParameter("@UserID", userID)).Tables[0];
+                return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
         public List<SchemeModel> FetchSchemesBySkillScholarshipType(int userID = 0)
         {
             try

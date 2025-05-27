@@ -152,6 +152,34 @@ namespace DataLayer.Services
             }
 
         }
+        public List<RD_ClassForTSPModel> FetchClassFiltersOnJob(int[] filters)
+        {
+            //List<RD_ClassForTSPModel> list = new List<RD_ClassForTSPModel>();
+
+            int schemeId = filters[0];
+            int tspId = filters[1];
+            int classId = filters[2];
+            int userId = filters[3];
+            try
+            {
+                SqlParameter[] param = new SqlParameter[10];
+                param[0] = new SqlParameter("@SchemeID", schemeId);
+                param[1] = new SqlParameter("@TSPID", tspId);
+                param[2] = new SqlParameter("@ClassID", classId);
+                param[3] = new SqlParameter("@UserID", userId);
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_MasterSheets", param).Tables[0];
+                //list = LoopinData(dt);
+                //var data = SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "dbo.RD_ClassForTSP", param);
+
+                var list = _dapper.Query<RD_ClassForTSPModel>("dbo.RD_ClassForTSPOnJob", new { @SchemeID = schemeId, @TSPID = tspId, @ClassID = classId, @UserID = userId }, CommandType.StoredProcedure);
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
 
 
@@ -160,6 +188,20 @@ namespace DataLayer.Services
             try
             {
                 var list = _dapper.Query<RD_CompletedTraineeByClassModel>("dbo.RD_CompletedTraineeByClass", new { @ClassID = ClassID }, CommandType.StoredProcedure);
+                return list;
+                //var result = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_CompletedTraineeByClass", new SqlParameter("@ClassID", ClassID));
+                ////DataTable dt = result.Tables[0];
+                ////DataTable dt2 = result.Tables[1];
+                //return result;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOnJob(int ClassID)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_CompletedTraineeByClassModel>("dbo.RD_OnJobTraineeByClass", new { @ClassID = ClassID }, CommandType.StoredProcedure);
                 return list;
                 //var result = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_CompletedTraineeByClass", new SqlParameter("@ClassID", ClassID));
                 ////DataTable dt = result.Tables[0];
