@@ -341,7 +341,7 @@ export class OJTEmpComponent implements OnInit {
   DeadlineEnd: boolean = false;
   EmploymentSubmited: boolean = false;
   getData() {
-    this.ComSrv.postJSON('api/TSPEmployment/GetDataForEmployment', { "ClassID": this.paramClassId, "TraineeID": this.paramTraineeId }).subscribe((d: any) => {
+    this.ComSrv.postJSON('api/TSPEmployment/GetDataForEmploymentOJT', { "ClassID": this.paramClassId, "TraineeID": this.paramTraineeId }).subscribe((d: any) => {
       console.log(d);
       this.ClassDrp = d.Class;
       this.TraineeProfileDrp = d.TraineeProfile;
@@ -423,7 +423,7 @@ export class OJTEmpComponent implements OnInit {
   getTraineesEmploymentFile(row) {
     var traineeId = row.TraineeID;
     var classId = row.ClassID;
-    this.ComSrv.postJSON('api/TSPEmployment/GetEmploymentDataByTraineeID', { "ClassID": classId, "TraineeID": traineeId }).subscribe((d: any) => {
+    this.ComSrv.postJSON('api/TSPEmployment/GetEmploymentDataByTraineeIDOJT', { "ClassID": classId, "TraineeID": traineeId }).subscribe((d: any) => {
       row.employmentFile = d[0];
       this.employmentFile = d[0];
       row.FPath = this.employmentFile['FilePath'];

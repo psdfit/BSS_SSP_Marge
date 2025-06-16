@@ -99,12 +99,12 @@
                           </a>
                         </td>
                         <td class="sm" style="text-align:inherit;" *ngIf="currentUser.UserLevel == enumUserLevel.TSP">
-                          <a color="primary" matTooltip="Export Trainees Data" (click)="GetTrainee(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
+                          <!--<a color="primary" matTooltip="Export Trainees Data" (click)="GetTrainee(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
                             <mat-icon>get_app</mat-icon>
                           </a>|<a color="primary" matTooltip="Import Trainees Data" mat-icon-button class="file-lable">
                             <mat-icon>publish</mat-icon>
                             <input placeholder="Upload Excel File to Add Placement data" disabled="disabled" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" type="file" class="file-input" (change)="onFileChange($event,r)" />
-                          </a>|
+                          </a>|-->
                           <a color="primary" *ngIf="!r.EmploymentSubmited" matTooltip="Submit Trainees Emplyment Data" (click)="SubmitClassData(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
                             <mat-icon>save</mat-icon>
                           </a>

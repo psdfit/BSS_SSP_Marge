@@ -162,7 +162,7 @@ classData:any=[]
       );
     }
     else {
-      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClassonjon/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${0}&filter=${this.ComSrv.OID.value}`).subscribe(
+      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClassOnJob/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${0}&filter=${this.ComSrv.OID.value}`).subscribe(
         (d: any) => {
           this.ClassList = d[0];
           this.Scheme = d[1];
@@ -223,7 +223,7 @@ classData:any=[]
   }
   SubmitClassData(ClassID: any, r: any) {
     debugger;
-    this.ComSrv.getJSON("api/TSPEmployment/GetEmploymentReportedTraineesOfClass/" + ClassID).subscribe(
+    this.ComSrv.getJSON("api/TSPEmployment/GetEmploymentReportedTraineesOfClassOJT/" + ClassID).subscribe(
       (d: any) => {
         let Trainees: [] = d.TraineeList;
         let PlacementData: [] = d.PlacementData;
