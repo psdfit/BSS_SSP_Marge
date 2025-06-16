@@ -245,8 +245,75 @@ namespace DataLayer.Services
 
                 param[26] = new SqlParameter("@CurUserID", PlacementFormE.CurUserID);
 
-                param[27] = new SqlParameter("@PlatformName", PlacementFormE.PlatformName); 
-                param[28] = new SqlParameter("@NameofTraineeStorePage", PlacementFormE.NameofTraineeStorePage); 
+                param[27] = new SqlParameter("@PlatformName", PlacementFormE.PlatformName);
+                param[28] = new SqlParameter("@NameofTraineeStorePage", PlacementFormE.NameofTraineeStorePage);
+                param[29] = new SqlParameter("@LinkofTraineeStorePage", PlacementFormE.LinkofTraineeStorePage);
+
+
+                param[30] = new SqlParameter("@PlacementTypeID", PlacementFormE.PlacementTypeID);
+                param[31] = new SqlParameter("@EOBI", PlacementFormE.EOBI);
+                param[32] = new SqlParameter("@VerificationMethodId", PlacementFormE.VerificationMethodId);
+                param[33] = new SqlParameter("@FileType", PlacementFormE.FileType);
+                param[34] = new SqlParameter("@FilePath", PlacementFormE.FilePath);
+                param[35] = new SqlParameter("@FileName", PlacementFormE.FileName);
+                param[36] = new SqlParameter("@PlacementReturnID", SqlDbType.Int);
+
+                param[37] = new SqlParameter("@EmployerNTN", PlacementFormE.EmployerNTN);
+
+                param[36].Direction = ParameterDirection.Output;
+                var saved = SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PlacementFormE", param);
+                long PlacementReturnID = Convert.ToInt32(param[36].Value);
+                //return FetchPlacementFormE();
+                // Notification send to KAM
+                ApprovalModel approvalsModelForNotification = new ApprovalModel();
+                ApprovalHistoryModel model = new ApprovalHistoryModel();
+                TSPMasterModel KAMmodel = srvTSPMaster.GetKAMUserByClassID(PlacementFormE.ClassID ?? 0);
+                approvalsModelForNotification.UserIDs = KAMmodel.UserID.ToString();
+                approvalsModelForNotification.ProcessKey = EnumApprovalProcess.Employment_Report;
+                approvalsModelForNotification.CustomComments = "Employment data submitted by TSP is ready for verification.";
+                srvSendEmail.GenerateEmailAndSendNotification(approvalsModelForNotification, model);
+                return saved > 0;
+            }
+            catch (Exception ex)
+            { throw new Exception(ex.Message); }
+        }
+
+        public bool SavePlacementFormEOJT(TSPEmploymentModel PlacementFormE)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[38];
+                param[0] = new SqlParameter("@PlacementID", PlacementFormE.PlacementID);
+                param[1] = new SqlParameter("@TraineeID", PlacementFormE.TraineeID);
+                param[2] = new SqlParameter("@ClassID", PlacementFormE.ClassID);
+                param[3] = new SqlParameter("@Designation", PlacementFormE.Designation);
+                param[4] = new SqlParameter("@Department", PlacementFormE.Department);
+                param[5] = new SqlParameter("@EmploymentDuration", PlacementFormE.EmploymentDuration);
+                param[6] = new SqlParameter("@Salary", PlacementFormE.Salary);
+                param[7] = new SqlParameter("@SupervisorName", PlacementFormE.SupervisorName);
+                param[8] = new SqlParameter("@SupervisorContact", PlacementFormE.SupervisorContact);
+                param[9] = new SqlParameter("@EmploymentStartDate", PlacementFormE.EmploymentStartDate);
+                param[10] = new SqlParameter("@EmploymentStatus", PlacementFormE.EmploymentStatus);
+                param[11] = new SqlParameter("@EmploymentType", PlacementFormE.EmploymentType);
+                param[12] = new SqlParameter("@EmployerName", PlacementFormE.EmployerName);
+                param[13] = new SqlParameter("@EmployerBusinessType", PlacementFormE.EmployerBusinessType);
+                param[14] = new SqlParameter("@EmploymentAddress", PlacementFormE.EmploymentAddress);
+                param[15] = new SqlParameter("@District", PlacementFormE.District);
+                param[16] = new SqlParameter("@EmploymentTehsil", PlacementFormE.EmploymentTehsil);
+                param[17] = new SqlParameter("@EmploymentTiming", PlacementFormE.EmploymentTiming);
+                param[18] = new SqlParameter("@IsTSP", PlacementFormE.IsTSP);
+                param[19] = new SqlParameter("@OldID", PlacementFormE.OldID);
+                param[20] = new SqlParameter("@EmploymentTehsilOld", PlacementFormE.EmploymentTehsilOld);
+                param[21] = new SqlParameter("@OfficeContactNo", PlacementFormE.OfficeContactNo);
+                param[22] = new SqlParameter("@IsMigrated", false);
+                param[23] = new SqlParameter("@TraineeName", PlacementFormE.TraineeName);
+                param[24] = new SqlParameter("@TraineeCode", PlacementFormE.TraineeCode);
+                param[25] = new SqlParameter("@ContactNumber", PlacementFormE.ContactNumber);
+
+                param[26] = new SqlParameter("@CurUserID", PlacementFormE.CurUserID);
+
+                param[27] = new SqlParameter("@PlatformName", PlacementFormE.PlatformName);
+                param[28] = new SqlParameter("@NameofTraineeStorePage", PlacementFormE.NameofTraineeStorePage);
                 param[29] = new SqlParameter("@LinkofTraineeStorePage", PlacementFormE.LinkofTraineeStorePage);
 
 

@@ -11,7 +11,7 @@ export const environment = {
   //ReportsAPIURL: "http://3.127.198.171:44303/",
   AuthToken: "UserModel",
   RightsToken: "RightsModel",
-  FormIDRemoveForTSPUser: [28,77,1121,1125,1127,1139],
+  FormIDRemoveForTSPUser: [28,77,1121,1125,1127,1139,1213],
   FormIDRemoveForAllUsers:[1139,1147],
   PrjTitle: "Punjab Skills Development Fund (PSDF)",
   PrjTitleShort: "PSDF",

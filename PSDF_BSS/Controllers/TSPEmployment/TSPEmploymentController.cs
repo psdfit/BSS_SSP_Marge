@@ -146,7 +146,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpGet]
         [Route("GetCompletedTraineesOfClassForEmployment/{ClassID}")]
         public IActionResult GetCompletedTraineesOfClassForEmployment(string ClassID)
@@ -163,7 +163,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpGet]
         [Route("GetCompletedANDEmployedTraineesOfClass/{ClassID}")]
         public IActionResult GetCompletedANDEmployedTraineesOfClass(string ClassID)
@@ -180,7 +180,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             {
                 return BadRequest(e.InnerException.ToString());
             }
-        }    
+        }
         [HttpGet]
         [Route("GetEmploymentReportedTraineesOfClass/{ClassID}")]
         public IActionResult GetEmploymentReportedTraineesOfClass(string ClassID)
@@ -508,7 +508,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return BadRequest(e.Message.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("GetEmploymentDataByTraineeID")]
         public IActionResult GetDaGetEmploymentDataByTraineeIData(TSPEmploymentModel model)
@@ -728,7 +728,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
         {
             try
             {
-                return Ok(              
+                return Ok(
                     srv.FetchTraineeForEmploymentVerification(new TSPEmploymentModel { TraineeID = traineeId })
                 );
             }
@@ -861,6 +861,33 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             catch (Exception e)
             {
                 return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveOJT")]
+        public IActionResult SaveOJT(TSPEmploymentModel D)
+        {
+            try
+            {
+                // TSPEmploymentModel D = JsonConvert.DeserializeObject<TSPEmploymentModel>(data);
+
+                if (!String.IsNullOrEmpty(D.FilePath))
+                {
+                    var path = "\\Documents\\TSPEmployment\\";
+
+                    var fileName = Common.AddFile(D.FilePath, path);
+
+                    D.FileName = fileName;
+                    D.FilePath = fileName;
+                }
+
+                D.CurUserID = Convert.ToInt32(User.Identity.Name);
+                return Ok(srv.SavePlacementFormEOJT(D));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 

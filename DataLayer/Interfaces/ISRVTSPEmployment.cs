@@ -18,7 +18,7 @@ namespace DataLayer.Interfaces
         List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOnJob(int ClassID);
 
         bool SavePlacementFormE(TSPEmploymentModel TSPEmploymentModel);
-
+        bool SavePlacementFormEOJT(TSPEmploymentModel TSPEmploymentModel);
         List<TSPEmploymentModel> FetchPlacementFormE();
 
         List<TSPEmploymentModel> FetchPlacementFormE(bool InActive);
