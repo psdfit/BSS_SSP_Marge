@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 @Component({
   selector: 'app-tspperformance',
   templateUrl: './tspperformance.component.html',
@@ -116,7 +118,22 @@ export class TSPPerformanceComponent implements OnInit {
       this.filters.TradeID=0;
       this.TradeFilter.setValue(0);
     })
- }
+  }
+
+  downloadExcel(): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.TSPPerformanceArray);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'TSP Performance': worksheet },
+      SheetNames: ['TSP Performance']
+    };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    this.saveAsExcelFile(excelBuffer, 'TSP_Performance');
+  }
+
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], { type: 'application/octet-stream' });
+    FileSaver.saveAs(data, `${fileName}_export_${new Date().getTime()}.xlsx`);
+  }
 }
  export interface IQueryFilters {
   SchemeID: number;
