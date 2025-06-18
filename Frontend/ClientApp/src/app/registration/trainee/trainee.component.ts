@@ -761,7 +761,8 @@ debugger;
         if (scheme.ProgramTypeID !== 7) {  //Skills Scolarship
           this.IsSkillsScholrship = false;
         }
-        else {
+        else if (scheme.FundingCategoryID == 18) //CM-SDP-Transgender
+        {
           this.getGuruProfiles();
           this.IsSkillsScholrship = true;
         }
