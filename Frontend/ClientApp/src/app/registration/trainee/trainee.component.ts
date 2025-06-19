@@ -736,7 +736,8 @@ debugger;
           //this.http.ShowError(this.error, "Error");
           this.setFormIsDisabled(true, this.error);//this.isFormDisabled = true;
           return;
-        }
+        }//
+        debugger;
         if (scheme.FundingCategoryID == 16) {
           this.EDFScheme = true;
         }
@@ -761,7 +762,8 @@ debugger;
         if (scheme.ProgramTypeID !== 7) {  //Skills Scolarship
           this.IsSkillsScholrship = false;
         }
-        else if (scheme.FundingCategoryID == 18) //CM-SDP-Transgender
+        
+        if (scheme.FundingCategoryID == 18) //CM-SDP-Transgender
         {
           this.getGuruProfiles();
           this.IsSkillsScholrship = true;
