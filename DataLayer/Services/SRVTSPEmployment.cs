@@ -651,9 +651,9 @@ namespace DataLayer.Services
                 param[0] = new SqlParameter("@ClassID", ClassID);
                 param[1] = new SqlParameter("@CurUserID", CurUserID);
 
-                //SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "SubmitClassEmployment", new SqlParameter("@ClassID", ClassID));
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "SubmitClassOJT", new SqlParameter("@ClassID", ClassID));
                 return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "A_PlacementVerificationOJT", new SqlParameter("@ClassID", ClassID));
-                //return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "CalculateROSIOnEmploymentSubmission", param);
+               // return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "CalculateROSIOnEmploymentSubmission", param);
 
             }
             catch (Exception ex) { throw new Exception(ex.Message); }

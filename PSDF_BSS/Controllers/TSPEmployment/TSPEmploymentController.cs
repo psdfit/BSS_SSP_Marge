@@ -892,7 +892,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
 
                 if (!String.IsNullOrEmpty(D.FilePath))
                 {
-                    var path = "\\Documents\\TSPEmployment\\";
+                    var path = "\\Documents\\OJTEmployment\\";
 
                     var fileName = Common.AddFile(D.FilePath, path);
 
@@ -1002,7 +1002,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             try
             {
                 m.CurUserID = Convert.ToInt32(User.Identity.Name);
-                return Ok(srv.SubmitClassEmployment(m.ClassID ?? 0, m.CurUserID));
+                return Ok(srv.SubmitClassEmploymentOJT(m.ClassID ?? 0, m.CurUserID));
             }
             catch (Exception e)
             {

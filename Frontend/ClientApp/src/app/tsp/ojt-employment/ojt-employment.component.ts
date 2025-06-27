@@ -185,6 +185,7 @@ export class OJTEmpComponent implements OnInit {
     this.EmploymentStatus.valueChanges.subscribe((v) => {
       if (v == 'Employed') {
         //this.getData();
+        this.radioChange(2);
         this.PlatformName.enable();
         this.NameofTraineeStorePage.enable();
         this.LinkofTraineeStorePage.enable();
@@ -318,7 +319,7 @@ export class OJTEmpComponent implements OnInit {
       TraineeCode: [{ value: '', disabled: true }, [Validators.required]],
       ClassCode: [{ value: '', disabled: true }, [Validators.required]],
       ContactNumber: [{ value: '', disabled: true }, [Validators.required]],
-      PlacementTypeID: ['', [Validators.required]],
+      PlacementTypeID: ['2', [Validators.required]],
       PlatformName: ['', [Validators.required]],
       NameofTraineeStorePage: ['', [Validators.required]],
       LinkofTraineeStorePage: ['', [Validators.required]],
@@ -408,7 +409,8 @@ export class OJTEmpComponent implements OnInit {
           FilePath: this.trineeProfile.FilePath
         });
         this.fileType = this.trineeProfile.FileType;
-        this.employmentStartLimit = this.trineeProfile.EndDate;
+        const endDate = new Date(this.trineeProfile.EndDate);
+        this.employmentStartLimit = new Date(endDate.setDate(endDate.getDate() - 9));
 
         if (this.trineeProfile.PlacementTypeID) {
           this.VerificationMethodsDrp = this.VerificationMethods.filter(x => x.PlacementTypeID == this.trineeProfile.PlacementTypeID);
@@ -607,10 +609,20 @@ export class OJTEmpComponent implements OnInit {
   //get PlatformName() { return this.traineeEmploymentForm.get("PlatformName"); }
   //////////////////// My
 
-  radioChange(event) {
+  radioChange(typePlacement: number) {
     this.VerificationMethodId.setValue(null);
-    this.VerificationMethodsDrp = this.VerificationMethods.filter(x => x.PlacementTypeID == event.value);
-    if (event.value == 1) {
+    //this.VerificationMethodsDrp = this.VerificationMethods.filter(x => x.PlacementTypeID == typePlacement);
+    if (typePlacement === 2) {
+      this.VerificationMethodsDrp = this.VerificationMethods.filter(
+        x => x.PlacementTypeID === 2 &&
+          (x.VerificationMethodType === 'Documents' || x.VerificationMethodType === 'Telephonic')
+      );
+    } else {
+      this.VerificationMethodsDrp = this.VerificationMethods.filter(
+        x => x.PlacementTypeID === typePlacement
+      );
+    }
+    if (typePlacement == 1) {
       debugger;
       this.Designation.disable();
       this.Department.disable();
@@ -683,22 +695,25 @@ export class OJTEmpComponent implements OnInit {
 
   Submit(myform: FormGroupDirective) {
 
-    if (this.PlacementTypeID.value == 1 && this.VerificationMethodId.value != 9) {
+    //if (this.PlacementTypeID.value == 1 && this.VerificationMethodId.value != 9) {
+    //  this.PlatformName.disable();
+    //  this.NameofTraineeStorePage.disable();
+    //  this.LinkofTraineeStorePage.disable();
+    //  this.PlatformName.setValue("");
+    //  this.NameofTraineeStorePage.setValue("");
+    //  this.LinkofTraineeStorePage.setValue("");
+    //}
+    //else if (this.PlacementTypeID.value == 2) {
+    this.PlacementTypeID.setValue(2);
+    this.PlacementTypeID.clearValidators();
+
       this.PlatformName.disable();
       this.NameofTraineeStorePage.disable();
       this.LinkofTraineeStorePage.disable();
       this.PlatformName.setValue("");
       this.NameofTraineeStorePage.setValue("");
       this.LinkofTraineeStorePage.setValue("");
-    }
-    else if (this.PlacementTypeID.value == 2) {
-      this.PlatformName.disable();
-      this.NameofTraineeStorePage.disable();
-      this.LinkofTraineeStorePage.disable();
-      this.PlatformName.setValue("");
-      this.NameofTraineeStorePage.setValue("");
-      this.LinkofTraineeStorePage.setValue("");
-    }
+    //}
     if (this.SchmeFundingSource == 14 && this.ProgramType == 1) {
 
     }

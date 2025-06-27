@@ -27,6 +27,12 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     data: { icon: 'verified_user', inMenu: false, title: 'TSP' }
   },
+  //{
+  //  path: 'ojt-employment',
+  //  component: OJTEmpComponent,
+  //  canActivate: [AuthGuardService],
+  //  data: { icon: 'verified_user', inMenu: true, title: 'TSP' }
+  //},
   {
     path: 'ojt-employment/:classid/:traineeid',
     component: OJTEmpComponent,
@@ -44,12 +50,6 @@ const routes: Routes = [
     component: OnjobTraineePlacementComponent,
     canActivate: [AuthGuardService],
     data: { icon: 'verified_user', inMenu: true, title: 'OnJob Trainee Placement' }
-  },
-  {
-    path: 'ojt-employment',
-    component: OJTEmpComponent,
-    canActivate: [AuthGuardService],
-    data: { icon: 'verified_user', inMenu: false, title: 'TSP' }
   },
   {
     path: 'employment-verification',

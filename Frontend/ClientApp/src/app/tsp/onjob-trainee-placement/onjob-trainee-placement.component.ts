@@ -176,7 +176,7 @@ classData:any=[]
   }
 
 
-  PAGE_SIZE: number = 5;
+  PAGE_SIZE: number = 10;
   currentPage: number = 0;
   totalPages: number = 0;
   Math = Math;
@@ -236,7 +236,7 @@ classData:any=[]
         else {
           this.ComSrv.confirm('Class Employment submit Confirmation', Dif > 0 ? Dif + ' Trainee data not saved Are you sure to submit?' : 'Are you sure to submit?').subscribe((res) => {
             if (res == true) {
-              this.ComSrv.postJSON("api/TSPEmployment/SubmitClassEmployment", { 'ClassID': ClassID }).subscribe((d: any) => {
+              this.ComSrv.postJSON("api/TSPEmployment/SubmitClassEmploymentOJT", { 'ClassID': ClassID }).subscribe((d: any) => {
                 this.ComSrv.openSnackBar("Class Employment submited successfuly.");
               });
             }
@@ -444,7 +444,7 @@ classData:any=[]
         return;
       }
 
-      if (row.EmploymentSubmited) {
+      if (row.OJTSubmited) {
         this.ComSrv.ShowError("Employemnt already submitted for this class");
         return;
       }

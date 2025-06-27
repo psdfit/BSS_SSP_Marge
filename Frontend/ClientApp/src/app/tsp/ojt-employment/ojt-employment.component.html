@@ -78,13 +78,13 @@
           <fieldset class="border">
             <legend>Employment Type/Verification Details</legend>
             <div class="row">
-              <div class="col-3">
+              <!--<div class="col-3">
                 <br />
                 <mat-radio-group aria-label="Select an option" formControlName="PlacementTypeID" required>
                   <mat-radio-button *ngFor="let s of PlacementTypeDrp" [value]="s.PlacementTypeID"
                     (change)="radioChange($event)" style="margin-left:5px;">{{s.PlacementType}}</mat-radio-button>
                 </mat-radio-group>
-              </div>
+              </div>-->
               <div class="col-sm-3">
                 <mat-form-field fxFlex>
                   <mat-select placeholder="Verification Method" formControlName="VerificationMethodId"
@@ -96,18 +96,23 @@
                 </mat-form-field>
               </div>
               <div class="col-3"
-                *ngIf="traineeEmploymentForm.value.VerificationMethodId != '7' && traineeEmploymentForm.value.VerificationMethodId != '8'"
-                required>
-                <label
-                  *ngIf="traineeEmploymentForm.value.PlacementTypeID != '1' && traineeEmploymentForm.value.PlacementTypeID != '2'">Verification
-                  Document</label>
+                   *ngIf="traineeEmploymentForm.value.VerificationMethodId != '7' && traineeEmploymentForm.value.VerificationMethodId != '8'"
+                   required>
+                <label *ngIf="traineeEmploymentForm.value.PlacementTypeID != '1' && traineeEmploymentForm.value.PlacementTypeID != '2'">
+                  Verification
+                  Document
+                </label>
                 <label *ngIf="traineeEmploymentForm.value.PlacementTypeID == '1'">Verification Document</label>
-                <label *ngIf="traineeEmploymentForm.value.PlacementTypeID == '2'">Employment Letter | Salary
-                  Slip</label>
+                <!--<label *ngIf="traineeEmploymentForm.value.PlacementTypeID == '2'">Employment Letter | Salary
+    Slip</label>-->
                 <file-upload [nopreview]="true" matInput [accept]="" formControlName="FilePath"
-                  [disabled]="EmploymentStatus.value != 'Employed'" maxSize="5120‬‬"></file-upload>
-                <mat-error *ngIf="FilePath.invalid && FilePath.errors.required"><strong>This is
-                    required</strong></mat-error>
+                             [disabled]="EmploymentStatus.value != 'Employed'" maxSize="5120‬‬"></file-upload>
+                <mat-error *ngIf="FilePath.invalid && FilePath.errors.required">
+                  <strong>
+                    This is
+                    required
+                  </strong>
+                </mat-error>
               </div>
               <!-- <div class="col-4">
                 <label>Employment Letter | Salary Slip</label>

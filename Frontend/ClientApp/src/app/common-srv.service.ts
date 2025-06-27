@@ -474,7 +474,7 @@ export class CommonSrvService {
     do { lastMenu = this.extractMenu(route) || lastMenu; }
     while ((route = route.firstChild));
     return lastMenu;
-  }
+  } 
   private extractMenu(route: ActivatedRoute): MenuItem {
     const cfg = route.routeConfig;
     return cfg && cfg.data && cfg.data.title
