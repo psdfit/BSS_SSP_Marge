@@ -5,6 +5,7 @@
     <LangVersion>8.0</LangVersion>
     <StartupObject>PSDF_BSS.Program</StartupObject>
     <UserSecretsId>025c5303-7bc7-4474-b72d-6b83ba6e94ca</UserSecretsId>
+	<UseAppHost>false</UseAppHost>
   </PropertyGroup>
 
   <ItemGroup>

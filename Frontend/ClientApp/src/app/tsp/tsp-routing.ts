@@ -10,7 +10,7 @@ import { FormalEmploymentVerificationComponent } from './formal-employment-verif
 import { TelephonicComponent } from './telephonic/telephonic.component';
 import { DeoVerificationComponent } from './deo-verification/deo-verification.component';
 import { OnjobTraineePlacementComponent } from './onjob-trainee-placement/onjob-trainee-placement.component';
-
+import { OJTEmpComponent } from './ojt-employment/ojt-employment.component';
 
 
 
@@ -24,6 +24,18 @@ const routes: Routes = [
   {
     path: 'tsp-employment/:classid/:traineeid',
     component: TSPEmpComponent,
+    canActivate: [AuthGuardService],
+    data: { icon: 'verified_user', inMenu: false, title: 'TSP' }
+  },
+  //{
+  //  path: 'ojt-employment',
+  //  component: OJTEmpComponent,
+  //  canActivate: [AuthGuardService],
+  //  data: { icon: 'verified_user', inMenu: true, title: 'TSP' }
+  //},
+  {
+    path: 'ojt-employment/:classid/:traineeid',
+    component: OJTEmpComponent,
     canActivate: [AuthGuardService],
     data: { icon: 'verified_user', inMenu: false, title: 'TSP' }
   },

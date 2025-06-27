@@ -45,6 +45,9 @@
         <mat-toolbar color="accent" class="mat-elevation-z2 slim">
           <mat-icon class="material-icons"> add_circle</mat-icon>
           <span class="subheading-1">TSPs Performance Evaluation</span>
+          <div class="spacer"></div>
+          <button style="float:right" class="btn btn-success" (click)="downloadExcel()" mat-raised-button>Download TSP Performace Report</button>
+
         </mat-toolbar>
       </div>
       <div class="table-responsive">
@@ -91,5 +94,4 @@
       </div>
     </mat-card-content>
   </mat-card>
-  
   

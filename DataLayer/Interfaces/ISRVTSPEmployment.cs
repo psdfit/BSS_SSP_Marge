@@ -15,9 +15,12 @@ namespace DataLayer.Interfaces
 
         //public DataSet GetCompletedTraineeByClass(int ClassID);
         List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClass(int ClassID);
+        List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOJT(int ClassID);
+
+        List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOnJob(int ClassID);
 
         bool SavePlacementFormE(TSPEmploymentModel TSPEmploymentModel);
-
+        bool SavePlacementFormEOJT(TSPEmploymentModel TSPEmploymentModel);
         List<TSPEmploymentModel> FetchPlacementFormE();
 
         List<TSPEmploymentModel> FetchPlacementFormE(bool InActive);
@@ -25,6 +28,7 @@ namespace DataLayer.Interfaces
         void ActiveInActive(int? PlacementID, bool? InActive, int CurUserID);
 
         int SubmitClassEmployment(int ClassID, int CurUserID);
+        int SubmitClassEmploymentOJT(int ClassID, int CurUserID);
 
         List<TSPEmploymentModel> FetchPlacementFormE(TSPEmploymentModel model);
 
@@ -36,6 +40,7 @@ namespace DataLayer.Interfaces
 
         bool ForwardedToTelephonic(ForwardToTelephonicVerification Model);
         public List<RD_ClassForTSPModel> FetchClassFilters(int[] filters);
+        public List<RD_ClassForTSPModel> FetchClassFiltersOnJob(int[] filters);
 
         public DeoDashboardModel GetDeoDashboardStats();
         public List<RD_ClassForTSPModel> GetClassesForEmploymentVerification(int PlacementID, int VerificationMethodID, int TspID, int ClassID);
@@ -55,8 +60,13 @@ namespace DataLayer.Interfaces
 
         public List<TSPEmploymentModel> FetchTelephonicPlacementFormE(TSPEmploymentModel mod);
         public List<TSPEmploymentModel> FetchPlacementFormEByTraineeID(TSPEmploymentModel mod);
+        public List<TSPEmploymentModel> FetchPlacementFormEByTraineeIDOJT(TSPEmploymentModel mod);
+
         public List<TSPEmploymentModel> FetchEmployedTraineesForTSP(TSPEmploymentModel mod);
+        public List<TSPEmploymentModel> FetchEmployedTraineesOJTForTSP(TSPEmploymentModel mod);
+
         public List<TSPEmploymentModel> FetchReportedPlacementFormE(TSPEmploymentModel mod);
+        public List<TSPEmploymentModel> FetchReportedPlacementFormEOJT(TSPEmploymentModel mod);
         public List<TSPEmploymentModel> FetchPlacementFormEForVerification(TSPEmploymentModel mod);
         public List<TSPEmploymentModel> FetchTraineeForEmploymentVerification(TSPEmploymentModel mod);
 

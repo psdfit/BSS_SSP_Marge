@@ -85,7 +85,7 @@
                       <th>End Date</th>
                       <th>TSP Name</th>
                       <th>Scheme Name</th>
-                      <th>Employment Commitment (Trainees)</th>
+                      <!--<th>Employment Commitment (Trainees)</th>-->
                     </tr>
                   </thead>
                   <tbody>
@@ -99,23 +99,23 @@
                           </a>
                         </td>
                         <td class="sm" style="text-align:inherit;" *ngIf="currentUser.UserLevel == enumUserLevel.TSP">
-                          <a color="primary" matTooltip="Export Trainees Data" (click)="GetTrainee(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
+                          <!--<a color="primary" matTooltip="Export Trainees Data" (click)="GetTrainee(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
                             <mat-icon>get_app</mat-icon>
                           </a>|<a color="primary" matTooltip="Import Trainees Data" mat-icon-button class="file-lable">
                             <mat-icon>publish</mat-icon>
                             <input placeholder="Upload Excel File to Add Placement data" disabled="disabled" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" type="file" class="file-input" (change)="onFileChange($event,r)" />
-                          </a>|
-                          <a color="primary" *ngIf="!r.EmploymentSubmited" matTooltip="Submit Trainees Emplyment Data" (click)="SubmitClassData(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
+                          </a>|-->
+                          <a color="primary" *ngIf="!r.OJTSubmited" matTooltip="Submit Trainees OJT Data" (click)="SubmitClassData(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
                             <mat-icon>save</mat-icon>
                           </a>
-                          <span class="p-4 text-dark" *ngIf="r.EmploymentSubmited">Submitted</span>
+                          <span class="p-4 text-dark" *ngIf="r.OJTSubmited">Submitted</span>
                         </td>
                         <td> <a class="myAnchor" (click)="openClassJourneyDialogue(r.ClassID)" style="color: #005b9e;"> <strong>{{r.ClassCode}}</strong> </a></td>
                         <td>{{r.StartDate| date:'dd-MMM-yyyy'}}</td>
                         <td>{{r.EndDate| date:'dd-MMM-yyyy'}}</td>
                         <td>{{r.TSPName}}</td>
                         <td>{{r.SchemeName}}</td>
-                        <td>{{r.EmploymentCommittedTrainees}}</td>
+                        <!--<td>{{r.EmploymentCommittedTrainees}}</td>-->
                       </tr>
                       <!--Nested Grid for POLines Table-->
                       <tr *ngIf="r.HasTrainees" [@enterAnimation]>
@@ -146,7 +146,7 @@
                                   <td>{{c.TraineeEmploymentStatus}}</td>
                                   <td class="sm">
   
-                                    <a mat-icon-button matTooltip="Go To Employment Form" color="primary" [routerLink]="['/placement/tsp-employment',r.ClassID,c.TraineeID]">
+                                    <a mat-icon-button matTooltip="Go To Employment Form" color="primary" [routerLink]="['/placement/ojt-employment',r.ClassID,c.TraineeID]">
                                       <mat-icon aria-label="Edit this row">chrome_reader_mode</mat-icon>
                                     </a>
                                   </td>
@@ -167,4 +167,3 @@
       </mat-card-content>
     </mat-card>
   </div>
-  

@@ -146,7 +146,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpGet]
         [Route("GetCompletedTraineesOfClassForEmployment/{ClassID}")]
         public IActionResult GetCompletedTraineesOfClassForEmployment(string ClassID)
@@ -163,7 +163,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return BadRequest(e.InnerException.ToString());
             }
         }
-        
+
         [HttpGet]
         [Route("GetCompletedANDEmployedTraineesOfClass/{ClassID}")]
         public IActionResult GetCompletedANDEmployedTraineesOfClass(string ClassID)
@@ -180,7 +180,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             {
                 return BadRequest(e.InnerException.ToString());
             }
-        }    
+        }
         [HttpGet]
         [Route("GetEmploymentReportedTraineesOfClass/{ClassID}")]
         public IActionResult GetEmploymentReportedTraineesOfClass(string ClassID)
@@ -191,6 +191,24 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 {
                     TraineeList = srv.GetCompletedTraineeByClass(Convert.ToInt32(ClassID)),
                     PlacementData = srv.FetchReportedPlacementFormE(new TSPEmploymentModel { ClassID = Convert.ToInt32(ClassID) })
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("GetEmploymentReportedTraineesOfClassOJT/{ClassID}")]
+        public IActionResult GetEmploymentReportedTraineesOfClassOJT(string ClassID)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    TraineeList = srv.GetCompletedTraineeByClassOJT(Convert.ToInt32(ClassID)),
+                    PlacementData = srv.FetchReportedPlacementFormEOJT(new TSPEmploymentModel { ClassID = Convert.ToInt32(ClassID) })
                 });
             }
             catch (Exception e)
@@ -508,7 +526,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return BadRequest(e.Message.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("GetEmploymentDataByTraineeID")]
         public IActionResult GetDaGetEmploymentDataByTraineeIData(TSPEmploymentModel model)
@@ -728,7 +746,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
         {
             try
             {
-                return Ok(              
+                return Ok(
                     srv.FetchTraineeForEmploymentVerification(new TSPEmploymentModel { TraineeID = traineeId })
                 );
             }
@@ -809,6 +827,186 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             catch (Exception e)
             {
                 return BadRequest(e.Message.ToString());
+            }
+        }
+
+
+        [HttpGet]
+        [Route("GetFilteredClassOnJob/{filter}")]
+        public IActionResult GetFilteredClassOnJob([FromQuery(Name = "filter")] int[] filter)
+        {
+            try
+            {
+                int userID = filter?[3] ?? 0;
+                int oID = filter?[4] ?? 0;
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                List<object> ls = new List<object>();
+
+                ls.Add(srv.FetchClassFiltersOnJob(filter));
+                if (loggedInUserLevel == (int)EnumUserLevel.TSP)
+                {
+                    ls.Add(srvScheme.FetchSchemesByTSPUserOnJob(curUserID));
+                }
+                else
+                {
+                    ls.Add(srvScheme.FetchSchemesByTSPUserOnJob(curUserID));
+                }
+                //return Ok(srv.FetchMasterSheetByFilters(filter));
+                //ls.Add(srvScheme.FetchSchemeForFilter(false));
+
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTraineesOfClassForOnJob/{ClassID}")]
+        public IActionResult GetTraineesOfClassForOnJob(string ClassID)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    TraineeList = srv.GetCompletedTraineeByClassOnJob(Convert.ToInt32(ClassID)),
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveOJT")]
+        public IActionResult SaveOJT(TSPEmploymentModel D)
+        {
+            try
+            {
+                // TSPEmploymentModel D = JsonConvert.DeserializeObject<TSPEmploymentModel>(data);
+
+                if (!String.IsNullOrEmpty(D.FilePath))
+                {
+                    var path = "\\Documents\\OJTEmployment\\";
+
+                    var fileName = Common.AddFile(D.FilePath, path);
+
+                    D.FileName = fileName;
+                    D.FilePath = fileName;
+                }
+
+                D.CurUserID = Convert.ToInt32(User.Identity.Name);
+                return Ok(srv.SavePlacementFormEOJT(D));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("GetDataForEmploymentOJT")]
+        public IActionResult GetDataForEmploymentOJT(TSPEmploymentModel model)
+        {
+            try
+            {
+                var Classid = Convert.ToInt32(model.ClassID);
+                Dictionary<string, object> ls = new Dictionary<string, object>();
+                if (model.ClassID != null && model.ClassID != 0)
+                {
+                    ClassModel Class = srvClass.GetByClassID(model.ClassID ?? -1);
+                    OrgConfigModel orgConfig = srvOrgConfig.FetchOrgConfig(new OrgConfigModel() { ClassID = Convert.ToInt32(model.ClassID) })?[0];
+                    string DeadlineStatus;
+
+                    var classStatusDate = Convert.ToDateTime(Class.EndDate);
+                    var currentDate = DateTime.Now;
+                    var time = currentDate.Subtract(classStatusDate);
+                    var days = time.TotalDays;
+                    if (orgConfig != null && Math.Floor(days) > orgConfig.EmploymentDeadline)
+                    {
+                        DeadlineStatus = "Date Passed";
+                    }
+                    else
+                        DeadlineStatus = "Date Not Passed";
+
+                    if (model.TraineeID != 0 && model.TraineeID != null)
+                    {
+                        Parallel.Invoke(() => ls.Add("Class", srvClass.GetByClassID(Classid)),
+                                        //() => ls.Add("TraineeProfile", new SRVTraineeProfile().FetchTraineeProfile()),
+                                        () => ls.Add("PlacementStatus", Common.FilterPlacementDropdown(srvEmploymentStatus.FetchEmploymentStatus(false))),
+                                        () => ls.Add("PlacementTypes", srvPlacementType.FetchPlacementType(false)),
+                                        () => ls.Add("District", srvDistrict.FetchAllPakistanDistrict(false)),
+                                        () => ls.Add("Tehsil", srvTehsil.FetchAllPakistanTehsil(false)),
+                                        () => ls.Add("EmploymentData", srv.FetchEmployedTraineesOJTForTSP(new TSPEmploymentModel { ClassID = model.ClassID })),
+                                        () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.EmploymentDeadline : 0),
+                                        () => ls.Add("DeadlineStatus", DeadlineStatus),
+                                        () => ls.Add("EmploymentSubmited", Class.EmploymentSubmited),
+                                        () => ls.Add("TraineeProfile", srv.GetTraineeData((int)model.ClassID, (int)model.TraineeID)),
+                                        () => ls.Add("VerificationMethods", srvVerificationMethod.FetchAll())
+                                       );
+                    }
+                    else
+                    {
+                        if (model.ClassID != 0)
+                            Parallel.Invoke(
+                                () => ls.Add("Class", srvClass.GetByClassID(Classid)),
+                                           //() => ls.Add("TraineeProfile", new SRVTraineeProfile().FetchTraineeProfile()),
+                                           () => ls.Add("PlacementStatus", Common.FilterPlacementDropdown(srvEmploymentStatus.FetchEmploymentStatus(false))),
+                                           () => ls.Add("PlacementTypes", srvPlacementType.FetchPlacementType(false)),
+                                           () => ls.Add("District", srvDistrict.FetchAllPakistanDistrict(false)),
+                                           () => ls.Add("Tehsil", srvTehsil.FetchAllPakistanTehsil(false)),
+                                           () => ls.Add("EmploymentData", srv.FetchEmployedTraineesOJTForTSP(new TSPEmploymentModel { ClassID = model.ClassID })),
+                                           () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.EmploymentDeadline : 0),
+                                           () => ls.Add("DeadlineStatus", DeadlineStatus),
+                                           () => ls.Add("EmploymentSubmited", Class.EmploymentSubmited),
+
+                                           () => ls.Add("VerificationMethods", srvVerificationMethod.FetchAll())
+                                          );
+                    }
+                }
+
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("GetEmploymentDataByTraineeIDOJT")]
+        public IActionResult GetEmploymentDataByTraineeIDOJT(TSPEmploymentModel model)
+        {
+            try
+            {
+
+                List<object> ls = new List<object>();
+                ls.Add(srv.FetchPlacementFormEByTraineeIDOJT(new TSPEmploymentModel { ClassID = model.ClassID, TraineeID = model.TraineeID }));
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("SubmitClassEmploymentOJT")]
+        public async Task<IActionResult> SubmitClassEmploymentOJT(TSPEmploymentModel m)
+        {
+            try
+            {
+                m.CurUserID = Convert.ToInt32(User.Identity.Name);
+                return Ok(srv.SubmitClassEmploymentOJT(m.ClassID ?? 0, m.CurUserID));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
             }
         }
 

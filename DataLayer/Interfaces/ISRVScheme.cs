@@ -43,7 +43,7 @@ namespace DataLayer.Interfaces
         bool SchemeApproveReject(SchemeModel model, SqlTransaction transaction = null);
 
         List<SchemeModel> FetchSchemesByTSPUser(int userID = 0);
-
+        List<SchemeModel> FetchSchemesByTSPUserOnJob(int userID = 0);
         List<SchemeModel> FetchSchemesBySkillScholarshipType(int userID = 0);
 
         List<SchemeModel> FetchSchemeByUser(QueryFilters filters);

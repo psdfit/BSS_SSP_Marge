@@ -17,6 +17,7 @@ namespace DataLayer.Interfaces
         void UpdateClassStatus(int ClassID, int ClassStatusID);
         List<ClassModel> FetchClass(ClassModel mod);
         List<ClassModel> FetchClassByTsp(int tspId);
+        List<ClassModel> FetchClassByTspOnJob(int tspId);
         public List<ClassModel> FetchClass();
         public List<ClassModel> FetchClass(bool InActive);
         public void ActiveInActive(int ClassID, bool? InActive, int CurUserID);
@@ -27,6 +28,7 @@ namespace DataLayer.Interfaces
 
         List<ClassModel> FetchClassByFilters(int[] filters);
         List<ClassModel> FetchClassesByUser(QueryFilters filters);
+        List<ClassModel> FetchClassesByUserOnJOb(QueryFilters filters);
         List<ClassModel> FetchClassesByUser_DVV(QueryFilters filters);
         List<ClassProceeedingStatusData> FetchClassProceeedingStatusDataByFilters(int[] filters);
         public List<ClassModel> FetchApprovedClass();

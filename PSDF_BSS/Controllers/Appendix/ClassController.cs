@@ -529,5 +529,34 @@ namespace PSDF_BSSMasterDataModule.Controllers
         }
 
         #endregion ClassProceedingStatus
+
+
+        [HttpPost] ///For On Job Training Placement Classes
+        [Route("FetchClassesByUserOnJOb")]
+        public IActionResult FetchClassesByUserOnJOb(QueryFilters filters)
+        {
+            try
+            {
+                return Ok(srvClass.FetchClassesByUserOnJOb(filters));
+            }
+            catch (Exception e)
+            {
+                return Ok(e);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetClassesByTspOnJob/{tspId}")]
+        public IActionResult GetClassesByTspOnJob(int tspId)
+        {
+            try
+            {
+                return Ok(srvClass.FetchClassByTspOnJob(tspId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

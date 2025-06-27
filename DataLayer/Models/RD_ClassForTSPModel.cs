@@ -29,6 +29,8 @@ namespace DataLayer.Models
         public string SourceOfVerification { get; set; }
         public string ClassStatusName { get; set; }
         public int? TSPID { get; set; }
+        public bool OJTSubmited { get; set; }
+        public bool OJTVerificationSubmited { get; set; }
     }
     
     

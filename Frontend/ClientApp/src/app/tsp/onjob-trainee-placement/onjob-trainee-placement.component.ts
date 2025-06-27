@@ -120,7 +120,7 @@ export class OnjobTraineePlacementComponent implements OnInit {
       })
   }
   getClassesByTsp(tspId: number) {
-    this.ComSrv.getJSON(`api/Class/GetClassesByTsp/` + tspId)
+    this.ComSrv.getJSON(`api/Class/GetClassesByTspOnJob/` + tspId)
       .subscribe(data => {
         this.classesArray = <any[]>data;
       }, error => {
@@ -129,7 +129,7 @@ export class OnjobTraineePlacementComponent implements OnInit {
   }
 
   getClassesBySchemes(schemeId: number) {
-    this.ComSrv.postJSON(`api/Class/FetchClassesByUser/`, { UserID: this.userid, OID: this.ComSrv.OID.value, SchemeID: schemeId })
+    this.ComSrv.postJSON(`api/Class/FetchClassesByUserOnJOb/`, { UserID: this.userid, OID: this.ComSrv.OID.value, SchemeID: schemeId })
       .subscribe(data => {
         this.classesArray = <any[]>data;
       }, error => {
@@ -141,7 +141,7 @@ export class OnjobTraineePlacementComponent implements OnInit {
 classData:any=[]
   GetClasses() {
     if (this.currentUser.UserLevel == EnumUserLevel.TSP) {
-      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClass/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.userid}&filter=${this.ComSrv.OID.value}`).subscribe(
+      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClassOnJob/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.userid}&filter=${this.ComSrv.OID.value}`).subscribe(
         (d: any) => {
           this.ClassList = d[0]
           this.classData = d[0];
@@ -162,7 +162,7 @@ classData:any=[]
       );
     }
     else {
-      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClass/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${0}&filter=${this.ComSrv.OID.value}`).subscribe(
+      this.ComSrv.getJSON(`api/TSPEmployment/GetFilteredClassOnJob/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${0}&filter=${this.ComSrv.OID.value}`).subscribe(
         (d: any) => {
           this.ClassList = d[0];
           this.Scheme = d[1];
@@ -176,7 +176,7 @@ classData:any=[]
   }
 
 
-  PAGE_SIZE: number = 5;
+  PAGE_SIZE: number = 10;
   currentPage: number = 0;
   totalPages: number = 0;
   Math = Math;
@@ -210,7 +210,7 @@ classData:any=[]
     if (r.Trainees) {
       return;
     }
-    this.ComSrv.getJSON("api/TSPEmployment/GetCompletedTraineesOfClassForEmployment/" + ClassID).subscribe(
+    this.ComSrv.getJSON("api/TSPEmployment/GetTraineesOfClassForOnJob/" + ClassID).subscribe(
       (d: any) => {
         r.Trainees = d.TraineeList;
         r.HasTrainees = true;
@@ -223,7 +223,7 @@ classData:any=[]
   }
   SubmitClassData(ClassID: any, r: any) {
     debugger;
-    this.ComSrv.getJSON("api/TSPEmployment/GetEmploymentReportedTraineesOfClass/" + ClassID).subscribe(
+    this.ComSrv.getJSON("api/TSPEmployment/GetEmploymentReportedTraineesOfClassOJT/" + ClassID).subscribe(
       (d: any) => {
         let Trainees: [] = d.TraineeList;
         let PlacementData: [] = d.PlacementData;
@@ -236,7 +236,7 @@ classData:any=[]
         else {
           this.ComSrv.confirm('Class Employment submit Confirmation', Dif > 0 ? Dif + ' Trainee data not saved Are you sure to submit?' : 'Are you sure to submit?').subscribe((res) => {
             if (res == true) {
-              this.ComSrv.postJSON("api/TSPEmployment/SubmitClassEmployment", { 'ClassID': ClassID }).subscribe((d: any) => {
+              this.ComSrv.postJSON("api/TSPEmployment/SubmitClassEmploymentOJT", { 'ClassID': ClassID }).subscribe((d: any) => {
                 this.ComSrv.openSnackBar("Class Employment submited successfuly.");
               });
             }
@@ -444,7 +444,7 @@ classData:any=[]
         return;
       }
 
-      if (row.EmploymentSubmited) {
+      if (row.OJTSubmited) {
         this.ComSrv.ShowError("Employemnt already submitted for this class");
         return;
       }

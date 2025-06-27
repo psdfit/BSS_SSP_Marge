@@ -152,6 +152,34 @@ namespace DataLayer.Services
             }
 
         }
+        public List<RD_ClassForTSPModel> FetchClassFiltersOnJob(int[] filters)
+        {
+            //List<RD_ClassForTSPModel> list = new List<RD_ClassForTSPModel>();
+
+            int schemeId = filters[0];
+            int tspId = filters[1];
+            int classId = filters[2];
+            int userId = filters[3];
+            try
+            {
+                SqlParameter[] param = new SqlParameter[10];
+                param[0] = new SqlParameter("@SchemeID", schemeId);
+                param[1] = new SqlParameter("@TSPID", tspId);
+                param[2] = new SqlParameter("@ClassID", classId);
+                param[3] = new SqlParameter("@UserID", userId);
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_MasterSheets", param).Tables[0];
+                //list = LoopinData(dt);
+                //var data = SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "dbo.RD_ClassForTSP", param);
+
+                var list = _dapper.Query<RD_ClassForTSPModel>("dbo.RD_ClassForTSPOnJob", new { @SchemeID = schemeId, @TSPID = tspId, @ClassID = classId, @UserID = userId }, CommandType.StoredProcedure);
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
 
 
@@ -160,6 +188,34 @@ namespace DataLayer.Services
             try
             {
                 var list = _dapper.Query<RD_CompletedTraineeByClassModel>("dbo.RD_CompletedTraineeByClass", new { @ClassID = ClassID }, CommandType.StoredProcedure);
+                return list;
+                //var result = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_CompletedTraineeByClass", new SqlParameter("@ClassID", ClassID));
+                ////DataTable dt = result.Tables[0];
+                ////DataTable dt2 = result.Tables[1];
+                //return result;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOJT(int ClassID)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_CompletedTraineeByClassModel>("dbo.RD_CompletedTraineeByClassOJT", new { @ClassID = ClassID }, CommandType.StoredProcedure);
+                return list;
+                //var result = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_CompletedTraineeByClass", new SqlParameter("@ClassID", ClassID));
+                ////DataTable dt = result.Tables[0];
+                ////DataTable dt2 = result.Tables[1];
+                //return result;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOnJob(int ClassID)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_CompletedTraineeByClassModel>("dbo.RD_OnJobTraineeByClass", new { @ClassID = ClassID }, CommandType.StoredProcedure);
                 return list;
                 //var result = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_CompletedTraineeByClass", new SqlParameter("@ClassID", ClassID));
                 ////DataTable dt = result.Tables[0];
@@ -203,8 +259,8 @@ namespace DataLayer.Services
 
                 param[26] = new SqlParameter("@CurUserID", PlacementFormE.CurUserID);
 
-                param[27] = new SqlParameter("@PlatformName", PlacementFormE.PlatformName); 
-                param[28] = new SqlParameter("@NameofTraineeStorePage", PlacementFormE.NameofTraineeStorePage); 
+                param[27] = new SqlParameter("@PlatformName", PlacementFormE.PlatformName);
+                param[28] = new SqlParameter("@NameofTraineeStorePage", PlacementFormE.NameofTraineeStorePage);
                 param[29] = new SqlParameter("@LinkofTraineeStorePage", PlacementFormE.LinkofTraineeStorePage);
 
 
@@ -220,6 +276,73 @@ namespace DataLayer.Services
 
                 param[36].Direction = ParameterDirection.Output;
                 var saved = SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PlacementFormE", param);
+                long PlacementReturnID = Convert.ToInt32(param[36].Value);
+                //return FetchPlacementFormE();
+                // Notification send to KAM
+                ApprovalModel approvalsModelForNotification = new ApprovalModel();
+                ApprovalHistoryModel model = new ApprovalHistoryModel();
+                TSPMasterModel KAMmodel = srvTSPMaster.GetKAMUserByClassID(PlacementFormE.ClassID ?? 0);
+                approvalsModelForNotification.UserIDs = KAMmodel.UserID.ToString();
+                approvalsModelForNotification.ProcessKey = EnumApprovalProcess.Employment_Report;
+                approvalsModelForNotification.CustomComments = "Employment data submitted by TSP is ready for verification.";
+                srvSendEmail.GenerateEmailAndSendNotification(approvalsModelForNotification, model);
+                return saved > 0;
+            }
+            catch (Exception ex)
+            { throw new Exception(ex.Message); }
+        }
+
+        public bool SavePlacementFormEOJT(TSPEmploymentModel PlacementFormE)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[38];
+                param[0] = new SqlParameter("@PlacementID", PlacementFormE.PlacementID);
+                param[1] = new SqlParameter("@TraineeID", PlacementFormE.TraineeID);
+                param[2] = new SqlParameter("@ClassID", PlacementFormE.ClassID);
+                param[3] = new SqlParameter("@Designation", PlacementFormE.Designation);
+                param[4] = new SqlParameter("@Department", PlacementFormE.Department);
+                param[5] = new SqlParameter("@EmploymentDuration", PlacementFormE.EmploymentDuration);
+                param[6] = new SqlParameter("@Salary", PlacementFormE.Salary);
+                param[7] = new SqlParameter("@SupervisorName", PlacementFormE.SupervisorName);
+                param[8] = new SqlParameter("@SupervisorContact", PlacementFormE.SupervisorContact);
+                param[9] = new SqlParameter("@EmploymentStartDate", PlacementFormE.EmploymentStartDate);
+                param[10] = new SqlParameter("@EmploymentStatus", PlacementFormE.EmploymentStatus);
+                param[11] = new SqlParameter("@EmploymentType", PlacementFormE.EmploymentType);
+                param[12] = new SqlParameter("@EmployerName", PlacementFormE.EmployerName);
+                param[13] = new SqlParameter("@EmployerBusinessType", PlacementFormE.EmployerBusinessType);
+                param[14] = new SqlParameter("@EmploymentAddress", PlacementFormE.EmploymentAddress);
+                param[15] = new SqlParameter("@District", PlacementFormE.District);
+                param[16] = new SqlParameter("@EmploymentTehsil", PlacementFormE.EmploymentTehsil);
+                param[17] = new SqlParameter("@EmploymentTiming", PlacementFormE.EmploymentTiming);
+                param[18] = new SqlParameter("@IsTSP", PlacementFormE.IsTSP);
+                param[19] = new SqlParameter("@OldID", PlacementFormE.OldID);
+                param[20] = new SqlParameter("@EmploymentTehsilOld", PlacementFormE.EmploymentTehsilOld);
+                param[21] = new SqlParameter("@OfficeContactNo", PlacementFormE.OfficeContactNo);
+                param[22] = new SqlParameter("@IsMigrated", false);
+                param[23] = new SqlParameter("@TraineeName", PlacementFormE.TraineeName);
+                param[24] = new SqlParameter("@TraineeCode", PlacementFormE.TraineeCode);
+                param[25] = new SqlParameter("@ContactNumber", PlacementFormE.ContactNumber);
+
+                param[26] = new SqlParameter("@CurUserID", PlacementFormE.CurUserID);
+
+                param[27] = new SqlParameter("@PlatformName", PlacementFormE.PlatformName);
+                param[28] = new SqlParameter("@NameofTraineeStorePage", PlacementFormE.NameofTraineeStorePage);
+                param[29] = new SqlParameter("@LinkofTraineeStorePage", PlacementFormE.LinkofTraineeStorePage);
+
+
+                param[30] = new SqlParameter("@PlacementTypeID", PlacementFormE.PlacementTypeID);
+                param[31] = new SqlParameter("@EOBI", PlacementFormE.EOBI);
+                param[32] = new SqlParameter("@VerificationMethodId", PlacementFormE.VerificationMethodId);
+                param[33] = new SqlParameter("@FileType", PlacementFormE.FileType);
+                param[34] = new SqlParameter("@FilePath", PlacementFormE.FilePath);
+                param[35] = new SqlParameter("@FileName", PlacementFormE.FileName);
+                param[36] = new SqlParameter("@PlacementReturnID", SqlDbType.Int);
+
+                param[37] = new SqlParameter("@EmployerNTN", PlacementFormE.EmployerNTN);
+
+                param[36].Direction = ParameterDirection.Output;
+                var saved = SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_PlacementFormEOJT", param);
                 long PlacementReturnID = Convert.ToInt32(param[36].Value);
                 //return FetchPlacementFormE();
                 // Notification send to KAM
@@ -316,6 +439,27 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+
+        public List<TSPEmploymentModel> FetchReportedPlacementFormEOJT(TSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormEReportedOJT", new
+                {
+                    @ClassID = mod.ClassID,
+                    @TSPID = mod.TSPID ?? 0,
+                    @TraineeID = mod.TraineeID ?? 0,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                //list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandTyp4
+                //e.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
         public List<TSPEmploymentModel> FetchEmployedTraineesForTSP(TSPEmploymentModel mod)
         {
             try
@@ -336,11 +480,51 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        public List<TSPEmploymentModel> FetchEmployedTraineesOJTForTSP(TSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormEOJT", new
+                {
+                    @ClassID = mod.ClassID,
+                    @TSPID = mod.TSPID ?? 0,
+                    @TraineeID = mod.TraineeID ?? 0,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                //list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
         public List<TSPEmploymentModel> FetchPlacementFormEByTraineeID(TSPEmploymentModel mod)
         {
             try
             {
                 var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormE", new
+                {
+                    @ClassID = mod.ClassID,
+                    @TSPID = mod.TSPID ?? 0,
+                    @TraineeID = mod.TraineeID ?? 0,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<TSPEmploymentModel> FetchPlacementFormEByTraineeIDOJT(TSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormEOJT", new
                 {
                     @ClassID = mod.ClassID,
                     @TSPID = mod.TSPID ?? 0,
@@ -454,6 +638,22 @@ namespace DataLayer.Services
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "SubmitClassEmployment", new SqlParameter("@ClassID", ClassID));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "A_PlacementVerification", new SqlParameter("@ClassID", ClassID));        
                 return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "CalculateROSIOnEmploymentSubmission", param);
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public int SubmitClassEmploymentOJT(int ClassID, int CurUserID)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[2];
+                param[0] = new SqlParameter("@ClassID", ClassID);
+                param[1] = new SqlParameter("@CurUserID", CurUserID);
+
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "SubmitClassOJT", new SqlParameter("@ClassID", ClassID));
+                return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "A_PlacementVerificationOJT", new SqlParameter("@ClassID", ClassID));
+               // return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "CalculateROSIOnEmploymentSubmission", param);
 
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
