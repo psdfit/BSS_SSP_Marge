@@ -16,6 +16,7 @@ import { TelephonicEmploymentverification } from './TelephonicEmployment-verific
 import { telephonicemploymentverificationComponent } from './telephonic-employment-verification-dialog/telephonic-employment-verification-dialog.component';
 import { OnjobTraineePlacementComponent } from './onjob-trainee-placement/onjob-trainee-placement.component';
 import { OJTEmpComponent } from './ojt-employment/ojt-employment.component';
+import { OjtDeoVerificationComponent } from './ojt-deo-verification/ojt-deo-verification.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { OJTEmpComponent } from './ojt-employment/ojt-employment.component';
     DEOEmploymentVerificationDialogComponent,
     telephonicemploymentverificationComponent,
     OnjobTraineePlacementComponent,
-    OJTEmpComponent
+    OJTEmpComponent,
+    OjtDeoVerificationComponent
   ],
   imports: [
     CommonModule,
