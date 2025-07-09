@@ -17,12 +17,18 @@ import { telephonicemploymentverificationComponent } from './telephonic-employme
 import { OnjobTraineePlacementComponent } from './onjob-trainee-placement/onjob-trainee-placement.component';
 import { OJTEmpComponent } from './ojt-employment/ojt-employment.component';
 import { OjtDeoVerificationComponent } from './ojt-deo-verification/ojt-deo-verification.component';
+import { DEOOJTEmploymentVerificationDialogComponent } from './deo-ojt-employment-verification-dialog/deo-ojt-employment-verification-dialog.component';
+import { EmpVerificationOJTComponent } from './employment-verification-ojt/employment-verification-ojt.component';
+import { TelephonicOJTComponent } from './telephonic-ojt/telephonic-ojt.component';
+import { TelephonicEmploymentVerificationOJTBulkComponent } from './telephonic-employment-verification-ojt-bulk-dialog/telephonic-employment-verification-ojt-bulk-dialog.component';
+import { TelephonicEmploymentVerificationOJT } from './telephonic-employment-verification-ojt-dialog/telephonic-employment-verification-ojt-dialog.component';
 
 @NgModule({
   declarations: [
     TSPEmpComponent,
     TSPTraineeListComponent,
     EmpVerificationComponent,
+    EmpVerificationOJTComponent,
     SelfEmploymentVerificationComponent,
     FormalEmploymentVerificationComponent,
     TelephonicComponent,
@@ -30,10 +36,14 @@ import { OjtDeoVerificationComponent } from './ojt-deo-verification/ojt-deo-veri
     EmploymentDailogComponent,
     TelephonicEmploymentverification,
     DEOEmploymentVerificationDialogComponent,
+    DEOOJTEmploymentVerificationDialogComponent,
     telephonicemploymentverificationComponent,
     OnjobTraineePlacementComponent,
     OJTEmpComponent,
-    OjtDeoVerificationComponent
+    OjtDeoVerificationComponent,
+    TelephonicOJTComponent,
+    TelephonicEmploymentVerificationOJTBulkComponent,
+    TelephonicEmploymentVerificationOJT
   ],
   imports: [
     CommonModule,

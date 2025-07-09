@@ -8,5 +8,6 @@ namespace DataLayer.Interfaces
     public interface ISRVVerificationMethod
     {
         List<VerificationMethodModel> FetchAll();
+        //List<VerificationMethodModel> FetchAllOJT();
     }
 }

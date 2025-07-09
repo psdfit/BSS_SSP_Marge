@@ -11,6 +11,8 @@ import { TelephonicComponent } from './telephonic/telephonic.component';
 import { DeoVerificationComponent } from './deo-verification/deo-verification.component';
 import { OnjobTraineePlacementComponent } from './onjob-trainee-placement/onjob-trainee-placement.component';
 import { OJTEmpComponent } from './ojt-employment/ojt-employment.component';
+import { OjtDeoVerificationComponent } from './ojt-deo-verification/ojt-deo-verification.component';
+import { TelephonicOJTComponent } from './telephonic-ojt/telephonic-ojt.component';
 
 
 
@@ -64,8 +66,20 @@ const routes: Routes = [
     data: { icon: 'verified_user', inMenu: true, title: 'Trainee List' }
   },
   {
+    path: 'formal-telephonic-employment-verification-ojt',
+    component: TelephonicOJTComponent,
+    canActivate: [AuthGuardService],
+    data: { icon: 'verified_user', inMenu: true, title: 'Trainee List' }
+  },
+  {
     path: 'self-employment-verification',
     component: DeoVerificationComponent,
+    canActivate: [AuthGuardService],
+    data: { icon: 'verified_user', inMenu: true, title: 'Trainee List' }
+  },
+  {
+    path: 'self-employment-verification-ojt',
+    component: OjtDeoVerificationComponent,
     canActivate: [AuthGuardService],
     data: { icon: 'verified_user', inMenu: true, title: 'Trainee List' }
   }

@@ -48,6 +48,20 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
         
+        public List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOJT(QueryFilters filters)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_CompletedTraineeByClassModel>("dbo.RD_CompletedTraineeForPSPOJT", new {@TradeID = filters.TradeID, @ClassID = filters.ClassID }, CommandType.StoredProcedure);
+                return list;
+                //var result = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_CompletedTraineeByClass", new SqlParameter("@ClassID", ClassID));
+                ////DataTable dt = result.Tables[0];
+                ////DataTable dt2 = result.Tables[1];
+                //return result;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        
         public List<RD_CompletedTraineeByClassModel> GetPSPBatchTraineeByFilters(QueryFilters filters)
         {
             try
@@ -196,6 +210,20 @@ namespace DataLayer.Services
             }
 
         }
+        public List<PSPBatchModel> FetchPSPBatchesOJT()
+        {
+            try
+            {
+              
+                var list = _dapper.Query<PSPBatchModel>("dbo.RD_PSPBatches", CommandType.StoredProcedure);
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
         public List<PSPBatchModel> FetchPSPInterestedTraineesForAssignment(int pspbatchid)
         {
             try
@@ -246,6 +274,24 @@ namespace DataLayer.Services
             try
             {
                 var list = _dapper.Query<PSPEmploymentModel>("dbo.RD_PlacementFormE_PSP", new
+                {
+                    @PSPBatchID = mod.PSPBatchID,
+                    @TraineeID = mod.TraineeID,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public List<PSPEmploymentModel> FetchPlacementFormE_PSPOJT(PSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<PSPEmploymentModel>("dbo.RD_PlacementFormE_PSPOJT", new
                 {
                     @PSPBatchID = mod.PSPBatchID,
                     @TraineeID = mod.TraineeID,

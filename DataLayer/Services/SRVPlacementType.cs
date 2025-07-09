@@ -83,6 +83,16 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
 
         }
+        public List<PlacementTypeModel> FetchPlacementTypeOJT(bool InActive)
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementTypeOJT", new SqlParameter("@InActive", InActive)).Tables[0];
+                return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+
+        }
         public void ActiveInActive(int PlacementTypeID, bool? InActive, int CurUserID)
         {
 

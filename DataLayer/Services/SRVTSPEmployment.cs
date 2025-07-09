@@ -41,6 +41,20 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public DeoDashboardModel GetDeoDashboardStatsOJT()
+        {
+            try
+            {
+                var deoDashboard = _dapper.QuerySingle<DeoDashboardModel>("dbo.RD_DeoDashboardStatsOJT", CommandType.StoredProcedure);
+                //SqlParameter[] param = new SqlParameter[2];
+                //param[0] = new SqlParameter("@UserID", userID);
+                //param[1] = new SqlParameter("@ClassID", 0);
+
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassForTSP", param).Tables[0];
+                return deoDashboard;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
 
         public TSPEmploymentModel GetTraineeData(int classID, int traineeID)
@@ -73,11 +87,35 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<RD_ClassForTSPModel> GetClassesOJT(int userID)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_ClassForTSPModel>("dbo.RD_ClassForDEOVerificationOJT", new { @ClassID = 0, @UserID = userID }, CommandType.StoredProcedure);
+                //SqlParameter[] param = new SqlParameter[2];
+                //param[0] = new SqlParameter("@UserID", userID);
+                //param[1] = new SqlParameter("@ClassID", 0);
+
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassForTSP", param).Tables[0];
+                return list;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
         public List<RD_TSPForEmploymentVerificationModel> GetTPSDetailForEmploymentVerification(int placementTypeId, int veificationMethodId)
         {
             try
             {
                 var list = _dapper.Query<RD_TSPForEmploymentVerificationModel>("dbo.RD_TSPDetailForEmploymentVerification", new { @PlacementTypeID = placementTypeId, @VerificationMethodID = veificationMethodId }, CommandType.StoredProcedure);
+
+                return list;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public List<RD_TSPForEmploymentVerificationModel> GetTPSDetailForEmploymentVerificationOJT(int placementTypeId, int veificationMethodId)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_TSPForEmploymentVerificationModel>("dbo.RD_TSPDetailForEmploymentVerificationOJT", new { @PlacementTypeID = placementTypeId, @VerificationMethodID = veificationMethodId }, CommandType.StoredProcedure);
 
                 return list;
             }
@@ -112,12 +150,36 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<RD_ClassForTSPModel> GetClassesForEmploymentVerificationOJT(int PlacementID, int VerificationMethodID, int TspID, int ClassID)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_ClassForTSPModel>("dbo.RD_ClassForEmploymentVerificationOJT", new { @PlacementTypeID = PlacementID, @VerificationMethodID = VerificationMethodID, @TSPID = TspID, @ClassID = ClassID }, CommandType.StoredProcedure);
+                //SqlParameter[] param = new SqlParameter[2];
+                //param[0] = new SqlParameter("@UserID", userID);
+                //param[1] = new SqlParameter("@ClassID", 0);
+
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ClassForTSP", param).Tables[0];
+                return list;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
         public List<RD_ClassForTSPModel> GetTelephonicEmploymentVerificationClasses(int PlacementID, int VerificationMethodID, int TspID, int ClassID)
         {
             try
             {
                 var list = _dapper.Query<RD_ClassForTSPModel>("dbo.RD_TelephonicEmploymentVerificationClasses", new { @PlacementTypeID = PlacementID, @VerificationMethodID = VerificationMethodID, @TSPID = TspID, @ClassID = ClassID }, CommandType.StoredProcedure);
+
+                return list;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public List<RD_ClassForTSPModel> GetTelephonicEmploymentVerificationClassesOJT(int PlacementID, int VerificationMethodID, int TspID, int ClassID)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_ClassForTSPModel>("dbo.RD_TelephonicEmploymentVerificationClassesOJT", new { @PlacementTypeID = PlacementID, @VerificationMethodID = VerificationMethodID, @TSPID = TspID, @ClassID = ClassID }, CommandType.StoredProcedure);
 
                 return list;
             }
@@ -378,6 +440,25 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<TSPEmploymentModel> FetchPlacementFormEOJT(TSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormEOJT", new
+                {
+                    @ClassID = mod.ClassID,
+                    @TSPID = mod.TSPID ?? 0,
+                    @TraineeID = mod.TraineeID ?? 0,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
         public List<TSPEmploymentModel> FetchPlacementFormEForVerification(TSPEmploymentModel mod)
         {
@@ -402,12 +483,51 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<TSPEmploymentModel> FetchPlacementFormEForVerificationOJT(TSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormEOJT", new
+                {
+                    @ClassID = mod.ClassID,
+                    @TSPID = mod.TSPID ?? 0,
+                    @TraineeID = mod.TraineeID ?? 0,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                if (mod.TraineeID > 0)
+                {
+                    list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                }
+                //list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
         public List<TSPEmploymentModel> FetchTraineeForEmploymentVerification(TSPEmploymentModel mod)
         {
             try
             {
                 var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormE", new
+                {
+                    @TraineeID = mod.TraineeID,
+                }, CommandType.StoredProcedure);
+                list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                //list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public List<TSPEmploymentModel> FetchTraineeForEmploymentVerificationOJT(TSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormEOJT", new
                 {
                     @TraineeID = mod.TraineeID,
                 }, CommandType.StoredProcedure);
@@ -573,6 +693,25 @@ namespace DataLayer.Services
             try
             {
                 var list = _dapper.Query<TSPEmploymentExcelModel>("RD_PlacementFormE_ExportExcelForDEO", new
+                {
+                    @ClassID = mod.ClassID,
+                    @TSPID = mod.TSPID,
+                    @TraineeID = mod.TraineeID ?? 0,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                //list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public List<TSPEmploymentExcelModel> FetchPlacementsForDEOToExportOJT(TSPEmploymentExcelModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentExcelModel>("RD_PlacementFormE_ExportExcelForDEOOJT", new
                 {
                     @ClassID = mod.ClassID,
                     @TSPID = mod.TSPID,
@@ -798,12 +937,64 @@ namespace DataLayer.Services
                 return false;
             }
         }
+        public bool ForwardedToTelephonicOJT(ForwardToTelephonicVerification Model)
+        {
+            try
+            {
+                var ids = string.Join(",", Model.ClassIDslist);
+                var query = "";
+                if (string.IsNullOrEmpty(ids))
+                {
+                    return false;
+                }
+                if (Model.VerificationMethodID == 0)
+                {
+                    query = @"Update PlacementFormEOJT
+                              SET ForwardedToTelephonic = 1
+                              Where PlacementTypeID=" + Model.PlacementTypeID + " AND  ClassID IN ( " + ids + " ) ";
+
+                }
+                else
+                {
+                    query = @"Update PlacementFormEOJT
+                              SET ForwardedToTelephonic = 1
+                              Where PlacementTypeID=" + Model.PlacementTypeID + " AND VerificationMethodId=" + Model.VerificationMethodID + " AND  ClassID IN ( " + ids + " ) ";
+
+                }
+                var success = _dapper.ExecuteQuery(query);
+                return success > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         public List<TSPEmploymentModel> FetchTelephonicPlacementFormE(TSPEmploymentModel mod)
         {
             try
             {
                 var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormE_Telephonic", new
+                {
+                    @ClassID = mod.ClassID,
+                    @TSPID = mod.TSPID ?? 0,
+                    @TraineeID = mod.TraineeID ?? 0,
+                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @PlacementTypeID = mod.PlacementTypeID ?? 0
+                }, CommandType.StoredProcedure);
+                list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
+                return list;
+                //DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementFormE", Common.GetParams(mod)).Tables[0];
+                //return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<TSPEmploymentModel> FetchTelephonicPlacementFormEOJT(TSPEmploymentModel mod)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentModel>("dbo.RD_PlacementFormE_TelephonicOJT", new
                 {
                     @ClassID = mod.ClassID,
                     @TSPID = mod.TSPID ?? 0,
