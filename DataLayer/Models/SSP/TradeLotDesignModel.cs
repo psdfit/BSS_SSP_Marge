@@ -24,6 +24,13 @@ namespace DataLayer.Models.SSP
         public int Trade { get; set; }
         public int TradeLayer { get; set; }
         public int CTM { get; set; }
+        public int OJTPayment { get; set; }
+        public int GuruPayment { get; set; }
+        public int TransportationCost { get; set; }
+        public int MedicalCost { get; set; }
+        public int PrometricCost { get; set; }
+        public int ProtectorateCost { get; set; }
+        public int OtherTrainingCost { get; set; }
         public int ExamCost { get; set; }
         public int TraineeContraTarget { get; set; }
         public int TraineeCompTarget { get; set; }

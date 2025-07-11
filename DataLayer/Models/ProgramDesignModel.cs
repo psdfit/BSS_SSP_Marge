@@ -7,10 +7,11 @@ namespace DataLayer.Models
     public class ProgramDesignModel: ModelBase
     {
 
-        
+
         public int? ProgramID { get; set; }
         public int UserID { get; set; }
         public string Program { get; set; }
+        public int ProgramBudget { get; set; }
         public string ProgramCode { get; set; }
         public int? FinancialYearID { get; set; }
         public int? ProgramTypeID { get; set; }

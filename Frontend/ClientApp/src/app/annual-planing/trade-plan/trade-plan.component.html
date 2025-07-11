@@ -213,6 +213,65 @@
                              <mat-error *ngFor="let error of TradeDesignInfoForm.get('TradeLayer').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
                           </mat-form-field>
                        </div>
+
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>Exam Cost</mat-label>
+        <input formControlName="ExamCost" placeholder="Exam Cost" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('ExamCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>OJT Payment</mat-label>
+        <input formControlName="OJTPayment" placeholder="OJT Payment" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('OJTPayment').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>Guru Payment</mat-label>
+        <input formControlName="GuruPayment" placeholder="Guru Payment" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('GuruPayment').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>Transportation Cost</mat-label>
+        <input formControlName="TransportationCost" placeholder="Transportation Cost" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('TransportationCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>Medical Cost</mat-label>
+        <input formControlName="MedicalCost" placeholder="Medical Cost" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('MedicalCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>Prometric Cost</mat-label>
+        <input formControlName="PrometricCost" placeholder="Prometric Cost" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('PrometricCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>Protectorate Cost</mat-label>
+        <input formControlName="ProtectorateCost" placeholder="Protectorate Cost" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('ProtectorateCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+<div class="col-sm-3">
+    <mat-form-field>
+        <mat-label>Other Training Cost</mat-label>
+        <input formControlName="OtherTrainingCost" placeholder="Other Training Cost" NumberOnly matInput required />
+        <mat-error *ngFor="let error of TradeDesignInfoForm.get('OtherTrainingCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
+    </mat-form-field>
+</div>
+
                        <div class="col-sm-3">
                           <mat-form-field>
                              <mat-label>Exam Cost</mat-label>

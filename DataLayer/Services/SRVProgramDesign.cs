@@ -88,6 +88,7 @@ namespace DataLayer.Services
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@ProgramID", programDesign.ProgramID));
                 param.Add(new SqlParameter("@ProgramName", programDesign.Program));
+                param.Add(new SqlParameter("@ProgramBudget", programDesign.ProgramBudget));
                 param.Add(new SqlParameter("@ProgramCode", programDesign.ProgramCode));
                 param.Add(new SqlParameter("@ProgramTypeID", programDesign.ProgramTypeID));
 
@@ -210,6 +211,15 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@TradeID", data.Trade));
             param.Add(new SqlParameter("@TradeDetailMapID", data.TradeLayer));
             param.Add(new SqlParameter("@CTM", data.CTM));
+
+            param.Add(new SqlParameter("@OJTPayment", data.OJTPayment));
+            param.Add(new SqlParameter("@GuruPayment", data.GuruPayment));
+            param.Add(new SqlParameter("@TransportationCost", data.TransportationCost));
+            param.Add(new SqlParameter("@MedicalCost", data.MedicalCost));
+            param.Add(new SqlParameter("@PrometricCost", data.PrometricCost));
+            param.Add(new SqlParameter("@ProtectorateCost", data.ProtectorateCost));
+            param.Add(new SqlParameter("@OtherTrainingCost", data.OtherTrainingCost));
+
             param.Add(new SqlParameter("@ExamCost", data.ExamCost));
             param.Add(new SqlParameter("@DropOutPerAge", data.ContraTargetThreshold));
             param.Add(new SqlParameter("@TraineeContractedTarget", data.TraineeContraTarget));

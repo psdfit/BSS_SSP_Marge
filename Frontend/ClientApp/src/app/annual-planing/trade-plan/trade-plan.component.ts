@@ -101,7 +101,16 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       TradeLayer: ["", Validators.required],
       CTM: ["", Validators.required],
       ExamCost: ["", Validators.required],
+      
       TraineeContraTarget: [0, Validators.required],
+      OJTPayment: [0, Validators.required],
+      GuruPayment: [0, Validators.required],
+      TransportationCost: [0, Validators.required],
+      MedicalCost: [0, Validators.required],
+      PrometricCost: [0, Validators.required],
+      ProtectorateCost: [0, Validators.required],
+      OtherTrainingCost: [0, Validators.required],
+      
       ContraTargetThreshold: [20, Validators.required],
       Threshold: [0, Validators.required],
       TraineeCompTarget: [0, Validators.required],
