@@ -946,7 +946,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                                         () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.EmploymentDeadline : 0),
                                         () => ls.Add("DeadlineStatus", DeadlineStatus),
                                         () => ls.Add("EmploymentSubmited", Class.EmploymentSubmited),
-                                        () => ls.Add("TraineeProfile", srv.GetTraineeData((int)model.ClassID, (int)model.TraineeID)),
+                                        () => ls.Add("TraineeProfile", srv.GetTraineeDataOJT((int)model.ClassID, (int)model.TraineeID)),
                                         () => ls.Add("VerificationMethods", srvVerificationMethod.FetchAll())
                                        );
                     }
