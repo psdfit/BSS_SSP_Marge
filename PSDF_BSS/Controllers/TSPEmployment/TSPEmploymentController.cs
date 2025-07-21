@@ -927,7 +927,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                     var currentDate = DateTime.Now;
                     var time = currentDate.Subtract(classStatusDate);
                     var days = time.TotalDays;
-                    if (orgConfig != null && Math.Floor(days) > orgConfig.EmploymentDeadline)
+                    if (orgConfig != null && Math.Floor(days) > orgConfig.OJTDeadline)
                     {
                         DeadlineStatus = "Date Passed";
                     }

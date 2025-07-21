@@ -291,6 +291,8 @@ namespace DataLayer.Services
                 OrgConfig.GenderName = r["GenderName"].ToString();
                 OrgConfig.Education = r["Education"].ToString();
             }
+            OrgConfig.OJTDeadline = Convert.ToInt32(r["OJTDeadline"].ToString() == "" ? 0 : r["OJTDeadline"]);
+
             return OrgConfig;
         }
 
