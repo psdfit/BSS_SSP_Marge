@@ -126,7 +126,7 @@ namespace PSDF_BSS.Controllers
                 int curUserID = Convert.ToInt32(User.Identity.Name);
                 int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
                 curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
-                
+
                 list.Add("TSRLiveData", srvTSRLiveData.FetchTCRLiveDataByFilters(new int[] { 0, 0, 0, 0, OID, curUserID }));
                 return Ok(list);
             }
@@ -219,7 +219,7 @@ namespace PSDF_BSS.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
+
         [HttpPost]
         [Route("GetFilteredGSRData")]
         public IActionResult GetFilteredGSRData(SearchFilter filters)

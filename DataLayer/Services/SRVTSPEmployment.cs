@@ -59,6 +59,22 @@ namespace DataLayer.Services
             return trainee;
         }
 
+        public TSPEmploymentModel GetTraineeDataOJT(int classID, int traineeID)
+        {
+            var peQuery = $"Select PE.*,C.ClassCode,C.EndDate,tp.TraineeCode,tp.ContactNumber1," +
+                $"CASE when tp.ContactNumber1 is not null then tp.ContactNumber1 when tp.ContactNumber2 is not null then tp.ContactNumber2 Else 'N/A' End as ContactNumber" +
+                $" From PlacementFormEOJT pe INNER JOIN TraineeProfile tp ON tp.TraineeID = PE.TraineeID INNER JOIN Class C ON pe.ClassID=C.ClassID Where pe.ClassID = {classID} AND pe.TraineeID = {traineeID}";
+            var trainee = _dapper.QueryFirstOrDefault<TSPEmploymentModel>(peQuery);
+            if (trainee == null)
+            {
+                var tQuery = $"Select p.TraineeName,p.TraineeCode,C.EndDate,p.ContactNumber1," +
+                    $"CASE when p.ContactNumber1 is not null then p.ContactNumber1 when p.ContactNumber2 is not null then p.ContactNumber2 Else 'N/A' End as ContactNumber," +
+                    $"p.ClassID, p.TraineeID,C.ClassCode From TraineeProfile p INNER JOIN Class C ON p.ClassID=C.ClassID Where p.TraineeID = {traineeID}";
+                trainee = _dapper.QueryFirstOrDefault<TSPEmploymentModel>(tQuery);
+            }
+            return trainee;
+        }
+
         public List<RD_ClassForTSPModel> GetClasses(int userID)
         {
             try

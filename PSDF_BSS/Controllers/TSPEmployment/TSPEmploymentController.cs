@@ -927,7 +927,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                     var currentDate = DateTime.Now;
                     var time = currentDate.Subtract(classStatusDate);
                     var days = time.TotalDays;
-                    if (orgConfig != null && Math.Floor(days) > orgConfig.EmploymentDeadline)
+                    if (orgConfig != null && Math.Floor(days) > orgConfig.OJTDeadline)
                     {
                         DeadlineStatus = "Date Passed";
                     }
@@ -946,7 +946,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                                         () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.EmploymentDeadline : 0),
                                         () => ls.Add("DeadlineStatus", DeadlineStatus),
                                         () => ls.Add("EmploymentSubmited", Class.EmploymentSubmited),
-                                        () => ls.Add("TraineeProfile", srv.GetTraineeData((int)model.ClassID, (int)model.TraineeID)),
+                                        () => ls.Add("TraineeProfile", srv.GetTraineeDataOJT((int)model.ClassID, (int)model.TraineeID)),
                                         () => ls.Add("VerificationMethods", srvVerificationMethod.FetchAll())
                                        );
                     }
