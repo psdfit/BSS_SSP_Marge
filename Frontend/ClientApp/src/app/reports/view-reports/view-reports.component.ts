@@ -752,6 +752,23 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
         break;
 
+      case EnumReports['Class-wise Payment Report']:
+
+
+        this.SPName = "RPT_ClasswisePayment"
+        this.ExportReportName = 'Class-wise Payment Report'
+
+        const schemeFilter = this.chosenFilter('Scheme') || '';
+        const tspFilter = this.chosenFilter('Tsp') || '';
+
+        this.paramObject = {
+          Scheme: schemeFilter.includes('=') ? schemeFilter.split('=')[1] : '0',
+          Tsp: tspFilter.includes('=') ? tspFilter.split('=')[1] : '0'
+        };
+
+        this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
+        break;
+
       case EnumReports['TSP Details Report']:
         var FundingSource = this.chosenFilter('Project Type').split("=")[1];
         FundingSource = FundingSource == 'undefined' ? "0" : FundingSource
