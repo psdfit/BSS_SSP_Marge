@@ -272,13 +272,7 @@
     </mat-form-field>
 </div>
 
-                       <div class="col-sm-3">
-                          <mat-form-field>
-                             <mat-label>Exam Cost</mat-label>
-                             <input formControlName="ExamCost" placeholder="Exam Cost" NumberOnly matInput required />
-                             <mat-error *ngFor="let error of TradeDesignInfoForm.get('ExamCost').errors | keyvalue">{{ getErrorMessage(error.key, error.value) }}</mat-error>
-                          </mat-form-field>
-                       </div>
+                    
                        <div class="col-sm-3">
                           <mat-form-field>
                              <mat-label>CTM</mat-label>

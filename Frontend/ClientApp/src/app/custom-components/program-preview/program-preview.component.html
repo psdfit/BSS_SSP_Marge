@@ -1,0 +1,280 @@
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-12">
+            <mat-toolbar color="accent" class="slim">
+                <mat-icon class="material-icons">analytics</mat-icon>
+                <span class="spacer">Program Review</span>
+                <a class="mr-2 bg-white" mat-button mat-dialog-close aria-label="Close">
+                    <mat-icon class="ml-2" style="color: #fdb813;">close</mat-icon>
+                </a>
+            </mat-toolbar>
+        </div>
+        <div class="col-md-12">
+            <div class="ceo-section executive-summary">
+                <div class="ceo-section-header">
+                    <i class="fas fa-chart-line section-icon"></i>
+                    <h3>Executive Summary</h3>
+                </div>
+                <div class="executive-metrics">
+                    <div class="metric-card shadow" matTooltip="Total budget allocated for this program">
+                        <div class="metric-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value"
+                                id="ceo-total-budget">{{formatNumber(programBudgetData[0].ProgramBudget)}}</span>
+                            <span class="metric-label">Total Budget</span>
+                        </div>
+                    </div>
+                    <div class="metric-card shadow secondary" matTooltip="Number of districts covered by this program">
+                        <div class="metric-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="metric-content">
+                            <!-- <div class="metric-content" [ngbPopover]="districtsPopover" popoverTitle="Target Districts"> -->
+                            <!-- <a mat-button color="primary" [ngbPopover]="districtsPopover" popoverTitle="Target Districts"> -->
+                            <span class="metric-value"
+                                id="ceo-total-trades">{{programOverviewData[0].TotalDistrict}}</span>
+                            <span class="metric-label">Target Districts</span>
+                            <!-- </a> -->
+                        </div>
+                        <!-- <ng-template #districtsPopover>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>District</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Lahore</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Multan</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </ng-template> -->
+                    </div>
+                    <div class="metric-card shadow secondary" matTooltip="Number of districts covered by this program">
+                        <div class="metric-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value"
+                                id="ceo-total-trades">{{programOverviewData[0].TotalCluster}}</span>
+                            <span class="metric-label">Target Clusters</span>
+                        </div>
+                    </div>
+                    <div class="metric-card shadow secondary"
+                        matTooltip="Number of trades which are designed for this program">
+                        <div class="metric-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value"
+                                id="ceo-total-trades">{{programOverviewData[0].TotalTrade}}</span>
+                            <span class="metric-label">Total Trade</span>
+                        </div>
+                    </div>
+                    <div class="metric-card shadow secondary"
+                        matTooltip="Number of sector which are covered by program">
+                        <div class="metric-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value"
+                                id="ceo-total-trades">{{programOverviewData[0].TotalSector}}</span>
+                            <span class="metric-label">Total Sector</span>
+                        </div>
+                    </div>
+                    <div class="metric-card shadow tertiary"
+                        matTooltip="Number of trade lots created for this program in all districts">
+                        <div class="metric-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value" id="ceo-total-lots">{{programOverviewData[0].TotalLot}}</span>
+                            <span class="metric-label">Total Trade Lots</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-8">
+            <div class="ceo-section program-overview">
+                <div class="ceo-section-header">
+                    <i class="fas fa-folder-open section-icon"></i>
+                    <h3>Program Overview</h3>
+                </div>
+                <div id="ceo-program-details" class="program-details-grid bg-white">
+                    <div class="program-detail-card">
+                        <div class="program-detail-header">
+                            <div>
+                                <h3 class="program-title">{{programOverviewData[0].ProgramName}}</h3>
+                                <span class="program-id" color="accent">{{programOverviewData[0].ProgramCode}}</span>
+                            </div>
+                            <div class="program-budget">{{formatNumber(programBudgetData[0].ProgramBudget)}}</div>
+                        </div>
+                        <div class="program-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Financial Year:</span>
+                                <span class="metric-value">{{programOverviewData[0].FinancialYear}}</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Planning Type:</span>
+                                <span class="metric-value">{{programOverviewData[0].PTypeName}}</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Funding Source:</span>
+                                <span class="metric-value">{{programOverviewData[0].FundingSourceName}}</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Payment Structure:</span>
+                                <span class="metric-value">{{programOverviewData[0].SchemeCode}}</span>
+                            </div>
+                            <!-- <div class="metric-row">
+                                <span class="metric-label">Employment Commitment:</span>
+                                <span class="metric-value">{{programOverviewData[0].EmploymentCommitment}}</span>
+                            </div> -->
+                            <div class="metric-row">
+                                <span class="metric-label">Program Design Level:</span>
+                                <span class="metric-value">{{programOverviewData[0].ProgramDesignOn}}</span>
+                                <span class="metric-label">Gender Type:</span>
+                                <span class="metric-value">{{programOverviewData[0].GenderName}}</span>
+                                <span class="metric-label">Employment Commitment:</span>
+                                <span class="metric-value">{{programOverviewData[0].EmploymentCommitment}}</span>
+                            </div>
+                            <!-- <div class="metric-row">
+                                <span class="metric-label">Gender Type:</span>
+                                <span class="metric-value">{{programOverviewData[0].GenderName}}</span>
+                            </div> -->
+                            <div class="metric-row">
+                                <span class="metric-value">Program Objective:</span>
+                                <span class="metric-label">{{programOverviewData[0].ProgramDescription}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="ceo-section executive-summary">
+                <div class="ceo-section-header">
+                    <i class="fas fa-chart-line section-icon"></i>
+                    <h3>Estimated Budget Utilization</h3>
+                </div>
+                <div class="executive-metrics">
+                    <div class="metric-card">
+                        <div id="budgetUtilizationContainer" style="width: 100%;max-height: 345px !important;"> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="ceo-section executive-summary">
+                <div class="ceo-section-header">
+                    <i class="fas fa-chart-line section-icon"></i>
+                    <h3>Program Utilized Budget Segregation</h3>
+                </div>
+                <div class="executive-metrics">
+                    <!-- <div class="metric-card secondary">
+                        <div class="metric-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value" id="ceo-total-trades">0</span>
+                            <span class="metric-label">Trade Designs</span>
+                        </div>
+                    </div> -->
+                    <ng-container *ngFor="let program of programBudgetData">
+                        <ng-container *ngFor="let key of getKeys(program)">
+                            <ng-container *ngIf="program[key] != 0">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <span class="metric-value">
+                                            {{ formatNumber(program[key]) }}
+                                        </span>
+                                        <span class="metric-label">{{ camelCaseToWords(key) }}</span>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="ceo-section executive-summary">
+                <div class="ceo-section-header">
+                    <i class="fas fa-chart-line section-icon"></i>
+                    <p class="section-icon"> ({{tradeDesignData.length}}) Trades</p>
+                    <h3>Trade Wise Budget Utilization</h3>
+                </div>
+                <div id="ceo-trades-container" class="trades-analysis-grid m-3">
+                    <ng-container *ngFor="let trade of tradeDesignData">
+                        <div class="trade-analysis-card">
+                            <div class="trade-header border-bottom">
+                                <div>
+                                    <h4 class="trade-name">{{ trade.TradeName }}</h4>
+                                    <span class="trade-id">Program Focus: {{ trade.ProgramFocusName}}</span>
+                                </div>
+                                <div class="Budget-badge">
+                                    <span class="Budget-value">{{ trade.BudgetPercentage }}%</span>
+                                    <span class="Budget-label">Budget</span>
+                                </div>
+                            </div>
+                            <div class="trade-costs">
+                                <ng-container *ngFor="let key of getKeys(trade)">
+                                    <ng-container *ngIf="trade[key] != 0">
+                                        <div class="cost-item">
+                                            <span class="cost-value"> {{ formatNumber(trade[key]) }}</span>
+                                            <span class="cost-label">{{camelCaseToWords(key)}}</span>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                            <div class="trade-insights">
+                                <div class="insight-item">
+                                    <i class="fas fa-users"></i>
+                                    <span><b>Contractual Target:</b> {{trade.PerSelectedContraTarget}}</span> |
+                                    <span><b>Completion Target:</b> {{trade.PerSelectedCompTarget}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="ceo-section executive-summary">
+                <div class="ceo-section-header">
+                    <i class="fas fa-chart-line section-icon"></i>
+                    <h3>Trade Lot | District Wise Budget</h3>
+                </div>
+                <div id="ceo-lots-container" class="lots-breakdown-grid">
+                    <ng-container *ngFor="let tradeLot of tradeLotData; let i = index">
+                        <div class="lot-breakdown-card">
+                            <div class="lot-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div class="lot-info">
+                                <h4>LOT{{i + 1}} | {{tradeLot.DistrictName}}</h4>
+                                <p class="lot-details">
+                                    <strong>Certification Authority:</strong> {{tradeLot.CertAuthName}}<br>
+                                    <strong>Curriculum:</strong> {{tradeLot.Name}}
+                                </p>
+                            </div>
+                            <div class="lot-status">
+                                <span class="status-indicator ready"></span>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

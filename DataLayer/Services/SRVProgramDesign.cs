@@ -561,6 +561,61 @@ namespace DataLayer.Services
 
 
 
+        public DataTable GetProgramOverviewById(int ProgramID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@ProgramID", ProgramID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ProgramOverview", param).Tables[0];
 
+                return dt;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public DataTable GetProgramEstimatedBudgetBreakdownDataById(int ProgramID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@ProgramID", ProgramID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ProgramEstimatedBudgetBreakdown", param).Tables[0];
+
+                return dt;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public DataTable GetTradeEstimatedBudgetBreakdownDataById(int ProgramID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@ProgramID", ProgramID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TradeEstimatedBudgetBreakdown", param).Tables[0];
+
+                return dt;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public DataTable GetTradeLotEstimatedBudgetBreakdownDataById(int ProgramID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@ProgramID", ProgramID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TradeLotEstimatedBudgetBreakdown", param).Tables[0];
+
+                return dt;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

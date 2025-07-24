@@ -208,9 +208,13 @@
             <h6 class="text-center">اگر آپ کا اکاونٹ نہیں بنا ہوا تو یہاں رجسٹر کریں</h6>
             <h6 class="text-center">If you do not have an account,register here</h6>
             <div class="mt-1">
-               <a color="primary" mat-raised-button routerLinkActive="selected" [routerLink]="'/sign-up'">
+               <!-- <a color="primary" mat-raised-button routerLinkActive="selected" [routerLink]="'/sign-up'">
                   <i class="fas fa-sign-in-alt"></i> Sign Up - رجسٹر کریں
-               </a>
+               </a> -->
+
+                <a mat-stroked-button routerLink="/sign-up" class="fw-bold">
+          <mat-icon>person_add</mat-icon> Sign Up - رجسٹر کریں
+        </a>
             </div>
          </div>
       </form>

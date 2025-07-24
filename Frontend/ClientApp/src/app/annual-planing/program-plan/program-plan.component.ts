@@ -1,11 +1,11 @@
 import { filter } from "rxjs/operators";
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { CommonSrvService } from "../../common-srv.service";
 import { ActivatedRoute } from "@angular/router";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
-import { MatTabGroup } from "@angular/material/tabs";
+import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import {
   FormArray,
   FormBuilder,
@@ -16,12 +16,47 @@ import {
 import { MatOption } from "@angular/material/core";
 import { MatSelect, MatSelectChange } from "@angular/material/select";
 import { environment } from "../../../environments/environment";
+import {MatAccordion, MatExpansionPanel} from '@angular/material/expansion';
 @Component({
   selector: "app-program-plan",
   templateUrl: "./program-plan.component.html",
   styleUrls: ["./program-plan.component.scss"],
 })
 export class ProgramPlanComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatAccordion) accordion: MatAccordion;
+  @ViewChildren(MatExpansionPanel) panels!: QueryList<MatExpansionPanel>;
+   step:number=0
+  currentIndex: number=0
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    this.step++;
+  }
+
+  prevStep() {
+    this.step--;
+  }
+
+    openAll() {
+      // debugger;
+      
+    this.accordion.openAll();
+  }
+
+  closeAll() {
+    this.accordion.closeAll();
+    this.step = -1;
+  }
+
+  closeFirstPanel() {
+    this.panels.toArray()[0]?.close();
+    if (this.step === 0) {
+      this.step = -1; // Reset index if first panel was active
+    }
+  }
   matSelectArray: MatSelect[] = [];
   @ViewChild("Applicability") Applicability: MatSelect;
   SelectedAll_Applicability: string;
@@ -410,8 +445,12 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
         this.ComSrv.ShowError("Please fill all required fields.");
     }
   }
+  onTabChange(event: MatTabChangeEvent) {
+  this.TapIndex = event.index;
+}
   FinalSubmit: boolean = false;
   UpdateRecord(row: any) {
+    this.accordion.openAll()
     this.readOnly = true;
     this.CriteriaEvidence = row.AttachmentCriteriaEvidence;
     this.TORAndSOWEvidence = row.AttachmentTORsEvidence;
@@ -453,7 +492,7 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
       this.AnnualPlanInfoForm.enable();
     }
   }
-  ResetFrom() {
+  ResetForm() {
     this.AnnualPlanInfoForm.get("Program").setValue(null);
     this.AnnualPlanInfoForm.get("ProgramCode").setValue(null);
     this.IsDisabled = false;
@@ -464,12 +503,15 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
     this.AnnualPlanInfoForm.enable();
     this.AnnualPlanInfoForm.reset();
   }
+  panelOpenState = false;
   LoadMatTable(tableData: any[]) {
     const excludeColumnArray = [
       "AttachmentTORs",
       "IsSubmitted",
       "AttachmentCriteria",
       "ApprovalAttachment",
+      "ApprovalEvidence",
+      "ApprovalRecDetail",
     ];
     if (tableData.length > 0) {
       this.TableColumns = Object.keys(tableData[0]).filter(

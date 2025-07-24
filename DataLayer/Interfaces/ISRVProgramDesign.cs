@@ -32,5 +32,12 @@ namespace DataLayer.Interfaces
 
         public DataTable LoopinData(DataTable dt, string[] attachmentColumns);
 
+
+
+        DataTable GetProgramOverviewById(int ProgramID);
+        DataTable GetProgramEstimatedBudgetBreakdownDataById(int ProgramID);
+        DataTable GetTradeEstimatedBudgetBreakdownDataById(int ProgramID);
+        DataTable GetTradeLotEstimatedBudgetBreakdownDataById(int ProgramID);
+
     }
 }

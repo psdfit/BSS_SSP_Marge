@@ -5,7 +5,7 @@
       <span class="spacer">Program Design</span>
       <input *ngIf="TapIndex==0" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
       <button *ngIf="TapIndex==0" mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
-              (click)="DataExcelExport(TablesData.filteredData,'Program Design')">
+        (click)="DataExcelExport(TablesData.filteredData,'Program Design')">
         <i class="fas fa-file-export"></i> Export Excel
       </button>
     </mat-toolbar>
@@ -19,7 +19,7 @@
         <mat-tab label="Program Design">
           <div class="table-responsive">
             <form *ngIf="selectedRow.hasOwnProperty('ProgramID') && currentUser.RoleTitle === 'Procurement'"
-                  (ngSubmit)="SaveAnnualPlanInfo()" [formGroup]="AnnualPlanInfoForm">
+              (ngSubmit)="SaveAnnualPlanInfo()" [formGroup]="AnnualPlanInfoForm">
               <fieldset class="border">
                 <legend>Program Design</legend>
                 <div class="row">
@@ -27,7 +27,7 @@
                     <mat-form-field>
                       <mat-label>Program Name</mat-label>
                       <input formControlName="Program" placeholder="Enter Scheme Name" maxlength="30" AlphaNumeric
-                             matInput required />
+                        matInput required />
                       <mat-error *ngFor="let error of AnnualPlanInfoForm.get('Program').errors | keyvalue">
                         {{
                         getErrorMessage(error.key, error.value)
@@ -40,7 +40,7 @@
                       <mat-label>Planning Type</mat-label>
                       <mat-select (openedChange)="EmptyCtrl()" formControlName="PlaningTypeID" matInput required>
                         <mat-option *ngFor="let s of PlaningType"
-                                    [value]="s.PlaningTypeID">{{s.PlaningType}}</mat-option>
+                          [value]="s.PlaningTypeID">{{s.PlaningType}}</mat-option>
                       </mat-select>
                       <mat-error *ngFor="let error of AnnualPlanInfoForm.get('PlaningTypeID').errors | keyvalue">
                         {{
@@ -76,25 +76,34 @@
                 <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
-                    <ng-container *ngIf="column !='IsInitiated' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart' && column !='ApprovalStatus'">
+                    <ng-container
+                      *ngIf="column !='IsInitiated' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart' && column !='ApprovalStatus'">
                       &nbsp; {{ row[column] }}
                     </ng-container>
 
                     <ng-container *ngIf="column =='Action'">
-                      <ng-container *ngIf="column === 'Action' && row['IsInitiated'] ===true; else elseBlock1">
+                        <ng-container *ngIf="column === 'Action' && row['IsInitiated'] ===true; else elseBlock1">
                         <a color="primary" (click)="ShowDetail(row, row['ProgramName'])" mat-button>
-                          Detail
-                          <mat-icon>keyboard_arrow_down</mat-icon>
+                          <mat-icon>keyboard_arrow_down</mat-icon> Detail
                         </a>
-
-                        <a color="primary" mat-button (click)="DataExcelExport([row],row.ProgramName+'_Report')"> Export</a>
-                        <a color="primary" mat-button (click)="openApprovalDialogue(row)"> Decision</a>
-                        <a color="primary" mat-button (click)="updatePlanningType(row)" *ngIf="currentUser.RoleTitle==='Procurement'"> Update </a>
-                      </ng-container>
+                        <a color="primary" mat-button (click)="DataExcelExport([row],row.ProgramName+'_Report')">
+                          <mat-icon>file_download</mat-icon> Export
+                        </a>
+                        <a color="primary" mat-button (click)="openProgramReviewDialogue(row)">
+                          <mat-icon>rate_review</mat-icon> Review
+                        </a>
+                        <a color="primary" mat-button (click)="openApprovalDialogue(row)">
+                          <mat-icon>gavel</mat-icon> Decision
+                        </a>
+                        <a color="primary" mat-button (click)="updatePlanningType(row)"
+                          *ngIf="currentUser.RoleTitle==='Procurement'">
+                          <mat-icon>edit</mat-icon> Update
+                        </a>
+                        </ng-container>
                       <span *ngIf="row[column]===false" class="label label-warning">No</span>
                       <ng-template #elseBlock1>
                         <button mat-icon-button color="primary"
-                                matTooltip="Program has not been initiated by the PD dept.">
+                          matTooltip="Program has not been initiated by the PD dept.">
                           -----
                         </button>
                       </ng-template>
@@ -119,7 +128,7 @@
                 <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
               </mat-table>
               <mat-paginator #Paginator="matPaginator" [pageSize]="10"
-                             [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+                [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
             </div>
           </div>
           <!-- record list end -->
@@ -132,7 +141,7 @@
               <span class="spacer">Trade Wise Budget</span>
               <input placeholder="Search" (keyup)="applyFilter(tradeTablesData,$event)" class="search" />
               <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
-                      (click)="DataExcelExport(tradeTablesData.filteredData,'Lot-Wise-Target')">
+                (click)="DataExcelExport(tradeTablesData.filteredData,'Lot-Wise-Target')">
                 <i class="fas fa-file-export"></i> Export Excel
               </button>
             </mat-toolbar>
@@ -148,7 +157,7 @@
                 <mat-row *matRowDef="let row; columns: tradeTableColumns;"></mat-row>
               </mat-table>
               <mat-paginator #tPaginator="matPaginator" [pageSize]="10"
-                             [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+                [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
             </div>
           </div>
           <!-- end trade wise budget list -->
@@ -159,7 +168,7 @@
               <span class="spacer">Trade Lot Wise Budget</span>
               <input placeholder="Search" (keyup)="applyFilter(lotTablesData,$event)" class="search" />
               <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
-                      (click)="DataExcelExport(lotTablesData.filteredData,'Lot-Wise-Target')">
+                (click)="DataExcelExport(lotTablesData.filteredData,'Lot-Wise-Target')">
                 <i class="fas fa-file-export"></i> Export Excel
               </button>
             </mat-toolbar>
@@ -175,7 +184,7 @@
                 <mat-row *matRowDef="let row; columns: lotTableColumns;"></mat-row>
               </mat-table>
               <mat-paginator #lPaginator="matPaginator" [pageSize]="10"
-                             [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+                [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
             </div>
           </div>
           <!-- end lot wise budget list -->

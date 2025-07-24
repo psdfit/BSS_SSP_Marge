@@ -47,7 +47,7 @@ namespace PSDF_BSS.Controllers
         }
 
 
-       
+
 
 
         //Program Design 
@@ -79,26 +79,26 @@ namespace PSDF_BSS.Controllers
                 var ProgramDesign = srv.LoopinData(programData, Attachments);
 
                 var Object = new {
-                    Province= Province,
-                    Cluster=Cluster,
-                    District=District,
-                    ProgramDesign= ProgramDesign,
-                    GetFinancialYear= GetFinancialYear,
-                    GetProgramType= GetProgramType,
-                    FundingSource=FundingSource,
-                    Gender=Gender,
-                    EducationTypes= EducationTypes,
-                    PaymentStructure= PaymentStructure,
-                    TraineeSupportItems= TraineeSupportItems,
-                    PlaningType=PlaningType,
-                    SelectionMethods=SelectionMethods,
-                    ProgramCategory=ProgramCategory,
-                    FundingCategory=FundingCategory,
-                    BusinessRuleType=BusinessRuleType,
+                    Province = Province,
+                    Cluster = Cluster,
+                    District = District,
+                    ProgramDesign = ProgramDesign,
+                    GetFinancialYear = GetFinancialYear,
+                    GetProgramType = GetProgramType,
+                    FundingSource = FundingSource,
+                    Gender = Gender,
+                    EducationTypes = EducationTypes,
+                    PaymentStructure = PaymentStructure,
+                    TraineeSupportItems = TraineeSupportItems,
+                    PlaningType = PlaningType,
+                    SelectionMethods = SelectionMethods,
+                    ProgramCategory = ProgramCategory,
+                    FundingCategory = FundingCategory,
+                    BusinessRuleType = BusinessRuleType,
 
 
                 };
-                return Ok(Object);  
+                return Ok(Object);
             }
             catch (Exception e)
             {
@@ -202,10 +202,10 @@ namespace PSDF_BSS.Controllers
                     tehsil = tehsil,
                     programFocus = programFocus,
                     programWiseBudget = programWiseBudget,
-                    tradeWiseTarget= tradeWiseTarget,
+                    tradeWiseTarget = tradeWiseTarget,
                     lotWiseTarget = lotWiseTarget,
                     programBudget = programBudget,
-                    gender= gender
+                    gender = gender
                 };
 
                 return Ok(data);
@@ -215,7 +215,7 @@ namespace PSDF_BSS.Controllers
                 return BadRequest(e.Message.ToString());
             }
         }
-         [HttpPost]
+        [HttpPost]
         [Route("LoadSchemeData")]
         public IActionResult LoadSchemeData(ModelBase User)
         {
@@ -234,7 +234,7 @@ namespace PSDF_BSS.Controllers
                     tradeWiseTarget = tradeWiseTarget,
                     lotWiseTarget = lotWiseTarget,
                     planingType = PlaningType,
-                    selectionMethods=SelectionMethods
+                    selectionMethods = SelectionMethods
                 };
 
                 return Ok(data);
@@ -244,9 +244,9 @@ namespace PSDF_BSS.Controllers
             {
                 return BadRequest(e.Message.ToString());
             }
-        }  
-        
-      
+        }
+
+
 
         [HttpGet]
         [Route("LoadAnalysisReport/{filter}")]
@@ -298,8 +298,8 @@ namespace PSDF_BSS.Controllers
             {
                 return BadRequest("Access Denied. you are not authorized for this activity");
             }
-        } 
-        
+        }
+
         [HttpPost]
         [Route("UpdateSchemeInitialization")]
         public IActionResult UpdateSchemeInitialization(ProgramDesignModel data)
@@ -335,7 +335,7 @@ namespace PSDF_BSS.Controllers
                 try
                 {
 
-                    
+
                     return Ok(srv.FetchCTMTradeWise(data));
 
 
@@ -361,7 +361,7 @@ namespace PSDF_BSS.Controllers
                 try
                 {
 
-                    
+
                     return Ok(srv.FetchCTMBulkReport(data));
 
 
@@ -379,7 +379,7 @@ namespace PSDF_BSS.Controllers
 
         [HttpPost]
         [Route("LoadCTMReport")]
-        public  IActionResult LoadCTMReport(ModelBase User)
+        public IActionResult LoadCTMReport(ModelBase User)
         {
             try
             {
@@ -395,19 +395,19 @@ namespace PSDF_BSS.Controllers
                 var Province = srv.FetchDropDownList("RD_Province");
                 var Cluster = srv.FetchDropDownList("RD_Cluster");
                 var District = srv.FetchDropDownList("RD_District");
-               
+
                 var data = new
                 {
                     //CTMCalculationReport=CTMCalculationReport,
-                    FundingSource=FundingSource,
-                    FundingCategory=FundingCategory,
-                    ProgramType=ProgramType,
-                    Sector=Sector,
-                    Trade=Trade,
-                    Duration=Duration,
-                    Province=Province,
-                    Cluster=Cluster,
-                    District=District,
+                    FundingSource = FundingSource,
+                    FundingCategory = FundingCategory,
+                    ProgramType = ProgramType,
+                    Sector = Sector,
+                    Trade = Trade,
+                    Duration = Duration,
+                    Province = Province,
+                    Cluster = Cluster,
+                    District = District,
                 };
 
                 return Ok(data);
@@ -419,7 +419,7 @@ namespace PSDF_BSS.Controllers
         }
         [HttpPost]
         [Route("LoadHistoricalReport")]
-        public  IActionResult LoadHistoricalReport(ModelBase User)
+        public IActionResult LoadHistoricalReport(ModelBase User)
         {
             try
             {
@@ -437,20 +437,20 @@ namespace PSDF_BSS.Controllers
                 var District = srv.FetchDropDownList("RD_District");
                 var ProgramType = srv.FetchDropDownList("RD_ProgramType");
 
-        
+
                 var data = new
                 {
                     //HistoricalReport = HistoricalReport,
                     ProgramType = ProgramType,
-                    FundingSource=FundingSource,
+                    FundingSource = FundingSource,
                     ProgramFocus = ProgramFocus,
-                    Sector=Sector,
+                    Sector = Sector,
                     SubSector = SubSector,
-                    Trade=Trade,
+                    Trade = Trade,
                     TSPMaster = TSPMaster,
-                    Province=Province,
-                    Cluster=Cluster,
-                    District=District,
+                    Province = Province,
+                    Cluster = Cluster,
+                    District = District,
                 };
 
                 return Ok(data);
@@ -550,6 +550,43 @@ namespace PSDF_BSS.Controllers
                     data.CurUserID = Convert.ToInt32(User.Identity.Name);
                     return Ok(srv.SaveProgramCriteriaHistory(data));
 
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message.ToString());
+                }
+            }
+            else
+            {
+                return BadRequest("Access Denied. you are not authorized for this activity");
+            }
+        }
+
+
+        [HttpPost]
+        [Route("GetAllProgramDataById")]
+        public IActionResult GetAllProgramDataById([FromBody] int ProgramID)
+        {
+            string[] Split = HttpContext.Request.Path.Value.Split("/");
+            bool IsAuthrized = Authorize.CheckAuthorize(false, Convert.ToInt32(User.Identity.Name), Split[2], Split[3]);
+            if (IsAuthrized == true)
+            {
+                try
+                {
+                    var overview = srv.GetProgramOverviewById(ProgramID);
+                    var estimatedBudget = srv.GetProgramEstimatedBudgetBreakdownDataById(ProgramID);
+                    var tradeBudget = srv.GetTradeEstimatedBudgetBreakdownDataById(ProgramID);
+                    var tradeLotBudget = srv.GetTradeLotEstimatedBudgetBreakdownDataById(ProgramID);
+
+                    var result = new
+                    {
+                        Overview = overview,
+                        ProgramBudget = estimatedBudget,
+                        TradeBudget = tradeBudget,
+                        TradeLotBudget = tradeLotBudget
+                    };
+
+                    return Ok(result);
                 }
                 catch (Exception e)
                 {

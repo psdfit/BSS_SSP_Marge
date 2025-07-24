@@ -99,8 +99,8 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       ProgramFocus: ["", Validators.required],
       Trade: ["", Validators.required],
       TradeLayer: ["", Validators.required],
-      CTM: ["", Validators.required],
-      ExamCost: ["", Validators.required],
+      CTM: [0, Validators.required],
+      ExamCost: [0, Validators.required],
       
       TraineeContraTarget: [0, Validators.required],
       OJTPayment: [0, Validators.required],

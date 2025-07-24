@@ -5,6 +5,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTabGroup } from "@angular/material/tabs";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import {
   FormBuilder,
   FormControl,
@@ -14,6 +15,7 @@ import {
 import { environment } from "../../../environments/environment";
 import { EnumApprovalProcess } from "src/app/shared/Enumerations";
 import { DialogueService } from "src/app/shared/dialogue.service";
+import { ProgramPreviewComponent } from "src/app/custom-components/program-preview/program-preview.component";
 @Component({
   selector: "app-annual-plan-approval",
   templateUrl: "./annual-plan-approval.component.html",
@@ -36,7 +38,8 @@ export class AnnualPlanApprovalComponent implements OnInit {
     private AcitveRoute: ActivatedRoute,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    private dialogue: DialogueService
+    private dialogue: DialogueService,
+    private Dialog: MatDialog
   ) {}
   environment = environment;
   error: any;
@@ -134,9 +137,7 @@ export class AnnualPlanApprovalComponent implements OnInit {
     this.tspName = tspName;
     this.tabGroup.selectedIndex = 1;
     this.TspName = tspName + " Detail";
-    // if (this.rowData.UserID) {
-    console.log(this.rowData);
-    console.log(this.rowData.ProgramID);
+   
     this.tradeWiseTarget = this.GetDataObject.tradeWiseTarget.filter(
       (d) => d.ProgramName == this.rowData.ProgramName
     );
@@ -201,6 +202,7 @@ export class AnnualPlanApprovalComponent implements OnInit {
         "EndDate",
         "StatusRemarks",
         "IsFinalApproved",
+        "IsInitiated",
       ]
       
       if(this.currentUser.RoleTitle=="Program Development")
@@ -259,6 +261,36 @@ export class AnnualPlanApprovalComponent implements OnInit {
         this.LoadData();
       });
   }
+
+   openProgramReviewDialogue(row: any={}): void {
+
+      // Prepare data for ProgramPreviewComponent dialog
+      const tradeWiseTarget = this.GetDataObject.tradeWiseTarget.filter(
+        (d) => d.ProgramName == row.ProgramName
+      );
+      const lotWiseTarget = this.GetDataObject.lotWiseTarget.filter(
+        (d) => d.ProgramID == row.ProgramID
+      );
+
+      const data = {
+        programData: row,
+        tradeData: tradeWiseTarget,
+        lotData: lotWiseTarget,
+      };
+      const dialogRef = this.Dialog.open(ProgramPreviewComponent, {
+        width: '97%',
+        data: data,
+        disableClose: true,
+      });
+      dialogRef.afterClosed().subscribe(result => {
+          // if (result === true) {
+          //   this.GetData()
+          // }
+        });
+      
+   
+  }
+
   getErrorMessage(errorKey: string, errorValue: any): string {
     const errorMessages = {
       required: "This field is required.",

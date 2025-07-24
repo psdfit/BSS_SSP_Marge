@@ -40,6 +40,7 @@ import { TspAssociationEvaluationDialogueComponent } from "./custom-components/t
 import { ErrorLogTableComponent } from "./custom-components/error-log-table/error-log-table.component";
 import { ConfirmDailogComponent } from "./custom-components/confirm-dailog/confirm-dailog.component";
 import { ApprovalDialogueBatchComponent } from "./custom-components/approval-dialogue-batch/approval-dialogue-batch.component";
+import { ProgramPreviewComponent } from './custom-components/program-preview/program-preview.component';
 
 const app_initializerFn = (appConfig: AppConfigService) => {
   return () => {
@@ -69,6 +70,7 @@ const app_initializerFn = (appConfig: AppConfigService) => {
     TspAssociationEvaluationDialogueComponent,
     ErrorLogTableComponent,
     ApprovalDialogueBatchComponent,
+    ProgramPreviewComponent,
   ],
   imports: [
     BrowserModule,
