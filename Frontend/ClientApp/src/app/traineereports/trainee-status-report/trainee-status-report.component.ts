@@ -13,12 +13,39 @@ import { GroupByPipe } from '../../pipes/GroupBy.pipe';
 import { UsersModel } from '../../master-data/users/users.component';
 import { EnumExcelReportType, EnumUserLevel } from '../../shared/Enumerations';
 import { DialogueService } from '../../shared/dialogue.service';
+import { MatDatepicker } from '@angular/material/datepicker';
+import * as _moment from 'moment';
+import { Moment } from 'moment';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+
+const moment = _moment;
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
 
 @Component({
   selector: 'app-trainee-status-report',
   templateUrl: './trainee-status-report.component.html',
   styleUrls: ['./trainee-status-report.component.scss'],
-  providers: [GroupByPipe, DatePipe]
+  providers: [GroupByPipe, DatePipe,
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ]
 })
 export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   environment = environment;
@@ -27,7 +54,13 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   schemeArray = [];
   tspDetailArray = [];
   classesArray: any[];
-  filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.commonService.OID.value, SelectedColumns: [] };
+  filters: SearchFilter = {
+    SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.commonService.OID.value, SelectedColumns: [], ClassStatusID: 0, // Class Status
+    StartDate: '', // Start Date
+    EndDate: '', // End Date
+    FundingCategoryID: 0, // Project 
+    KamID: 0
+  };
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   error = '';
@@ -41,6 +74,22 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   currentUser: UsersModel;
   enumUserLevel = EnumUserLevel;
   TSRDataModelKeys = Object.keys(new TSRDataModel());
+
+  kamFilter = new FormControl(0);
+  SearchKam = new FormControl('');
+  Kam = [];
+
+  fundingCategoryFilter = new FormControl();
+  SearchFundingCategory = new FormControl('');
+  Project: any[] = [];
+
+  startDate = new FormControl();
+  endDate = new FormControl();
+
+  ClassStatus = [];
+  SearchClassStatus = new FormControl('');
+  ClassStatusFilter = new FormControl(0);
+
 
   constructor(
     private commonService: CommonSrvService,
@@ -70,13 +119,82 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
       this.filters.OID = OID;
       this.getData();
       this.initPagedData();
+      this.getKam();
+      this.getFundingCategories();
+      this.GetClassStatus();
     });
   }
+
+
+  // added KAM api endpoint:
+  getKam() {
+    this.commonService.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe(
+      (d: any) => {
+        this.error = '';
+        this.Kam = d;
+      },
+      error => {
+        this.error = error;
+      }
+    );
+  }
+  // added Project api endpoint:
+  getFundingCategories() {
+    this.commonService.getJSON(`api/Scheme/GetScheme?OID=${this.commonService.OID.value}`).subscribe((d: any) => {
+      this.Project = d[4];
+    },
+      (error) => {
+        this.error = error.error;
+        this.commonService.ShowError(error.error + '\n' + error.message);
+      } // error path
+    );
+  }
+
+  // added classstatus api endpoint:
+  GetClassStatus() {
+    this.commonService.getJSON('api/ClassStatus/RD_ClassStatus').subscribe(
+      (cs: any) => {
+        this.ClassStatus = cs;
+        console.log('Class Status Data:', cs); // Improved logging
+      },
+      error => {
+        this.error = error; // Error handling
+        console.error('Error fetching ClassStatus:', error);
+      }
+    );
+  }
+
+  chosenYearHandlerForStartDate(normalizedYear: Moment) {
+    const ctrlValue = this.startDate.value;
+    ctrlValue.year(normalizedYear.year());
+    this.startDate.setValue(ctrlValue);
+  }
+  chosenMonthHandlerForStartDate(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.startDate.value;
+    ctrlValue.month(normalizedMonth.month());
+    this.startDate.setValue(ctrlValue);
+
+    datepicker.close();
+  }
+
+  chosenYearHandlerForEndDate(normalizedYear: Moment) {
+    const ctrlValue = this.endDate.value;
+    ctrlValue.year(normalizedYear.year());
+    this.endDate.setValue(ctrlValue);
+  }
+  chosenMonthHandlerForEndDate(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.endDate.value;
+    ctrlValue.month(normalizedMonth.month());
+    this.endDate.setValue(ctrlValue);
+    datepicker.close();
+  }
+
 
   EmptyCtrl(Ev: any) {
     this.SearchCls.setValue('');
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
+    this.SearchFundingCategory.setValue('');
   }
 
   getData() {
@@ -124,7 +242,10 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   initPagedData() {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     this.paginator.pageSize = 10;
-    merge(this.sort.sortChange, this.paginator.page, this.schemeFilter.valueChanges, this.tspFilter.valueChanges, this.classFilter.valueChanges)
+    merge(this.sort.sortChange, this.paginator.page, this.schemeFilter.valueChanges,
+      this.tspFilter.valueChanges, this.classFilter.valueChanges, this.kamFilter.valueChanges,
+      this.ClassStatusFilter.valueChanges, this.startDate.valueChanges,
+      this.endDate.valueChanges, this.fundingCategoryFilter.valueChanges)
       .pipe(
         startWith({}),
         switchMap(() => {
@@ -139,6 +260,11 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
           this.filters.SchemeID = this.schemeFilter.value;
           this.filters.TSPID = this.tspFilter.value;
           this.filters.ClassID = this.classFilter.value;
+          this.filters.KamID = this.kamFilter.value || 0;
+          this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
+          this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
+          this.filters.StartDate = this.startDate.value ? this.datePipe.transform(this.startDate.value, 'yyyy-MM-dd') : '';
+          this.filters.EndDate = this.endDate.value ? this.datePipe.transform(this.endDate.value, 'yyyy-MM-dd') : '';
           return this.getPagedData(pagedModel, this.filters);
         })
       ).subscribe(data => {
@@ -155,6 +281,11 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
     this.filters.SchemeID = this.schemeFilter.value;
     this.filters.TSPID = this.tspFilter.value;
     this.filters.ClassID = this.classFilter.value;
+    this.filters.KamID = this.kamFilter.value || 0;
+    this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
+    this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
+    this.filters.StartDate = this.startDate.value ? this.datePipe.transform(this.startDate.value, 'yyyy-MM-dd') : '';
+    this.filters.EndDate = this.endDate.value ? this.datePipe.transform(this.endDate.value, 'yyyy-MM-dd') : '';
 
     const exportExcel: ExportExcel = {
       Title: 'Trainee Status Report',
@@ -182,7 +313,7 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
           'TSP(s)': that.groupByPipe.transform(responseData, 'TSPName').map(x => x.key).join(','),
           TraineeImagesAdded: true
         };
-        that.input.List1 = responseData.map((item, index) => {   
+        that.input.List1 = responseData.map((item, index) => {
           const obj = new TSRDataModel();
           obj['Sr#'] = ++index;
           obj.Scheme = item.SchemeName;
@@ -223,7 +354,7 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
           obj['Trainee Img'] = item.TraineeImg;
           obj['CNIC Img'] = item.CNICImgNADRA;
           obj.Sector = item.SectorName;
-          
+
           obj.Cluster = item.ClusterName;
           obj.KAM = item.KAM;
           obj['Class Status'] = item.ClassStatusName;
@@ -240,7 +371,7 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
           obj['BankName'] = item.BankName;
           obj['IBANNumber'] = item.IBANNumber;
           return obj;
-          
+
         });
       });
   }

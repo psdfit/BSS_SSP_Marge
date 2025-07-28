@@ -18,11 +18,38 @@ import { GroupByPipe } from 'angular-pipes';
 import { DatePipe } from '@angular/common';
 import { merge } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
+import { MatDatepicker } from '@angular/material/datepicker';
+import * as _moment from 'moment';
+import { Moment } from 'moment';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+
+const moment = _moment;
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
 @Component({
   selector: 'app-master-sheet',
   templateUrl: './master-sheet.component.html',
   styleUrls: ['./master-sheet.component.scss'],
-  providers: [GroupByPipe, DatePipe]
+  providers: [GroupByPipe, DatePipe,
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ]
 })
 export class MasterSheetComponent implements OnInit, AfterViewInit {
   environment = environment;
@@ -41,7 +68,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     'FundingSourceName', 'TrainingAddressLocation',
     'Province'
     , 'Tehsil', 'District', 'WhoIsDeliveringTraining',
-    'Certification_Authority','RegistrationAuthorityName','ProgramFocusName', 'TraineesPerClass', 'Gender',
+    'Certification_Authority', 'RegistrationAuthorityName', 'ProgramFocusName', 'TraineesPerClass', 'Gender',
     'Duration', 'TotalTrainingHours', 'StartDate', 'EndDate', 'ClassStartTime', 'ClassEndTime',
     'InceptionReportDueOn', 'StudentProfileOverDueOn', 'CompletionReportDue',
     'InceptionReportReceived', 'InceptionReportDeliveredToTPM',
@@ -53,7 +80,7 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     'EmploymentInvoiceStatus',
     'Shift', 'Section',
     'Sector', 'OverallEmploymentCommitment', 'MinimumEducation', 'Organization', 'TradeCode',
-      'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC','TSPNTN','FundingCategoryName', 'IsDVV', 'TotalClassDays', 'DayNames', 'SourceOfCurriculum','PaymentSchedule',
+    'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC', 'TSPNTN', 'FundingCategoryName', 'IsDVV', 'TotalClassDays', 'DayNames', 'SourceOfCurriculum', 'PaymentSchedule',
     'Action'];
   displayedTPMColumns = ['Batch', 'ClassID', 'TrainingAddressLocation', 'TradeID', 'ProvinceID', 'TehsilID', 'DistrictID', 'Duration', 'StartDate', 'EndDate', 'SectorID', 'OverallEmploymentCommitment', 'MinimumEducation', 'OID',
     'UserID',
@@ -84,7 +111,13 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   };
   public employeedata = [];
   count = 5;
-  filters: IMasterSheetFilter = { SchemeID: 0, ClassID: 0, TSPID: 0, UserID: 0 };
+  filters: IMasterSheetFilter = {
+    SchemeID: 0, ClassID: 0, TSPID: 0, UserID: 0, ClassStatusID: 0, // Class Status
+    StartDate: '', // Start Date
+    EndDate: '', // End Date
+    FundingCategoryID: 0, // Project 
+    KamID: 0 // KAM
+  };
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   working: boolean;
@@ -97,6 +130,24 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   schemeFilter = new FormControl(0);
   tspFilter = new FormControl(0);
   classFilter = new FormControl(0);
+
+  kamFilter = new FormControl(0);
+  SearchKam = new FormControl('');
+  Kam = [];
+
+  fundingCategoryFilter = new FormControl();
+  SearchFundingCategory = new FormControl('');
+  Project: any[] = [];
+
+  startDate = new FormControl(null);
+  endDate = new FormControl(null);
+
+  ClassStatus = [];
+  SearchClassStatus = new FormControl('');
+  ClassStatusFilter = new FormControl(0);
+
+
+
   constructor(private fb: FormBuilder, private ComSrv: CommonSrvService, public dialog: MatDialog,
     public dialogueService: DialogueService
     , private groupByPipe: GroupByPipe
@@ -156,6 +207,8 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     this.SearchCls.setValue('');
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
+    this.SearchFundingCategory.setValue('');
+
   }
 
   openDialog(id: number): void {
@@ -200,9 +253,51 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         this.error = error;
       })
   }
+  // added KAM api endpoint:
+  getKam() {
+    this.ComSrv.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe(
+      (d: any) => {
+        this.error = '';
+        this.Kam = d;
+      },
+      error => {
+        this.error = error;
+      }
+    );
+  }
+  // added Project api endpoint:
+  getFundingCategories() {
+    this.ComSrv.getJSON(`api/Scheme/GetScheme?OID=${this.ComSrv.OID.value}`).subscribe((d: any) => {
+      this.Project = d[4];
+    },
+      (error) => {
+        this.error = error.error;
+        this.ComSrv.ShowError(error.error + '\n' + error.message);
+      } // error path
+    );
+  }
+
+  GetClassStatus() {
+    this.ComSrv.getJSON('api/ClassStatus/RD_ClassStatus').subscribe(
+      (cs: any) => {
+        this.ClassStatus = cs;
+      },
+      error => {
+        this.error = error; // Error handling
+        console.error('Error fetching ClassStatus:', error);
+      }
+    );
+  }
+
   getMasterSheet() {
+
+    const startDate = this.filters.StartDate ? this.filters.StartDate : '';
+    const endDate = this.filters.EndDate ? this.filters.EndDate : '';
+
+    const url = `api/MasterSheet/GetFilteredMasterSheet?schemeId=${this.filters.SchemeID}&tspId=${this.filters.TSPID}&classId=${this.filters.ClassID}&userId=${this.filters.UserID}&oId=${this.ComSrv.OID.value}&classStatusId=${this.filters.ClassStatusID}&fundingCategoryId=${this.filters.FundingCategoryID}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&kamId=${this.filters.KamID}`;
+
     if (this.isTSPUser) {
-      this.ComSrv.getJSON(`api/MasterSheet/GetFilteredMasterSheet/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.userid}&filter=${this.ComSrv.OID.value}`)
+      this.ComSrv.getJSON(url)
         .subscribe((data: any) => {
           this.mastersheetArray = data[0];
           this.Scheme = data[1];
@@ -210,9 +305,10 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         },
           error => {
             this.error = error;
-          })
+            console.error('Error fetching master sheet:', error);
+          });
     } else {
-      this.ComSrv.getJSON(`api/MasterSheet/GetFilteredMasterSheet/filter?filter=${this.filters.SchemeID}&filter=${this.filters.TSPID}&filter=${this.filters.ClassID}&filter=${this.filters.UserID}&filter=${this.ComSrv.OID.value}`)
+      this.ComSrv.getJSON(url)
         .subscribe((data: any) => {
           this.mastersheetArray = data[0];
           this.Scheme = data[1];
@@ -220,7 +316,8 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         },
           error => {
             this.error = error;
-          })
+            console.error('Error fetching master sheet:', error);
+          });
     }
   }
   ngOnInit() {
@@ -257,7 +354,41 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       this.filters.SchemeID = 0;
       this.filters.TSPID = 0;
       this.filters.ClassID = 0;
-    })
+      this.filters.UserID = 0;
+      this.filters.ClassStatusID = 0;
+      this.filters.StartDate = '';
+      this.filters.FundingCategoryID = 0;
+      this.filters.EndDate = '';
+    });
+
+    this.getKam();
+    this.getFundingCategories();
+    this.GetClassStatus();
+  }
+
+  chosenYearHandlerForStartDate(normalizedYear: Moment) {
+    const ctrlValue = this.startDate.value;
+    ctrlValue.year(normalizedYear.year());
+    this.startDate.setValue(ctrlValue);
+  }
+  chosenMonthHandlerForStartDate(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.startDate.value;
+    ctrlValue.month(normalizedMonth.month());
+    this.startDate.setValue(ctrlValue);
+
+    datepicker.close();
+  }
+
+  chosenYearHandlerForEndDate(normalizedYear: Moment) {
+    const ctrlValue = this.endDate.value;
+    ctrlValue.year(normalizedYear.year());
+    this.endDate.setValue(ctrlValue);
+  }
+  chosenMonthHandlerForEndDate(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.endDate.value;
+    ctrlValue.month(normalizedMonth.month());
+    this.endDate.setValue(ctrlValue);
+    datepicker.close();
   }
 
   exportToExcel() {
@@ -266,6 +397,11 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       'Filters:': '',
       'Scheme(s)': this.groupByPipe.transform(filteredData, 'Scheme').map(x => x.key).join(','),
       'TSP(s)': this.groupByPipe.transform(filteredData, 'TSP').map(x => x.key).join(','),
+      'KAM(s)': this.groupByPipe.transform(filteredData, 'UserName').map(x => x.key).join(','),
+      'Project(s)': this.groupByPipe.transform(filteredData, 'FundingCategoryName').map(x => x.key).join(','),
+      'Class Status Filter': this.groupByPipe.transform(filteredData, 'ClassStatusName').map(x => x.key).join(','),
+      'Start Date': this.filters.StartDate || 'All',
+      'End Date': this.filters.EndDate || 'All',
       Batch: 'All',
       Trade: 'All',
       'Certification Agency': 'All',
@@ -292,72 +428,72 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     //  }
     //});
     return dataWithLatestInstructorName.map(item => {
-        return {
-          'Scheme Code': item.SchemeCode
-          , Scheme: item.Scheme
-          , Batch: item.Batch
-          , TSP: item.TSP
-          , 'Class Code': item.Class
-          , 'Trade Group': item.TradeGroup
-          , Trade: item.Trade
-          , 'Funding Source': item.FundingSourceName
-          , 'Training Location': item.TrainingAddressLocation
-          , 'Tehsil of Training Center': item.Tehsil
-          , 'District of Training Center': item.District
-          , 'Province of Training Center': item.ProvinceName
-          , 'Who is Delivering Training?': item.WhoIsDeliveringTraining
-          , 'Testing/Certify Authority': item.Certification_Authority
-          , 'Contractual Trainees per Class': item.TraineesPerClass
-          , 'Class Gender Male/Female/Mix': item.Gender
-          , 'Training Duration (Months)': item.Duration
-          , 'Total Training Hours': item.TotalTrainingHours
-          , 'Start Date': this._date.transform(item.StartDate, 'dd/MM/yyyy')
-          , 'Completion Date': this._date.transform(item.EndDate, 'dd/MM/yyyy')
-          , 'Class Start Time': this._date.transform(item.ClassStartTime, 'h:mm a')
-          , 'Class End Time': this._date.transform(item.ClassEndTime, 'h:mm a')
-          , 'Inception Report Due On': this._date.transform(item.InceptionReportDueOn, 'dd/MM/yyyy')
-          , 'Student Profile Overdue on': this._date.transform(item.StudentProfileOverDueOn, 'dd/MM/yyyy')
-          , 'Completion Report Due': this._date.transform(item.CompletionReportDue, 'dd/MM/yyyy')
-          , 'Inception Report Received': item.InceptionReportReceived
-          , 'Inception Report Delivered To TPM': item.InceptionReportDeliveredToTPM
-          , 'Date of Delivery To TPM': item.DateOfDeliveryToTPM
-          , 'Enrolled Trainees': item.EnrolledTrainees
-          , 'Trainee Profiles Received': item.TraineeProfilesReceived
-          , 'Trainee Profile Received Date': item.TraineeProfileReceivedDate
-          , 'Total Trainee Profiles Received': item.TotalTraineeProfilesReceived
-          , 'RTP Received': item.RTP
-          , 'Class Status': item.ClassStatusName
-          , 'Completion Report Status': item.CompletionReportStatus
-          , Remarks: item.Remarks
-          , ClassID: item.ClassID_U
-          , 'Scheme ID': item.SchemeID_U
-          , 'TSP ID': item.TSPID_U
-          , 'Scheme Type': item.SchemeType
-          , 'Contractual Class Hours': item.MinHoursPerMonth
-          , EmploymentInvoiceStatus: item.EmploymentInvoiceStatus
-          , Shift: item.Shift
-          , Section: item.Section
-          , Sector: item.Sector
-          , 'Overall Employment Commitment': item.OverallEmploymentCommitment
-          , 'Minimum Education': item.MinimumEducation
-          , Organization: item.Organization
-          , 'Trade Code': item.TradeCode
-          , Cluster: item.Cluster
-          , KAM: item.UserName
-          , 'Instructor Name': item.InstructorName
-          , 'Instructor CNIC': item.InstructorCNIC
-          , 'TSP NTN': item.TSPNTN
-          , 'Project': item.FundingCategoryName
-          , 'Is DVV': item.IsDVV
-          , 'No of Class Days': item.TotalClassDays
-          , 'Days Name': item.DayNames
-          , 'Source Of Curriculum': item.SourceOfCurriculum
-          , 'Payment Schedule': item.PaymentSchedule
-          , 'Registration Authority': item.RegistrationAuthorityName == "" ? '---' : item.RegistrationAuthorityName
-          , 'Program Focus': item.ProgramFocusName
-          , 'SAPID': item.SAPID
-        }
-      })
+      return {
+        'Scheme Code': item.SchemeCode
+        , Scheme: item.Scheme
+        , Batch: item.Batch
+        , TSP: item.TSP
+        , 'Class Code': item.Class
+        , 'Trade Group': item.TradeGroup
+        , Trade: item.Trade
+        , 'Funding Source': item.FundingSourceName
+        , 'Training Location': item.TrainingAddressLocation
+        , 'Tehsil of Training Center': item.Tehsil
+        , 'District of Training Center': item.District
+        , 'Province of Training Center': item.ProvinceName
+        , 'Who is Delivering Training?': item.WhoIsDeliveringTraining
+        , 'Testing/Certify Authority': item.Certification_Authority
+        , 'Contractual Trainees per Class': item.TraineesPerClass
+        , 'Class Gender Male/Female/Mix': item.Gender
+        , 'Training Duration (Months)': item.Duration
+        , 'Total Training Hours': item.TotalTrainingHours
+        , 'Start Date': this._date.transform(item.StartDate, 'dd/MM/yyyy')
+        , 'Completion Date': this._date.transform(item.EndDate, 'dd/MM/yyyy')
+        , 'Class Start Time': this._date.transform(item.ClassStartTime, 'h:mm a')
+        , 'Class End Time': this._date.transform(item.ClassEndTime, 'h:mm a')
+        , 'Inception Report Due On': this._date.transform(item.InceptionReportDueOn, 'dd/MM/yyyy')
+        , 'Student Profile Overdue on': this._date.transform(item.StudentProfileOverDueOn, 'dd/MM/yyyy')
+        , 'Completion Report Due': this._date.transform(item.CompletionReportDue, 'dd/MM/yyyy')
+        , 'Inception Report Received': item.InceptionReportReceived
+        , 'Inception Report Delivered To TPM': item.InceptionReportDeliveredToTPM
+        , 'Date of Delivery To TPM': item.DateOfDeliveryToTPM
+        , 'Enrolled Trainees': item.EnrolledTrainees
+        , 'Trainee Profiles Received': item.TraineeProfilesReceived
+        , 'Trainee Profile Received Date': item.TraineeProfileReceivedDate
+        , 'Total Trainee Profiles Received': item.TotalTraineeProfilesReceived
+        , 'RTP Received': item.RTP
+        , 'Class Status': item.ClassStatusName
+        , 'Completion Report Status': item.CompletionReportStatus
+        , Remarks: item.Remarks
+        , ClassID: item.ClassID_U
+        , 'Scheme ID': item.SchemeID_U
+        , 'TSP ID': item.TSPID_U
+        , 'Scheme Type': item.SchemeType
+        , 'Contractual Class Hours': item.MinHoursPerMonth
+        , EmploymentInvoiceStatus: item.EmploymentInvoiceStatus
+        , Shift: item.Shift
+        , Section: item.Section
+        , Sector: item.Sector
+        , 'Overall Employment Commitment': item.OverallEmploymentCommitment
+        , 'Minimum Education': item.MinimumEducation
+        , Organization: item.Organization
+        , 'Trade Code': item.TradeCode
+        , Cluster: item.Cluster
+        , 'KAM': item.UserName
+        , 'Instructor Name': item.InstructorName
+        , 'Instructor CNIC': item.InstructorCNIC
+        , 'TSP NTN': item.TSPNTN
+        , 'Project': item.FundingCategoryName
+        , 'Is DVV': item.IsDVV
+        , 'No of Class Days': item.TotalClassDays
+        , 'Days Name': item.DayNames
+        , 'Source Of Curriculum': item.SourceOfCurriculum
+        , 'Payment Schedule': item.PaymentSchedule
+        , 'Registration Authority': item.RegistrationAuthorityName == "" ? '---' : item.RegistrationAuthorityName
+        , 'Program Focus': item.ProgramFocusName
+        , 'SAPID': item.SAPID
+      }
+    })
   }
   ngAfterViewInit() {
     this.ComSrv.OID.subscribe(
@@ -368,7 +504,10 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   initPagedData() {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     this.paginator.pageSize = 10;
-    merge(this.sort.sortChange, this.paginator.page, this.schemeFilter.valueChanges, this.tspFilter.valueChanges, this.classFilter.valueChanges)
+    merge(this.sort.sortChange, this.paginator.page, this.schemeFilter.valueChanges,
+      this.tspFilter.valueChanges, this.classFilter.valueChanges, this.kamFilter.valueChanges,
+      this.ClassStatusFilter.valueChanges, this.startDate.valueChanges,
+      this.endDate.valueChanges, this.fundingCategoryFilter.valueChanges)
       .pipe(
         startWith({}),
         switchMap(() => {
@@ -380,9 +519,14 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
             , SearchColumn: ''
             , SearchValue: ''
           };
-          this.filters.SchemeID = this.schemeFilter.value
-          this.filters.TSPID = this.tspFilter.value
-          this.filters.ClassID = this.classFilter.value
+          this.filters.SchemeID = this.schemeFilter.value || 0;
+          this.filters.TSPID = this.tspFilter.value || 0;
+          this.filters.ClassID = this.classFilter.value || 0;
+          this.filters.KamID = this.kamFilter.value || 0;
+          this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
+          this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
+          this.filters.StartDate = this.startDate.value ? this._date.transform(this.startDate.value, 'yyyy-MM-dd') : '';
+          this.filters.EndDate = this.endDate.value ? this._date.transform(this.endDate.value, 'yyyy-MM-dd') : '';
           return this.getPagedData(pagedModel, this.filters);
         })).subscribe((data: any) => {
           const dataWithLatestInstructorName = [...data];

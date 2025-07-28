@@ -87,6 +87,15 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
                 param.Add(new SqlParameter("@UserID", filterModel.UserID));
                 param.Add(new SqlParameter("@OID", filterModel.OID));
+                param.Add(new SqlParameter("@ClassStatusID", filterModel.ClassStatusID));
+                param.Add(new SqlParameter("@FundingCategoryID", filterModel.FundingCategoryID));
+                param.Add(new SqlParameter("@KAMID", filterModel.KAMID));
+                //param.Add(new SqlParameter("@StartDate", filterModel.StartDate));
+                //param.Add(new SqlParameter("@EndDate", filterModel.EndDate));
+                param.Add(new SqlParameter("@StartDate", string.IsNullOrEmpty(filterModel.StartDate) ? DBNull.Value : (object)filterModel.StartDate));
+                param.Add(new SqlParameter("@EndDate", string.IsNullOrEmpty(filterModel.EndDate) ? DBNull.Value : (object)filterModel.EndDate));
+
+
                 param.AddRange(Common.GetPagingParams(pagingModel));
 
                 DataTable dt = new DataTable();
@@ -230,16 +239,22 @@ namespace DataLayer.Services
             SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AI_MasterSheet]", PLead);
         }
 
-        public List<MasterSheetModel> FetchMasterSheetByFilters(int[] filters)
+        public List<MasterSheetModel> FetchMasterSheetByFilters(object[] filters)
         {
             List<MasterSheetModel> list = new List<MasterSheetModel>();
-            if (filters.Length > 0)
+            if (filters.Length >= 10)
             {
-                int schemeId = filters[0];
-                int tspId = filters[1];
-                int classId = filters[2];
-                int userId = filters[3];
-                int oID = filters[4];
+                int schemeId = Convert.ToInt32(filters[0]);
+                int tspId = Convert.ToInt32(filters[1]);
+                int classId = Convert.ToInt32(filters[2]);
+                int userId = Convert.ToInt32(filters[3]);
+                int oId = Convert.ToInt32(filters[4]);
+                int classStatusId = Convert.ToInt32(filters[5]);
+                int fundingCategoryId = Convert.ToInt32(filters[6]);
+                string startDate = filters[7]?.ToString(); // Handle as string, null if empty
+                string endDate = filters[8]?.ToString();   // Handle as string, null if empty
+                int kamId = Convert.ToInt32(filters[9]);
+
                 try
                 {
                     SqlParameter[] param = new SqlParameter[10];
@@ -247,7 +262,13 @@ namespace DataLayer.Services
                     param[1] = new SqlParameter("@TSPID", tspId);
                     param[2] = new SqlParameter("@ClassID", classId);
                     param[3] = new SqlParameter("@UserID", userId);
-                    param[4] = new SqlParameter("@OID", oID);
+                    param[4] = new SqlParameter("@OID", oId);
+                    param[5] = new SqlParameter("@ClassStatusID", classStatusId);
+                    param[6] = new SqlParameter("@FundingCategoryID", fundingCategoryId);
+                    param[7] = new SqlParameter("@StartDate", (object)startDate ?? DBNull.Value);
+                    param[8] = new SqlParameter("@EndDate", (object)endDate ?? DBNull.Value);
+                    param[9] = new SqlParameter("@KAMID", kamId);
+
                     DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_MasterSheets", param).Tables[0];
                     list = LoopinData(dt);
                 }

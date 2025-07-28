@@ -58,31 +58,38 @@ namespace MasterDataModule.Controllers
         }
 
         [HttpGet]
-        [Route("GetFilteredMasterSheet/{filter}")]
-        public IActionResult GetFilteredMasterSheet([FromQuery(Name = "filter")] int[] filter)
+        [Route("GetFilteredMasterSheet")]
+        public IActionResult GetFilteredMasterSheet(
+    [FromQuery] int schemeId = 0,
+    [FromQuery] int tspId = 0,
+    [FromQuery] int classId = 0,
+    [FromQuery] int userId = 0,
+    [FromQuery] int oId = 0,
+    [FromQuery] int classStatusId = 0,
+    [FromQuery] int fundingCategoryId = 0,
+    [FromQuery] string startDate = null,
+    [FromQuery] string endDate = null,
+    [FromQuery] int kamId = 0)
         {
             try
             {
-                int userID = filter?[3] ?? 0;
-                int oID = filter?[4] ?? 0;
                 int curUserID = Convert.ToInt32(User.Identity.Name);
                 int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
                 curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
 
-                List<object> ls = new List<object>();
+                // Pass filters to the service
+                var filters = new object[] { schemeId, tspId, classId, userId, oId, classStatusId, fundingCategoryId, startDate, endDate, kamId };
 
-                ls.Add(srvMasterSheet.FetchMasterSheetByFilters(filter));
+                List<object> ls = new List<object>();
+                ls.Add(srvMasterSheet.FetchMasterSheetByFilters(filters));
                 if (loggedInUserLevel == (int)EnumUserLevel.TSP)
                 {
                     ls.Add(srvScheme.FetchSchemesByTSPUser(curUserID));
                 }
                 else
                 {
-                    ls.Add(srvScheme.FetchScheme(new SchemeModel() { FinalSubmitted = true, OrganizationID = oID }));
+                    ls.Add(srvScheme.FetchScheme(new SchemeModel() { FinalSubmitted = true, OrganizationID = oId }));
                 }
-                //return Ok(srv.FetchMasterSheetByFilters(filter));
-                //ls.Add(srvScheme.FetchSchemeForFilter(false));
-
                 return Ok(ls);
             }
             catch (Exception e)

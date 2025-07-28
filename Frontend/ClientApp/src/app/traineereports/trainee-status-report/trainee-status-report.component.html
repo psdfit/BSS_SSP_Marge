@@ -1,4 +1,3 @@
-
 <mat-card>
   <mat-card-content>
     <div>
@@ -10,48 +9,140 @@
       <div class="row">
         <div class="col-sm-3">
           <mat-form-field fxFlex>
-            <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl($event)" matInput>
-              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" autofocus /></mat-optgrp>
-              <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+            <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl($event)"
+              matInput>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                  [formControl]="SearchSch" autofocus /></mat-optgrp>
+              <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]"
+                [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
         <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
           <mat-form-field fxFlex>
             <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl($event)" matInput>
-              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                  [formControl]="SearchTSP" autofocus /></mat-optgrp>
               <mat-option value="0" selected>--All--</mat-option>
 
-              <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>
+              <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]"
+                [value]="s.TSPID">{{s.TSPName}}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field fxFlex>
             <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl($event)" matInput>
-              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" autofocus /></mat-optgrp>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                  [formControl]="SearchCls" autofocus /></mat-optgrp>
               <mat-option value="0" selected>--All--</mat-option>
-              <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]" [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+              <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]"
+                [value]="item.ClassID">{{item.ClassCode}}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
         <div class="col-sm-3">
-          <br />
-          <button mat-raised-button color="success" style="float:right" *ngIf="tsrDatasource?.length > 0" (click)="exportToExcel()">Export Excel</button>
+          <mat-form-field fxFlex>
+            <mat-select #classStatus placeholder="Class Status" [formControl]="ClassStatusFilter"
+              (openedChange)="EmptyCtrl($event)" id="ClassStatusID" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader">
+                <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchClassStatus" />
+              </mat-optgrp>
+              <mat-option value="0">--Select--</mat-option>
+              <mat-option *ngFor="let s of ClassStatus | like:['ClassStatusName',SearchClassStatus.value]"
+                [value]="s.ClassStatusID">{{s.ClassStatusName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
+        <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+          <mat-form-field fxFlex>
+            <mat-select #kam placeholder="KAM" [formControl]="kamFilter" (openedChange)="EmptyCtrl($event)" id="KamID"
+              matInput required>
+              <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                  [formControl]="SearchKam" /></mat-optgrp>
+              <mat-option value="0">--Select--</mat-option>
+              <mat-option *ngFor="let s of Kam | like:['UserName',SearchKam.value]"
+                [value]="s.UserID">{{s.UserName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+          <mat-form-field fxFlex>
+            <mat-select #fundingCategory placeholder="Project" [formControl]="fundingCategoryFilter"
+              (openedChange)="EmptyCtrl($event)" id="FundingCategoryID" matInput required>
+              <mat-optgrp disabled class="ddlsrchheader">
+                <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchFundingCategory" />
+              </mat-optgrp>
+              <mat-option value="0">--Select--</mat-option>
+              <mat-option *ngFor="let category of Project | like:['FundingCategoryName', SearchFundingCategory.value]"
+                [value]="category.FundingCategoryID">
+                {{ category.FundingCategoryName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <input matInput [matDatepicker]="dp1" [formControl]="startDate">
+            <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+            <mat-datepicker #dp1 startView="multi-year" (yearSelected)="chosenYearHandlerForStartDate($event)"
+              (monthSelected)="chosenMonthHandlerForStartDate($event, dp1)" panelClass="example-month-picker">
+            </mat-datepicker>
+            <mat-label>Start Date </mat-label>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-2">
+          <mat-form-field fxFlex>
+            <input matInput [matDatepicker]="dp2" [formControl]="endDate">
+            <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+            <mat-datepicker #dp2 startView="multi-year" (yearSelected)="chosenYearHandlerForEndDate($event)"
+              (monthSelected)="chosenMonthHandlerForEndDate($event, dp2)" panelClass="example-month-picker">
+            </mat-datepicker>
+            <mat-label>End Date</mat-label>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-2">
+          <br />
+          <button mat-raised-button color="success" style="float:right" *ngIf="tsrDatasource?.length > 0"
+            (click)="exportToExcel()">Export Excel</button>
+        </div>
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
       <div fxLayout="column" class="table-responsive">
         <mat-table [dataSource]="tsrDatasource" matSort class="table table-bordered">
           <mat-header-row *matHeaderRowDef="displayedColumns" tabindex="0"></mat-header-row>
           <mat-row *matRowDef="let rows; columns: displayedColumns;" tabindex="0"></mat-row>
           <ng-container matColumnDef="Sr">
             <mat-header-cell *matHeaderCellDef> Sr#</mat-header-cell>
-            <mat-cell *matCellDef="let row ; let i=index">{{ (paginator.pageIndex * paginator.pageSize) + i+1}}</mat-cell>
+            <mat-cell *matCellDef="let row ; let i=index">{{ (paginator.pageIndex * paginator.pageSize) +
+              i+1}}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="TraineeCode">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Trainee's ID </mat-header-cell>
             <mat-cell *matCellDef="let row ; let index=index">
-              <a class="myAnchor" (click)="openTraineeJourneyDialogue(row.TraineeCode)" style="color: #005b9e;"> {{row.TraineeCode}} </a>
+              <a class="myAnchor" (click)="openTraineeJourneyDialogue(row.TraineeCode)" style="color: #005b9e;">
+                {{row.TraineeCode}} </a>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="TraineeName">
@@ -87,11 +178,11 @@
             <mat-cell *matCellDef="let row ; let index=index"> {{row.GuardianNextToKinName}}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="ProvinceName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Province  </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Province </mat-header-cell>
             <mat-cell *matCellDef="let row ; let index=index">{{row.ProvinceName}}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="TraineeDistrictName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> District  </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> District </mat-header-cell>
             <mat-cell *matCellDef="let row ; let index=index">{{row.TraineeDistrictName}}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="TraineeStatusName">
@@ -179,10 +270,10 @@
             </mat-cell>
           </ng-container>
         </mat-table>
-        <mat-paginator #paginator [pageSize]="10" [length]="resultsLength" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        <mat-paginator #paginator [pageSize]="10" [length]="resultsLength"
+          [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
       </div>
 
     </div>
   </mat-card-content>
 </mat-card>
-

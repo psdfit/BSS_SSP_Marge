@@ -219,13 +219,18 @@ namespace DataLayer.Services
             {
                 try
                 {
-                    SqlParameter[] param = new SqlParameter[10];
+                    SqlParameter[] param = new SqlParameter[15];
                     param[0] = new SqlParameter("@SchemeID", filters.SchemeID);
                     param[1] = new SqlParameter("@TSPID", filters.TSPID);
                     param[2] = new SqlParameter("@ClassID", filters.ClassID);
                     param[3] = new SqlParameter("@TraineeID", filters.TraineeID);
                     param[4] = new SqlParameter("@UserID", filters.UserID);
                     param[5] = new SqlParameter("@OID", filters.OID);
+                    param[6] = new SqlParameter("@ClassStatusID", filters.ClassStatusID);
+                    param[7] = new SqlParameter("@StartDate", string.IsNullOrEmpty(filters.StartDate) ? "" : filters.StartDate);
+                    param[8] = new SqlParameter("@EndDate", string.IsNullOrEmpty(filters.EndDate) ? "" : filters.EndDate);
+                    param[9] = new SqlParameter("@FundingCategoryID", filters.FundingCategoryID);
+                    param[10] = new SqlParameter("@KamID", filters.KAMID);
                     DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSRData", param).Tables[0];
                     list = LoopinTSRData(dt);
                 }
@@ -236,7 +241,7 @@ namespace DataLayer.Services
             }
             return list;
         }
-         public List<GSRLiveDataModel> GetFilteredGSRData(SearchFilter filters)
+        public List<GSRLiveDataModel> GetFilteredGSRData(SearchFilter filters)
         {
             List<GSRLiveDataModel> list = new List<GSRLiveDataModel>();
             if (filters != null)
@@ -561,6 +566,14 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
                 param.Add(new SqlParameter("@UserID", filterModel.UserID));
                 param.Add(new SqlParameter("@OID", filterModel.OID));
+                param.Add(new SqlParameter("@ClassStatusID", filterModel.ClassStatusID));
+                param.Add(new SqlParameter("@FundingCategoryID", filterModel.FundingCategoryID));
+                param.Add(new SqlParameter("@KAMID", filterModel.KAMID));
+                //param.Add(new SqlParameter("@StartDate", filterModel.StartDate));
+                //param.Add(new SqlParameter("@EndDate", filterModel.EndDate));
+                param.Add(new SqlParameter("@StartDate", string.IsNullOrEmpty(filterModel.StartDate) ? "" : (object)filterModel.StartDate));
+                param.Add(new SqlParameter("@EndDate", string.IsNullOrEmpty(filterModel.EndDate) ? "" : (object)filterModel.EndDate));
+
                 param.AddRange(Common.GetPagingParams(pagingModel));
 
                 DataTable dt = new DataTable();

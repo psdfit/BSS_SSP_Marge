@@ -14,7 +14,7 @@
                 <div class="col-4">
                   <mat-form-field fxFlex>
                     <mat-select #reportddl placeholder="Select Report" formControlName="ReportName"
-                                (openedChange)="EmptyCtrl()" id="reportddlId" matInput required>
+                      (openedChange)="EmptyCtrl()" id="reportddlId" matInput required>
                       <mat-optgrp disabled class="ddlsrchheader">
                         <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchRpt" />
                       </mat-optgrp>
@@ -28,18 +28,19 @@
                 </div>
                 <div class="col-4">
                   <mat-form-field fxFlex>
-                    <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month" formControlName="DateMonth" required readonly />
+                    <input matInput [matDatepicker]="customDatePicker" placeholder="Choose a month"
+                      formControlName="DateMonth" required readonly />
                     <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
-                    <mat-datepicker #customDatePicker startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+                    <mat-datepicker #customDatePicker startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+                      (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
                     <mat-label>Month</mat-label>
                     <mat-error *ngIf="DateMonth.invalid && DateMonth.errors.required">required</mat-error>
                   </mat-form-field>
                 </div>
-              </div>
-              <div class="row">
                 <div class="col-4">
                   <mat-form-field fxFlex>
-                    <mat-select #scheme placeholder="Scheme" formControlName="SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="getDependantFilters()" id="SchemeId" matInput required>
+                    <mat-select #scheme placeholder="Scheme" formControlName="SchemeID" (openedChange)="EmptyCtrl()"
+                      (selectionChange)="getDependantFilters()" id="SchemeId" matInput required>
                       <mat-optgrp disabled class="ddlsrchheader">
                         <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" />
                       </mat-optgrp>
@@ -54,7 +55,7 @@
                 <div class="col-4" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
                   <mat-form-field fxFlex>
                     <mat-select #tsp placeholder="TSP" formControlName="TSPID" (openedChange)="EmptyCtrl()"
-                                (selectionChange)="getClassesByTsp(tsp.value)" id="TspId" matInput required>
+                      (selectionChange)="getClassesByTsp(tsp.value)" id="TspId" matInput required>
                       <mat-optgrp disabled class="ddlsrchheader">
                         <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus />
                       </mat-optgrp>
@@ -70,17 +71,51 @@
                 <div class="col-4">
                   <mat-form-field fxFlex>
                     <mat-select placeholder="Class" formControlName="ClassID" (openedChange)="EmptyCtrl()" id="ClassID"
-                                matInput required>
+                      matInput required>
                       <mat-optgrp disabled class="ddlsrchheader">
                         <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" />
                       </mat-optgrp>
                       <mat-option value="">--Select--</mat-option>
                       <mat-option *ngFor="let item of classesArray | like :['ClassCode', SearchCls.value]"
-                                  [value]="item.ClassID">{{ item.ClassCode }}</mat-option>
+                        [value]="item.ClassID">{{ item.ClassCode }}</mat-option>
                     </mat-select>
                     <mat-error *ngIf="ClassID.invalid && ClassID.errors.required">required</mat-error>
                   </mat-form-field>
+                </div>
+                <!-- KAM Filter -->
+                <div class="col-sm-4">
+                  <mat-form-field fxFlex>
+                    <mat-select #kam placeholder="KAM" [formControl]="kamFilter" (openedChange)="EmptyCtrl()" id="KamID"
+                      matInput>
+                      <mat-optgrp disabled class="ddlsrchheader">
+                        <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchKam" />
+                      </mat-optgrp>
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let s of Kam | like:['UserName',SearchKam.value]"
+                        [value]="s.UserID">{{s.UserName}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="kamFilter.invalid && kamFilter.errors.required">required</mat-error>
+                  </mat-form-field>
+                </div>
 
+                <!-- Project Filter -->
+                <div class="col-sm-4">
+                  <mat-form-field fxFlex>
+                    <mat-select #fundingCategory placeholder="Project" [formControl]="fundingCategoryFilter"
+                      (openedChange)="EmptyCtrl()" id="FundingCategoryID" matInput>
+                      <mat-optgrp disabled class="ddlsrchheader">
+                        <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchFundingCategory" />
+                      </mat-optgrp>
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option
+                        *ngFor="let category of Project | like:['FundingCategoryName', SearchFundingCategory.value]"
+                        [value]="category.FundingCategoryID">
+                        {{ category.FundingCategoryName }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error
+                      *ngIf="fundingCategoryFilter.invalid && fundingCategoryFilter.errors.required">required</mat-error>
+                  </mat-form-field>
                 </div>
               </div>
               <div class="row">
@@ -89,7 +124,7 @@
                     Generate Report
                   </button>
                   <button class="m-3" mat-raised-button color="warn" type="submit" *ngIf="genForm.dirty"
-                          (click)="genForm.reset(); error=''">
+                    (click)="genForm.reset(); error=''">
                     Clear
                   </button>
                 </div>

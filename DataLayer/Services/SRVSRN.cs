@@ -54,6 +54,8 @@ namespace DataLayer.Services
                 //param.Add(new SqlParameter("@TspId", mod.TSPID));
                 param.Add(new SqlParameter("@TSPMasterID", mod.TSPMasterID));
                 param.Add(new SqlParameter("@UserID", mod.UserID));
+                param.Add(new SqlParameter("@ClassStatusID", mod.ClassStatusID));
+                param.Add(new SqlParameter("@FundingCategoryID", mod.FundingCategoryID));
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SRN", param.ToArray()).Tables[0];
                 return LoopinData(dt);
             }

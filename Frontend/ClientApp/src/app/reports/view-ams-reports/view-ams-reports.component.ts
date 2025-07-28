@@ -92,6 +92,15 @@ export class ViewAmsReportsComponent implements OnInit {
   working: boolean;
   customSr: number;
 
+  kamFilter = new FormControl('');
+  SearchKam = new FormControl('');
+  Kam = [];
+
+  fundingCategoryFilter = new FormControl('');
+  SearchFundingCategory = new FormControl('');
+  Project: any[] = [];
+
+
   constructor(private ComSrv: CommonSrvService, private fb: FormBuilder, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
@@ -132,6 +141,10 @@ export class ViewAmsReportsComponent implements OnInit {
         this.updateRequiredValidator(this.DateMonth, true);
       }
     })
+
+    this.getKam();
+    this.getFundingCategories();
+
   }
 
   updateRequiredValidator(control: AbstractControl, isRequired: boolean) {
@@ -298,6 +311,8 @@ export class ViewAmsReportsComponent implements OnInit {
           , ClassID: this.ClassID.value
           , Month: this.DateMonth.value
           , UserID: this.filters.UserID
+          , KAMID: this.kamFilter.value
+          , FundingCategoryID: this.fundingCategoryFilter.value
         };
         switch (this.ReportName.value) {
           case EnumAmsReports.ConfirmedMarginal:
@@ -462,6 +477,32 @@ export class ViewAmsReportsComponent implements OnInit {
     }
   }
 
+  // added KAM api endpoint:
+  getKam() {
+    this.ComSrv.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe(
+      (d: any) => {
+        this.error = '';
+        this.Kam = d;
+      },
+      error => {
+        this.error = error;
+      }
+    );
+  }
+
+  // added Project api endpoint:
+  getFundingCategories() {
+    this.ComSrv.getJSON(`api/Scheme/GetScheme?OID=${this.ComSrv.OID.value}`).subscribe((d: any) => {
+      this.Project = d[4];
+      console.log(this.Project, 'projecttt')
+    },
+      (error) => {
+        this.error = error.error;
+        this.ComSrv.ShowError(error.error + '\n' + error.message);
+      } // error path
+    );
+  }
+
   // Confirm Marginal /// start////
   generateCMReportExcel(data: any) {
     const dataForExport = this.populateData(data);
@@ -469,17 +510,13 @@ export class ViewAmsReportsComponent implements OnInit {
     const workSheet = workbook.addWorksheet();
     const detailArray = data[0].DetailString.split(',', 4);
     workSheet.mergeCells('A1:M5');
-    workSheet.getCell('A1:M5').value = `${detailArray[0]}
-${detailArray[2]}
-${detailArray[3]}`;
+    workSheet.getCell('A1:M5').value = `${detailArray[0]}${detailArray[2]}${detailArray[3]}`;
 
     const titleRow = workSheet.getCell('A1:M5');
     titleRow.style = { alignment: { wrapText: true, readingOrder: 'ltr', vertical: 'top' } };
     titleRow.font = { bold: true, };
 
-
     // workSheet.mergeCells('A1:A2:A3:A4');
-
 
     workSheet.addRow([]);
 
@@ -785,9 +822,7 @@ ${detailArray[3]}`;
     const workSheet = workbook.addWorksheet();
     workSheet.mergeCells('A1:L6');
     const detailArray = data[0].DetailString.split(',', 4);
-    workSheet.getCell('A1:L6').value = `${detailArray[0]}
-${detailArray[2]}
-${detailArray[3]}`;
+    workSheet.getCell('A1:L6').value = `${detailArray[0]}${detailArray[2]}${detailArray[3]}`;
 
     const titleRow = workSheet.getCell('A1:L6');
     titleRow.style = { alignment: { wrapText: true, readingOrder: 'ltr', vertical: 'top' } };
@@ -892,9 +927,7 @@ ${detailArray[3]}`;
     // const schemeNameForReport = data[0].SchemeName;
     const monthForReport = this.datePipe.transform(data[0].VisitDate, 'MMMM yyyy');
     //${schemeNameForReport}
-    workSheet.getCell('A1:AX5').value = `Punjab Skills Development Fund
-Trainees Attendance & Perception - Summarized Reporting
-For the Month of ${monthForReport}`;
+    workSheet.getCell('A1:AX5').value = `Punjab Skills Development Fund Trainees Attendance & Perception - Summarized Reporting For the Month of ${monthForReport}`;
 
     const titleRow = workSheet.getCell('A1:AX5');
     titleRow.style = { alignment: { wrapText: true, readingOrder: 'ltr', vertical: 'top' } };

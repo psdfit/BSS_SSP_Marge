@@ -72,14 +72,47 @@ export class SrnComponent implements OnInit {
     SearchKAM = new FormControl('');
     SearchTSP = new FormControl('');
     //filters: ISRNReportFilter = { SchemeID: 0, TSPID: 0, KAMID: 0 };
-  filters: ISRNReportFilter = { SchemeID: 0, TSPMasterID: 0, KAMID: 0 };
-  kamusers: []; schemes: []; tsps: []; tspMasters: []; srnDetailsArray: any[];
+    filters: ISRNReportFilter = { SchemeID: 0, TSPMasterID: 0, KAMID: 0, FundingCategoryID: 0, ClassStatusID: 0 };
+    kamusers: []; schemes: []; tsps: []; tspMasters: []; srnDetailsArray: any[];
     currentUser: UsersModel;
     enumUserLevel = EnumUserLevel;
-
-
+    error = '';
+    ClassStatus = [];
+    SearchClassStatus = new FormControl('');
+    ClassStatusFilter = new FormControl(0);
+    fundingCategoryFilter = new FormControl();
+    SearchFundingCategory = new FormControl('');
+    Project: any[] = [];
+    startDate = new FormControl();
+    endDate = new FormControl();
 
     constructor(private http: CommonSrvService, public dialog: MatDialog, private dialogue: DialogueService, private _date: DatePipe) { }
+
+
+    chosenYearHandlerForStartDate(normalizedYear: Moment) {
+        const ctrlValue = this.startDate.value;
+        ctrlValue.year(normalizedYear.year());
+        this.startDate.setValue(ctrlValue);
+    }
+    chosenMonthHandlerForStartDate(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+        const ctrlValue = this.startDate.value;
+        ctrlValue.month(normalizedMonth.month());
+        this.startDate.setValue(ctrlValue);
+
+        datepicker.close();
+    }
+
+    chosenYearHandlerForEndDate(normalizedYear: Moment) {
+        const ctrlValue = this.endDate.value;
+        ctrlValue.year(normalizedYear.year());
+        this.endDate.setValue(ctrlValue);
+    }
+    chosenMonthHandlerForEndDate(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+        const ctrlValue = this.endDate.value;
+        ctrlValue.month(normalizedMonth.month());
+        this.endDate.setValue(ctrlValue);
+        datepicker.close();
+    }
 
     ngOnInit(): void {
         this.http.setTitle('Stipend Recommendation Note');
@@ -89,6 +122,8 @@ export class SrnComponent implements OnInit {
             this.GetSRN();
             this.GetFiltersData();
         })
+        this.getFundingCategories();
+        this.GetClassStatus();
 
     }
 
@@ -96,6 +131,8 @@ export class SrnComponent implements OnInit {
         this.SearchKAM.setValue('');
         this.SearchTSP.setValue('');
         this.SearchSch.setValue('');
+        this.SearchClassStatus.setValue('')
+        this.SearchFundingCategory.setValue('')
     }
 
     GetFiltersData() {
@@ -115,13 +152,26 @@ export class SrnComponent implements OnInit {
     }
 
     GetSRN() {
-      // let month = new Date('2020-03-01');
-      this.http.postJSON(`api/SRN/GetSRN`, { Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPMasterID: this.filters.TSPMasterID }).subscribe(
-        //this.http.postJSON(`api/SRN/GetSRN`, { Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID  }).subscribe(
-            (data: any) => {
-                this.srn = data;
-            }
-        );
+
+        this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
+        this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
+
+        // let month = new Date('2020-03-01');
+        this.http.postJSON(`api/SRN/GetSRN`,
+            {
+                Month: this.month.value,
+                OID: this.http.OID.value,
+                KAMID: this.filters.KAMID,
+                SchemeID: this.filters.SchemeID,
+                TSPMasterID: this.filters.TSPMasterID,
+                ClassStatusID: this.filters.ClassStatusID,
+                FundingCategoryID: this.filters.FundingCategoryID
+            }).subscribe(
+                //this.http.postJSON(`api/SRN/GetSRN`, { Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID  }).subscribe(
+                (data: any) => {
+                    this.srn = data;
+                }
+            );
     }
     GetSrnDetails(r: any) {
         if (r.srnDetails) {
@@ -261,40 +311,64 @@ export class SrnComponent implements OnInit {
 
     populateData(data: any) {
         return data.map(item => {
-          return {
+            return {
 
-            'Project': item.ProjectName,
-            'Scheme': item.SchemeName,
-            'TSP': item.TSPNameSRNDetail,
-            'Class code': item.ClassCodeSRNDetail,
-            'Class start date': item.ClassStartdateSRNDetail,
-            'Class end date': item.ClassEnddateSRNDetail,
+                'Project': item.ProjectName,
+                'Scheme': item.SchemeName,
+                'TSP': item.TSPNameSRNDetail,
+                'Class code': item.ClassCodeSRNDetail,
+                'Class start date': item.ClassStartdateSRNDetail,
+                'Class end date': item.ClassEnddateSRNDetail,
 
-                    'Trainee Code': item.TraineeCode,
-                    'Trainee Name': item.TraineeName,
-                    'Father Name': item.FatherName,
-                    'Trainee CNIC': item.TraineeCNIC,
-                    'Contact Number 1': item.ContactNumber1,
-                    'Report Id': item.ReportId,
-                    Amount: item.Amount,
-                    'Token Number': item.TokenNumber,
-                    'Transaction Number': item.TransactionNumber,
-                    Comments: item.Comments
-                    // "IsPaid": item.IsPaid,
+                'Trainee Code': item.TraineeCode,
+                'Trainee Name': item.TraineeName,
+                'Father Name': item.FatherName,
+                'Trainee CNIC': item.TraineeCNIC,
+                'Contact Number 1': item.ContactNumber1,
+                'Report Id': item.ReportId,
+                Amount: item.Amount,
+                'Token Number': item.TokenNumber,
+                'Transaction Number': item.TransactionNumber,
+                Comments: item.Comments
+                // "IsPaid": item.IsPaid,
             }
         })
     }
-    openTraineeJourneyDialogue(data: any): void
-    {
-      // debugger;
-      this.dialogue.openTraineeJourneyDialogue(data);
+
+    // added Project api endpoint:
+    getFundingCategories() {
+        this.http.getJSON(`api/Scheme/GetScheme?OID=${this.http.OID.value}`).subscribe((d: any) => {
+            this.Project = d[4];
+        },
+            (error) => {
+                this.error = error.error;
+                this.http.ShowError(error.error + '\n' + error.message);
+            } // error path
+        );
     }
 
-      openClassJourneyDialogue(data: any): void
-      {
+    // added classstatus api endpoint:
+    GetClassStatus() {
+        this.http.getJSON('api/ClassStatus/RD_ClassStatus').subscribe(
+            (cs: any) => {
+                this.ClassStatus = cs;
+                console.log('Class Status Data:', cs); // Improved logging
+            },
+            error => {
+                this.error = error; // Error handling
+                console.error('Error fetching ClassStatus:', error);
+            }
+        );
+    }
+    openTraineeJourneyDialogue(data: any): void {
+        // debugger;
+        this.dialogue.openTraineeJourneyDialogue(data);
+    }
+
+    openClassJourneyDialogue(data: any): void {
         // debugger;
         this.dialogue.openClassJourneyDialogue(data);
-      }
+    }
 }
 
 export interface ISRNReportFilter {
@@ -302,4 +376,6 @@ export interface ISRNReportFilter {
     TSPMasterID: number;
     //TSPID: number;
     KAMID: number;
+    FundingCategoryID?: number;
+    ClassStatusID?: number;
 }

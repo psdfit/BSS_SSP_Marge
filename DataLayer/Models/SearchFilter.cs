@@ -17,12 +17,21 @@ namespace DataLayer.Models
         public int OID { get; set; }
         public int UserID { get; set; }
         public int TradeID { get; set; }
-        public int DistrictID { get; set; } 
+        public int DistrictID { get; set; }
         public int TehsilID { get; set; }
         public List<string> SelectedColumns { get; set; }
 
         // New fields for filtering by Month and Year
         public int? Month { get; set; }
         public int? Year { get; set; }
+
+
+        // New Fields for New Filters
+
+        public int? ClassStatusID { get; set; } // New: Class Status
+        public int? FundingCategoryID { get; set; } // New: Project
+        public int? KAMID { get; set; } // New: KAM
+        public string? StartDate { get; set; } // New: Start Date
+        public string? EndDate { get; set; } // New: End Date
     }
 }

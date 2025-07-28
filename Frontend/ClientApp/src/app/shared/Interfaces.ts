@@ -8,6 +8,11 @@ export interface SearchFilter {
   TraineeID?: number;
   OID?: number;
   SelectedColumns?: string[]
+  ClassStatusID?: number, // Class Status
+  StartDate?: string, // Start Date
+  EndDate?: string, // End Date
+  FundingCategoryID?: number, // Project 
+  KamID?: number // KAM
 }
 
 export interface SearchFilterTAR {

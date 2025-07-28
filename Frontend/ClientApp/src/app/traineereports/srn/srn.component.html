@@ -7,7 +7,8 @@
           <span class="spacer">Stipend Recommendation Note</span>
           <div class="spacer"></div>
           <div class="col-sm-2">
-            <button mat-raised-button color="success" style="float:right" *ngIf="srn?.length > 0" (click)="exportToExcel()">Export Excel</button>
+            <button mat-raised-button color="success" style="float:right" *ngIf="srn?.length > 0"
+              (click)="exportToExcel()">Export Excel</button>
           </div>
         </mat-toolbar>
         <div class="row">
@@ -18,47 +19,87 @@
               <button mat-icon-button matSuffix (click)="clearMonth();"><mat-icon>close</mat-icon></button>
               <mat-datepicker-toggle matSuffix [for]="customDatePicker"></mat-datepicker-toggle>
               <mat-datepicker startView="multi-year" #customDatePicker (yearSelected)="chosenYearHandler($event)"
-                              (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
+                (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
             </mat-form-field>
           </div>
           <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
             <mat-form-field fxFlex>
-              <mat-select placeholder="KAM" [(ngModel)]="filters.KAMID" (openedChange)="EmptyCtrl()" (selectionChange)="GetSRN()" id="kamuserid" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchKAM" /></mat-optgrp>
+              <mat-select placeholder="KAM" [(ngModel)]="filters.KAMID" (openedChange)="EmptyCtrl()"
+                (selectionChange)="GetSRN()" id="kamuserid" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                    [formControl]="SearchKAM" /></mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
-                <mat-option *ngFor="let item of kamusers | like:['UserName',SearchKAM.value]" [value]="item.UserID">{{item.UserName}}</mat-option>
+                <mat-option *ngFor="let item of kamusers | like:['UserName',SearchKAM.value]"
+                  [value]="item.UserID">{{item.UserName}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
           <div class="col-sm-3">
             <mat-form-field fxFlex>
-              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()" (selectionChange)="GetSRN()" id="SchemeId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" /></mat-optgrp>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()"
+                (selectionChange)="GetSRN()" id="SchemeId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                    [formControl]="SearchSch" /></mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
-                <mat-option *ngFor="let s of schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
+                <mat-option *ngFor="let s of schemes | like:['SchemeName',SearchSch.value]"
+                  [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
           <!--<div class="col-sm-3"  *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
-    <mat-form-field fxFlex>
-      <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="GetSRN()" id="TspId" matInput required>
-        <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
-        <mat-option value="0">--Select--</mat-option>
-        <mat-option *ngFor="let s of tsps | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>-->
+              <mat-form-field fxFlex>
+                <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="GetSRN()" id="TspId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                  <mat-option value="0">--Select--</mat-option>
+                  <mat-option *ngFor="let s of tsps | like:['TSPName',SearchTSP.value]" [value]="s.TSPID">{{s.TSPName}}</mat-option>-->
           <!--| like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]-->
           <!--</mat-select>
-    </mat-form-field>
-  </div>-->
+              </mat-form-field>
+            </div>-->
           <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
             <mat-form-field fxFlex>
-              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPMasterID" (openedChange)="EmptyCtrl()" (selectionChange)="GetSRN()" id="TspMasterId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPMasterID" (openedChange)="EmptyCtrl()"
+                (selectionChange)="GetSRN()" id="TspMasterId" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
+                    [formControl]="SearchTSP" autofocus /></mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
-                <mat-option *ngFor="let s of tspMasters | like:['TSPName',SearchTSP.value]" [value]="s.TSPMasterID">{{s.TSPName}}</mat-option>
+                <mat-option *ngFor="let s of tspMasters | like:['TSPName',SearchTSP.value]"
+                  [value]="s.TSPMasterID">{{s.TSPName}}</mat-option>
                 <!--| like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]-->
               </mat-select>
             </mat-form-field>
           </div>
+
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select #classStatus placeholder="Class Status" [formControl]="ClassStatusFilter"
+                (openedChange)="EmptyCtrl()" (selectionChange)="GetSRN()" id="ClassStatusID" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchClassStatus" />
+                </mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let s of ClassStatus | like:['ClassStatusName',SearchClassStatus.value]"
+                  [value]="s.ClassStatusID">{{s.ClassStatusName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
+            <mat-form-field fxFlex>
+              <mat-select #fundingCategory placeholder="Project" [formControl]="fundingCategoryFilter"
+                (openedChange)="EmptyCtrl()" (selectionChange)="GetSRN()" id="FundingCategoryID" matInput required>
+                <mat-optgrp disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchFundingCategory" />
+                </mat-optgrp>
+                <mat-option value="0">--Select--</mat-option>
+                <mat-option *ngFor="let category of Project | like:['FundingCategoryName', SearchFundingCategory.value]"
+                  [value]="category.FundingCategoryID">
+                  {{ category.FundingCategoryName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
         </div>
         <div class="table-responsive">
           <table class="table table-bordered">
@@ -96,7 +137,9 @@
                   </td>
                   <td>{{r.TSPName}}</td>
                   <td>
-                    <a class="myAnchor" (click)="openClassJourneyDialogue(r.ClassID)" style="color: #005b9e;"> <strong>{{r.ClassCode}}</strong> </a></td>
+                    <a class="myAnchor" (click)="openClassJourneyDialogue(r.ClassID)" style="color: #005b9e;">
+                      <strong>{{r.ClassCode}}</strong> </a>
+                  </td>
                   <td>{{r.TradeName}}</td>
                   <td class="number-align-center">{{r.Batch}}</td>
                   <td class="number-align-center">{{r.ReportDate | date:environment.MonthFormat}}</td>
@@ -112,7 +155,7 @@
                           <tr>
                             <th>Sr#</th>
                             <th *ngIf="currentUser.UserLevel != enumUserLevel.TSP">Actions</th>
-                            <!--========azhar iqbal======--> 
+                            <!--========azhar iqbal======-->
                             <th>Project</th>
                             <th>Scheme</th>
                             <th>TSP</th>
@@ -151,7 +194,8 @@
                               <td>{{c.ClassStartdateSRNDetail}}</td>
                               <td>{{c.ClassEnddateSRNDetail}}</td>
                               <td>
-                                <a class="myAnchor" (click)="openTraineeJourneyDialogue(c.TraineeCode)" style="color: #005b9e;"> {{c.TraineeCode}} </a>
+                                <a class="myAnchor" (click)="openTraineeJourneyDialogue(c.TraineeCode)"
+                                  style="color: #005b9e;"> {{c.TraineeCode}} </a>
                               </td>
                               <td>{{c.TraineeName}}</td>
                               <td>{{c.FatherName}}</td>

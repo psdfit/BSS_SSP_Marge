@@ -21,6 +21,6 @@ namespace DataLayer.Models
         super = 13,
         TPM = 14,
         MarketingCommunication = 15,
-        KAM = 20
+        KAM = 24 //Chnaged fro 20 to 24 as per Database
     }
 }

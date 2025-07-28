@@ -19,7 +19,7 @@ import { Moment } from 'moment';
 import * as XLSX from 'xlsx';
 import { DialogueService } from '../../shared/dialogue.service';
 import { SearchFilter, ExportExcel } from '../../shared/Interfaces';
-import { EnumExcelReportType, EnumUserLevel } from '../../shared/Enumerations';
+import { EnumExcelReportType, EnumUserLevel, EnumUserRoles } from '../../shared/Enumerations';
 import { UsersModel } from '../../master-data/users/users.component';
 import { environment } from '../../../environments/environment';
 
@@ -80,6 +80,7 @@ export class MPRComponent implements OnInit {
     tspDetailArray: any[];
     currentUser: UsersModel;
     enumUserLevel = EnumUserLevel;
+    enumRoleLevel = EnumUserRoles;
     mprDetailsArray: any[]; MPRDetailsBulkArray: any[];
 
     constructor(private ComSrv: CommonSrvService, public dialogueService: DialogueService) {
@@ -88,10 +89,26 @@ export class MPRComponent implements OnInit {
     SearchSch = new FormControl('');
     SearchCls = new FormControl('');
     SearchTSP = new FormControl('');
+
+    kamFilter = new FormControl(0);
+    SearchKam = new FormControl('');
+    Kam = [];
+
+    fundingCategoryFilter = new FormControl();
+    SearchFundingCategory = new FormControl('');
+    Project: any[] = [];
+
+    error = ''
+
+
+
     EmptyCtrl(Ev: any) {
         this.SearchCls.setValue('');
         this.SearchTSP.setValue('');
         this.SearchSch.setValue('');
+        this.SearchFundingCategory.setValue('');
+        this.SearchKam.setValue('');
+
     }
     chosenYearHandler(normalizedYear: Moment) {
         this.month = new FormControl(moment());
@@ -109,28 +126,65 @@ export class MPRComponent implements OnInit {
     }
     clearMonth() {
         this.month = new FormControl(moment(null));
-       // this.month.setValue(null);
+        // this.month.setValue(null);
         this.GetMPR();
-      }
+    }
     ngOnInit(): void {
         this.ComSrv.setTitle('Monthly Progress Report');
         this.currentUser = this.ComSrv.getUserDetails();
         this.GetMPR();
         this.monthlympr = []
+        this.getKam();
+        this.getFundingCategories();
+
     }
 
     GetMPR() {
         // let month = new Date('2020-03-01');
         this.ComSrv.postJSON(`api/MPR/RD_MPRBy`,
-        { Month: this.month.value, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID, ClassID: this.filters.ClassID }).subscribe(
-            (data: any) => {
-                this.mpr = data.MPR;
-                this.schemeArray = data.Schemes;
-                this.MPRIDsArray = this.mpr.map(o => o.MPRID);
-                this.MPRIDs = this.MPRIDsArray.join(',');
+            {
+                Month: this.month.value,
+                SchemeID: this.filters.SchemeID,
+                TSPID: this.filters.TSPID,
+                ClassID: this.filters.ClassID,
+                KAMID: this.kamFilter.value,
+                FundingCategoryID: this.fundingCategoryFilter.value,
+            }).subscribe(
+                (data: any) => {
+                    this.mpr = data.MPR;
+                    this.schemeArray = data.Schemes;
+                    this.MPRIDsArray = this.mpr.map(o => o.MPRID);
+                    this.MPRIDs = this.MPRIDsArray.join(',');
+                }
+            );
+    }
+
+    // added KAM api endpoint:
+    getKam() {
+        this.ComSrv.getJSON('api/KAMAssignment/RD_KAMAssignmentForFilters').subscribe(
+            (d: any) => {
+                this.error = '';
+                this.Kam = d;
+            },
+            error => {
+                this.error = error;
             }
         );
     }
+    // added Project api endpoint:
+    getFundingCategories() {
+        this.ComSrv.getJSON(`api/Scheme/GetScheme?OID=${this.ComSrv.OID.value}`).subscribe((d: any) => {
+            this.Project = d[4];
+            console.log(this.Project, 'projecttt')
+        },
+            (error) => {
+                this.error = error.error;
+                this.ComSrv.ShowError(error.error + '\n' + error.message);
+            } // error path
+        );
+    }
+
+
     GetMPRDetails(r: any) {
         if (r.mprDetails) {
             r.mprDetails = null;
@@ -153,7 +207,7 @@ export class MPRComponent implements OnInit {
         this.ComSrv.postJSON('api/MPR/GetMPRExcelExportByIDs', this.MPRIDs).subscribe((d: any) => {
             this.MPRDetailsBulkArray = d;
             // console.log(this.MPRDetailsBulkArray);
-            
+
             if (d.length === 0) {
                 this.ComSrv.ShowError('No MPR Detail Record Found');
                 return false;
@@ -180,7 +234,7 @@ export class MPRComponent implements OnInit {
             Title: 'MPR Details Report',
             Author: this.currentUser.FullName,
             Type: EnumExcelReportType.MPR,
-            Month:this.month.value,
+            Month: this.month.value,
             Data: {},
             // List1: data
             List1: this.populateData(filteredData)
@@ -239,7 +293,7 @@ export class MPRComponent implements OnInit {
     populateData(data: any) {
         return data.map(item => {
             return {
-                 'Scheme Name': item.SchemeName
+                'Scheme Name': item.SchemeName
                 , 'MPR Month': item.mprMonth
                 , 'Trainee Code': item.TraineeCode
                 , 'Trainee Name': item.TraineeName
@@ -255,35 +309,33 @@ export class MPRComponent implements OnInit {
                 // , "Trade Code": item.TradeCode
             }
         })
-  }
+    }
 
-  getDependantFilters() {
-    if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
-      this.getClassesBySchemeFilter();
+    getDependantFilters() {
+        if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
+            this.getClassesBySchemeFilter();
+        }
+        else {
+            this.getTSPDetailByScheme();
+        }
     }
-    else {
-      this.getTSPDetailByScheme();
+    openTraineeJourneyDialogue(data: any): void {
+        // debugger;
+        this.dialogueService.openTraineeJourneyDialogue(data);
     }
-  }
-  openTraineeJourneyDialogue(data: any): void
-  {
-    // debugger;
-    this.dialogueService.openTraineeJourneyDialogue(data);
-  }
-  openClassJourneyDialogue(data: any): void
-  {
-    // debugger;
-    this.dialogueService.openClassJourneyDialogue(data);
-  }
-  getClassesBySchemeFilter() {
-    this.filters.ClassID = 0;
-    this.filters.TraineeID = 0;
-    this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.filters.SchemeID}&UserID=${this.currentUser.UserID}`)
-      .subscribe(data => {
-        this.classesArray = (data as any[]);
-        // this.activeClassesArrayFilter = this.classesArrayFilter.filter(x => x.ClassStatusID == 3);
-      }, error => {
-        // this.error = error;
-      })
-  }
+    openClassJourneyDialogue(data: any): void {
+        // debugger;
+        this.dialogueService.openClassJourneyDialogue(data);
+    }
+    getClassesBySchemeFilter() {
+        this.filters.ClassID = 0;
+        this.filters.TraineeID = 0;
+        this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.filters.SchemeID}&UserID=${this.currentUser.UserID}`)
+            .subscribe(data => {
+                this.classesArray = (data as any[]);
+                // this.activeClassesArrayFilter = this.classesArrayFilter.filter(x => x.ClassStatusID == 3);
+            }, error => {
+                // this.error = error;
+            })
+    }
 }

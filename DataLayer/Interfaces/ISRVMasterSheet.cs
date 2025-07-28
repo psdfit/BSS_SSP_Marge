@@ -11,7 +11,7 @@ namespace DataLayer.Interfaces
         List<MasterSheetModel> FetchMasterSheet(MasterSheetModel mod);
         List<MasterSheetModel> FetchMasterSheet();
         List<MasterSheetModel> FetchMasterSheet(bool InActive);
-        List<MasterSheetModel> FetchMasterSheetByFilters(int[] filters);
+        List<MasterSheetModel> FetchMasterSheetByFilters(object[] filters);
         void ActiveInActive(int ID, bool? InActive, int CurUserID);
         public List<MasterSheetModel> FetchMasterSheetByPaged(PagingModel pagingModel, SearchFilter filterModel, out int totalCount);
 
