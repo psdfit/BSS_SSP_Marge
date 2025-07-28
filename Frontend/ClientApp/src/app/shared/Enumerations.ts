@@ -314,9 +314,8 @@ export enum EnumReports {
   'Bulk Trainees Status Report' = 37,
   'TSP Details Report' = 38,
   'AMS Missing Classes Data Report' = 39,
-  // 'TSP Change Request Report' = ,  -- id removed - no record in DB
+  // 'TSP Change Request Report' = 41,  -- id removed - no record in DB
   'Class-wise Payment Report' = 41,
-
 }
 export enum EnumSubReports {
   'Master Data of TSPs – Trainee Wise' = 'TraineeWise'

@@ -24,10 +24,9 @@
       <ul class="breadcrump">
         <li>
           <div class="center-align">
-            <a href="/assets/MobileApp/MobileApp.zip" download class="btn btn-large waves-effect waves-light blue darken-2">
+            <a href="../../assets/MobileApp/DVVBioMatric.zip" download class="btn btn-large waves-effect waves-light blue darken-2">
               <i class="fa fa-download left"></i> Download Biometric Mobile Application
             </a>
-            
           </div>
         </li>
       </ul>
@@ -65,7 +64,7 @@
       </a>
       <mat-menu #bell="matMenu" class="noti-panel" style="margin:0;">
         <div (scrolled)="onScroll()" [infiniteScrollDistance]="5" [infiniteScrollThrottle]="1000" [scrollWindow]="false"
-          class="drop-content" infiniteScroll style="cursor: pointer;">
+             class="drop-content" infiniteScroll style="cursor: pointer;">
           <div class="card-header">Notification</div>
           <div *ngFor="let s of NotificationslIST">
             <div (click)="CurrentopenNotification(s)" *ngIf="s.IsRead==true;else loggedOut" class="list-noti">
@@ -170,7 +169,7 @@
             <router-outlet (deactivate)="onDeactivate()" #o="outlet">
             </router-outlet>
           </div>
-          <footer>© 2021 Punjab Skills Development Fund</footer>
+          <footer>© 2025 Punjab Skills Development Fund</footer>
         </div>
       </div>
     </div>

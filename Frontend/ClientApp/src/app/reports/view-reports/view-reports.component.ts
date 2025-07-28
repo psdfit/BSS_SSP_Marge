@@ -752,7 +752,6 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
         break;
 
-
       case EnumReports['Class-wise Payment Report']:
 
 

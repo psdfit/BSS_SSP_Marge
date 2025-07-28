@@ -578,12 +578,12 @@ namespace DataLayer.Services
         {
             errMsg = string.Empty;
             bool result = false;
-            result = !IsAlreadyExistsByEmail(model.TraineeID, model.TraineeEmail, out errMsg);
+            result = !IsAlreadyExistsByEmail(model.ClassID, model.TraineeEmail, out errMsg);
 
             return result;
         }
 
-        public bool IsAlreadyExistsByEmail(int TraineeID, string traineeEmail, out string errMsg)
+        public bool IsAlreadyExistsByEmail(int classid, string traineeEmail, out string errMsg)
         {
             bool isExist = false;
             errMsg = string.Empty;
@@ -591,9 +591,10 @@ namespace DataLayer.Services
             {
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@TraineeEmail", traineeEmail));
+                param.Add(new SqlParameter("@ClassID", classid));
 
                 // DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "[dbo].[V_CheckDualEmail]", param.ToArray()).Tables[0];
-                DataSet dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, "SELECT DBO.CheckDualEmail('" + traineeEmail + "') as Count");
+                DataSet dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, "SELECT DBO.CheckDualEmail('" + traineeEmail + "', "+ classid +") as Count");
                 if (dt.Tables[0].Rows.Count > 0 && Convert.ToInt32(dt.Tables[0].Rows[0]["Count"]) > 0)
                 {
                     isExist = true;

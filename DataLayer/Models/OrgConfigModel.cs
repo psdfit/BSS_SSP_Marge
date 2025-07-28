@@ -54,6 +54,7 @@ namespace DataLayer.Models
         public int StipNoteGenLTMonth { get; set; }
         public int MPRDenerationDay { get; set; }
         public int EmploymentDeadline { get; set; }
+        public int OJTDeadline { get; set; }
         public int DeductionSinceInceptionPercent { get; set; }
         public int DeductionFailedTraineesPercent { get; set; }
 

@@ -39,6 +39,7 @@ namespace DataLayer.Interfaces
         DataSet GetSelfTSPList(int ClassID);
 
         TSPEmploymentModel GetTraineeData(int classID, int traineeID);
+        TSPEmploymentModel GetTraineeDataOJT(int classID, int traineeID);
 
         bool ForwardedToTelephonic(ForwardToTelephonicVerification Model);
         bool ForwardedToTelephonicOJT(ForwardToTelephonicVerification Model);
