@@ -58,8 +58,10 @@ namespace DataLayer.Interfaces
         public List<RD_ClassForTSPModel> GetTelephonicEmploymentVerificationClasses();
 
         public List<TSPEmploymentExcelModel> FetchReportedPlacementToExport(QueryFilters filters);
+        public List<TSPEmploymentExcelModel> FetchReportedOJTToExport(QueryFilters filters);
 
         public List<RD_ClassForTSPModelExportExcelVerifedEmploymentReport> FetchVerifiedPlacementToExport(QueryFilters filters);
+        public List<RD_ClassForTSPModelExportExcelVerifedEmploymentReport> FetchVerifiedOJTToExport(QueryFilters filters);
 
         public List<RD_TSPForEmploymentVerificationModel> GetTPSDetailForEmploymentVerification(int placementTypeId, int veificationMethodId);
         public List<RD_TSPForEmploymentVerificationModel> GetTPSDetailForEmploymentVerificationOJT(int placementTypeId, int veificationMethodId);

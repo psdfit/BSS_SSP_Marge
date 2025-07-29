@@ -716,7 +716,7 @@ namespace DataLayer.Services
                     @ClassID = mod.ClassID,
                     @TSPID = mod.TSPID,
                     @TraineeID = mod.TraineeID ?? 0,
-                    @VerificationMethodID = mod.VerificationMethodId ?? 0,
+                    @VerificationMethodID = 7,// mod.VerificationMethodId ?? 0,
                     @PlacementTypeID = mod.PlacementTypeID ?? 0
                 }, CommandType.StoredProcedure);
                 //list.ForEach(itm => itm.FilePath = Common.GetFileBase64(itm.FilePath));
@@ -741,11 +741,41 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+
+        public List<TSPEmploymentExcelModel> FetchReportedOJTToExport(QueryFilters filters)
+        {
+            try
+            {
+                var list = _dapper.Query<TSPEmploymentExcelModel>("RD_PlacementFormEOJT_ExportExcel_Reported", new
+                {
+                    @SchemeID = filters.SchemeID,
+                    @TSPID = filters.TSPID,
+                    @ClassID = filters.ClassID,
+                }, CommandType.StoredProcedure);
+                return list;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
         public List<RD_ClassForTSPModelExportExcelVerifedEmploymentReport> FetchVerifiedPlacementToExport(QueryFilters filters)
         {
             try
             {
                 var list = _dapper.Query<RD_ClassForTSPModelExportExcelVerifedEmploymentReport>("RD_PlacementFormE_ExportExcel_Verified", new
+                {
+                    @SchemeID = filters.SchemeID,
+                    @TSPID = filters.TSPID,
+                    @ClassID = filters.ClassID,
+                }, CommandType.StoredProcedure);
+                return list;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<RD_ClassForTSPModelExportExcelVerifedEmploymentReport> FetchVerifiedOJTToExport(QueryFilters filters)
+        {
+            try
+            {
+                var list = _dapper.Query<RD_ClassForTSPModelExportExcelVerifedEmploymentReport>("RD_PlacementFormEOJT_ExportExcel_Verified", new
                 {
                     @SchemeID = filters.SchemeID,
                     @TSPID = filters.TSPID,

@@ -47,17 +47,17 @@
         <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
           <mat-tab label="TSP">
             <div class="row" style="line-height: 5rem;">
-              <div class="col-3">
+              <!--<div class="col-3">
                 <mat-radio-group aria-label="Select an option" [ngModel]="filters.PlacementTypeID">
                   <mat-radio-button *ngFor="let s of placementTypes" [value]="s.PlacementTypeID"
                                     (change)="placementTypeChange($event)"
                                     style="margin-left:5px;">{{s.PlacementType}}</mat-radio-button>
                 </mat-radio-group>
-              </div>
+              </div>-->
               <div class="col-sm-3">
                 <mat-form-field fxFlex>
                   <mat-select placeholder="Verification Method" [disabled]="false" matInput [ngModel]="filters.VerificationMethodID" (selectionChange)="verficationMethodChange($event)">
-                    <mat-option value="0">--Select--</mat-option>
+                    <!--<mat-option value="0">--Select--</mat-option>-->
                     <mat-option *ngFor="let s of verificationMethodsDrp" [value]="s.VerificationMethodID">{{s.VerificationMethodType}}</mat-option>
                   </mat-select>
 
@@ -86,11 +86,17 @@
 
             </div>
             <div class="row">
-              <div class="col-9">
+              <div class="col-3">
                 <button mat-raised-button color="primary" (click)="forwardToTelephonic()">Forward to Telephonic Verification</button>
               </div>
+              <div class="col-sm-3">
+                <button style="float:right" class="btn btn-success" (click)="exportToExcelReportedEmploymentData()" mat-raised-button>Reported/Verified OJT</button>
+              </div>
+              <div class="col-sm-3">
+                <button style="float:right" class="btn btn-primary" (click)="exportToExcelVerifiedEmploymentData()" mat-raised-button>Verified OJT Summary</button>
+                </div>
               <div class="col-3">
-                <button mat-raised-button color="success" style="float:right" (click)="exportToExcelTraineesData()">Export Trainees Data to Excel</button>
+                <button mat-raised-button color="success" style="float:right" (click)="exportToExcelTraineesData()">Export Call center report</button>
               </div>
             </div>
             <br />

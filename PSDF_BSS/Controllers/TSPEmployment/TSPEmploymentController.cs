@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 
 namespace PSDF_BSS.Controllers.TSPEmployment
@@ -438,12 +439,49 @@ namespace PSDF_BSS.Controllers.TSPEmployment
         }
 
         [HttpPost]
+        [Route("ReportedOJTExportExcel")]
+        public IActionResult ReportedOJTExportExcel(QueryFilters filters)
+        {
+            try
+            {
+                var data = srv.FetchReportedOJTToExport(filters);
+                //{
+                //    filters
+                //});
+                return Ok(data);
+                //{
+                //    SelfList = data,
+                //    TypeID = pId
+                //});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("VerifiedEmploymentExportExcel")]
         public IActionResult VerifiedEmploymentExportExcel(QueryFilters filters)
         {
             try
             {
                 var data = srv.FetchVerifiedPlacementToExport(filters);
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("VerifiedOJTExportExcel")]
+        public IActionResult VerifiedOJTExportExcel(QueryFilters filters)
+        {
+            try
+            {
+                var data = srv.FetchVerifiedOJTToExport(filters);
                 return Ok(data);
             }
             catch (Exception e)
@@ -870,7 +908,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             try
             {
                 return Ok(new
-                {
+                { 
                     ClassList = srv.GetClassesForEmploymentVerificationOJT(pId, vmId, tspId, cId)
                 });
             }

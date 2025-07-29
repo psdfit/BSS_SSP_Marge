@@ -49,8 +49,8 @@ export class OjtDeoVerificationComponent implements OnInit {
   ApprovalData: any;
   error: any;
   working: boolean;
-  filters: IEmpVarificationFilter = { ClassID: 0, TSPID: 0, PlacementTypeID: 0, VerificationMethodID: 0 };
-  filtersPSP: IPSPEmploymentFilters = { PSPBatchID: 0, PlacementTypeID: 0, VerificationMethodID: 0 };
+  filters: IEmpVarificationFilter = { ClassID: 0, TSPID: 0, PlacementTypeID: 2, VerificationMethodID: 0 };
+  filtersPSP: IPSPEmploymentFilters = { PSPBatchID: 0, PlacementTypeID: 2, VerificationMethodID: 0 };
   EmploymentTypeID: number;
   PendingEmploymentVerifications: number;
   PendingCNICVerifications: number;
@@ -60,7 +60,8 @@ export class OjtDeoVerificationComponent implements OnInit {
   SearchTSPList = new FormControl('',);
   SearchBatch = new FormControl('',);
   selection = new SelectionModel<any>(true, []);
-
+  ReportedEmploymentList: any;
+  VerifiedEmploymentList: any;
   @ViewChild('tabGroup') tabGroup;
 
   constructor(private fb: FormBuilder, private dialogue: DialogueService, public dialog: MatDialog, private comSrv: CommonSrvService, private _date: DatePipe) { }
@@ -69,12 +70,13 @@ export class OjtDeoVerificationComponent implements OnInit {
     this.comSrv.setTitle("DEO Employment Verification");
     this.getDeoDashboardStats();
     this.getVerificationDropdowns();
-    this.filters.PlacementTypeID = 1;
+    this.filters.PlacementTypeID = 2;
     this.GetTSPs();
+    this.filters.VerificationMethodID = 6;
     this.GetClassesForDEOVerification();
     //this.GetClasses();
     this.initForm();
-
+   // this.verficationMethodChange(this.filters.VerificationMethodID);
   }
   EmptyCtrl() {
     this.SearchCls.setValue('');
@@ -150,10 +152,12 @@ export class OjtDeoVerificationComponent implements OnInit {
         console.log(d);
         this.placementTypes = d.placementTypes;
         this.verificationMethods = d.verificationMethods;
-        let pId = this.placementTypes.length > 0 ? this.placementTypes[0].PlacementTypeID : 1;
+        let pId = this.placementTypes.length > 0 ? this.placementTypes[1].PlacementTypeID : 2;
         this.filters.PlacementTypeID = pId;
         this.verificationMethodsDrp = this.verificationMethods.filter(x => x.PlacementTypeID == pId && x.VerificationMethodID != 7);
+        this.filters.VerificationMethodID = this.verificationMethodsDrp[0].VerificationMethodID;
         //this.GetSelfEmploymentList();
+       
       }
       , (error) => {
         console.error(JSON.stringify(error));
@@ -201,7 +205,7 @@ export class OjtDeoVerificationComponent implements OnInit {
         console.log(d);
         this.placementTypesPSP = d.placementTypes;
         this.verificationMethodsPSP = d.verificationMethods;
-        let pIdPSP = this.placementTypes.length > 0 ? this.placementTypes[0].PlacementTypeID : 1;
+        let pIdPSP = this.placementTypes.length > 0 ? this.placementTypes[1].PlacementTypeID : 2;
         this.filtersPSP.PlacementTypeID = pIdPSP;
         this.verificationMethodsDrpPSP = this.verificationMethodsPSP.filter(x => x.PlacementTypeID == pIdPSP && x.VerificationMethodID != 7);
         this.GetPSPSelfEmploymentList();
@@ -284,6 +288,8 @@ export class OjtDeoVerificationComponent implements OnInit {
   }
 
   GetClassesForDEOVerification() {
+    //let vmIds = this.filters.VerificationMethodID ? this.filters.VerificationMethodID : '6,8';
+
     this.comSrv.getJSON(`api/TSPEmployment/GetEmploymentVerificationClassesOJT?pId=${this.filters.PlacementTypeID}&vmId=${this.filters.VerificationMethodID}&tspId=${this.filters.TSPID}&cId=${this.filters.ClassID}`).subscribe(
       (d: any) => {
         if (this.filters.ClassID == 0) {
@@ -482,14 +488,37 @@ export class OjtDeoVerificationComponent implements OnInit {
       }
     );
   }
+  exportToExcelReportedEmploymentData() {
+    this.comSrv.postJSON('api/TSPEmployment/ReportedOJTExportExcel', this.filters).subscribe(
+      (d: any) => {
+        this.ReportedEmploymentList = d;
+        this.exportToExcelReportedEmployment();
+      }
+      , (error) => {
+        console.error(error);
+      }
+    );
+  }
 
-  exportToExcel() {
+  exportToExcelVerifiedEmploymentData() {
+    this.comSrv.postJSON('api/TSPEmployment/VerifiedOJTExportExcel', this.filters).subscribe(
+      (d: any) => {
+        this.VerifiedEmploymentList = d;
+        this.exportToExcelVerifiedEmployment();
+      }
+      , (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+   exportToExcel() {
     let filteredData = [...this.TraineeListForExcel]
     let data = {
     };
 
     let exportExcel: ExportExcel = {
-      Title: 'DEO Employment Verification Report',
+      Title: 'Call Centre Employment Verification Report',
       Author: '',
       Type: EnumExcelReportType.UnVerifiedTraineesChangeRequestApproval,
       Data: data,
@@ -498,30 +527,108 @@ export class OjtDeoVerificationComponent implements OnInit {
     this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
   }
 
+  exportToExcelReportedEmployment() {
+    let filteredData = [...this.ReportedEmploymentList]
+    if (!this.ReportedEmploymentList || this.ReportedEmploymentList.length === 0) {
+      this.comSrv.ShowError("No data available for export.");
+      throw new Error('No data available for export.');
+    }
+    let data = {};
+
+    let exportExcel: ExportExcel = {
+      Title: 'Reported OJT Report',
+      Author: '',
+      Type: EnumExcelReportType.ReportedEmployment,
+      Data: data,
+      List1: this.populateDataReportedEmployment(filteredData),
+    };
+    this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
+  }
+
+  exportToExcelVerifiedEmployment() {
+    let filteredData = [...this.VerifiedEmploymentList]
+    let data = {
+    };
+
+    let exportExcel: ExportExcel = {
+      Title: 'Verified OJT Report',
+      Author: '',
+      Type: EnumExcelReportType.VerifiedEmployment,
+      Data: data,
+      List1: this.populateDataVerifiedEmployment(filteredData),
+    };
+    this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
+  }
 
   populateData(data: any) {
     return data.map(item => {
       return {
         //"Scheme": item.SchemeName
-        "ME Verification": item.VerificationStatus
-        , "Comments": item.Comments
+        "CC Decision": item.VerificationStatus,
+        "CC Supervisor Response": item.CCSupervisorResponse,
+        "CC Trainee Response": item.CCTraineeResponse,
+        "Submission Date": this._date.transform(item.EmploymentSubmitedDate, 'MM/dd/yyyy'),
+        //, "Comments": item.Comments,
+        "Scheme": item.SchemeName,
+        "TSP Name": item.TSPName
+      //  , "TradeName": item.TradeName
+        , "Class Code": item.ClassCode
+        , "TraineeID": item.TraineeCode
+       // , "Class Start Date": this._date.transform(item.StartDate, 'MM/dd/yyyy')
+        , "Class End Date": this._date.transform(item.EndDate, 'MM/dd/yyyy')
+        , "Trainee Name": item.TraineeName
+        , "Trainee CNIC": item.TraineeCNIC
+        , "Gender": item.GenderName
+        , "Designation": item.Designation
+        , "Department": item.Department
+        , "NameOfEmployer": item.EmployerName
+        , "Employment Address": item.EmploymentAddress
+        //, "Employment Duration": item.EmploymentDuration
+        , "Employment Timing": item.EmploymentTiming
+        , "OfficeContactNo": item.OfficeContactNo
+        , "Salary": item.Salary
+       // , "EmploymentCommitment": item.EmploymentCommitment
+        , "Employment Start Date": this._date.transform(item.EmploymentStartDate, 'MM/dd/yyyy')
+        , "Trainee Contact Number": item.ContactNumber
+        , "Supervisor Name": item.SupervisorName
+        , "Employment Status": item.EmploymentStatus
+        , "Employer Business Type": item.EmployerBusinessType
+        , "EmploymentDistrict": item.DistrictName
+        , "EmploymentTehsil": item.TehsilName
+
+        //, "Permanent Address": item.PermanentAddress
+        //, "Permanent District": item.PermanentDistrict
+        //, "Permanent Tehsil": item.PermanentTehsil
+      }
+    })
+  }
+  populateDataReportedEmployment(data: any) {
+    return data.map(item => {
+      return {
+        "Scheme": item.SchemeName
+        , "Trade Name": item.TradeName
         , "TSP Name": item.TSPName
         , "Class Code": item.ClassCode
-        , "PlacementType": item.PlacementType
-        , "Verification Source": item.VerificationMethodType
         , "Class Start Date": this._date.transform(item.StartDate, 'MM/dd/yyyy')
         , "Class End Date": this._date.transform(item.EndDate, 'MM/dd/yyyy')
         , "TraineeID": item.TraineeCode
-        , "Trade Name": item.TradeName
         , "Trainee CNIC": item.TraineeCNIC
         , "Trainee Contact Number": item.ContactNumber
         , "Designation": item.Designation
         , "Department": item.Department
         , "Employer Name": item.EmployerName
-        , "Employer Business Type": item.EmployerBusinessType
+        //, "Employer Business Type": item.EmployerBusinessType
         , "Employment Address": item.EmploymentAddress
         , "Supervisor Name": item.SupervisorName
         , "SupervisorContactNumber": item.SupervisorContact
+        , "PlacementType": item.PlacementType
+        , "Verification Source": item.VerificationMethodType
+        , "Document Verification": item.DEOVerification
+        , "Telephonic Verification": item.TelephonicVerification
+        , "Final Verification": item.FinalVerification
+        , "Employment Status": item.EmploymentStatus
+        , "Comments": item.Comments
+
         //, "Permanent Address": item.PermanentAddress
         //, "Permanent District": item.PermanentDistrict
         //, "Permanent Tehsil": item.PermanentTehsil
@@ -529,6 +636,32 @@ export class OjtDeoVerificationComponent implements OnInit {
     })
   }
 
+  populateDataVerifiedEmployment(data: any) {
+    return data.map(item => {
+      return {
+        "Class Code": item.ClassCode
+        , "Scheme": item.SchemeName
+        , "TSP": item.TSPName
+        , "Class Status": item.ClassStatusName
+        //, "Verification Source": item.VerificationMethodType
+        //, "Completion Date": this._date.transform(item.StartDate, 'MM/dd/yyyy')
+        , "Completion Date": this._date.transform(item.EndDate, 'MM/dd/yyyy')
+        , "Contractual Trainees Per Class": item.TraineesPerClass
+        , "Completed Trainees": item.CompletedTrainees
+        , "Employment Commitment in percentage": item.OverallEmploymentCommitment
+        , "Employment Commitment Trainees": item.EmploymentCommittedTrainees
+        , "Employment Reported": item.EmploymentReported
+        , "Verified": item.VerifiedEmployment
+        , "Verified to Commitment": item.VerifiedToContractualCommitment + '%'
+        , "Source Of Verification": item.SourceOfVerification
+        , "KAM": item.KAM
+        //, "Employment Address": item.EmploymentAddress
+        //, "Supervisor Name": item.SupervisorName
+        //, "SupervisorContactNumber": item.SupervisorContact
+
+      }
+    })
+  }
   openVerificationDialog(item: any): void {
     console.log('yyyy', item)
     const dialogRef = this.dialog.open(DEOOJTEmploymentVerificationDialogComponent, {
