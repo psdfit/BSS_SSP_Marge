@@ -54,6 +54,14 @@ export class ViewAllNotificationComponent implements OnInit, AfterViewInit {
       this.ReadNotification(this.NotificationDetailID)
     }
     this.http.setTitle('View All Notification');
+    this.route.paramMap.subscribe(params => {
+      const id = +params.get('id');
+      if (id) {
+        this.NotificationDetailID = id;
+        this.GetNotificationDetasilByID(id);
+        this.ReadNotification(id);
+      }
+    });
     // this.GetNotificationsDetail();
 
   }

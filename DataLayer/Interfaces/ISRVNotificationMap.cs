@@ -12,6 +12,8 @@ namespace DataLayer.Interfaces
         List<NotificationsMapModel> GetProcessInfoByProcessKey(string ProcessKey);
         bool ReadNotification(int? NotificationDetailID);
         List<NotificationDetailModel> GetNotificationDetasilByID(int NotificationDetailID);
+
+        bool MarkAllNotificationsAsRead(int userId); 
       //  bool saveCentreMonitoringClassRecordNotification(List<RTPModel> model, int? CurUserID);
     }
 

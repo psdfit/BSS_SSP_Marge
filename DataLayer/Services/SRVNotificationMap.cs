@@ -112,7 +112,41 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
-       
+
+        public bool MarkAllNotificationsAsRead(int userId)
+        {
+            try
+            {
+                // First, get all NotificationDetailIDs for the user
+                SqlParameter[] fetchParam = new SqlParameter[1];
+                fetchParam[0] = new SqlParameter("@UserID", userId);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GetAllNotificationsByUserID", fetchParam).Tables[0];
+
+                // Convert NotificationDetailIDs to comma-separated string
+                List<int> notificationIds = dt.AsEnumerable()
+                    .Select(row => row.Field<int>("NotificationDetailID"))
+                    .ToList();
+                string notificationDetailIds = string.Join(",", notificationIds);
+
+                if (!string.IsNullOrEmpty(notificationDetailIds))
+                {
+                    // Call the stored procedure to mark notifications as read
+                    SqlParameter[] param = new SqlParameter[2];
+                    param[0] = new SqlParameter("@NotificationDetailIDs", notificationDetailIds);
+                    param[1] = new SqlParameter("@IsRead", 1);
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AI_ReadAllNotifications", param);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+
 
     }
 }

@@ -127,6 +127,20 @@ namespace PSDF_BSS.Controllers.Master
                 return BadRequest(e.InnerException.ToString());
             }
         }
+        [HttpPost]
+        [Route("MarkAllAsRead")]
+        public IActionResult MarkAllAsRead([FromBody] int userId)
+        {
+            try
+            {
+                bool success = srv.MarkAllNotificationsAsRead(userId);
+                return Ok(success);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException?.ToString());
+            }
+        }
         [HttpGet]
         [Route("GetNotificationDetasilByID")]
         public IActionResult GetNotificationDetasilByID(int NotificationDetailID)

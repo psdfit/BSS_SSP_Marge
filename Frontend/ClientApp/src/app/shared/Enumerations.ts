@@ -316,6 +316,8 @@ export enum EnumReports {
   'AMS Missing Classes Data Report' = 39,
   // 'TSP Change Request Report' = 41,  -- id removed - no record in DB
   'Class-wise Payment Report' = 41,
+  'Organization Configuration Report' = 42,
+
 }
 export enum EnumSubReports {
   'Master Data of TSPs – Trainee Wise' = 'TraineeWise'
@@ -370,4 +372,5 @@ export enum EnumReportsFilters {
   , 'Employment Status' = 'EmploymentStatus'
   , 'Program Category' = 'ProgramCategory'
   , 'FundingCategory' = 'FundingCategory'
+  , 'Business Rule Type' = 'BusinessRuleType'
 }

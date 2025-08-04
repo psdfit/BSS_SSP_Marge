@@ -17,8 +17,8 @@ namespace DataLayer.Models
         public int UserID { get; set; }
         public DateTime Month { get; set; }
         //public int UserID { get; set; }
-        public int? KAMID { get; set; }
-        public int? FundingCategoryID { get; set; }
+        public string? KAMID { get; set; }
+        public string? FundingCategoryID { get; set; }
 
 
     }

@@ -337,11 +337,19 @@ namespace DataLayer.Services
         {
             try
             {
-                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Scheme", new SqlParameter("@BusinessRuleType", BusinessRuleType)).Tables[0];
+                SqlParameter businessRuleParam = new SqlParameter("@BusinessRuleType",
+                    BusinessRuleType == "0" ? DBNull.Value : (object)BusinessRuleType);
+
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Scheme", businessRuleParam).Tables[0];
+
                 return LoopinData(dt, true);
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+
 
         //=======================================================
 

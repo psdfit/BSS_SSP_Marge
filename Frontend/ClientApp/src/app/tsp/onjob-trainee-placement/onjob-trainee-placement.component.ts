@@ -585,8 +585,8 @@ classData:any=[]
         , "Trade Name": item.TradeName
         , "TSP Name": item.TSPName
         , "Class Code": item.ClassCode
-        , "Class Start Date": this._date.transform(item.StartDate, 'MM/dd/yyyy')
-        , "Class End Date": this._date.transform(item.EndDate, 'MM/dd/yyyy')
+        , "Class Start Date": this._date.transform(item.StartDate, 'dd-MM-yyyy')
+        , "Class End Date": this._date.transform(item.EndDate, 'dd-MM-yyyy')
         , "TraineeID": item.TraineeCode
         , "Trainee CNIC": item.TraineeCNIC
         , "Trainee Contact Number": item.ContactNumber
@@ -621,7 +621,7 @@ classData:any=[]
         , "Class Status": item.ClassStatusName
         //, "Verification Source": item.VerificationMethodType
         //, "Completion Date": this._date.transform(item.StartDate, 'MM/dd/yyyy')
-        , "Completion Date": this._date.transform(item.EndDate, 'MM/dd/yyyy')
+        , "Completion Date": this._date.transform(item.EndDate, 'DD-MM-YYYY')
         , "Contractual Trainees Per Class": item.TraineesPerClass
         , "Completed Trainees": item.CompletedTrainees
         , "Employment Commitment in percentage": item.OverallEmploymentCommitment

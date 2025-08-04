@@ -381,6 +381,16 @@ namespace DataLayer.Services
             MasterSheet.ProgramFocusName = r["ProgramFocusName"].ToString();
             MasterSheet.TSPNTN = r["TSPNTN"].ToString();
             MasterSheet.PTypeName = r["PTypeName"].ToString();
+            MasterSheet.FormalCommitment = r["FormalCommitment"].ToString();
+            MasterSheet.SelfCommitment = r["SelfCommitment"].ToString();
+            MasterSheet.TraineeVerified = r["TraineeVerified"].ToString();
+            MasterSheet.ResultStatus = r["ResultStatus"].ToString();
+            MasterSheet.EmploymentReported = r["EmploymentReported"].ToString();
+            MasterSheet.EmploymentVerified = r["EmploymentVerified"].ToString();
+            MasterSheet.PendingPRNsRegular = r["PendingPRNsRegular"].ToString();
+            MasterSheet.PendingPRNsCompleted = r["PendingPRNsCompleted"].ToString();
+            MasterSheet.PendingPRNsEmployment = r["PendingPRNsEmployment"].ToString();
+
             //MasterSheet.SAPID = r["SAPID"].ToString();
 
             if (r.Table.Columns.Contains("ProvinceID"))
@@ -400,6 +410,7 @@ namespace DataLayer.Services
             {
                 MasterSheet.RegistrationAuthorityName = r["RegistrationAuthorityName"].ToString();
             }
+
             //MasterSheet.ModifiedUserID = Convert.ToInt32(r["ModifiedUserID"]);
             //MasterSheet.CreatedDate = r["CreatedDate"].ToString().GetDate();
             //MasterSheet.ModifiedDate = r["ModifiedDate"].ToString().GetDate();

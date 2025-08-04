@@ -1,5 +1,6 @@
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DataLayer.Models
 {
@@ -109,6 +110,15 @@ namespace DataLayer.Models
         public string TotalClassDays { get; set; }
         public string SAPID { get; set; }
         public string RegistrationAuthorityName { get; set; }
+        public string FormalCommitment { get; set; }
+        public string SelfCommitment { get; set; }
+        public string TraineeVerified { get; set; }
+        public string ResultStatus { get; set; }
+        public string EmploymentReported { get; set; }
+        public string EmploymentVerified { get; set; }
+        public string PendingPRNsRegular { get; set; }
+        public string PendingPRNsCompleted { get; set; }
+        public string PendingPRNsEmployment { get; set; }
 
         //public string TrainerName	{ get; set; }
         //public string TrainerCNIC	{ get; set; }

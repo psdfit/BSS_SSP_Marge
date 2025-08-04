@@ -80,7 +80,17 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
     'EmploymentInvoiceStatus',
     'Shift', 'Section',
     'Sector', 'OverallEmploymentCommitment', 'MinimumEducation', 'Organization', 'TradeCode',
-    'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC', 'TSPNTN', 'FundingCategoryName', 'IsDVV', 'TotalClassDays', 'DayNames', 'SourceOfCurriculum', 'PaymentSchedule',
+    'Cluster', 'UserName', 'InstructorName', 'InstructorCNIC', 'TSPNTN', 'FundingCategoryName',
+    'IsDVV', 'TotalClassDays', 'DayNames', 'SourceOfCurriculum', 'PaymentSchedule',
+    'FormalCommitment',
+    'SelfCommitment',
+    'TraineeVerified',
+    'ResultStatus',
+    'EmploymentReported',
+    'EmploymentVerified',
+    'PendingPRNsRegular',
+    'PendingPRNsCompleted',
+    'PendingPRNsEmployment',
     'Action'];
   displayedTPMColumns = ['Batch', 'ClassID', 'TrainingAddressLocation', 'TradeID', 'ProvinceID', 'TehsilID', 'DistrictID', 'Duration', 'StartDate', 'EndDate', 'SectorID', 'OverallEmploymentCommitment', 'MinimumEducation', 'OID',
     'UserID',
@@ -492,6 +502,16 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         , 'Registration Authority': item.RegistrationAuthorityName == "" ? '---' : item.RegistrationAuthorityName
         , 'Program Focus': item.ProgramFocusName
         , 'SAPID': item.SAPID
+        , 'FormalCommitment': item.FormalCommitment
+        , 'SelfCommitment': item.SelfCommitment
+        , 'TraineeVerified': item.TraineeVerified
+        , 'ResultStatus': item.ResultStatus
+        , 'EmploymentReported': item.EmploymentReported
+        , 'EmploymentVerified': item.EmploymentVerified
+        , 'PendingPRNsRegular': item.PendingPRNsRegular
+        , 'PendingPRNsCompleted': item.PendingPRNsCompleted
+        , 'PendingPRNsEmployment': item.PendingPRNsEmployment
+        ,
       }
     })
   }
@@ -613,8 +633,19 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   get ClassStatusID() { return this.mastersheetform.get('ClassStatusID'); }
   get ClassStatusName() { return this.mastersheetform.get('ClassStatusName'); }
   get Shift() { return this.mastersheetform.get('Shift'); }
-
   get InActive() { return this.mastersheetform.get('InActive'); }
+
+  get FormalCommitment() { return this.mastersheetform.get('FormalCommitment'); }
+  get SelfCommitment() { return this.mastersheetform.get('SelfCommitment'); }
+  get TraineeVerified() { return this.mastersheetform.get('TraineeVerified'); }
+  get ResultStatus() { return this.mastersheetform.get('ResultStatus'); }
+  get EmploymentReported() { return this.mastersheetform.get('EmploymentReported'); }
+  get EmploymentVerified() { return this.mastersheetform.get('EmploymentVerified'); }
+  get PendingPRNsRegular() { return this.mastersheetform.get('PendingPRNsRegular'); }
+  get PendingPRNsCompleted() { return this.mastersheetform.get('PendingPRNsCompleted'); }
+  get PendingPRNsEmployment() { return this.mastersheetform.get('PendingPRNsEmployment'); }
+
+
 }
 export class MasterSheetModel extends ModelBase {
   ID: number;
@@ -674,4 +705,14 @@ export class MasterSheetModel extends ModelBase {
   SourceOfCurriculum: string;
   PaymentSchedule: string;
   SAPID: string;
+  FormalCommitment: string;
+  SelfCommitment: string;
+  TraineeVerified: string;
+  ResultStatus: string;
+  EmploymentReported: string;
+  EmploymentVerified: string;
+  PendingPRNsRegular: string;
+  PendingPRNsCompleted: string;
+  PendingPRNsEmployment: string;
+
 }

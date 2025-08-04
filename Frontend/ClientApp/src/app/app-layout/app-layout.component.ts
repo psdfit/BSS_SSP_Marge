@@ -92,7 +92,7 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
         if (this.user.RoleID == EnumUserRoles.TSP) {
           this.IsTspUser = true;
         }
-        
+
         this.mainMenuItems = this.common.getMenuItems();
         // console.log(this.mainMenuItems);
         this.userOrgs = this.common.getUserOrgs();
@@ -282,16 +282,82 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
     });
   }
   NotificationCountHideAndShowFunction() {
-    this.NotificationCountHideAndShow = false;
+    if (this.NotificationCount <= 0) {
+      this.NotificationCountHideAndShow = false;
+    }
   }
   onScroll() {
     this.GetNotificationsDetail();
   }
+  // CurrentopenNotification(data: any) {
+  //   this.router.navigateByUrl(`/notification/viewallnotification/${data.NotificationDetailID}`);
+  //   return true;
+  //   // this.router.navigate(['/notification/viewallnotification',data]);
+  // }
+
   CurrentopenNotification(data: any) {
-    this.router.navigateByUrl(`/notification/viewallnotification/${data.NotificationDetailID}`);
-    return true;
-    // this.router.navigate(['/notification/viewallnotification',data]);
+    const notificationId = data.NotificationDetailID;
+
+    // Mark as read if not already
+    if (!data.IsRead) {
+      this.common.postJSON('api/NotificationMap/ReadNotification', {
+        NotificationDetailID: notificationId
+      }).subscribe((response: boolean) => {
+        if (response) {
+          data.IsRead = true;
+          if (this.NotificationCount > 0) {
+            this.NotificationCount--;
+          }
+
+          // Now navigate
+          this.handleNotificationNavigation(notificationId);
+        }
+      });
+    } else {
+      this.handleNotificationNavigation(notificationId);
+    }
   }
+
+
+  handleNotificationNavigation(notificationId: number) {
+    const url = `/notification/viewallnotification/${notificationId}`;
+
+    if (this.router.url === url) {
+      // Trick Angular to reload same route
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigateByUrl(url);
+      });
+    } else {
+      this.router.navigateByUrl(url);
+    }
+  }
+
+
+  markAllAsRead() {
+    const userId = this.common.getUserDetails().UserID; // Get the current user's ID
+
+    this.common.postJSON('api/NotificationMap/MarkAllAsRead', userId).subscribe(
+      (response: boolean) => {
+        if (response) {
+          // Update local notifications to reflect the read status
+          this.NotificationslIST = this.NotificationslIST.map(notification => ({
+            ...notification,
+            IsRead: true,
+          }));
+          this.NotificationCount = 0;
+          this.NotificationCountHideAndShow = false;
+          this.common.openSnackBar('All notifications marked as read');
+        } else {
+          this.common.ShowError('Failed to mark notifications as read', 'Close');
+        }
+      },
+      (error) => {
+        console.error('Error marking notifications as read:', error);
+        this.common.ShowError('An error occurred while marking notifications as read', 'Close');
+      }
+    );
+  }
+
 
   private apiUrl = 'api/MobileAppDownload/GetMobileApp';
 
@@ -302,17 +368,17 @@ export class AppLayoutComponent implements OnDestroy, OnInit {
       const a = document.createElement('a');
       a.href = url;
       a.download = 'myApp.zip';
-      
+
       // Append the anchor tag to the body and trigger the click
       document.body.appendChild(a);
       a.click();
-      
+
       // Remove the anchor tag and revoke the object URL after the download
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, error => {
       console.error('Download failed:', error);
     });
-}
+  }
 
 }

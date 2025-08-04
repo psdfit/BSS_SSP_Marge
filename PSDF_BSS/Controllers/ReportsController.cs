@@ -156,6 +156,19 @@ namespace PSDF_BSS.Controllers
                         Name = x.PTypeName,
                     });
                 }
+                if (FilterName == "BusinessRuleType")
+                {
+                    FilterName = "Business Rule Type";
+                    obj = new SRVProgramDesign().FetchDropDownList("RD_BusinessRuleType")
+                        .AsEnumerable()
+                        .Where(row => row.Field<string>("businessruletype") != "Coursera") // filter out Coursera row
+                        .Select(row => new
+                        {
+                            ID = row.Field<int>("ID"),
+                            Name = row.Field<string>("businessruletype")
+                        });
+                }
+
                 if (FilterName == "Calendar")
                     obj = (1);
                 if (FilterName == "StartDate")

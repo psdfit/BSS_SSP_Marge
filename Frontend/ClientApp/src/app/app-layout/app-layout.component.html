@@ -24,7 +24,8 @@
       <ul class="breadcrump">
         <li>
           <div class="center-align">
-            <a href="../../assets/MobileApp/DVVBioMatric.zip" download class="btn btn-large waves-effect waves-light blue darken-2">
+            <a href="../../assets/MobileApp/DVVBioMatric.zip" download
+              class="btn btn-large waves-effect waves-light blue darken-2">
               <i class="fa fa-download left"></i> Download Biometric Mobile Application
             </a>
           </div>
@@ -64,7 +65,7 @@
       </a>
       <mat-menu #bell="matMenu" class="noti-panel" style="margin:0;">
         <div (scrolled)="onScroll()" [infiniteScrollDistance]="5" [infiniteScrollThrottle]="1000" [scrollWindow]="false"
-             class="drop-content" infiniteScroll style="cursor: pointer;">
+          class="drop-content" infiniteScroll style="cursor: pointer;">
           <div class="card-header">Notification</div>
           <div *ngFor="let s of NotificationslIST">
             <div (click)="CurrentopenNotification(s)" *ngIf="s.IsRead==true;else loggedOut" class="list-noti">
@@ -81,11 +82,39 @@
             </ng-template>
           </div>
         </div>
-        <div *ngIf="ViewAllButtonHideAndShow" class="notify-drop-footer text-center">
-          <a routerLink="/notification/viewallnotification">
-            <i class="fa fa-eye"></i> View All
-          </a>
+
+        <div class="d-flex pt-2">
+          <!-- View All -->
+          <div *ngIf="ViewAllButtonHideAndShow" class="notify-drop-footer text-center w-50 border-right">
+            <a routerLink="/notification/viewallnotification" class="text-decoration-none">
+              <i class="fa fa-eye"></i> View All
+            </a>
+          </div>
+
+          <!-- Mark all as read -->
+          <div *ngIf="ViewAllButtonHideAndShow" class="notify-drop-footer text-center w-50" (click)="markAllAsRead()">
+            <a class="text-decoration-none" style="cursor: pointer;">
+              <i class="fa fa-check-circle"></i> Mark all as read
+            </a>
+          </div>
         </div>
+
+
+
+        <!-- <div *ngIf="ViewAllButtonHideAndShow" class="notify-footer-row d-flex">
+          <div class="notify-action text-center w-50">
+            <a routerLink="/notification/viewallnotification">
+              <i class="fa fa-eye"></i> View All
+            </a>
+          </div>
+          <div (click)="markAllAsRead()" class="notify-action text-center w-50">
+            <a>
+              <i class="fa fa-check-circle"></i> Mark all as read
+            </a>
+          </div>
+        </div> -->
+
+
       </mat-menu>
       <a [matMenuTriggerFor]="menu" href="javascript:void(0);" title>
         <i class="ion-android-settings"></i>
@@ -159,7 +188,7 @@
                     </a>
                   </li>
                 </ng-template>
-                
+
                 <!-- module form start -->
               </ul>
               <!-- end nav item  -->

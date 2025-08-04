@@ -64,6 +64,8 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
   endDate = new FormControl(moment());
   ID: number;
   SearchFilters: any;
+  BusinessRuleType: string; // Added for BusinessRuleType binding
+
 
   genForm: FormGroup;
 
@@ -83,6 +85,17 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
     this.ReportName.valueChanges.subscribe(() => {
       this.updateRequiredValidator(this.SubReportName, true);
     })
+
+    // Subscribe to BusinessRuleType changes
+    this.SearchFilters.controls.forEach((control, index) => {
+      if (this.filtersData[index]?.First === 'Business Rule Type') {
+        control.valueChanges.subscribe(value => {
+          this.BusinessRuleType = value.Name;
+          this.GetSchemesByBusinessRule();
+        });
+      }
+    });
+
   }
   ngAfterViewInit(): void {
     this.getReportsName();
@@ -162,6 +175,53 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  GetSchemesByBusinessRule() {
+    if (!this.BusinessRuleType) {
+      const itemIndex = this.filtersData.findIndex(item => item.First === 'Scheme');
+      this.ComSrv.getJSON('api/OrgConfig/GetOrgConfigScheme/').subscribe(
+        (d: any) => {
+          this.error = '';
+          // Normalize the data to match expected format: [{ID, Name, ...}]
+          const normalizedData = (Array.isArray(d) && d.length && Array.isArray(d[0]) ? d[0] : d).map(item => ({
+            ID: item.SchemeID,
+            Name: item.SchemeName,
+            ...item
+          }));
+          if (itemIndex > -1) {
+            this.filtersData[itemIndex].Second = normalizedData;
+          } else {
+            this.filtersData.push({ First: 'Scheme', Second: normalizedData });
+            this.SearchFilters.push(new FormControl(''));
+          }
+          // this.cdr.detectChanges();
+        },
+        (error) => (this.error = `${error.name} , ${error.statusText}`)
+      );
+
+    };
+    const itemIndex = this.filtersData.findIndex(item => item.First === 'Scheme');
+    this.ComSrv.getJSON('api/OrgConfig/GetOrgConfigScheme/' + this.BusinessRuleType).subscribe(
+      (d: any) => {
+        this.error = '';
+        // Normalize the data to match expected format: [{ID, Name, ...}]
+        const normalizedData = (Array.isArray(d) && d.length && Array.isArray(d[0]) ? d[0] : d).map(item => ({
+          ID: item.SchemeID,
+          Name: item.SchemeName,
+          ...item
+        }));
+        if (itemIndex > -1) {
+          this.filtersData[itemIndex].Second = normalizedData;
+        } else {
+          this.filtersData.push({ First: 'Scheme', Second: normalizedData });
+          this.SearchFilters.push(new FormControl(''));
+        }
+        // this.cdr.detectChanges();
+      },
+      (error) => (this.error = `${error.name} , ${error.statusText}`)
+    );
+  }
+
   getSubReportsFilters(SubReportID: any) {
     if (SubReportID.SubReportID == 53) {
       this.startDate.setValue('')
@@ -201,6 +261,24 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
       this.getSchemeDataByProgramCategory(filters.ID);
     if (filterName === 'Scheme')
       this.getTspDataByScheme(filters.ID);
+    if (filterName === 'Business Rule Type') {
+      this.BusinessRuleType = filters === '0' ? '0' : filters.Name;
+      // Ensure Scheme filter is updated when Business Rule Type changes
+      const schemeIndex = this.filtersData.findIndex(item => item.First === 'Scheme');
+      if (schemeIndex > -1) {
+        this.GetSchemesByBusinessRule(); // Call to update Scheme dropdown
+      } else {
+        // If Scheme filter is not yet in filtersData, add it
+        this.ComSrv.getJSON('api/OrgConfig/GetOrgConfigScheme/' + this.BusinessRuleType).subscribe(
+          (d: any) => {
+            this.error = '';
+            this.filtersData.push({ First: 'Scheme', Second: d });
+            this.SearchFilters.push(new FormControl(''));
+          },
+          (error) => (this.error = `${error.name} , ${error.statusText}`)
+        );
+      }
+    }
     const object: any = { Index: index + 1, ID: filters.ID, FilterName: filterName, Value: filters.Name };
     const itemIndex = this.filters.findIndex(item => item.Index === object.Index);
     if (itemIndex > -1)
@@ -416,6 +494,13 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         return `fundingCategoryID=${this.filters[itemIndex].ID}`;
       else
         return `fundingCategoryID=${0}`;
+    }
+    else if (Name === 'Business Rule Type') {
+      itemIndex = this.filters.findIndex((item: { FilterName: string; }) => item.FilterName === 'Business Rule Type');
+      if (itemIndex > -1 && this.filters[itemIndex].Value !== undefined)
+        return `businessRuleType=${this.filters[itemIndex].Value}`;
+      else
+        return `businessRuleType=${0}`;
     }
   }
 
@@ -769,6 +854,8 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
         this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
         break;
 
+
+
       case EnumReports['TSP Details Report']:
         var FundingSource = this.chosenFilter('Project Type').split("=")[1];
         FundingSource = FundingSource == 'undefined' ? "0" : FundingSource
@@ -782,6 +869,27 @@ export class ViewReportsComponent implements OnInit, AfterViewInit {
 
         this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
 
+        break;
+
+      case EnumReports['Organization Configuration Report']:
+
+        const schemeFilterOrg = this.chosenFilter('Scheme') || '';
+        const tspFilterOrg = this.chosenFilter('Tsp') || '';
+        const BusinessRuleType = this.chosenFilter('Business Rule Type') || '';
+
+        this.SPName = "RPT_OrgConfig"
+        this.ExportReportName = 'Organization Configuration'
+
+        this.paramObject = {
+          BusinessRuleType: BusinessRuleType.includes('=') ? BusinessRuleType.split('=')[1] : 0,
+          SchemeID: schemeFilterOrg.includes('=') ? schemeFilterOrg.split('=')[1] : '0',
+          TSPID: tspFilterOrg.includes('=') ? tspFilterOrg.split('=')[1] : '0',
+          ConfigID: '0',
+          OID: '1',
+          ClassID: '0',
+        };
+
+        this.FetchReportData(this.SPName, this.ExportReportName, this.paramObject)
         break;
       //======================Azhar iqbal==============================
 
