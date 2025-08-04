@@ -54,6 +54,7 @@ namespace DataLayer.Models
         public DateTime? InvoiceMonth { get; set; }
         public string InvoiceStatus { get; set; }
         public decimal NetPayableAmount { get; set; }
+        public string? Status { get; set; }
 
 
     }

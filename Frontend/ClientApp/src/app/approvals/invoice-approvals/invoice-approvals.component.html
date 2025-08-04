@@ -11,14 +11,14 @@
               (click)="exportToExcel()">Export Excel</button>
           </div>
 
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <button mat-raised-button color="success" style="float:right;margin-left: 10px;"
               *ngIf="InvoiceHeaders?.length > 0" (click)="ExportInvoiceDetailsToExcel()">Export Invoice Details</button>
           </div>
           <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
         </mat-toolbar>
         <div class="row">
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-label>Process</mat-label>
               <mat-select #process [(ngModel)]="processKey" (selectionChange)="GetInvoicesForApproval()" matInput>
@@ -40,7 +40,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-label>Month</mat-label>
               <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
@@ -50,7 +50,7 @@
                 (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
             </mat-form-field>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-select placeholder="KAM" [(ngModel)]="filters.KAMID" (openedChange)="EmptyCtrl()"
                 (selectionChange)="GetInvoicesForApproval()" id="kamuserid" matInput required>
@@ -94,6 +94,20 @@
                 <mat-option *ngFor="let s of tspMasters | like:['TSPName',SearchTSP.value]"
                   [value]="s.TSPMasterID">{{s.TSPName}}</mat-option>
                 <!--| like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]-->
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Status" [formControl]="searchFilter" (openedChange)="EmptyCtrl()"
+                (selectionChange)="GetInvoicesForApproval()" id="StatusId" matInput required>
+                <mat-optgroup disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchStatus" />
+                </mat-optgroup>
+                <mat-option value="0" selected>-- All --</mat-option>
+                <mat-option value="Pending">Pending</mat-option>
+                <mat-option value="Approved">Approved</mat-option>
+                <mat-option value="Reject">Reject</mat-option>
               </mat-select>
             </mat-form-field>
           </div>

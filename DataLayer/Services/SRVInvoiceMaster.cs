@@ -55,6 +55,7 @@ namespace DataLayer.Services
                 //param.Add(new SqlParameter("@TSPID", model.TSPID));
                 param.Add(new SqlParameter("@TSPMasterID", model.TSPMasterID));
                 param.Add(new SqlParameter("@U_Month", model.U_Month.HasValue ? model.U_Month.Value : model.U_Month));
+                param.Add(new SqlParameter("@Status", model.Status));
                 DataTable dt = new DataTable();
                 if (_transaction != null)
                 {

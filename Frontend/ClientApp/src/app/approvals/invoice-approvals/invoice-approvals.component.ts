@@ -74,6 +74,9 @@ export class InvoiceApprovalsComponent implements OnInit {
   currentUser: UsersModel;
   InvoiceHeadersIDsArray: any;
   InvoiceHeadersIDs: string;
+  SearchStatus = new FormControl('',);
+  searchFilter = new FormControl(0);
+
 
 
   constructor(private http: CommonSrvService, private dialogue: DialogueService, private _date: DatePipe) {
@@ -95,6 +98,7 @@ export class InvoiceApprovalsComponent implements OnInit {
     this.SearchKAM.setValue('');
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
+    this.SearchStatus.setValue('');
   }
 
   GetFiltersData() {
@@ -115,7 +119,11 @@ export class InvoiceApprovalsComponent implements OnInit {
 
   GetInvoicesForApproval() {
     //this.http.postJSON('api/Invoice/GetInvoicesForApproval', { ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID }).subscribe((d: any) => {
-    this.http.postJSON('api/Invoice/GetInvoicesForApproval', { ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPMasterID: this.filters.TSPMasterID }).subscribe((d: any) => {
+    this.http.postJSON('api/Invoice/GetInvoicesForApproval', {
+      ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value,
+      KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPMasterID: this.filters.TSPMasterID,
+      Status: this.searchFilter.value // Add the StatusID to the payload
+    }).subscribe((d: any) => {
       this.InvoiceHeaders = d;
       this.InvoiceHeadersIDsArray = this.InvoiceHeaders.map((o: { InvoiceHeaderID: any; }) => o.InvoiceHeaderID);
       this.InvoiceHeadersIDs = this.InvoiceHeadersIDsArray.join(',');
@@ -139,13 +147,13 @@ export class InvoiceApprovalsComponent implements OnInit {
   }
 
   checkTSPColor(row: any) {
-    
+
     if (
-      row.ProcessKey === EnumApprovalProcess.INV_SRN 
-      || row.ProcessKey === EnumApprovalProcess.INV_TRN 
-      || row.ProcessKey === EnumApprovalProcess.INV_TPRN 
-      || row.ProcessKey === EnumApprovalProcess.INV_GURN 
-      || row.ProcessKey === EnumApprovalProcess.INV_PVRN 
+      row.ProcessKey === EnumApprovalProcess.INV_SRN
+      || row.ProcessKey === EnumApprovalProcess.INV_TRN
+      || row.ProcessKey === EnumApprovalProcess.INV_TPRN
+      || row.ProcessKey === EnumApprovalProcess.INV_GURN
+      || row.ProcessKey === EnumApprovalProcess.INV_PVRN
       || row.ProcessKey === EnumApprovalProcess.INV_MRN
       || row.ProcessKey === EnumApprovalProcess.INV_PCRN
       || row.ProcessKey === EnumApprovalProcess.INV_OTRN
@@ -153,35 +161,35 @@ export class InvoiceApprovalsComponent implements OnInit {
       this.openApprovalDialogue(row);
     }
     else {
-    this.http.postJSON('api/TSPColor/RD_TSPMasterColorByFilters', { TSPID: row.TSPID }).subscribe((response: any) => {
-      console.log(response);
-      if (response[0].ErrorTypeID === EnumTSPColorType.Red || response[0].ErrorTypeID === EnumTSPColorType.Black) {
-        this.http.ShowError(response[0].ErrorMessage);
-        // this.blacklistedTSPwithRed = true;
-        // this.blacklistedTSP = true;
-        return;
+      this.http.postJSON('api/TSPColor/RD_TSPMasterColorByFilters', { TSPID: row.TSPID }).subscribe((response: any) => {
+        console.log(response);
+        if (response[0].ErrorTypeID === EnumTSPColorType.Red || response[0].ErrorTypeID === EnumTSPColorType.Black) {
+          this.http.ShowError(response[0].ErrorMessage);
+          // this.blacklistedTSPwithRed = true;
+          // this.blacklistedTSP = true;
+          return;
+        }
+        if (response[0].ErrorTypeID === EnumTSPColorType.Yellow) {
+          // this.http.ShowError("Decision can be made against Yellowlist TSP");
+          this.openApprovalDialogue(row);
+        }
+        if (response[0].ErrorTypeID === EnumTSPColorType.White) {
+          // this.http.ShowError("Decision can be made against Yellowlist TSP");
+          this.openApprovalDialogue(row);
+        }
+        // if (response[0].TSPColorID === EnumTSPColorType.Yellow) {
+        //  this.http.ShowError("TSPs with color yellow can only perform day to days operations");
+        //  this.blacklistedTSPwithYellow = true;
+        //  this.blacklistedTSPwithRed = false;
+        //  this.blacklistedTSP = false;
+        // }
+        // else {
+        //  this.openApprovalDialogue(row);
+        //  //this.blacklistedTSPwithRed = false;
+        //  //this.blacklistedTSP = false;
+        //  //this.blacklistedTSPwithYellow = true;
+        // }
       }
-      if (response[0].ErrorTypeID === EnumTSPColorType.Yellow) {
-        // this.http.ShowError("Decision can be made against Yellowlist TSP");
-        this.openApprovalDialogue(row);
-      }
-      if (response[0].ErrorTypeID === EnumTSPColorType.White) {
-        // this.http.ShowError("Decision can be made against Yellowlist TSP");
-        this.openApprovalDialogue(row);
-      }
-      // if (response[0].TSPColorID === EnumTSPColorType.Yellow) {
-      //  this.http.ShowError("TSPs with color yellow can only perform day to days operations");
-      //  this.blacklistedTSPwithYellow = true;
-      //  this.blacklistedTSPwithRed = false;
-      //  this.blacklistedTSP = false;
-      // }
-      // else {
-      //  this.openApprovalDialogue(row);
-      //  //this.blacklistedTSPwithRed = false;
-      //  //this.blacklistedTSP = false;
-      //  //this.blacklistedTSPwithYellow = true;
-      // }
-    }
       );
     }
 
@@ -205,7 +213,7 @@ export class InvoiceApprovalsComponent implements OnInit {
 
 
   openApprovalDialogue(row: any): void {
-    
+
     this.dialogue.openApprovalDialogue(row.ProcessKey, row.InvoiceHeaderID).subscribe(result => {
       console.log(result);
       // location.reload();
@@ -241,8 +249,8 @@ export class InvoiceApprovalsComponent implements OnInit {
   }
 
   clearMonth() {
-   // this.month.setValue(null);
-   this.month = new FormControl(moment(null));
+    // this.month.setValue(null);
+    this.month = new FormControl(moment(null));
     this.GetInvoicesForApproval();
   }
 
@@ -280,26 +288,27 @@ export class InvoiceApprovalsComponent implements OnInit {
       this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
     });
   }
-    ExportInvoiceDetailsToExcel() {
-    this.http.postJSON('api/Invoice/GetInvoiceDetails', 
-    { ProcessKey: this.processKey, 
-      U_Month: this.month.value, 
-      OID: this.http.OID.value, 
-      KAMID: this.filters.KAMID, 
-      SchemeID: this.filters.SchemeID, 
-      TSPMasterID: this.filters.TSPMasterID 
-    }).subscribe((d: any) => {
-      this.InvoiceDetails = d;
+  ExportInvoiceDetailsToExcel() {
+    this.http.postJSON('api/Invoice/GetInvoiceDetails',
+      {
+        ProcessKey: this.processKey,
+        U_Month: this.month.value,
+        OID: this.http.OID.value,
+        KAMID: this.filters.KAMID,
+        SchemeID: this.filters.SchemeID,
+        TSPMasterID: this.filters.TSPMasterID
+      }).subscribe((d: any) => {
+        this.InvoiceDetails = d;
 
-      const exportExcel: ExportExcel = {
-        Title: 'Invoice Details Report',
-        Author: this.currentUser.FullName,
-        Type: EnumExcelReportType.Invoice,
-        Data: {},
-        List1: this.populateInvoiceDetailData(this.InvoiceDetails)
-      };
-      this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
-    });
+        const exportExcel: ExportExcel = {
+          Title: 'Invoice Details Report',
+          Author: this.currentUser.FullName,
+          Type: EnumExcelReportType.Invoice,
+          Data: {},
+          List1: this.populateInvoiceDetailData(this.InvoiceDetails)
+        };
+        this.dialogue.openExportConfirmDialogue(exportExcel).subscribe();
+      });
   }
 
   populateInvoiceDetailData(data: any) {
@@ -319,7 +328,7 @@ export class InvoiceApprovalsComponent implements OnInit {
       };
     });
   }
-  
+
   populateData(data: any) {
     return data.map(item => {
       return {
