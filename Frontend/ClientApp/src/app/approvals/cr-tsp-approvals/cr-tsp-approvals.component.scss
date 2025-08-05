@@ -9,3 +9,9 @@
   cursor: pointer;
   text-align: center;
 }
+
+.changed-field {
+  background-color: #fff3cd; /* Light yellow background for changed fields */
+  font-weight: bold; /* Optional: make text bold for emphasis */
+  border: 1px solid #ffca28; /* Optional: add a border for extra clarity */
+}

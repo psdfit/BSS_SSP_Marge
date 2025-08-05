@@ -1,7 +1,5 @@
-
 <div>
     <mat-card>
-       
         <mat-card-content>
             <div fxLayoutAlign="space-around space-around" fxLayout="column">
                 <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
@@ -15,7 +13,7 @@
                 <div class="text-center" *ngIf="!tsps">
                     <p>No Pending Approval</p>
                 </div>
-             <!--    <div class="row">
+                <!--    <div class="row">
                     <div class="col-sm-3">
                         <mat-form-field fxFlex>
                             <mat-select placeholder="Status"
@@ -65,32 +63,45 @@
                                 <tr>
                                     <td>{{r.TSPChangeRequestID}}</td>
                                     <td>
-                                        <button mat-raised-button color="primary" type="button" mat-button (click)="openApprovalDialogue(r)">
+                                        <button mat-raised-button color="primary" type="button" mat-button
+                                            (click)="openApprovalDialogue(r)">
                                             Decision
                                         </button>
                                         <span class="p-4 text-dark" *ngIf="r.IsApproved">Approved</span>
                                         <a color="primary" matTooltip="Check TSP current details" *ngIf="!r.IsApproved"
-                                           mat-icon-button (click)="GetCurrentTspByID(r)">
+                                            mat-icon-button (click)="GetCurrentTspByID(r)">
                                             <mat-icon>{{r.currentTrainee ?'remove_circle':'control_point' }}</mat-icon>
                                         </a>
                                         <!--<a mat-button color="primary" (click)="openHistoryDialogue(r)">History </a>-->
 
                                     </td>
                                     <td style="color:orangered">Requested</td>
-                                    <td>{{r.TSPName}}</td>
-                                    <td>{{r.Address}}</td>
-                                    <td>{{r.HeadName}}</td>
-                                    <td>{{r.HeadDesignation}}</td>
-                                    <td>{{r.HeadEmail}}</td>
-                                    <td>{{r.HeadLandline}}</td>
-                                    <td>{{r.CPName}}</td>
-                                    <td>{{r.CPDesignation}}</td>
-                                    <td>{{r.CPLandline}}</td>
-                                    <td>{{r.CPEmail}}</td>
-                                    <!--<td>{{r.BankName}}</td>-->
-                                    <td>{{r.BankAccountNumber}}</td>
-                                    <td>{{r.AccountTitle}}</td>
-                                    <!--<td>{{r.BankBranch}}</td>-->
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'TSPName')}">
+                                        {{r.TSPName}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'Address')}">
+                                        {{r.Address}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'HeadName')}">
+                                        {{r.HeadName}}</td>
+                                    <td
+                                        [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'HeadDesignation')}">
+                                        {{r.HeadDesignation}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'HeadEmail')}">
+                                        {{r.HeadEmail}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'HeadLandline')}">
+                                        {{r.HeadLandline}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'CPName')}">
+                                        {{r.CPName}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'CPDesignation')}">
+                                        {{r.CPDesignation}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'CPLandline')}">
+                                        {{r.CPLandline}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'CPEmail')}">
+                                        {{r.CPEmail}}</td>
+                                    <td
+                                        [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'BankAccountNumber')}">
+                                        {{r.BankAccountNumber}}</td>
+                                    <td [ngClass]="{'changed-field': compareFields(r, r.currentTsp, 'AccountTitle')}">
+                                        {{r.AccountTitle}}</td>
                                 </tr>
 
                                 <tr *ngIf="r.currentTsp">
@@ -157,4 +168,3 @@
         </mat-card-content>
     </mat-card>
 </div>
-

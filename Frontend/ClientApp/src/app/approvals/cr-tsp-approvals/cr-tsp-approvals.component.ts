@@ -98,6 +98,12 @@ export class TSPChangeRequestApprovalsComponent implements OnInit {
     });
   }
 
+  // New method to compare fields
+  compareFields(requested: any, existing: any, field: string): boolean {
+    if (!existing || !existing[0]) return false; // No existing data to compare
+    return requested[field] !== existing[0][field]; // Compare field values
+  }
+
 
 
 }
