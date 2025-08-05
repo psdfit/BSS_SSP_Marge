@@ -9,3 +9,55 @@
   cursor: pointer;
   text-align: center;
 }
+
+
+/* Styles for the decision button with reduced size */
+.decision-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  min-width: 80px;
+}
+
+/* Styles for the details button */
+.details-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  min-width: 80px;
+  margin-left: 8px;
+}
+
+/* Styles for the nested table */
+.nested-table {
+  margin: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+}
+
+/* Ensure responsive table behavior */
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* General table styling */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+/* Toolbar styling */
+mat-toolbar {
+  display: flex;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

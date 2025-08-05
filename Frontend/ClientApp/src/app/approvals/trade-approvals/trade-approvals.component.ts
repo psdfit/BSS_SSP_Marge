@@ -17,10 +17,10 @@ export class TradeApprovalsComponent implements OnInit {
   displayedColumnsTSPs = ['TSPName', 'TSPCode', 'Address', 'TSPColor', 'Tier', 'NTN', 'PNTN', 'GST', 'FTN', 'DistrictName', 'HeadName', 'HeadDesignation', 'HeadEmail', 'HeadLandline', 'OrgLandline', 'CPName', 'CPDesignation', 'CPLandline', 'CPEmail', 'Website', 'CPAdmissionsName', 'CPAdmissionsDesignation', 'CPAdmissionsLandline', 'CPAdmissionsEmail', 'CPAccountsName', 'CPAccountsDesignation', 'CPAccountsLandline', 'CPAccountsEmail', 'BankName', 'BankAccountNumber', 'AccountTitle', 'BankBranch', 'Organization', 'Action'];
   displayedColumns = ['TradeName', 'TradeCode', 'SectorName', 'SubSectorName', 'Duration', 'CertificationCategoryName', 'CertAuthName', 'Name', "Action"];
   //schemes: MatTableDataSource<any>;
-
   schemes: [];
-  trades: [];
-
+  // trades: [];
+  trades: any[] = []; // Modified to any[] to allow adding showDetails property
+  selectedTrade: any = null; // Track the currently selected trade for details
   ActiveFormApprovalID: number;
   ChosenTradeID: number;
   title: string;
@@ -33,6 +33,16 @@ export class TradeApprovalsComponent implements OnInit {
     limit: 5,
     page: 1
   };
+  // Reference data for mapping IDs to names
+  CertificationCategory: any[] = [];
+  CertificationAuthority: any[] = [];
+  EquipmentToolsList: any[] = [];
+  ConsumableMaterialList: any[] = [];
+  TrainerQualificationList: any[] = [];
+  SourceOfCurriculumList: any[] = [];
+  DurationList: any[] = [];
+  AcademicDisciplineList: any[] = [];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   working: boolean;
@@ -49,6 +59,25 @@ export class TradeApprovalsComponent implements OnInit {
     this.http.OID.subscribe(OID => {
       this.GetSubmittedTradesForMyID();
     });
+    // Fetch reference data
+    this.getReferenceData();
+  }
+
+  // Fetch reference data for mapping IDs to names
+  getReferenceData(): void {
+    this.http.getJSON('api/Trade/GetTrade').subscribe(
+      (d: any) => {
+        this.CertificationCategory = d[3];
+        this.CertificationAuthority = d[4];
+        this.EquipmentToolsList = d[5];
+        this.ConsumableMaterialList = d[6];
+        this.TrainerQualificationList = d[7];
+        this.SourceOfCurriculumList = d[8];
+        this.DurationList = d[9];
+        this.AcademicDisciplineList = d[10];
+      },
+      error => this.error = error
+    );
   }
 
   //GetSubmittedSchemesForMyID() {
@@ -83,6 +112,89 @@ export class TradeApprovalsComponent implements OnInit {
       console.log(result);
       //location.reload();
     });
+  }
+
+  // Toggle details view and fetch details if needed
+  toggleDetails(trade: any): void {
+    if (this.selectedTrade && this.selectedTrade.TradeID === trade.TradeID) {
+      // Toggle visibility if the same trade is clicked
+      this.selectedTrade.showDetails = !this.selectedTrade.showDetails;
+      if (!this.selectedTrade.showDetails) {
+        this.selectedTrade = null; // Clear selection when hiding
+      }
+    } else {
+      // Reset previous trade's showDetails
+      if (this.selectedTrade) {
+        this.selectedTrade.showDetails = false;
+      }
+      // Set new selected trade and fetch details
+      trade.showDetails = true;
+      this.selectedTrade = trade;
+      this.fetchTradeDetails(trade.TradeID);
+    }
+  }
+
+  // Fetch trade details from API
+  fetchTradeDetails(tradeID: number): void {
+    this.http.getJSON(`api/Trade/GetTradeMapDetails/${tradeID}`).subscribe(
+      (data: any[]) => {
+        this.selectedTrade.details = data; // Store array of details
+      },
+      error => {
+        this.error = error;
+        this.selectedTrade.details = []; // Set empty array on error
+      }
+    );
+  }
+
+  // Helper methods to map IDs to names
+  getDurationName(id: number): string {
+    const item = this.DurationList.find(d => d.DurationID === id);
+    return item ? item.Duration || 'N/A' : 'N/A';
+  }
+
+  getCertificationCategoryName(id: number): string {
+    const item = this.CertificationCategory.find(c => c.CertificationCategoryID === id);
+    return item ? item.CertificationCategoryName || 'N/A' : 'N/A';
+  }
+
+  getCertificationAuthorityName(id: number): string {
+    const item = this.CertificationAuthority.find(c => c.CertAuthID === id);
+    return item ? item.CertAuthName || 'N/A' : 'N/A';
+  }
+
+  getEducationTypeName(id: number): string {
+    const item = this.TrainerQualificationList.find(t => t.EducationTypeID === id);
+    return item ? item.Education || 'N/A' : 'N/A';
+  }
+
+  getAcademicDisciplineName(id: number): string {
+    const item = this.AcademicDisciplineList.find(a => a.AcademicDisciplineID === id);
+    return item ? item.AcademicDisciplineName || 'N/A' : 'N/A';
+  }
+
+  getEquipmentToolNames(ids: string): string {
+    if (!ids) return 'N/A';
+    const idArray = ids.split(',').map(id => id.trim());
+    const names = idArray
+      .map(id => {
+        const item = this.EquipmentToolsList.find(e => e.EquipmentToolID === Number(id));
+        return item ? item.EquipmentName || 'N/A' : 'N/A';
+      })
+      .filter(name => name !== 'N/A');
+    return names.length > 0 ? names.join(', ') : 'N/A';
+  }
+
+  getConsumableMaterialNames(ids: string): string {
+    if (!ids) return 'N/A';
+    const idArray = ids.split(',').map(id => id.trim());
+    const names = idArray
+      .map(id => {
+        const item = this.ConsumableMaterialList.find(c => c.ConsumableMaterialID === Number(id));
+        return item ? item.ItemName || 'N/A' : 'N/A';
+      })
+      .filter(name => name !== 'N/A');
+    return names.length > 0 ? names.join(', ') : 'N/A';
   }
 
   //OK() { //this method is just for testing invoices generation, pls ignore this
