@@ -7,101 +7,128 @@
           <mat-icon class="material-icons">view_comfy</mat-icon>
           <span class="spacer">Pending Approvals</span>
           <div class="spacer"></div>
+          <input placeholder="Search" (input)="applyFilter($event)" [(ngModel)]="searchTerm" class="search"
+            style="margin-right: 8px" />
+          <button mat-raised-button style="float: right; margin: 0px 7px; background: #c3d9ff"
+            (click)="DataExcelExport(filteredTrades, 'Pending Approvals')">
+            <i class="fas fa-file-export"></i> Export Excel
+          </button>
         </mat-toolbar>
+
         <div class="table-responsive">
-          <table class="table table-bordered">
+          <table class="table-bordered table-style">
             <thead>
               <tr>
-                <th>Action</th>
-                <th>TradeName</th>
-                <th>TradeCode</th>
+                <th>Actions</th>
+                <th>Trade Name</th>
+                <th>Trade Code</th>
                 <th>Sector</th>
-                <th>SubSector</th>
+                <th>Sub Sector</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               <!-- Display message when no trades are available -->
-              <tr *ngIf="!trades">
-                <td colspan="9" class="text-center">
-                  <p>No Pending Approval</p>
+              <tr *ngIf="!trades || trades.length === 0">
+                <td colspan="6" class="text-center">
+                  <p>No Pending Approvals</p>
                 </td>
               </tr>
+
               <!-- Iterate over trades to display each row -->
               <ng-container *ngFor="let r of trades">
                 <tr>
                   <td>
-                    <!-- Reduced size Decision button -->
-                    <button mat-raised-button color="primary" type="button" class="decision-btn"
-                      (click)="openApprovalDialogue(r)">
+                    <!-- Decision button -->
+                    <button color="primary" class="decision-btn" (click)="openApprovalDialogue(r)"
+                      matTooltip="Make Decision">
                       Decision
-                    </button>
-                    <!-- Show Details button with conditional up/down arrow -->
-                    <button mat-raised-button color="accent" type="button" class="details-btn"
-                      (click)="toggleDetails(r)">
-                      <mat-icon>{{ r.showDetails ? 'arrow_drop_up' : 'arrow_drop_down' }}</mat-icon>
-                      Details
                     </button>
                   </td>
                   <td>{{r.TradeName}}</td>
                   <td>{{r.TradeCode}}</td>
                   <td>{{r.SectorName}}</td>
                   <td>{{r.SubSectorName}}</td>
+                  <td>
+                    <!-- Details button (icon only) -->
+                    <a class="details-btn" (click)="toggleDetails(r)"
+                      [matTooltip]="r.showDetails ? 'Hide Details' : 'Show Details'">
+                      <mat-icon>{{ r.showDetails ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </a>
+                  </td>
                 </tr>
-                <!-- Nested table for trade details, shown directly below the selected row -->
+
+                <!-- Nested table for trade details -->
                 <tr *ngIf="r.showDetails">
-                  <td colspan="9">
-                    <table class="table table-bordered nested-table">
-                      <thead>
-                        <tr>
-                          <th>Duration (Hours)</th>
-                          <th>Total Training Hours</th>
-                          <th>Daily Training Hours</th>
-                          <th>Weekly Training Hours</th>
-                          <th>Certification Category</th>
-                          <th>Certification Authority</th>
-                          <th>Source of Curriculum</th>
-                          <th>Trainee Education Type</th>
-                          <th>Trainee Academic Discipline</th>
-                          <th>Practical %</th>
-                          <th>Theory %</th>
-                          <th>Trainer Education Type</th>
-                          <th>Trainer Academic Discipline</th>
-                          <th>Equipment Tool</th>
-                          <th>Consumable Material</th>
-                          <th>Mapped With Class</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Show loading or no-data state -->
-                        <tr *ngIf="!r.details || r.details.length === 0">
-                          <td colspan="16" class="text-center">No details available</td>
-                        </tr>
-                        <!-- Iterate over multiple detail rows -->
-                        <tr *ngFor="let detail of r.details">
-                          <td>{{getDurationName(detail.DurationID)}}</td>
-                          <td>{{detail.TotalTrainingHours}}</td>
-                          <td>{{detail.DailyTrainingHours}}</td>
-                          <td>{{detail.WeeklyTrainingHours}}</td>
-                          <td>{{getCertificationCategoryName(detail.CertificationCategoryID)}}</td>
-                          <td>{{getCertificationAuthorityName(detail.CertAuthID)}}</td>
-                          <td>{{detail.SourceOfCurriculumName}}</td>
-                          <td>{{getEducationTypeName(detail.TraineeEducationTypeID)}}</td>
-                          <td>{{getAcademicDisciplineName(detail.TraineeAcademicDisciplineID)}}</td>
-                          <td>{{detail.PracticalPercentage}}</td>
-                          <td>{{detail.TheoryPercentage}}</td>
-                          <td>{{getEducationTypeName(detail.TrainerEducationTypeID)}}</td>
-                          <td>{{getAcademicDisciplineName(detail.TrainerAcademicDisciplineID)}}</td>
-                          <td>{{getEquipmentToolNames(detail.EquipmentToolID)}}</td>
-                          <td>{{getConsumableMaterialNames(detail.ConsumableMaterialID)}}</td>
-                          <td>{{detail.MappedWithClass ? 'Yes' : 'No'}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <td colspan="6">
+                    <div class="nested-table-container">
+                      <table class="table nested-table">
+                        <thead>
+                          <tr>
+                            <th>Duration</th>
+                            <th>Total Hours</th>
+                            <th>Daily Hours</th>
+                            <th>Weekly Hours</th>
+                            <th>Cert Category</th>
+                            <th>Cert Authority</th>
+                            <th>Curriculum Source</th>
+                            <th>Trainee Education</th>
+                            <th>Trainee Discipline</th>
+                            <th>Practical %</th>
+                            <th>Theory %</th>
+                            <th>Trainer Education</th>
+                            <th>Trainer Discipline</th>
+                            <th>Equipment</th>
+                            <th>Materials</th>
+                            <th>Mapped</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngIf="!r.details || r.details.length === 0">
+                            <td colspan="16" class="text-center">No details available</td>
+                          </tr>
+                          <tr *ngFor="let detail of r.details">
+                            <td>{{getDurationName(detail.DurationID)}}</td>
+                            <td>{{detail.TotalTrainingHours}}</td>
+                            <td>{{detail.DailyTrainingHours}}</td>
+                            <td>{{detail.WeeklyTrainingHours}}</td>
+                            <td>{{getCertificationCategoryName(detail.CertificationCategoryID)}}</td>
+                            <td>{{getCertificationAuthorityName(detail.CertAuthID)}}</td>
+                            <td>{{detail.SourceOfCurriculumName}}</td>
+                            <td>{{getEducationTypeName(detail.TraineeEducationTypeID)}}</td>
+                            <td>{{getAcademicDisciplineName(detail.TraineeAcademicDisciplineID)}}</td>
+                            <td>{{detail.PracticalPercentage}}</td>
+                            <td>{{detail.TheoryPercentage}}</td>
+                            <td>{{getEducationTypeName(detail.TrainerEducationTypeID)}}</td>
+                            <td>{{getAcademicDisciplineName(detail.TrainerAcademicDisciplineID)}}</td>
+                            <td>{{getEquipmentToolNames(detail.EquipmentToolID)}}</td>
+                            <td>{{getConsumableMaterialNames(detail.ConsumableMaterialID)}}</td>
+                            <td>{{detail.MappedWithClass ? 'Yes' : 'No'}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </td>
                 </tr>
               </ng-container>
             </tbody>
           </table>
+          <nav *ngIf="trades && trades.length > itemsPerPage" aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="changePage(currentPage - 1)">Previous</a>
+              </li>
+
+              <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="currentPage === i + 1">
+                <a class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</a>
+              </li>
+
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" (click)="changePage(currentPage + 1)">Next</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </mat-card-content>

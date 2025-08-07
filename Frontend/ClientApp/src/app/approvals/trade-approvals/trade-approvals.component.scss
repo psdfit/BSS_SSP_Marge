@@ -1,63 +1,247 @@
-.block {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-color: #808080;
-  color: black;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: center;
+/* trade-approvals.component.scss */
+
+/* Card styling */
+mat-card {
+  margin: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden;
 }
 
-
-/* Styles for the decision button with reduced size */
-.decision-btn {
-  padding: 4px 8px;
-  font-size: 12px;
-  line-height: 1.5;
-  min-width: 80px;
-}
-
-/* Styles for the details button */
-.details-btn {
-  padding: 4px 8px;
-  font-size: 12px;
-  line-height: 1.5;
-  min-width: 80px;
-  margin-left: 8px;
-}
-
-/* Styles for the nested table */
-.nested-table {
-  margin: 10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-}
-
-/* Ensure responsive table behavior */
-.table-responsive {
-  overflow-x: auto;
-}
-
-/* General table styling */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th, .table td {
-  padding: 8px;
-  text-align: left;
-  border: 1px solid #ddd;
+mat-card-content {
+  padding: 0 !important;
 }
 
 /* Toolbar styling */
 mat-toolbar {
-  display: flex;
-  align-items: center;
+  background-color: #005b9e !important;
+  color: white !important;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 500;
+
+  mat-icon {
+    margin-right: 8px;
+    color: #ffbd01;
+  }
 }
 
-.spacer {
-  flex: 1 1 auto;
+/* Main table styling */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gavel-icon-color {
+  color: #ffbd01;
+}
+
+.table-style {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  thead {
+    background-color: #e0effa;
+
+    tr {
+      th {
+        padding: 8px 10px;
+        text-align: left;
+        font-weight: 600;
+        background-color: #e0effa;
+        color: black;
+        border-bottom: 2px solid #d0d7e1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:first-child {
+          padding-left: 24px;
+        }
+
+        &:last-child {
+          padding-right: 24px;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      font-size: 13px;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid #e0e6ed;
+
+      &:nth-child(even) {
+        background-color: #f9fbfc;
+      }
+
+      // &:hover {
+      //   background-color: #e6f2fb;
+      // }
+
+      td {
+        padding: 8px 10px;
+        color: #333;
+
+        &:first-child {
+          padding-left: 24px;
+          white-space: nowrap;
+        }
+
+        &:last-child {
+          padding-right: 24px;
+        }
+      }
+    }
+  }
+}
+
+/* Nested table container */
+.nested-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 0;
+  padding: 0;
+  background: white;
+  border: 1px solid #e0e6ed;
+  border-radius: 4px;
+}
+
+/* Nested table styling */
+.nested-table {
+  width: auto;
+  min-width: 100%;
+  margin: 0;
+  background-color: white;
+  border-collapse: collapse;
+
+  thead {
+    background-color: #f4faff;
+    position: sticky;
+    top: 0;
+
+    th {
+      color: black;
+      font-weight: 400;
+      font-size: 12px;
+      padding: 10px 12px;
+      border: none;
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    tr {
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      // &:hover {
+      //   background-color: #dbeffc !important;
+      // }
+
+      td {
+        padding: 10px 12px;
+        font-size: 12px;
+        border-bottom: 1px solid #eee;
+        color: #444;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+/* Decision button */
+.decision-btn {
+  cursor: pointer;
+  background-color: #005b9e;
+  color: white;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+  min-width: 80px;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    background-color: #0073c0;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Expand details icon button */
+.details-btn {
+  color: #005b9e !important;
+  cursor: pointer;
+
+  &:hover {
+    color: #0073c0 !important;
+  }
+}
+
+/* No data message */
+.text-center {
+  text-align: center;
+  padding: 24px;
+  color: #777;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-style {
+    thead {
+      display: none;
+    }
+
+    tbody {
+      tr {
+        display: block;
+        margin-bottom: 16px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+
+        td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 16px;
+          border-bottom: 1px solid #eee;
+
+          &:before {
+            content: attr(data-label);
+            font-weight: 500;
+            color: #005b9e;
+            margin-right: 16px;
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+  }
+
+  .nested-table-container {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #005b9e;
+  border-color: #005b9e;
+  color: white;
 }

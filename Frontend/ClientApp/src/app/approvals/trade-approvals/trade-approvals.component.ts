@@ -42,10 +42,12 @@ export class TradeApprovalsComponent implements OnInit {
   SourceOfCurriculumList: any[] = [];
   DurationList: any[] = [];
   AcademicDisciplineList: any[] = [];
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   working: boolean;
+  currentPage = 1;
+  itemsPerPage = 10; // Or any number you want
+  searchTerm: string = '';
 
   constructor(private http: CommonSrvService, private dialogue: DialogueService) {
     //this.schemes = new MatTableDataSource([]);
@@ -195,6 +197,42 @@ export class TradeApprovalsComponent implements OnInit {
       })
       .filter(name => name !== 'N/A');
     return names.length > 0 ? names.join(', ') : 'N/A';
+  }
+
+
+  get filteredTrades() {
+    if (!this.searchTerm) return this.trades;
+    const term = this.searchTerm.toLowerCase();
+    return this.trades.filter(trade =>
+      trade.TradeName?.toLowerCase().includes(term) ||
+      trade.TradeCode?.toLowerCase().includes(term) ||
+      trade.SectorName?.toLowerCase().includes(term) ||
+      trade.SubSectorName?.toLowerCase().includes(term)
+    );
+  }
+
+  get paginatedTrades() {
+    const filtered = this.filteredTrades; // apply search
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    return filtered.slice(start, end);
+  }
+  get totalPages() {
+    return Math.ceil(this.trades.length / this.itemsPerPage);
+  }
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  applyFilter(event: any): void {
+    this.searchTerm = event.target.value.trim().toLowerCase();
+    this.currentPage = 1; // Reset to first page on new search
+  }
+
+  DataExcelExport(data: any, title) {
+    this.http.ExcelExporWithForm(data, title);
   }
 
   //OK() { //this method is just for testing invoices generation, pls ignore this
