@@ -36,7 +36,14 @@ namespace DataLayer.Models.SSP
         public int TraineeCompTarget { get; set; }
         public int PerSelectedContraTarget { get; set; }
         public int PerSelectedCompTarget { get; set; }
+        public int Stipend { get; set; }
+        public int SelfEmploymentCommitment { get; set; }
+        public int FormalEmploymentCommitment { get; set; }
+        public int OverallEmploymentCommitment { get; set; }
+        public int EntryLevelEducation { get; set; }
+        public DateTime StartDate { get; set; }
         public List<TradeLot> TradeLot { get; set; } = new List<TradeLot>();
+        public List<Payments> Payments { get; set; } = new List<Payments>();
 
 
     }
@@ -60,6 +67,15 @@ namespace DataLayer.Models.SSP
         public int BagAndBadge { get; set; }
         public int ExamCost { get; set; }
         public int TotalCost { get; set; }
+
+    }
+
+    public class Payments
+    {
+        public int? ID { get; set; }
+        public string PaymentType { get; set; }
+        public string PaymentFrequency { get; set; }
+        public int Amount { get; set; }
 
     }
 }

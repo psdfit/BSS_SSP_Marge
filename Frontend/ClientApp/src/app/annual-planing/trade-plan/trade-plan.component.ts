@@ -1,20 +1,41 @@
-import { filter, map } from 'rxjs/operators';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
+import { filter, map } from "rxjs/operators";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { CommonSrvService } from "../../common-srv.service";
 import { ActivatedRoute } from "@angular/router";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTabGroup } from "@angular/material/tabs";
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
 import { MatOption } from "@angular/material/core";
 import { MatSelect, MatSelectChange } from "@angular/material/select";
-import { MatDialog } from '@angular/material/dialog';
-import { ErrorLogTableComponent } from 'src/app/custom-components/error-log-table/error-log-table.component';
+import { MatDialog } from "@angular/material/dialog";
+import { ErrorLogTableComponent } from "src/app/custom-components/error-log-table/error-log-table.component";
+import { MatAccordion } from "@angular/material/expansion";
+import { trigger, state, style, transition, animate } from '@angular/animations';
 @Component({
   selector: "app-trade-plan",
   templateUrl: "./trade-plan.component.html",
   styleUrls: ["./trade-plan.component.scss"],
+  animations: [
+    trigger('expandCollapse', [
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', opacity: 0 })),
+      state('expanded', style({ height: '*', visibility: 'visible', opacity: 1 })),
+      transition('expanded <=> collapsed', animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class TradePlanComponent implements OnInit, AfterViewInit {
   @ViewChild("tabGroup") tabGroup: MatTabGroup;
@@ -46,6 +67,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   CreadOnly = true;
   DreadOnly = true;
   error: any;
+  
   currentUser: any;
   GetDataObject: any = {};
   programDesign: any = [];
@@ -66,13 +88,126 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   Names: string[];
   GenderData: any;
   IsInitiated: boolean = false;
+  isTradeLayerPanelOpen: boolean = false;
+  isProgramInfoPanelOpen: boolean = false;
+  programHeadBudget: any = [];
+  otherPaymentCost: any = [];
+  educationTypes: any=[]
   constructor(
     private ComSrv: CommonSrvService,
     private ActiveRoute: ActivatedRoute,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private Dialog: MatDialog
-  ) {}
+  ) {
+
+    this.loadData();
+    this.updatePagination();
+  }
+  @ViewChild(MatAccordion) accordion: MatAccordion;
+  step: number = 0;
+  // paymentForm: FormGroup;
+  // paymentTypes = [
+  //   { type: "Credit Card", maxAmount: 5000 },
+  //   { type: "Debit Card", maxAmount: 3000 },
+  //   { type: "PayPal", maxAmount: 2000 },
+  //   { type: "Bank Transfer", maxAmount: 10000 },
+  // ];
+  get payments(): FormArray {
+    return this.TradeDesignInfoForm.get("payments") as FormArray;
+  }
+  createPaymentRow(): FormGroup {
+    const group = this.fb.group({
+      paymentType: ["", Validators.required],
+      paymentFrequency: ["Monthly", Validators.required],
+      amount: ["0", [Validators.required, Validators.min(1)]],
+    });
+    // React to paymentType changes to set dynamic max validator
+    group.get("paymentType")?.valueChanges.subscribe((selectedType) => {
+      const typeObj = this.programHeadBudget.find(
+        (t) => t.type === selectedType
+      );
+      const amountControl = group.get("amount");
+      if (typeObj && amountControl) {
+        amountControl.setValidators([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(typeObj.maxAmount),
+        ]);
+        amountControl.updateValueAndValidity();
+      }
+    });
+    return group;
+  }
+  addPaymentRow(): void {
+    this.payments.push(this.createPaymentRow());
+  }
+  removePaymentRow(index: number): void {
+    if (this.payments.length > 1) {
+      this.payments.removeAt(index);
+    }
+  }
+  consolidatedPaymentByType: any = [];
+  groupedPaymentsByType() {
+    if (this.TradeDesignInfoForm.valid) {
+      const rawPayments = this.TradeDesignInfoForm.value.payments;
+
+      // Group payments by paymentType
+      const groupedPayments: {
+        [type: string]: { amount: number; paymentFrequency: string };
+      } = {};
+
+      rawPayments.forEach((payment) => {
+        const type = payment.paymentType;
+        const amount = +payment.amount;
+        const frequency = payment.paymentFrequency;
+
+        if (groupedPayments[type]) {
+          groupedPayments[type].amount += amount;
+          // Optional: You can check for consistency in frequency if needed
+        } else {
+          groupedPayments[type] = {
+            amount: amount,
+            paymentFrequency: frequency,
+          };
+        }
+      });
+
+      // Convert to array of { paymentType, amount, paymentFrequency }
+      const consolidated = Object.entries(groupedPayments).map(
+        ([paymentType, { amount, paymentFrequency }]) => ({
+          paymentType,
+          amount,
+          paymentFrequency,
+        })
+      );
+
+      this.consolidatedPaymentByType = consolidated;
+    } else {
+      this.TradeDesignInfoForm.markAllAsTouched();
+    }
+  }
+
+  setStep(index: number) {
+    this.step = index;
+  }
+  nextStep() {
+    this.step++;
+  }
+  prevStep() {
+    this.step--;
+  }
+  openAll() {
+    this.accordion.closeAll();
+    setTimeout(() => {
+      this.accordion.openAll();
+    }, 0);
+  }
+  closeAll() {
+    this.accordion.closeAll();
+    this.step = -1;
+  }
+    minDate: Date;
   ngOnInit(): void {
     this.TapIndex = 0;
     this.currentUser = this.ComSrv.getUserDetails();
@@ -85,6 +220,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     this.InitSelectedProgramInfo();
     this.LoadData();
     this.GetTradeDesign();
+    // this.initOtherPaymentGrid();
   }
   TradeDesignInfoForm: FormGroup;
   InitTradeDesignInfo() {
@@ -101,7 +237,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       TradeLayer: ["", Validators.required],
       CTM: [0, Validators.required],
       ExamCost: [0, Validators.required],
-      
       TraineeContraTarget: [0, Validators.required],
       OJTPayment: [0, Validators.required],
       GuruPayment: [0, Validators.required],
@@ -109,8 +244,11 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       MedicalCost: [0, Validators.required],
       PrometricCost: [0, Validators.required],
       ProtectorateCost: [0, Validators.required],
+      Stipend: [0, Validators.required],
+      SelfEmploymentCommitment: [0, Validators.required],
+      FormalEmploymentCommitment: [0, Validators.required],
+      OverallEmploymentCommitment: [0, Validators.required],
       OtherTrainingCost: [0, Validators.required],
-      
       ContraTargetThreshold: [20, Validators.required],
       Threshold: [0, Validators.required],
       TraineeCompTarget: [0, Validators.required],
@@ -119,8 +257,15 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       SelectedCount: [0],
       SelectedShortList: [""],
       GenderID: ["", Validators.required],
+      EntryLevelEducation: ["", Validators.required],
+      StartDate: [new Date(), Validators.required],
+
       TradeLot: this.fb.array([]),
+      payments: this.fb.array([]),
     });
+
+
+    this.addPaymentRow();
     const clearTradeLotOnChange = (fields: string[]) => {
       fields.forEach((field) => {
         this.TradeDesignInfoForm.get(field).valueChanges.subscribe(() => {
@@ -239,8 +384,19 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     );
   }
   addTradeLot() {
+    if (this.TradeDesignInfoForm.get("payments").invalid) {
+      this.ComSrv.ShowError(
+        "Minimum one other payment is required to proceed next."
+      );
+      return;
+    }
+
     if (this.TradeDesignInfoForm.invalid) {
-      this.ComSrv.ShowError("All * fields are required for form submission");
+      this.ComSrv.ShowWarning("All * fields are required for form submission");
+      return;
+    }
+    if (this.TradeDesignInfoForm.get("PerSelectedContraTarget").value <= 0) {
+      this.ComSrv.ShowError("Contracted Target must be greater than 0");
       return;
     }
     const { CTM, ExamCost, PerSelectedContraTarget } =
@@ -260,6 +416,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         PerSelectedContraTarget
       )
     );
+    this.openAll();
     this.updateTradeLotFormArray();
   }
   createTradeLotDetail(
@@ -271,14 +428,19 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     examCost: number,
     perDisContraTarget: number
   ) {
+    const totalOtherCost = this.calculateOtherTrainingCost(
+      duration,
+      perDisContraTarget
+    );
     const totalCost = this.calculateTotalCost(
       CTM,
       duration,
       stipend,
-      bagBadgeCost,
+      totalOtherCost,
       examCost,
       perDisContraTarget
     );
+
     return {
       UserID: this.currentUser.UserID,
       ProgramDesignID: 0,
@@ -288,8 +450,11 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       TraineeContTarget: perDisContraTarget,
       CTM: CTM,
       TrainingCost: CTM * duration * perDisContraTarget,
-      Stipend: stipend * duration * perDisContraTarget,
-      BagAndBadge: perDisContraTarget * bagBadgeCost,
+      Stipend:
+        this.TradeDesignInfoForm.get("Stipend").value *
+        duration *
+        perDisContraTarget,
+      BagAndBadge: totalOtherCost,
       ExamCost: examCost * perDisContraTarget,
       TotalCost: totalCost,
     };
@@ -300,17 +465,40 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     CTM: number,
     duration: number,
     stipend: number,
-    bagBadgeCost: number,
+    totalOtherCost: number,
     examCost: number,
     perDisContraTarget: number
   ): number {
     return (
       CTM * duration * perDisContraTarget +
-      stipend * duration * perDisContraTarget +
-      perDisContraTarget * bagBadgeCost +
+      this.TradeDesignInfoForm.get("Stipend").value *
+        duration *
+        perDisContraTarget +
+      totalOtherCost +
       examCost * perDisContraTarget
     );
   }
+
+  calculateOtherTrainingCost(
+    duration: number,
+    perDisContraTarget: number
+  ): number {
+    debugger;
+    const rawPayments = this.TradeDesignInfoForm.value.payments || [];
+    let totalCost = 0;
+
+    rawPayments.forEach((payment: any) => {
+      const amount = Number(payment.amount) || 0;
+      if (payment.paymentFrequency === "Monthly") {
+        totalCost += amount * duration * perDisContraTarget;
+      } else {
+        totalCost += amount * perDisContraTarget;
+      }
+    });
+
+    return totalCost;
+  }
+
   updateTradeLotFormArray() {
     this.TradeLot = this.TradeDesignInfoForm.get("TradeLot") as FormArray;
     this.TradeLot.clear();
@@ -330,7 +518,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         tradeLotControl.value.AnnouncedDistrict,
         tradeLotControl.value.CTM,
         tradeLotControl.value.Duration,
-        this.selectedProgram[0].Stipend,
+        this.TradeDesignInfoForm.get("Stipend").value,
         this.selectedProgram[0].bagBadgeCost,
         this.TradeDesignInfoForm.value.ExamCost,
         districtContTarget
@@ -417,10 +605,13 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         this.programDesign = this.GetDataObject.programDesign.filter(
           (d) => d.IsInitiate == 0 || d.IsInitiate == false
         );
+        this.educationTypes = this.GetDataObject.educationTypes;
+        this.otherPaymentCost = this.GetDataObject.otherPaymentCost;
         this.programFocus = this.GetDataObject.programFocus;
         this.trade = this.GetDataObject.trade;
         this.tradeLayer = this.GetDataObject.tradeLayer;
         this.GenderData = this.GetDataObject.gender;
+        this.programHeadBudget = this.GetDataObject.programHeadBudget;
         this.LoadMatTable(
           this.GetDataObject.programWiseBudget,
           "programWiseBudget"
@@ -432,7 +623,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         this.LoadMatTable(this.GetDataObject.lotWiseTarget, "lotWiseTarget");
       },
       (error) => {
-        this.ComSrv.ShowError(`${error.message}`, "Close", 500000);
+        this.ComSrv.ShowError(`${error.message}`, "Close", 3000);
       }
     );
   }
@@ -447,6 +638,9 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     this.selectedProgram = this.GetDataObject.programDesign.filter(
       (p) => p.ProgramID === ProgramData
     );
+    this.programHeadBudget = this.GetDataObject.programHeadBudget.filter(
+      (p) => p.U_Program === this.selectedProgram[0].SAPProgram
+    );
     this.programBudget = this.GetDataObject.programBudget.filter(
       (p) => p.ProgramID === ProgramData
     );
@@ -460,7 +654,11 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       this.selectedProgram[0].Gender,
       this.selectedProgram[0].GenderID
     );
+    this.TradeDesignInfoForm.get("Stipend").setValue(
+      this.selectedProgram[0].Stipend
+    );
     this.ChangeSchemeDesignOn(this.selectedProgram[0].SchemeDesignOn);
+    this.ExpandProgramInfo();
   }
   LoadGender(GenderName: string, GenderID: number) {
     this.GenderData = this.GetDataObject.gender;
@@ -491,29 +689,27 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       (t) => t.TradeDetailMapID === TradeLayerId
     );
     this.SelectedTradeInfo.patchValue(this.selectedtradeLayer[0]);
+    this.ExpandTradeLayer();
   }
-
   existedTradeList: any;
   checkTradeLotIsCreated() {
-    this.existedTradeList=[]
+    debugger;
+    this.existedTradeList = [];
     const selectedProgram = this.programDesign.find(
       (t) => t.ProgramID === this.TradeDesignInfoForm.get("Scheme").value
     );
     const selectedTrade = this.trade.find(
       (t) => t.TradeID === this.TradeDesignInfoForm.get("Trade").value
     );
-
     // Check if program and trade are selected
     if (!selectedProgram) {
       this.ComSrv.ShowError("Program selection is required to proceed");
       return;
     }
-
     if (!selectedTrade) {
       this.ComSrv.ShowError("Trade selection is required to proceed");
       return;
     }
-
     // Helper to check if a similar parent trade lot exists
     if (this.EditCheck) {
       this.existedTradeList = this.GetDataObject.tradeWiseTarget
@@ -535,7 +731,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       return;
     }
   }
-
   EmptyCtrl() {
     this.PSearchCtr.setValue("");
     this.CSearchCtr.setValue("");
@@ -551,11 +746,9 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   IsDisabled = false;
   async SaveTradePlanInfo() {
     this.checkTradeLotIsCreated();
-
     if (this.existedTradeList.length > 0) {
       return;
     }
-
     const { ContraTargetThreshold, TraineeContraTarget, TradeLot } =
       this.TradeDesignInfoForm.value;
     // const TraineeContThreshold = (ContraTargetThreshold / 100) * TraineeContraTarget;
@@ -565,6 +758,14 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     const totalLotContractedTrainee = this.sumArray(
       TradeLot.map((d) => d.TraineeContTarget)
     );
+
+    if (this.TradeDesignInfoForm.get("payments").invalid) {
+      this.ComSrv.ShowError(
+        "Minimum one other payment is required to proceed next."
+      );
+      return;
+    }
+
     if (this.TradeDesignInfoForm.invalid) {
       this.ComSrv.ShowError("All * filed is required to form submission");
     }
@@ -593,7 +794,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         this.ComSrv.ShowError(
           `Trade Plan already exists for the selected ${this.ProgramDesignOn} value. Please deselect ${this.ProgramDesignOn}.`,
           "",
-          10000
+          3000
         );
         return;
       }
@@ -603,16 +804,33 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         this.ComSrv.ShowError(
           `Trade Plan already exists for the selected ${this.ProgramDesignOn} value. Please deselect ${this.ProgramDesignOn}.`,
           "",
-          10000
+          3000
         );
         return;
       }
     }
-    if (this.TradeDesignInfoForm.valid && this.TradeLot.length > 0) {
+    this.groupedPaymentsByType();
+    debugger;
+    if (
+      this.TradeDesignInfoForm.valid &&
+      this.TradeLot.length > 0 &&
+      this.TradeDesignInfoForm.get("payments")?.valid
+    ) {
       this.TradeDesignInfoForm.get("ProgramDesignOn").setValue(
         this.ProgramDesignOn
       );
       this.IsDisabled = true;
+      this.TradeDesignInfoForm.get("OverallEmploymentCommitment").setValue(
+        Number(
+          this.TradeDesignInfoForm.get("FormalEmploymentCommitment").value
+        ) +
+          Number(this.TradeDesignInfoForm.get("SelfEmploymentCommitment").value)
+      );
+      this.TradeDesignInfoForm.get("payments").setValue(
+        this.consolidatedPaymentByType
+      );
+      console.log(this.TradeDesignInfoForm.getRawValue());
+      debugger;
       this.ComSrv.postJSON(
         "api/ProgramDesign/SaveTradeDesign",
         this.TradeDesignInfoForm.getRawValue()
@@ -631,19 +849,24 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
             "TradeLot"
           ) as FormArray;
           TradeLot.clear();
+          this.ComSrv.openSnackBar("Trade Plan saved successfully", "Close");
         },
         (error) => {
-          this.ComSrv.ShowError(`${error.message}`, "Close", 500000);
+          this.ComSrv.ShowError(`${error.message}`, "Close", 3000);
         }
       );
-      this.ComSrv.openSnackBar("Saved data");
+      this.isProgramInfoPanelOpen = false;
+      this.isTradeLayerPanelOpen = false;
+      // this.TradeDesignInfoForm.reset();
       this.IsDisabled = false;
     } else {
       this.ComSrv.ShowError("please enter valid data");
     }
   }
-  ResetFrom() {
+  ResetForm() {
     if (confirm("do you want to reset form data")) {
+      this.isProgramInfoPanelOpen = false;
+      this.isTradeLayerPanelOpen = false;
       this.EditCheck = false;
       this.IsInitiated = false;
       this.TradeDesignInfoForm.enable();
@@ -656,9 +879,15 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       this.TradeDesignInfoForm.clearValidators();
     }
   }
+  ExpandTradeLayer() {
+    this.isTradeLayerPanelOpen = true;
+  }
+  ExpandProgramInfo() {
+    this.isProgramInfoPanelOpen = true;
+  }
   PageTitle(): void {
     this.ComSrv.setTitle(this.ActiveRoute.snapshot.data.title);
-    this.SpacerTitle = this.ActiveRoute.snapshot.data.title;
+    this.SpacerTitle = "Program Trade Plan";
   }
   SelectAll(event: any, dropDownNo: number, controlName, formGroup) {
     const matSelect = this.matSelectArray[dropDownNo - 1];
@@ -760,7 +989,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   }
   EditCheck: boolean = false;
   async EditTradePlan(row: any) {
-    debugger;
     const GenderID = this.GenderData.filter(
       (g) => g.GenderName == row.Gender
     ).map((g) => g.GenderID);
@@ -831,9 +1059,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     this.TradeDesignInfoForm.get("GenderID").setValue(GenderID[0]);
     await this.LoadTradeLayerData(selectedTradeDesign[0].TradeLayer);
     await this.OnLocationChange();
-    setTimeout(() => {
-      this.addTradeLot();
-    }, 0);
+
     await this.GetTradeLot(selectedTradeDesign[0].TradeDesignID);
     this.TradeLot = this.TradeDesignInfoForm.get("TradeLot") as FormArray;
     this.TradeLot.controls.forEach((control: FormGroup, index: number) => {
@@ -843,18 +1069,42 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       control.controls.TotalCost.setValue(this.TradeLots[index].TotalCost);
     });
     // this.TradeDesignInfoForm.get("GenderID").setValue(selectedTradeDesign[0].GenderID)
-
     this.tabGroup.selectedIndex = 0;
     // } else {
     //   this.ComSrv.ShowError('Selected record is locked because program is Initiated .')
     // }
+    // Clear existing payment form array
+    this.payments.clear();
+    // Filter the relevant payments by TradeDesignID
+    debugger;
+    const otherPaymentCost = this.GetDataObject.otherPaymentCost.filter(
+      (d) => d.TradeDesignID === row.TradeDesignID
+    );
+    // Loop through and push each payment to the form array
+    otherPaymentCost.forEach((payment) => {
+      this.payments.push(
+        this.fb.group({
+          paymentType: [payment.PaymentType, Validators.required],
+          paymentFrequency: [payment.PaymentFrequency, Validators.required],
+          amount: [payment.Amount, [Validators.required, Validators.min(0)]],
+        })
+      );
+    });
+    this.accordion.closeAll();
+    setTimeout(() => {
+      this.accordion.openAll();
+      setTimeout(() => {
+        this.addTradeLot();
+      }, 0);
+    }, 0);
+    this.isProgramInfoPanelOpen = true;
+    this.isTradeLayerPanelOpen = true;
   }
   camelCaseToWords(input: string): string {
     return input.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
   applyFilter(data, event) {
     debugger;
-
     data.filter = event.target.value.trim().toLowerCase();
     if (data.paginator) {
       data.paginator.firstPage();
@@ -1000,5 +1250,118 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         this.TapIndex = event.index;
       });
     }
+  }
+
+  trades: any[] = [];
+  itemsPerPage: number = 5;
+  currentPage: number = 1;
+  totalPages: number = 1;
+
+ 
+  toggleDetails(trade: any): void {
+    trade.showDetails = !trade.showDetails;
+  }
+
+  openApprovalDialogue(trade: any): void {
+    console.log('Open dialog for:', trade);
+    // Implement MatDialog logic, e.g.:
+    // this.dialog.open(YourDialogComponent, { data: trade });
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.trades.length / this.itemsPerPage);
+  }
+
+  loadData(): void {
+    this.trades = [
+      {
+        id: 1,
+        TradeName: 'Web Development',
+        TradeCode: 'WD101',
+        SectorName: 'IT',
+        SubSectorName: 'Web Technologies',
+        showDetails: false,
+        designs: [
+          {
+            id: 1,
+            Duration: '6 Months',
+            TotalTrainingHours: 300,
+            showLots: false,
+            lots: [
+              {
+                id: 1,
+                District: 'Delhi',
+                Cluster: 'North',
+                showPayments: false,
+                payments: [
+                  { id: 1, PaymentType: 'Stipend', Amount: 6000 },
+                  { id: 2, PaymentType: 'Desktop Payment', Amount: 5000 },
+                  { id: 3, PaymentType: 'Internet/Dongle', Amount: 1500 },
+                ],
+              },
+              {
+                id: 2,
+                District: 'Mumbai',
+                Cluster: 'West',
+                showPayments: false,
+                payments: [
+                  { id: 4, PaymentType: 'Stipend', Amount: 6000 },
+                  { id: 5, PaymentType: 'Desktop Payment', Amount: 5000 },
+                ],
+              },
+            ],
+          },
+          {
+            id: 2,
+            Duration: '3 Months',
+            TotalTrainingHours: 150,
+            showLots: false,
+            lots: [
+              {
+                id: 3,
+                District: 'Pune',
+                Cluster: 'Central',
+                showPayments: false,
+                payments: [{ id: 6, PaymentType: 'Stipend', Amount: 3000 }],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 2,
+        TradeName: 'Mobile App Development',
+        TradeCode: 'MAD202',
+        SectorName: 'IT',
+        SubSectorName: 'Mobile Technologies',
+        showDetails: false,
+        designs: [
+          {
+            id: 3,
+            Duration: '6 Months',
+            TotalTrainingHours: 280,
+            showLots: false,
+            lots: [
+              {
+                id: 4,
+                District: 'Hyderabad',
+                Cluster: 'South',
+                showPayments: false,
+                payments: [
+                  { id: 7, PaymentType: 'Stipend', Amount: 7000 },
+                  { id: 8, PaymentType: 'Internet/Dongle', Amount: 2000 },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
   }
 }

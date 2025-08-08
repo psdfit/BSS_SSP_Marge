@@ -29,7 +29,7 @@
             </div>
             <div class="row">
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Total Lots</mat-label>
                   <input formControlName="TotalLots" placeholder="Total Lots" readonly matInput required />
                   <mat-error *ngFor="let error of SchemeInfoForm.get('TotalLots').errors | keyvalue">{{
@@ -37,7 +37,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Total Province</mat-label>
                   <input formControlName="TotalProvince" placeholder="Total Province" readonly matInput required />
                   <mat-error *ngFor="let error of SchemeInfoForm.get('TotalProvince').errors | keyvalue">{{
@@ -45,7 +45,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Total Cluster</mat-label>
                   <input formControlName="TotalCluster" placeholder="Total Cluster" readonly matInput required />
                   <mat-error *ngFor="let error of SchemeInfoForm.get('TotalCluster').errors | keyvalue">{{
@@ -53,7 +53,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Total District</mat-label>
                   <input formControlName="TotalDistrict" placeholder="Total District" readonly matInput required />
                   <mat-error *ngFor="let error of SchemeInfoForm.get('TotalDistrict').errors | keyvalue">{{
@@ -61,7 +61,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Total Trade </mat-label>
                   <input formControlName="TotalTrade" placeholder="Total Trade " readonly
                     matInput required />
@@ -71,7 +71,7 @@
               </div>
 
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Trainee Contracted Target </mat-label>
                   <input formControlName="ContractedTarget" placeholder="Total Trainee Completion Target " readonly
                     matInput required />
@@ -80,7 +80,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Trainee Completion Target </mat-label>
                   <input formControlName="CompletionTarget" placeholder="Total Trainee Contracted Target " readonly
                     matInput required />
@@ -89,7 +89,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-3">
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Total Cost</mat-label>
                   <input formControlName="TotalCost" placeholder="Total Cost" readonly matInput required />
                   <mat-error *ngFor="let error of SchemeInfoForm.get('TotalCost').errors | keyvalue">{{
@@ -148,7 +148,7 @@
               <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
               <mat-cell *matCellDef="let row">
 
-                 <ng-container *ngIf="column !='IsInitiated' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart'">
+                 <ng-container *ngIf="column !='IsInitiated' && column !='ApprovalStatus' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart'">
                     &nbsp; {{ row[column] }}
                  </ng-container>
 
@@ -170,6 +170,12 @@
                    &nbsp;
                     <span *ngIf="row[column]===false" class="label label-warning">No</span>
                     <span *ngIf="row[column]===true" class="label label-success">Yes</span>
+                 </ng-container>
+                 <ng-container *ngIf="column =='ApprovalStatus'">
+                   &nbsp;
+                  <span *ngIf="row[column]=='Pending'" class="label label-warning">{{row[column]}}</span>
+                    <span *ngIf="row[column]=='Approved'" class="label label-success">{{row[column]}}</span>
+                    <span *ngIf="row[column]=='Rejected'" class="label label-danger">{{row[column]}}</span>
                  </ng-container>
                  <ng-container *ngIf="column =='ClassStartDate' || column =='TentativeProcessStart'">
                     &nbsp; {{ row[column] | date:environment.DateFormat }}

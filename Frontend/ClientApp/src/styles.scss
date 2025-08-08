@@ -1029,3 +1029,7 @@ mat-table mat-row:focus {
   border: 1px solid rgba(0, 0, 0, .125);
   border-radius: 6px;
 }
+
+.mat-expansion-panel-content{
+  border-top: 2px solid #FFC107 !important;
+}

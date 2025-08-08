@@ -1483,8 +1483,9 @@ body {
   align-items: center;
   gap: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-   border-bottom: #024d8f 4px solid;
+   border-bottom:  4px solid #024d8f;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .metric-card:hover {
@@ -1538,13 +1539,41 @@ body {
 }
 
 .program-details-grid {
-  padding: 1.5rem;
+  padding: .3rem 1rem;
   display: grid;
   gap: 1.5rem;
 }
+// ::ng-deep .mat-tooltip {
+//   background-color: #1e40af; /* Your custom background */
+//   color: #ffffff;            /* Tooltip text color */
+//   font-weight: 500;
+//   font-size: 14px;
+//   border-bottom: 3px solid #1e40af;
+// }
+// .tooltip-table-menu .mat-menu-content {
+//   padding: 0 !important;
+//   min-width: 220px;
+// }
+.tooltip-table-menu table {
+  width: 100%;
+  font-size: 15px;          /* increased font size */
+  border-collapse: collapse;
+}
+
+.tooltip-table-menu table {
+  width: 100%;
+  font-size: 13px;
+  border-collapse: collapse;
+}
+
+.tooltip-table-menu th,
+.tooltip-table-menu td {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+}
 
 .program-detail-card {
-  padding: 1.5rem;
+  padding: .3rem;
 }
 
 .program-detail-header {
@@ -1749,7 +1778,7 @@ body {
 .lots-breakdown-grid {
   padding: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 1rem;
 }
 

@@ -8,6 +8,7 @@ namespace DataLayer.Models
     {
 
 
+        public string SAPProgram { get; set; }
         public int? ProgramID { get; set; }
         public int UserID { get; set; }
         public string Program { get; set; }

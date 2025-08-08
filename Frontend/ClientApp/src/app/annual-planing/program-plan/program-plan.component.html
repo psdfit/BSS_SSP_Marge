@@ -1,45 +1,55 @@
-<!-- <mat-card> -->
+<mat-card>
    <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim m-1">
       <mat-icon class="material-icons"> add_circle </mat-icon>
-      <span class="spacer">{{SpacerTitle}}</span>
+      <span class="spacer">Scheme Plan</span>
    </mat-toolbar>
-   <mat-toolbar *ngIf="TapIndex==1" color="accent" class=" slim slim m-1">
-      <mat-icon class="material-icons"> view_comfy </mat-icon>
-      <span class="spacer">Manage and View All</span>
-      <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
-      <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff" (click)="DataExcelExport()">
-         <i class="fas fa-file-export"></i> Export Excel</button>
-   </mat-toolbar>
-   <!-- <mat-card-content> -->
-      <style>
-         .mat-expansion-panel {
-            margin-bottom: 0.3rem;
-            margin-top: 0.3rem;
-         }
-         .mat-expansion-panel-header {
-    background: white !important;
-}
-      </style>
+
+   <mat-card-content>
+
       <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
-         <mat-tab label="Annual Program Plan">
-
+         <mat-tab label="Scheme Plan">
             <div class="example-action-buttons mt-2 text-right mb-2">
-               <a mat-stroked-button color="primary"  (click)="openAll()"><mat-icon>expand_more</mat-icon> Expand All</a> | 
-               <a mat-stroked-button color="accent"  (click)="closeAll()"><mat-icon>expand_less</mat-icon> Collapse All</a>
+               <a mat-stroked-button color="primary" (click)="openAll()" class="mr-1"><mat-icon>expand_more</mat-icon>
+                  Expand All</a>
+               <a mat-stroked-button color="accent" (click)="closeAll()"><mat-icon>expand_less</mat-icon> Collapse
+                  All</a>
             </div>
-
-            
             <mat-accordion multi="true" #accordion>
                <form (ngSubmit)="SaveAnnualPlanInfo()" [formGroup]="AnnualPlanInfoForm">
                   <!-- Program Details Section -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 0" (opened)="setStep(0)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header >
-                        <mat-panel-title style="font-weight:bold;color: #024285;" > Program Details </mat-panel-title>
+                  <mat-expansion-panel class='my-2 shadow' [expanded]="step === 0" (opened)="setStep(0)"
+                     style="border:2px solid #fbb417">
+                     <mat-expansion-panel-header>
+                        <mat-panel-title style="font-weight:bold;color: #024285;"> <span class="number-icon">1</span>
+                           Scheme & Funding Details
+                        </mat-panel-title>
                      </mat-expansion-panel-header>
                      <!-- <fieldset class="border sub-fieldset">
                   <legend>Program Details</legend> -->
                      <div class="row border-top">
+                        <div class="col-sm-3">
+                           <mat-form-field>
+                              <mat-label>Select Program</mat-label>
+                              <mat-select (openedChange)="EmptyCtrl()" formControlName="SAPProgram" matInput>
+                                 <mat-option *ngFor="let s of programBudget; " [value]="s.U_Program">{{s.U_Program}} |
+                                    Budget: {{s.U_Amount}}</mat-option>
+                              </mat-select>
+                              <mat-error *ngFor="let error of AnnualPlanInfoForm.get('SAPProgram').errors | keyvalue">{{
+                                 getErrorMessage(error.key, error.value) }}
+                              </mat-error>
+                           </mat-form-field>
+                        </div>
+                        <div class="col-sm-3">
+                           <mat-form-field class="mat-form-field-disabled">
+                              <mat-label>Program Budget</mat-label>
+                              <input formControlName="ProgramBudget" readonly placeholder="Enter Program Budget"
+                                 matInput required />
+                              <mat-error
+                                 *ngFor="let error of AnnualPlanInfoForm.get('ProgramBudget').errors | keyvalue">{{
+                                 getErrorMessage(error.key, error.value) }}
+                              </mat-error>
+                           </mat-form-field>
+                        </div>
                         <!-- Financial Year Dropdown -->
                         <div class="col-sm-3">
                            <mat-form-field>
@@ -75,9 +85,9 @@
                            </mat-form-field>
                         </div>
                         <!-- Program Name Input -->
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
                            <mat-form-field>
-                              <mat-label>Program Name</mat-label>
+                              <mat-label>Scheme Name</mat-label>
                               <input formControlName="Program" placeholder="Enter Scheme Name" maxlength="30"
                                  AlphaNumeric matInput required />
                               <mat-error *ngFor="let error of AnnualPlanInfoForm.get('Program').errors | keyvalue">{{
@@ -88,8 +98,8 @@
                         <!-- Program Code Input -->
                         <div class="col-sm-3">
                            <mat-form-field>
-                              <mat-label>Program Code</mat-label>
-                              <input formControlName="ProgramCode" placeholder="Enter Scheme Name" maxlength="4"
+                              <mat-label>Scheme Code</mat-label>
+                              <input formControlName="ProgramCode" placeholder="Enter Scheme Code" maxlength="4"
                                  AlphaNumeric matInput required />
                               <mat-error
                                  *ngFor="let error of AnnualPlanInfoForm.get('ProgramCode').errors | keyvalue">{{
@@ -98,17 +108,16 @@
                            </mat-form-field>
                         </div>
                         <!-- Program Budget Input -->
-                        <div class="col-sm-3">
-                           <mat-form-field>
-                              <mat-label>Program Budget</mat-label>
-                              <input formControlName="ProgramBudget" placeholder="Enter Program Budget" NumberOnly
-                                 matInput required />
-                              <mat-error
-                                 *ngFor="let error of AnnualPlanInfoForm.get('ProgramBudget').errors | keyvalue">{{
-                                 getErrorMessage(error.key, error.value) }}
-                              </mat-error>
-                           </mat-form-field>
-                        </div>
+                        <!-- <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Program Budget</mat-label>
+                           <input formControlName="ProgramBudget" placeholder="Enter Program Budget" NumberOnly matInput
+                              required />
+                           <mat-error *ngFor="let error of AnnualPlanInfoForm.get('ProgramBudget').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}
+                           </mat-error>
+                        </mat-form-field>
+                     </div> -->
                         <div class="col-sm-2" hidden>
                            <mat-form-field>
                               <mat-label>Program Department</mat-label>
@@ -123,37 +132,6 @@
                               </mat-error>
                            </mat-form-field>
                         </div>
-                        <!-- Program Type Dropdown -->
-                        <div class="col-sm-3">
-                           <mat-form-field>
-                              <mat-label>Program Type</mat-label>
-                              <mat-select (openedChange)="EmptyCtrl()" formControlName="ProgramTypeID" matInput
-                                 required>
-                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
-                                       (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /> </mat-optgrp>
-                                 <mat-option>Select Program Type</mat-option>
-                                 <mat-option *ngFor="let s of ProgramTypeData | like:['PTypeName',BSearchCtr.value]; "
-                                    [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
-                              </mat-select>
-                              <mat-error
-                                 *ngFor="let error of AnnualPlanInfoForm.get('ProgramTypeID').errors | keyvalue">{{
-                                 getErrorMessage(error.key, error.value) }}</mat-error>
-                           </mat-form-field>
-                        </div>
-                     </div>
-                     <mat-action-row>
-                        <a mat-button color="primary" (click)="nextStep()">Next</a>
-                     </mat-action-row>
-                     <!-- </fieldset> -->
-                  </mat-expansion-panel>
-                  <!-- Funding Details -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 1" (opened)="setStep(1)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header>
-                        <mat-panel-title style="font-weight:bold;color: #024285;">Funding Details </mat-panel-title>
-                     </mat-expansion-panel-header>
-                     <!-- Funding Details -->
-                     <div class="row border-top">
                         <div class="col-sm-3">
                            <mat-form-field>
                               <mat-label>Funding Source</mat-label>
@@ -205,17 +183,102 @@
                               </mat-error>
                            </mat-form-field>
                         </div>
+                        <!-- Program Type Dropdown -->
+                        <div class="col-sm-3">
+                           <mat-form-field>
+                              <mat-label>Program Type</mat-label>
+                              <mat-select (openedChange)="EmptyCtrl()" formControlName="ProgramTypeID" matInput
+                                 required>
+                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                       (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" /> </mat-optgrp>
+                                 <mat-option>Select Program Type</mat-option>
+                                 <mat-option *ngFor="let s of ProgramTypeData | like:['PTypeName',BSearchCtr.value]; "
+                                    [value]="s.PTypeID">{{s.PTypeName}}</mat-option>
+                              </mat-select>
+                              <mat-error
+                                 *ngFor="let error of AnnualPlanInfoForm.get('ProgramTypeID').errors | keyvalue">{{
+                                 getErrorMessage(error.key, error.value) }}</mat-error>
+                           </mat-form-field>
+                        </div>
                      </div>
                      <mat-action-row>
-                        <a mat-button color="warn" (click)="prevStep()">Previous</a>
-                        <a mat-button color="primary" (click)="nextStep()">Next</a>
+                        <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">Next</a>
                      </mat-action-row>
+                     <!-- </fieldset> -->
                   </mat-expansion-panel>
+                  <!-- Funding Details -->
+                  <!-- <mat-expansion-panel class='my-2 shadow' [expanded]="step === 1" (opened)="setStep(1)"
+                  style="border:2px solid #fbb417">
+                  <mat-expansion-panel-header>
+                     <mat-panel-title style="font-weight:bold;color: #024285;">Funding Details </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div class="row border-top">
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Funding Source</mat-label>
+                           <mat-select (openedChange)="EmptyCtrl()" formControlName="FundingSourceID" matInput required>
+                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                    (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" />
+                              </mat-optgrp>
+                              <mat-option>Select Funding Source</mat-option>
+                              <mat-option
+                                 *ngFor="let s of FundingSourceData | like:['FundingSourceName',BSearchCtr.value]; "
+                                 [value]="s.FundingSourceID">{{s.FundingSourceName}}</mat-option>
+                           </mat-select>
+                           <mat-error
+                              *ngFor="let error of AnnualPlanInfoForm.get('FundingSourceID').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }} </mat-error>
+                        </mat-form-field>
+                     </div>
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Funding Category</mat-label>
+                           <mat-select (openedChange)="EmptyCtrl()" formControlName="FundingCategoryID" matInput
+                              required>
+                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                    (keydown)="$event.stopPropagation()" [formControl]="BSearchCtr" />
+                              </mat-optgrp>
+                              <mat-option>Select Funding Source</mat-option>
+                              <mat-option
+                                 *ngFor="let s of FundingCategory | like:['FundingCategoryName',BSearchCtr.value]; "
+                                 [value]="s.FundingCategoryID">{{s.FundingCategoryName}}</mat-option>
+                           </mat-select>
+                           <mat-error
+                              *ngFor="let error of AnnualPlanInfoForm.get('FundingCategoryID').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}
+                           </mat-error>
+                        </mat-form-field>
+                     </div>
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Business Rule</mat-label>
+                           <mat-select (openedChange)="EmptyCtrl()" formControlName="BusinessRuleType" matInput
+                              required>
+                              <mat-option *ngFor="let s of BusinessRuleType; "
+                                 [value]="s.businessruletype">{{s.businessruletype}}</mat-option>
+                           </mat-select>
+                           <mat-error
+                              *ngFor="let error of AnnualPlanInfoForm.get('BusinessRuleType').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}
+                           </mat-error>
+                        </mat-form-field>
+                     </div>
+                  </div>
+                  <mat-action-row>
+                     <a mat-stroked-button color="warn" (click)="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                     </a>
+                     <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">
+                        <i class="fas fa-arrow-right"></i> Next
+                     </a>
+                  </mat-action-row>
+               </mat-expansion-panel> -->
                   <!-- Eligibility Criteria -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 2" (opened)="setStep(2)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header >
-                        <mat-panel-title style="font-weight:bold;color: #024285;" >Trainee Eligibility Criteria
+                  <mat-expansion-panel class='my-2 shadow' [expanded]="step === 1" (opened)="setStep(1)"
+                     style="border:2px solid #fbb417">
+                     <mat-expansion-panel-header>
+                        <mat-panel-title style="font-weight:bold;color: #024285;"> <span
+                              class="number-icon">2</span>Trainee Eligibility Criteria
                         </mat-panel-title>
                      </mat-expansion-panel-header>
                      <div class="row border-top">
@@ -232,21 +295,21 @@
                               </mat-error>
                            </mat-form-field>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" hidden>
                            <mat-form-field>
-                              <input formControlName="Stipend" NumberOnly placeholder="Enter Stipend" matInput
+                              <input formControlName="Stipend" NumberOnly value="0" placeholder="Enter Stipend" matInput
                                  required />
                               <mat-error *ngFor="let error of AnnualPlanInfoForm.get('Stipend').errors | keyvalue">{{
                                  getErrorMessage(error.key, error.value) }}
                               </mat-error>
                            </mat-form-field>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" hidden>
                            <mat-form-field>
                               <mat-label>Stipend Mode</mat-label>
                               <mat-select (openedChange)="EmptyCtrl()" formControlName="StipendMode" matInput required>
                                  <mat-option>Stipend Mode</mat-option>
-                                 <mat-option value="Digital">Digital</mat-option>
+                                 <mat-option selected value="Digital">Digital</mat-option>
                                  <mat-option value="Manual">Manual</mat-option>
                               </mat-select>
                               <mat-error
@@ -311,103 +374,117 @@
                         </div>
                      </div>
                      <mat-action-row>
-                        <a mat-button color="warn" (click)="prevStep()">Previous</a>
-                        <a mat-button color="primary" (click)="nextStep()">Next</a>
+                        <a mat-stroked-button color="warn" (click)="prevStep()">
+                           <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                        <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">
+                           <i class="fas fa-arrow-right"></i> Next
+                        </a>
                      </mat-action-row>
                   </mat-expansion-panel>
                   <!-- Trainee Support -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 3" (opened)="setStep(3)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header >
-                        <mat-panel-title style="font-weight:bold;color: #024285;" >Trainee Support </mat-panel-title>
-                     </mat-expansion-panel-header>
-                     <div class="row border-top">
-                        <div class="col-sm-3">
-                           <mat-form-field>
-                              <mat-select multiple (openedChange)="EmptyCtrl()" required #Applicability matInput
-                                 formControlName="ApplicabilityID" placeholder="Trainee Support Items"
-                                 (selectionChange)="[optionClick($event,'Applicability')]">
-                                 <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
-                                       [formControl]="BSearchCtr" /></mat-optgrp>
-                                 <div class="select-all" *ngIf="!BSearchCtr.value">
-                                    <mat-checkbox [checked]="SelectedAll_Applicability" id="Applicability"
-                                       (change)="SelectAll($event,1,'ApplicabilityID','AnnualPlanInfoForm')">All</mat-checkbox>
-                                 </div>
-                                 <mat-option
-                                    *ngFor="let s of TraineeSupportItems  |  like:['Applicability',BSearchCtr.value]; "
-                                    [value]="s.ID">{{s.Applicability}}</mat-option>
-                                 <mat-option *ngFor="let s of TraineeSupportItems; " disabled hidden
-                                    [value]="s.ID">{{s.Applicability}}</mat-option>
-                              </mat-select>
-                              <mat-error
-                                 *ngFor="let error of AnnualPlanInfoForm.get('ApplicabilityID').errors | keyvalue">{{
-                                 getErrorMessage(error.key, error.value) }}
-                              </mat-error>
-                           </mat-form-field>
-                        </div>
-                        <div class="col-sm-3">
-                           <mat-form-field>
-                              <mat-label>Trainee Support Item Cost</mat-label>
-                              <input formControlName="TraineeSupportCost" matTooltip="Trainee Support Item Cost" min="1"
-                                 NumberOnly type="number" placeholder="Trainee Support Item Cost" matInput required />
-                              <mat-error
-                                 *ngFor="let error of AnnualPlanInfoForm.get('TraineeSupportCost').errors | keyvalue">{{
-                                 getErrorMessage(error.key, error.value) }}
-                              </mat-error>
-                           </mat-form-field>
-                        </div>
+                  <!-- <mat-expansion-panel class='my-2 shadow' [expanded]="step === 3" (opened)="setStep(3)"
+                  style="border:2px solid #fbb417">
+                  <mat-expansion-panel-header>
+                     <mat-panel-title style="font-weight:bold;color: #024285;">Trainee Support items</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div class="row border-top">
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-select multiple (openedChange)="EmptyCtrl()" required #Applicability matInput
+                              formControlName="ApplicabilityID" placeholder="Trainee Support Items"
+                              (selectionChange)="[optionClick($event,'Applicability')]">
+                              <mat-optgrp class="ddlsrchheader"> <input placeholder="Search"
+                                    [formControl]="BSearchCtr" /></mat-optgrp>
+                              <div class="select-all" *ngIf="!BSearchCtr.value">
+                                 <mat-checkbox [checked]="SelectedAll_Applicability" id="Applicability"
+                                    (change)="SelectAll($event,1,'ApplicabilityID','AnnualPlanInfoForm')">All</mat-checkbox>
+                              </div>
+                              <mat-option
+                                 *ngFor="let s of TraineeSupportItems  |  like:['Applicability',BSearchCtr.value]; "
+                                 [value]="s.ID">{{s.Applicability}}</mat-option>
+                              <mat-option *ngFor="let s of TraineeSupportItems; " disabled hidden
+                                 [value]="s.ID">{{s.Applicability}}</mat-option>
+                           </mat-select>
+                           <mat-error
+                              *ngFor="let error of AnnualPlanInfoForm.get('ApplicabilityID').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}
+                           </mat-error>
+                        </mat-form-field>
                      </div>
-                     <mat-action-row>
-                        <a mat-button color="warn" (click)="prevStep()">Previous</a>
-                        <a mat-button color="primary" (click)="nextStep()">Next</a>
-                     </mat-action-row>
-                  </mat-expansion-panel>
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Trainee Support Item Cost</mat-label>
+                           <input formControlName="TraineeSupportCost" matTooltip="Trainee Support Item Cost" min="1"
+                              NumberOnly type="number" placeholder="Trainee Support Item Cost" matInput required />
+                           <mat-error
+                              *ngFor="let error of AnnualPlanInfoForm.get('TraineeSupportCost').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}
+                           </mat-error>
+                        </mat-form-field>
+                     </div>
+                  </div>
+                  <mat-action-row>
+                     <a mat-stroked-button color="warn" (click)="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                     </a>
+                     <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">
+                        <i class="fas fa-arrow-right"></i> Next
+                     </a>
+                  </mat-action-row>
+               </mat-expansion-panel> -->
                   <!-- Timeline -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 4" (opened)="setStep(4)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header >
-                        <mat-panel-title style="font-weight:bold;color: #024285;" >Timeline </mat-panel-title>
-                     </mat-expansion-panel-header>
-                     <div class="row border-top">
-                        <div class="col-sm-3">
-                           <mat-form-field>
-                              <mat-label>Tentative Process Start Date</mat-label>
-                              <input formControlName="TentativeProcessSDate" [max]="maxDate"
-                                 [matDatepicker]="TentativeProcessSDate" readonly matInput required>
-                              <mat-datepicker-toggle matSuffix [for]="TentativeProcessSDate"
-                                 matTooltip="Tentative Process Start Date"></mat-datepicker-toggle>
-                              <mat-datepicker #TentativeProcessSDate disabled="false"></mat-datepicker>
-                              <mat-error
-                                 *ngFor="let error of AnnualPlanInfoForm.get('TentativeProcessSDate').errors | keyvalue">{{
-                                 getErrorMessage(error.key, error.value) }}
-                              </mat-error>
-                           </mat-form-field>
-                        </div>
-                        <div class="col-sm-3">
-                           <mat-form-field>
-                              <mat-label>Class Start Date</mat-label>
-                              <input formControlName="ClassStartDate" [max]="maxDate" [matDatepicker]="ClassStartDate"
-                                 readonly matInput required>
-                              <mat-datepicker-toggle matSuffix [for]="ClassStartDate"
-                                 matTooltip="Class Start Date"></mat-datepicker-toggle>
-                              <mat-datepicker #ClassStartDate disabled="false"></mat-datepicker>
-                              <mat-error
-                                 *ngFor="let error of AnnualPlanInfoForm.get('ClassStartDate').errors | keyvalue">{{
-                                 getErrorMessage(error.key, error.value) }}
-                              </mat-error>
-                           </mat-form-field>
-                        </div>
+                  <!-- <mat-expansion-panel class='my-2 shadow' [expanded]="step === 4" (opened)="setStep(4)"
+                  style="border:2px solid #fbb417">
+                  <mat-expansion-panel-header>
+                     <mat-panel-title style="font-weight:bold;color: #024285;">Timeline </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div class="row border-top">
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Tentative Process Start Date</mat-label>
+                           <input formControlName="TentativeProcessSDate"  [max]="maxDate"
+                              [matDatepicker]="TentativeProcessSDate" readonly matInput required>
+                           <mat-datepicker-toggle matSuffix [for]="TentativeProcessSDate"
+                              matTooltip="Tentative Process Start Date"></mat-datepicker-toggle>
+                           <mat-datepicker #TentativeProcessSDate disabled="false"></mat-datepicker>
+                           <mat-error
+                              *ngFor="let error of AnnualPlanInfoForm.get('TentativeProcessSDate').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}
+                           </mat-error>
+                        </mat-form-field>
                      </div>
-                     <mat-action-row>
-                        <a mat-button color="warn" (click)="prevStep()">Previous</a>
-                        <a mat-button color="primary" (click)="nextStep()">Next</a>
-                     </mat-action-row>
-                  </mat-expansion-panel>
+                     <div class="col-sm-3">
+                        <mat-form-field>
+                           <mat-label>Class Start Date</mat-label>
+                           <input formControlName="ClassStartDate" [max]="maxDate" [matDatepicker]="ClassStartDate"
+                              readonly matInput required>
+                           <mat-datepicker-toggle matSuffix [for]="ClassStartDate"
+                              matTooltip="Class Start Date"></mat-datepicker-toggle>
+                           <mat-datepicker #ClassStartDate disabled="false"></mat-datepicker>
+                           <mat-error
+                              *ngFor="let error of AnnualPlanInfoForm.get('ClassStartDate').errors | keyvalue">{{
+                              getErrorMessage(error.key, error.value) }}
+                           </mat-error>
+                        </mat-form-field>
+                     </div>
+                  </div>
+                  <mat-action-row>
+                     <a mat-stroked-button color="warn" (click)="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                     </a>
+                     <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">
+                        <i class="fas fa-arrow-right"></i> Next
+                     </a>
+                  </mat-action-row>
+               </mat-expansion-panel> -->
                   <!-- Payment & Commitment -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 5" (opened)="setStep(5)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header >
-                        <mat-panel-title style="font-weight:bold;color: #024285;" >Payment & Commitment </mat-panel-title>
+                  <mat-expansion-panel class='my-2 shadow' [expanded]="step === 2" (opened)="setStep(2)"
+                     style="border:2px solid #fbb417">
+                     <mat-expansion-panel-header>
+                        <mat-panel-title style="font-weight:bold;color: #024285;"> <span
+                              class="number-icon">3</span>Payment Commitment & Employment
+                        </mat-panel-title>
                      </mat-expansion-panel-header>
                      <div class="row border-top">
                         <div class="col-sm-3">
@@ -450,15 +527,20 @@
                         </div>
                      </div>
                      <mat-action-row>
-                        <a mat-button color="warn" (click)="prevStep()">Previous</a>
-                        <a mat-button color="primary" (click)="nextStep()">Next</a>
+                        <a mat-stroked-button color="warn" (click)="prevStep()">
+                           <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                        <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">
+                           <i class="fas fa-arrow-right"></i> Next
+                        </a>
                      </mat-action-row>
                   </mat-expansion-panel>
                   <!-- Location -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 6" (opened)="setStep(6)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header >
-                        <mat-panel-title style="font-weight:bold;color: #024285;" >Geographic Targeting and Coverage
+                  <mat-expansion-panel class='my-2 shadow' [expanded]="step === 3" (opened)="setStep(3)"
+                     style="border:2px solid #fbb417">
+                     <mat-expansion-panel-header>
+                        <mat-panel-title style="font-weight:bold;color: #024285;"> <span
+                              class="number-icon">4</span>Geographic Targeting and Coverage
                         </mat-panel-title>
                      </mat-expansion-panel-header>
                      <div class="row border-top">
@@ -544,15 +626,20 @@
                         </div>
                      </div>
                      <mat-action-row>
-                        <a mat-button color="warn" (click)="prevStep()">Previous</a>
-                        <a mat-button color="primary" (click)="nextStep()">Next</a>
+                        <a mat-stroked-button color="warn" (click)="prevStep()">
+                           <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                        <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">
+                           <i class="fas fa-arrow-right"></i> Next
+                        </a>
                      </mat-action-row>
                   </mat-expansion-panel>
                   <!-- Attachments -->
-                  <mat-expansion-panel class='my-1' [expanded]="step === 7" (opened)="setStep(7)" 
-                     style="border-bottom:3px solid #fbb417">
-                     <mat-expansion-panel-header >
-                        <mat-panel-title style="font-weight:bold;color: #024285;" >Program Objective &
+                  <mat-expansion-panel class='my-2 shadow' [expanded]="step === 4" (opened)="setStep(4)"
+                     style="border:2px solid #fbb417">
+                     <mat-expansion-panel-header>
+                        <mat-panel-title style="font-weight:bold;color: #024285;"> <span
+                              class="number-icon">5</span>Program Objective &
                            Attachments</mat-panel-title>
                      </mat-expansion-panel-header>
                      <div class="row border-top">
@@ -602,7 +689,7 @@
                         </div>
                         <div class="col-sm-3">
                            <mat-label class="custom-label"
-                              style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">Criteria
+                              style=" position: relative;top: 4px;font-size: 11px;font-weight: 600;left: 7px;">PC-1
                               Attachment
                            </mat-label>
                            <file-upload formControlName="AttachmentCriteria" maxSize="1024" [nopreview]="true"
@@ -628,8 +715,8 @@
                      <div class="row border-top">
                         <div class="col-sm-12">
                            <mat-form-field>
-                              <mat-label>Program Objective</mat-label>
-                              <input formControlName="Description" placeholder="Program Objective" matInput required />
+                              <mat-label>Description</mat-label>
+                              <input formControlName="Description" placeholder="Description" matInput required />
                               <mat-error
                                  *ngFor="let error of AnnualPlanInfoForm.get('Description').errors | keyvalue">{{
                                  getErrorMessage(error.key, error.value) }}
@@ -638,89 +725,109 @@
                         </div>
                      </div>
                      <mat-action-row>
-                        <a mat-button color="warn" (click)="prevStep()">Previous</a>
-                        <a mat-button color="primary" (click)="nextStep()">End</a>
+                        <a mat-stroked-button color="warn" (click)="prevStep()">
+                           <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                        <a mat-stroked-button color="primary" class="ml-1" (click)="nextStep()">
+                           <i class="fas fa-arrow-right"></i> End
+                        </a>
                      </mat-action-row>
                   </mat-expansion-panel>
                   <!-- Form Actions -->
-                  <div class="row" style="float:right">
-                     <div class="col-sm-12">
-                        <!-- Final Submit Button -->
-                        <button *ngIf="FinalSubmit==false" class="mr-1" color="primary" mat-raised-button
-                           [disabled]="IsDisabled" (click)="IsFinalSubmit()">
-                           <mat-icon>check_circle</mat-icon>
-                           Final Submit
-                        </button>
-                        <!-- Draft Save Button -->
-                        <button *ngIf="FinalSubmit==false" class="mr-1" color="primary" mat-raised-button
-                           [disabled]="IsDisabled">
-                           <mat-icon>save</mat-icon>
-                           Draft Save
-                        </button>
-                        <!-- Reset Button -->
-                        <button class="mr-1" type="reset" color="warn" matTooltip="Reset form" (click)="ResetForm()"
-                           mat-raised-button>
-                           <mat-icon>refresh</mat-icon>
-                           Reset
-                        </button>
-                     </div>
-                  </div>
+                  <mat-action-row>
+                     <a *ngIf="FinalSubmit==false" class="mr-1" color="primary" mat-stroked-button
+                        [disabled]="IsDisabled" (click)="IsFinalSubmit()">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        Final Submit
+                     </a>
+                     <!-- Draft Save Button -->
+                     <a *ngIf="FinalSubmit==false" (click)="SaveAnnualPlanInfo()" class="mr-1" color="primary"
+                        mat-stroked-button [disabled]="IsDisabled">
+                        <i class="fas fa-save mr-1"></i>
+                        Draft Save
+                     </a>
+                     <!-- Reset Button -->
+                     <a class="mr-1" type="reset" color="warn" matTooltip="Reset form" (click)="ResetForm()"
+                        mat-stroked-button>
+                        <i class="fas fa-sync-alt mr-1"></i>
+                        Reset
+                     </a>
+                  </mat-action-row>
                   <!-- </fieldset> -->
                </form>
             </mat-accordion>
          </mat-tab>
-        
-         <mat-tab label="Program Plan List">
-
-             <mat-card>
-            <mat-card-header>
-               <mat-card-title>Program Plan</mat-card-title>
-               <input placeholder="Search" (keyup)="applyFilter($event)" matInput />
-            </mat-card-header>
-            <mat-card-content>
-               <div class="row">
-                  <div class="col-sm-12">
-                       <!-- record list start -->
+         <mat-tab label="Saved Scheme List">
+            <mat-toolbar *ngIf="TapIndex==1" color="accent" class=" slim slim m-1">
+               <mat-icon class="material-icons"> view_comfy </mat-icon>
+               <span class="spacer">Manage and View All</span>
+               <input placeholder="Search" (keyup)="applyFilter($event)" class="search" />
+               <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+                  (click)="DataExcelExport()">
+                  <i class="fas fa-file-export"></i> Export Excel</button>
+            </mat-toolbar>
             <div class="table-responsive">
-               <mat-table [dataSource]="TablesData" matSort class="table table-bordered">
-                  <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
-                     <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
-                     <mat-cell *matCellDef="let row">
-                        <ng-container
-                           *ngIf="column !== 'Program' && column !='AttachmentCriteriaEvidence' && column !='AttachmentTORsEvidence' && column != 'ApprovalEvidence'">
-                           &nbsp;{{ row[column] }}
+               <mat-table [dataSource]="TablesData" matSort class="table table-bordered m-0">
+                  <ng-container *ngFor="let column of TableColumns">
+                     <!-- Program Column (Custom Title: Scheme Name) -->
+                     <ng-container *ngIf="column === 'Program'; else otherColumns" [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Name</mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                           {{ row[column] }}
+                        </mat-cell>
+                     </ng-container>
+                     <!-- Template for all other columns -->
+                     <ng-template #otherColumns>
+                        <!-- ProgramCode Column (Custom Title: Scheme Code) -->
+                        <ng-container *ngIf="column === 'ProgramCode'; else defaultColumns" [matColumnDef]="column">
+                           <mat-header-cell *matHeaderCellDef mat-sort-header>Scheme Code</mat-header-cell>
+                           <mat-cell *matCellDef="let row">
+                              {{ row[column] }}
+                           </mat-cell>
                         </ng-container>
-                        <ng-container *ngIf="column === 'Program'">
-                           &nbsp;
-                           <span (click)="UpdateRecord(row)"
-                              style="color: #005b9e; text-decoration: underline; cursor: pointer;">
-                              <strong>{{ row[column] }}</strong>
-                           </span>
-                        </ng-container>
-                        <ng-container
-                           *ngIf=" column =='AttachmentCriteriaEvidence' || column =='AttachmentTORsEvidence' || column =='ApprovalEvidence'">
-                           &nbsp;
-                           <a style="cursor: pointer;" (click)="ShowPreview( row[column])" color="primary"
-                              matTooltip="Preview document" class="file-lable">
-                              <mat-icon>get_app</mat-icon>
-                           </a>
-                        </ng-container>
-                     </mat-cell>
+                        <!-- Default Column Rendering -->
+                        <ng-template #defaultColumns>
+                           <ng-container [matColumnDef]="column">
+                              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                 {{ camelCaseToWords(column) }}
+                              </mat-header-cell>
+                              <mat-cell *matCellDef="let row">
+                                 <!-- Default Text Cell -->
+                                 <ng-container
+                                    *ngIf="column !== 'Actions'  && column !== 'ProgramBudget'    && column !== 'AttachmentCriteriaEvidence'  && column !== 'AttachmentTORsEvidence'  && column !== 'ApprovalEvidence'">
+                                    &nbsp;{{ row[column] }}</ng-container>
+                                 <!-- Action Buttons -->
+                                 <ng-container *ngIf="column === 'Actions'">
+                                    <a mat-button color="primary" (click)="UpdateRecord(row)">
+                                       <mat-icon>edit</mat-icon> Edit
+                                    </a>
+                                    <a mat-button color="primary" (click)="openProgramReviewDialogue(row)">
+                                       <mat-icon>rate_review</mat-icon> Review
+                                    </a>
+                                 </ng-container>
+                                 <ng-container *ngIf="column === 'ProgramBudget'">
+                                    {{row[column] | number}}
+                                 </ng-container>
+                                 <!-- Document Attachments -->
+                                 <ng-container
+                                    *ngIf="column === 'AttachmentCriteriaEvidence' || column === 'AttachmentTORsEvidence'  || column === 'ApprovalEvidence'">
+                                    &nbsp;
+                                    <a style="cursor: pointer;" (click)="ShowPreview(row[column])"
+                                       matTooltip="Preview document" class="file-label" color="primary">
+                                       <mat-icon>download</mat-icon>
+                                    </a>
+                                 </ng-container>
+                              </mat-cell>
+                           </ng-container>
+                        </ng-template>
+                     </ng-template>
                   </ng-container>
                   <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
                   <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
                </mat-table>
                <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
             </div>
-            <!-- record list end -->
-                     <button mat-raised-button color="primary" >
-                        <mat-icon>add</mat-icon> Add Program Plan
-                     </button>
-                  </div>
-               </div>
-            </mat-card-content>
-         </mat-card>
-
-          
          </mat-tab>
       </mat-tab-group>
+   </mat-card-content>
+</mat-card>

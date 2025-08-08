@@ -77,7 +77,8 @@ namespace PSDF_BSS.Controllers
                 var programData = srv.FetchProgramDesign(false);
                 string[] Attachments = { "ApprovalAttachment", "AttachmentCriteria", "AttachmentTORs" };
                 var ProgramDesign = srv.LoopinData(programData, Attachments);
-
+                var ProgramHeadBudget = srv.FetchDropDownList("RD_SAPProgramHeadBudget");
+                var ProgramBudget = srv.FetchDropDownList("RD_SAPProgramBudget");
                 var Object = new {
                     Province = Province,
                     Cluster = Cluster,
@@ -95,6 +96,8 @@ namespace PSDF_BSS.Controllers
                     ProgramCategory = ProgramCategory,
                     FundingCategory = FundingCategory,
                     BusinessRuleType = BusinessRuleType,
+                    programHeadBudget = ProgramHeadBudget,
+                    programBudget = ProgramBudget
 
 
                 };
@@ -182,7 +185,13 @@ namespace PSDF_BSS.Controllers
                 var programWiseBudget = srv.FetchDropDownList("RD_SSPProgramDesignSummary");
                 var programBudget = srv.FetchDropDownList("RD_SSPProgramBudget");
                 var gender = srv.FetchDropDownList("RD_Gender");
-
+                var ProgramHeadBudget = srv.FetchDropDownList("RD_SAPProgramHeadBudget");
+                var SAPProgramBudget = srv.FetchDropDownList("RD_SAPProgramBudget");
+                var otherPaymentCost = srv.FetchDropDownList("RD_OtherPaymentCost");
+                var EducationTypes = srv.FetchDropDownList("RD_EducationTypes");
+                var TradePlannedBudget = srv.FetchDropDownList("RD_TradePlannedBudget");
+                var SchemePlannedBudget = srv.FetchDropDownList("RD_SchemePlannedBudget");
+                var ProgramPlannedBudget = srv.FetchDropDownList("RD_ProgramPlannedBudget");
                 var province = srvProvinces.FetchProvince(false);
                 var cluster = srvCluster.FetchCluster(false);
                 var district = srvDistrict.FetchDistrict(false);
@@ -205,7 +214,11 @@ namespace PSDF_BSS.Controllers
                     tradeWiseTarget = tradeWiseTarget,
                     lotWiseTarget = lotWiseTarget,
                     programBudget = programBudget,
-                    gender = gender
+                    gender = gender,
+                    programHeadBudget = ProgramHeadBudget,
+                    SAPProgramBudget = SAPProgramBudget,
+                    otherPaymentCost= otherPaymentCost,
+                    educationTypes= EducationTypes
                 };
 
                 return Ok(data);
@@ -228,13 +241,17 @@ namespace PSDF_BSS.Controllers
                 var lotWiseTarget = srv.FetchDropDownList("RD_SSPLotWiseTarget");
                 var PlaningType = srv.FetchDropDownList("RD_SSPPlaningType");
                 var SelectionMethods = srv.FetchDropDownList("RD_SSPSelectionMethods");
+                var ProgramHeadBudget = srv.FetchDropDownList("RD_SAPProgramHeadBudget");
+                var ProgramBudget = srv.FetchDropDownList("RD_SAPProgramBudget");
                 var data = new
                 {
                     programDesignSummary = programDesignSummary,
                     tradeWiseTarget = tradeWiseTarget,
                     lotWiseTarget = lotWiseTarget,
                     planingType = PlaningType,
-                    selectionMethods = SelectionMethods
+                    selectionMethods = SelectionMethods,
+                    programHeadBudget= ProgramHeadBudget,
+                    programBudget= ProgramBudget
                 };
 
                 return Ok(data);

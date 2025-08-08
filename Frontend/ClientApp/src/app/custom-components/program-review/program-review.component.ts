@@ -17,12 +17,13 @@ import { environment } from "../../../environments/environment";
 import * as Highcharts from "highcharts";
 import { P } from "@angular/cdk/keycodes";
 import { parse } from "path";
+import { MatMenuTrigger } from "@angular/material/menu";
 @Component({
-  selector: "app-program-preview",
-  templateUrl: "./program-preview.component.html",
-  styleUrls: ["./program-preview.component.scss"],
+  selector: "app-program-review",
+  templateUrl: "./program-review.component.html",
+  styleUrls: ["./program-review.component.scss"],
 })
-export class ProgramPreviewComponent implements OnInit {
+export class ProgramReviewComponent implements OnInit {
   Status: any = [];
   check: boolean = false;
   constructor(
@@ -31,7 +32,7 @@ export class ProgramPreviewComponent implements OnInit {
     private fb: FormBuilder,
     public ComSrv: CommonSrvService,
     public dialog: MatDialog,
-    public dialogRef: MatDialogRef<ProgramPreviewComponent>,
+    public dialogRef: MatDialogRef<ProgramReviewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     dialogRef.disableClose = false;
@@ -134,12 +135,31 @@ export class ProgramPreviewComponent implements OnInit {
     return input.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
 
+timeoutId: any;
+
+closeMenuLater(trigger: MatMenuTrigger): void {
+  this.timeoutId = setTimeout(() => {
+    trigger.closeMenu();
+  }, 300); // Delay before closing
+}
+
+cancelCloseMenu(): void {
+  clearTimeout(this.timeoutId);
+}
+
+clustersTooltipMenuClosed(trigger: MatMenuTrigger): void {
+  trigger.closeMenu();
+}
+
+tooltipMenuClosed(trigger: any): void {
+  trigger.closeMenu();
+}
   renderBudgetUtilizationChart(totalBudget: number, usedBudget: number): void {
     // Convert values to millions for display
     const totalBudgetM = totalBudget / 1_000_000;
     const usedBudgetM = usedBudget / 1_000_000;
     const remainingBudgetM = Math.max(totalBudgetM - usedBudgetM, 0);
-    const totalInM = `${totalBudgetM.toFixed(2)}M`;
+    const totalInM = `${totalBudgetM.toFixed(1)}M`;
     Highcharts.chart("budgetUtilizationContainer", {
       chart: {
         type: "pie",
@@ -172,7 +192,7 @@ export class ProgramPreviewComponent implements OnInit {
             enabled: true,
             distance: -50,
             style: { fontWeight: "bold", color: "white" },
-            format: "{point.name}: {point.y:.2f}M",
+            format: "{point.name}: {point.y:.1f}M",
           },
           startAngle: -90,
           endAngle: 90,
@@ -198,7 +218,7 @@ export class ProgramPreviewComponent implements OnInit {
 
 
 getKeys(obj: any): string[] {
-  const excludedKeys = ['ProgramName', 'TraineeSelectedContTarget','PerSelectedContraTarget','PerSelectedCompTarget','TradeName','ProgramFocusName','BudgetPercentage'];
+  const excludedKeys = ['DistrictName','Duration','CertAuthName','Name','OfOverAll','ProgramID','TradeLotID','ProgramName', 'TraineeSelectedContTarget','PerSelectedContraTarget','PerSelectedCompTarget','TradeName','ProgramFocusName','BudgetPercentage'];
   return Object.keys(obj).filter(key => !excludedKeys.includes(key));
 }
 // Currency formatting for numeric financial fields
@@ -229,7 +249,7 @@ formatNumber(value: any) {
   if (numValue >= 1000000) {
     return (numValue / 1000000).toFixed(1) + 'M';
   } else if (numValue >= 1000) {
-    return (numValue / 1000).toFixed(1) + 'K';
+    return (numValue / 1000).toFixed(0) + 'K';
   } else {
     return numValue.toString();
   }

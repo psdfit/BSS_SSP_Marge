@@ -87,6 +87,7 @@ namespace DataLayer.Services
 
                 List<SqlParameter> param = new List<SqlParameter>();
                 param.Add(new SqlParameter("@ProgramID", programDesign.ProgramID));
+                param.Add(new SqlParameter("@SAPProgram", programDesign.SAPProgram));
                 param.Add(new SqlParameter("@ProgramName", programDesign.Program));
                 param.Add(new SqlParameter("@ProgramBudget", programDesign.ProgramBudget));
                 param.Add(new SqlParameter("@ProgramCode", programDesign.ProgramCode));
@@ -173,81 +174,109 @@ namespace DataLayer.Services
 
         public DataTable SaveTradeDesign(TradeLotDesignModel data)
         {
-            List<SqlParameter> param = new List<SqlParameter>();
-            param.Add(new SqlParameter("@UserID", data.UserID));
-            param.Add(new SqlParameter("@TradeDesignID", data.TradeDesignID));
-            param.Add(new SqlParameter("@ProvinceID", GetCsvOrEmpty(data.Province)));
-            param.Add(new SqlParameter("@ClusterID", GetCsvOrEmpty(data.Cluster)));
-            param.Add(new SqlParameter("@DistrictID", GetCsvOrEmpty(data.District)));
 
-            param.Add(new SqlParameter("@ProgramDesignOn", data.ProgramDesignOn));
-
-
-
-            string selectedShortList = "";
-
-            switch (data.ProgramDesignOn)
+            using SqlConnection connection = new SqlConnection(SqlHelper.GetCon());
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            try
             {
-                case "Province":
-                    selectedShortList = GetCsvOrEmpty(data.Province);
-                    break;
-                case "Cluster":
-                    selectedShortList = GetCsvOrEmpty(data.Cluster);
-                    break;
-                case "District":
-                    selectedShortList = GetCsvOrEmpty(data.District);
-                    break;
+
+                List<SqlParameter> param = new List<SqlParameter>();
+
+
+
+
+                string selectedShortList = "";
+
+                switch (data.ProgramDesignOn)
+                {
+                    case "Province":
+                        selectedShortList = GetCsvOrEmpty(data.Province);
+                        break;
+                    case "Cluster":
+                        selectedShortList = GetCsvOrEmpty(data.Cluster);
+                        break;
+                    case "District":
+                        selectedShortList = GetCsvOrEmpty(data.District);
+                        break;
+                }
+                param.Add(new SqlParameter("@UserID", data.UserID));
+                param.Add(new SqlParameter("@TradeDesignID", data.TradeDesignID));
+                param.Add(new SqlParameter("@ProvinceID", GetCsvOrEmpty(data.Province)));
+                param.Add(new SqlParameter("@ClusterID", GetCsvOrEmpty(data.Cluster)));
+                param.Add(new SqlParameter("@DistrictID", GetCsvOrEmpty(data.District)));
+
+                param.Add(new SqlParameter("@ProgramDesignOn", data.ProgramDesignOn));
+                param.Add(new SqlParameter("@SelectedShortList", selectedShortList));
+
+
+                param.Add(new SqlParameter("@SelectedShortListCount", data.SelectedCount));
+                param.Add(new SqlParameter("@PerSelectedContraTarget", data.PerSelectedContraTarget));
+                param.Add(new SqlParameter("@PerSelectedCompTarget", data.PerSelectedCompTarget));
+
+                param.Add(new SqlParameter("@ProgramFocusID", data.ProgramFocus));
+                param.Add(new SqlParameter("@ProgramDesignID", data.Scheme));
+                param.Add(new SqlParameter("@TradeID", data.Trade));
+                param.Add(new SqlParameter("@TradeDetailMapID", data.TradeLayer));
+
+                param.Add(new SqlParameter("@CTM", data.CTM));
+
+                param.Add(new SqlParameter("@Stipend", data.Stipend));
+                param.Add(new SqlParameter("@SelfEmploymentCommitment", data.SelfEmploymentCommitment));
+                param.Add(new SqlParameter("@FormalEmploymentCommitment", data.FormalEmploymentCommitment));
+                param.Add(new SqlParameter("@OverallEmploymentCommitment", data.OverallEmploymentCommitment));
+
+                param.Add(new SqlParameter("@OJTPayment", data.OJTPayment));
+                param.Add(new SqlParameter("@GuruPayment", data.GuruPayment));
+                param.Add(new SqlParameter("@TransportationCost", data.TransportationCost));
+                param.Add(new SqlParameter("@MedicalCost", data.MedicalCost));
+                param.Add(new SqlParameter("@PrometricCost", data.PrometricCost));
+                param.Add(new SqlParameter("@ProtectorateCost", data.ProtectorateCost));
+                param.Add(new SqlParameter("@OtherTrainingCost", data.OtherTrainingCost));
+
+                param.Add(new SqlParameter("@ExamCost", data.ExamCost));
+                param.Add(new SqlParameter("@DropOutPerAge", data.ContraTargetThreshold));
+                param.Add(new SqlParameter("@TraineeContractedTarget", data.TraineeContraTarget));
+                param.Add(new SqlParameter("@TraineeCompTarget", data.TraineeCompTarget));
+                param.Add(new SqlParameter("@GenderID", data.GenderID));
+                param.Add(new SqlParameter("@StartDate", data.StartDate));
+                param.Add(new SqlParameter("@EntryLevelEducation", data.EntryLevelEducation));
+
+
+
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTradeDesign", param.ToArray()).Tables[0];
+
+                var TradeDesignID = 0;
+
+                if (data.TradeDesignID > 0)
+                {
+                    TradeDesignID = data.TradeDesignID;
+                }
+                else
+                {
+                    TradeDesignID = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["TradeDesignID"]);
+                }
+                BatchInsert(data.TradeLot, data.ProgramDesignOn, data.Province, data.Cluster, data.District, TradeDesignID, data.UserID, data.Trade, data.TradeLayer, transaction);
+                SaveOtherPayment(data.Payments, TradeDesignID, data.Scheme, transaction);
+                transaction.Commit();
+                return dt;
+
+
             }
-
-            param.Add(new SqlParameter("@SelectedShortList", selectedShortList));
-
-
-            param.Add(new SqlParameter("@SelectedShortListCount", data.SelectedCount));
-            param.Add(new SqlParameter("@PerSelectedContraTarget", data.PerSelectedContraTarget));
-            param.Add(new SqlParameter("@PerSelectedCompTarget", data.PerSelectedCompTarget));
-
-            param.Add(new SqlParameter("@ProgramFocusID", data.ProgramFocus));
-            param.Add(new SqlParameter("@ProgramDesignID", data.Scheme));
-            param.Add(new SqlParameter("@TradeID", data.Trade));
-            param.Add(new SqlParameter("@TradeDetailMapID", data.TradeLayer));
-            param.Add(new SqlParameter("@CTM", data.CTM));
-
-            param.Add(new SqlParameter("@OJTPayment", data.OJTPayment));
-            param.Add(new SqlParameter("@GuruPayment", data.GuruPayment));
-            param.Add(new SqlParameter("@TransportationCost", data.TransportationCost));
-            param.Add(new SqlParameter("@MedicalCost", data.MedicalCost));
-            param.Add(new SqlParameter("@PrometricCost", data.PrometricCost));
-            param.Add(new SqlParameter("@ProtectorateCost", data.ProtectorateCost));
-            param.Add(new SqlParameter("@OtherTrainingCost", data.OtherTrainingCost));
-
-            param.Add(new SqlParameter("@ExamCost", data.ExamCost));
-            param.Add(new SqlParameter("@DropOutPerAge", data.ContraTargetThreshold));
-            param.Add(new SqlParameter("@TraineeContractedTarget", data.TraineeContraTarget));
-            param.Add(new SqlParameter("@TraineeCompTarget", data.TraineeCompTarget));
-            param.Add(new SqlParameter("@GenderID", data.GenderID));
-
-
-
-            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTradeDesign", param.ToArray()).Tables[0];
-
-            var TradeDesignID = 0;
-
-            if (data.TradeDesignID > 0)
+            catch
             {
-                TradeDesignID = data.TradeDesignID;
+                transaction.Rollback();
+                throw;
             }
-            else
+            finally
             {
-                TradeDesignID = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["TradeDesignID"]);
+                connection.Close();
             }
-
-            BatchInsert(data.TradeLot, data.ProgramDesignOn, data.Province, data.Cluster, data.District, TradeDesignID, data.UserID, data.Trade, data.TradeLayer);
-            return dt;
         }
 
 
 
-        public int BatchInsert(List<TradeLot> ls, string ProgramDesignOn, int[] Province, int[] Cluster, int[] District, int BatchFkey, int CurUserID, int TradeID, int TradeDetailID)
+        public int BatchInsert(List<TradeLot> ls, string ProgramDesignOn, int[] Province, int[] Cluster, int[] District, int BatchFkey, int CurUserID, int TradeID, int TradeDetailID,SqlTransaction transaction)
         {
             int rowsAffected = 0;
             foreach (var item in ls)
@@ -287,13 +316,27 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TotalCost", item.TotalCost));
 
 
-
-                rowsAffected += SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTradeLot", param.ToArray());
+                rowsAffected += SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "AU_SSPTradeLot", param.ToArray());
             }
             return rowsAffected;
         }
 
+        public static int SaveOtherPayment(List<Payments> ls,int TradeDesignID,int ProgramDesignID,SqlTransaction transaction)
+        {
+            int rowsAffected = 0;
+            foreach (var item in ls)
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
 
+                param.Add(new SqlParameter("@TradeDesignID", TradeDesignID));
+                param.Add(new SqlParameter("@ProgramDesignID", ProgramDesignID));
+                param.Add(new SqlParameter("@PaymentType", item.PaymentType));
+                param.Add(new SqlParameter("PaymentFrequency", item.PaymentFrequency));
+                param.Add(new SqlParameter("@Amount", item.Amount));
+                rowsAffected += SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "AU_ProgramOtherPaymentCost", param.ToArray());
+            }
+            return rowsAffected;
+        }
         public DataTable UpdateSchemeInitialization(ProgramDesignModel data)
         {
             List<SqlParameter> param = new List<SqlParameter>();

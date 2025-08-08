@@ -72,7 +72,7 @@
               </fieldset>
             </form>
             <div class="card ">
-              <mat-table [dataSource]="TablesData" #Sort="matSort" matSort class="table table-bordered">
+              <mat-table [dataSource]="TablesData" #Sort="matSort" matSort class="table m-0 table-bordered">
                 <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
@@ -173,7 +173,7 @@
               </button>
             </mat-toolbar>
             <div class="table-responsive">
-              <mat-table [dataSource]="lotTablesData" #lSort="matSort" matSort class="table table-bordered">
+              <mat-table [dataSource]="lotTablesData" #lSort="matSort" matSort class="table m-0 table-bordered">
                 <ng-container *ngFor="let column of lotTableColumns" [matColumnDef]="column">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">

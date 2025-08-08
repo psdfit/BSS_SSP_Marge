@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { CommonSrvService } from "../../common-srv.service";
 import { ActivatedRoute } from "@angular/router";
 import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTabGroup } from "@angular/material/tabs";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -15,13 +15,14 @@ import {
 import { environment } from "../../../environments/environment";
 import { EnumApprovalProcess } from "src/app/shared/Enumerations";
 import { DialogueService } from "src/app/shared/dialogue.service";
-import { ProgramPreviewComponent } from "src/app/custom-components/program-preview/program-preview.component";
+import { ProgramReviewComponent } from "src/app/custom-components/program-review/program-review.component";
 @Component({
   selector: "app-annual-plan-approval",
   templateUrl: "./annual-plan-approval.component.html",
   styleUrls: ["./annual-plan-approval.component.scss"],
 })
 export class AnnualPlanApprovalComponent implements OnInit {
+  [x: string]: any;
   isChecked: boolean = true;
   BSearchCtr = new FormControl("");
   TspName: any;
@@ -109,9 +110,11 @@ export class AnnualPlanApprovalComponent implements OnInit {
   updatePlanningType(row: any) {
     this.selectedRow = {};
 
-    if(row.IsFinalApproved==true){
-      this.ComSrv.ShowError("This record is locked because the selected program has received final approval.");
-       return;
+    if (row.IsFinalApproved == true) {
+      this.ComSrv.ShowError(
+        "This record is locked because the selected program has received final approval."
+      );
+      return;
     }
     this.selectedRow = row;
     this.AnnualPlanInfoForm.get("Program").setValue(row.ProgramName);
@@ -137,7 +140,7 @@ export class AnnualPlanApprovalComponent implements OnInit {
     this.tspName = tspName;
     this.tabGroup.selectedIndex = 1;
     this.TspName = tspName + " Detail";
-   
+
     this.tradeWiseTarget = this.GetDataObject.tradeWiseTarget.filter(
       (d) => d.ProgramName == this.rowData.ProgramName
     );
@@ -181,34 +184,36 @@ export class AnnualPlanApprovalComponent implements OnInit {
     this.SpacerTitle = this.AcitveRoute.snapshot.data.title;
   }
   LoadMatTable(tableData: any, dataType: string) {
-    console.log(this.currentUser.RoleTitle)
+    console.log(this.currentUser.RoleTitle);
     this.cdr.detectChanges();
     switch (dataType) {
       case "Program":
+        let excludeColumnArray = [
+          "WorkflowRemarks",
+          "SSPWorkflow",
+          "IsSubmitted",
+          "ProcessStatus",
+          "AssociationStartDate",
+          "AssociationEndDate",
+          "IsWorkflowAttached",
+          "Workflow",
+          "IsCriteriaAttached",
+          "Criteria",
+          "CriteriaRemarks",
+          "StartDate",
+          "EndDate",
+          "StatusRemarks",
+          "IsFinalApproved",
+          "IsInitiated",
+        ];
 
-      let excludeColumnArray = [
-        "WorkflowRemarks",
-        "SSPWorkflow",
-        "IsSubmitted",
-        "ProcessStatus",
-        "AssociationStartDate",
-        "AssociationEndDate",
-        "IsWorkflowAttached",
-        "Workflow",
-        "IsCriteriaAttached",
-        "Criteria",
-        "CriteriaRemarks",
-        "StartDate",
-        "EndDate",
-        "StatusRemarks",
-        "IsFinalApproved",
-        "IsInitiated",
-      ]
-      
-      if(this.currentUser.RoleTitle=="Program Development")
-      {
-        excludeColumnArray=[...excludeColumnArray,'PlaningType','SelectionMethod']
-      }
+        if (this.currentUser.RoleTitle == "Program Development") {
+          excludeColumnArray = [
+            ...excludeColumnArray,
+            "PlaningType",
+            "SelectionMethod",
+          ];
+        }
 
         this.TableColumns = Object.keys(tableData[0]).filter(
           (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
@@ -262,34 +267,43 @@ export class AnnualPlanApprovalComponent implements OnInit {
       });
   }
 
-   openProgramReviewDialogue(row: any={}): void {
+  openProgramReviewDialogue(row: any = {}): void {
+    // Prepare data for ProgramPreviewComponent dialog
+    const tradeWiseTarget = this.GetDataObject.tradeWiseTarget.filter(
+      (d) => d.ProgramName == row.ProgramName
+    );
+    const lotWiseTarget = this.GetDataObject.lotWiseTarget.filter(
+      (d) => d.ProgramID == row.ProgramID
+    );
 
-      // Prepare data for ProgramPreviewComponent dialog
-      const tradeWiseTarget = this.GetDataObject.tradeWiseTarget.filter(
-        (d) => d.ProgramName == row.ProgramName
-      );
-      const lotWiseTarget = this.GetDataObject.lotWiseTarget.filter(
-        (d) => d.ProgramID == row.ProgramID
-      );
-
-      const data = {
-        programData: row,
-        tradeData: tradeWiseTarget,
-        lotData: lotWiseTarget,
-      };
-      const dialogRef = this.Dialog.open(ProgramPreviewComponent, {
-        width: '97%',
-        data: data,
-        disableClose: true,
-      });
-      dialogRef.afterClosed().subscribe(result => {
-          // if (result === true) {
-          //   this.GetData()
-          // }
-        });
-      
-   
+    const data = {
+      programData: row,
+      tradeData: tradeWiseTarget,
+      lotData: lotWiseTarget,
+    };
+    const dialogRef = this.Dialog.open(ProgramReviewComponent, {
+      width: "97%",
+      data: data,
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      // if (result === true) {
+      //   this.GetData()
+      // }
+    });
   }
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+  }
+  //   TablesData: any[] = []; // Your data array
+  // TableColumns: string[] = []; // Your column definitions
+  // currentUser: any = {}; // Your user object
+  pageSize = 10;
+  currentPage = 1;
+  totalItems = 0;
+  // environment: any = { DateFormat: 'MM/dd/yyyy' }; // Your environment config
 
   getErrorMessage(errorKey: string, errorValue: any): string {
     const errorMessages = {

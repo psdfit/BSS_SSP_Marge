@@ -156,7 +156,7 @@ export class ProgramInitiateComponent implements OnInit {
           console.log(response)
           this.LoadData()
           this.ResetFrom()
-          this.ComSrv.openSnackBar("Saved data");
+          this.ComSrv.openSnackBar("Program Initialized for Approval.", "Close", 5000);
       this.IsDisabled=false
 
         },

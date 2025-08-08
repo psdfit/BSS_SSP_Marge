@@ -17,6 +17,10 @@ import { MatOption } from "@angular/material/core";
 import { MatSelect, MatSelectChange } from "@angular/material/select";
 import { environment } from "../../../environments/environment";
 import {MatAccordion, MatExpansionPanel} from '@angular/material/expansion';
+import { numberFormat } from "highcharts";
+import { ProgramReviewComponent } from "src/app/custom-components/program-review/program-review.component";
+import { MatDialog } from "@angular/material/dialog";
+
 @Component({
   selector: "app-program-plan",
   templateUrl: "./program-plan.component.html",
@@ -27,6 +31,8 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
   @ViewChildren(MatExpansionPanel) panels!: QueryList<MatExpansionPanel>;
    step:number=0
   currentIndex: number=0
+  programBudget: any=[]
+  programHeadBudget: any=[]
 
   setStep(index: number) {
     this.step = index;
@@ -106,7 +112,8 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
     private ComSrv: CommonSrvService,
     private AcitveRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private http: CommonSrvService
+    private http: CommonSrvService,
+    private Dialog: MatDialog
   ) {}
   TablesData: MatTableDataSource<any>;
   @ViewChild("tabGroup") tabGroup: MatTabGroup;
@@ -178,15 +185,15 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
       FundingCategoryID: ["", Validators.required],
       BusinessRuleType: ["", Validators.required],
       GenderID: ["", Validators.required],
-      Stipend: ["", Validators.required],
-      StipendMode: ["", Validators.required],
+      Stipend: ["0", Validators.required],
+      StipendMode: ["Digital", Validators.required],
       MinEducationID: ["", Validators.required],
       MaxEducationID: ["", Validators.required],
       MinAge: ["18", Validators.required],
       MaxAge: ["35", Validators.required],
-      ApplicabilityID: ["", Validators.required],
-      TentativeProcessSDate: ["", Validators.required],
-      ClassStartDate: ["", Validators.required],
+      ApplicabilityID: [[1,2], Validators.required],
+      TentativeProcessSDate: [new Date(), Validators.required],
+      ClassStartDate: [new Date(), Validators.required],
       PaymentStructureID: ["", Validators.required],
       SelectionMethodID: [""],
       ApprovalRecDetail: [" "],
@@ -198,8 +205,9 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
       EmploymentCommitment: ["", Validators.required],
       AttachmentTORs: ["", Validators.required],
       AttachmentCriteria: ["", Validators.required],
-      TraineeSupportCost: ["", Validators.required],
+      TraineeSupportCost: ["0", Validators.required],
       IsSubmitted: [false],
+      SAPProgram: ["", Validators.required],
     });
 
     const provinceCtrl = this.AnnualPlanInfoForm.get("ProvinceID");
@@ -228,6 +236,20 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
       "ProgramCode"
     );
 
+
+    this.AnnualPlanInfoForm.get('SAPProgram').valueChanges.subscribe(d => {
+      debugger;
+     const selectedProgram= this.programBudget.find(p=>p.U_Program==d)
+     const selectedProgramHead= this.programHeadBudget.find(p=>p.U_Program==d)
+     const selectedYear= this.FinancialYearData.find(p=>p.Year==selectedProgram.U_Year)
+
+  
+
+this.AnnualPlanInfoForm.get('ProgramBudget')?.setValue(selectedProgram.U_Amount.replace(/,/g, '').trim());
+this.AnnualPlanInfoForm.get('FinancialYearID')?.setValue(selectedYear.Id);
+this.AnnualPlanInfoForm.get('Program')?.setValue(selectedProgram.U_Program);
+
+    })
     // this.AnnualPlanInfoForm.get('PlaningTypeID').valueChanges.subscribe(d => {
     //   if (d === 1) {
     //     this.ProgramTypeData = this.GetDataObject.GetProgramType.filter(item => item.PTypeID === 10);
@@ -293,7 +315,10 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
     this.ComSrv.getJSON("api/ProgramDesign/GetProgramDesign").subscribe(
       (response) => {
         this.GetDataObject = response;
+        this.programBudget = this.GetDataObject.programBudget;
+        this.programHeadBudget = this.GetDataObject.programHeadBudget;
         this.FinancialYearData = this.GetDataObject.GetFinancialYear;
+
         this.ProgramTypeData = this.GetDataObject.GetProgramType;
         this.FundingSourceData = this.GetDataObject.FundingSource;
         this.GenderData = this.GetDataObject.Gender.filter(
@@ -434,7 +459,8 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
             }
             this.IsDisabled = false;
 
-            this.ComSrv.openSnackBar("Saved data");
+           this.ComSrv.openSnackBar("Scheme Plan saved successfully!", "Close", 3000);
+
           },
           (error) => {
             this.error = error.error;
@@ -450,7 +476,7 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
 }
   FinalSubmit: boolean = false;
   UpdateRecord(row: any) {
-    this.accordion.openAll()
+
     this.readOnly = true;
     this.CriteriaEvidence = row.AttachmentCriteriaEvidence;
     this.TORAndSOWEvidence = row.AttachmentTORsEvidence;
@@ -491,6 +517,11 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
     } else {
       this.AnnualPlanInfoForm.enable();
     }
+    this.accordion.closeAll();
+setTimeout(() => {
+  this.accordion.openAll();
+}, 0);
+
   }
   ResetForm() {
     this.AnnualPlanInfoForm.get("Program").setValue(null);
@@ -511,12 +542,13 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
       "AttachmentCriteria",
       "ApprovalAttachment",
       "ApprovalEvidence",
-      "ApprovalRecDetail",
+      "ApprovalRecDetail","ClassStartDate","TentativeProcessSDate","TraineeSupportCost","Stipend","StipendMode","ProposedDistrict",'ProposedCluster','ProposedProvince','Description'
     ];
     if (tableData.length > 0) {
       this.TableColumns = Object.keys(tableData[0]).filter(
         (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
       );
+      this.TableColumns.unshift("Actions")
       this.TablesData = new MatTableDataSource(tableData);
       this.TablesData.paginator = this.paginator;
       this.TablesData.sort = this.sort;
@@ -527,6 +559,25 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
     this.CSearchCtr.setValue("");
     this.DSearchCtr.setValue("");
     this.BSearchCtr.setValue("");
+  }
+
+   openProgramReviewDialogue(row: any = {}): void {
+    // Prepare data for ProgramPreviewComponent dialog
+   
+
+    const data = {
+      programData: row
+    };
+    const dialogRef = this.Dialog.open(ProgramReviewComponent, {
+      width: "90%",
+      data: data,
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      // if (result === true) {
+      //   this.GetData()
+      // }
+    });
   }
   ShowPreview(fileName: string) {
     this.ComSrv.PreviewDocument(fileName);
