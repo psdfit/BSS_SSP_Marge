@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -81,6 +81,10 @@ namespace DataLayer.Services
             try
             {
                 List<SqlParameter> param = new List<SqlParameter>();
+                // ✅ Updated to allow multiple IDs as comma-separated strings
+                param.Add(new SqlParameter("@Schemes", string.IsNullOrEmpty(filterModel.Schemes) ? DBNull.Value : (object)filterModel.Schemes));
+                param.Add(new SqlParameter("@TSPs", string.IsNullOrEmpty(filterModel.TSPs) ? DBNull.Value : (object)filterModel.TSPs));
+                param.Add(new SqlParameter("@Classes", string.IsNullOrEmpty(filterModel.Classes) ? DBNull.Value : (object)filterModel.Classes));
                 param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
                 param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
                 param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
@@ -244,9 +248,9 @@ namespace DataLayer.Services
             List<MasterSheetModel> list = new List<MasterSheetModel>();
             if (filters.Length >= 10)
             {
-                int schemeId = Convert.ToInt32(filters[0]);
-                int tspId = Convert.ToInt32(filters[1]);
-                int classId = Convert.ToInt32(filters[2]);
+                string schemeId = filters[0]?.ToString() ?? "0"; // Handle as string, default to "0"
+                string tspId = filters[1]?.ToString() ?? "0";   // Handle as string, default to "0"
+                string classId = filters[2]?.ToString() ?? "0"; // Handle as string, default to "0"
                 int userId = Convert.ToInt32(filters[3]);
                 int oId = Convert.ToInt32(filters[4]);
                 int classStatusId = Convert.ToInt32(filters[5]);

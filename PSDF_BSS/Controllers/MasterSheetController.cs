@@ -60,9 +60,9 @@ namespace MasterDataModule.Controllers
         [HttpGet]
         [Route("GetFilteredMasterSheet")]
         public IActionResult GetFilteredMasterSheet(
-    [FromQuery] int schemeId = 0,
-    [FromQuery] int tspId = 0,
-    [FromQuery] int classId = 0,
+    [FromQuery] string schemeId = "0", // Changed to string to accept comma-separated IDs
+    [FromQuery] string tspId = "0",   // Changed to string to accept comma-separated IDs
+    [FromQuery] string classId = "0",  // Changed to string to accept comma-separated IDs
     [FromQuery] int userId = 0,
     [FromQuery] int oId = 0,
     [FromQuery] int classStatusId = 0,

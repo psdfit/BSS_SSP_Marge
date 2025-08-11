@@ -1,7 +1,7 @@
 export interface IMasterSheetFilter {
-  SchemeID: number;
-  ClassID: number;
-  TSPID: number;
+  Schemes: [];
+  Classes: [];
+  TSPs: [];
   UserID: number; 
   ClassStatusID: number; // For Class Status
   StartDate: string; // For Start Date
@@ -9,3 +9,5 @@ export interface IMasterSheetFilter {
   FundingCategoryID: number; // For Project
   KamID: number;
 }
+
+

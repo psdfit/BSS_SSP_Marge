@@ -99,6 +99,26 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public DataTable FetchTSPsByMultipleSchemes(string SchemeID)
+        {
+            try
+            {
+                string query = $@"
+            SELECT TSPID, TSPName
+            FROM TSPDetail
+            WHERE SchemeID IN ({SchemeID})
+              AND IsMigrated = 0
+            ORDER BY TSPID";
+
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);
+                return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public DataTable FetchClassesBySchemeTSP(int SchemeID, int TspID)
         {
             try
@@ -117,6 +137,25 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public DataTable FetchMultipleClassesByTSP(string TspID)
+        {
+            try
+            {
+                string query = $@"
+            SELECT ClassID, ClassCode
+            FROM Class
+            WHERE TSPID IN ({TspID})
+            ORDER BY ClassID";
+
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);
+                return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public DataTable FetchPrograms()
         {
             try
@@ -192,6 +231,27 @@ namespace DataLayer.Services
                 return ds.Tables[0];
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public DataTable FetchClassesByMultipleSchemeUser(string SchemeID, int UserID)
+        {
+            try
+            {
+                string query = $@"
+            SELECT c.ClassID, c.ClassCode
+            FROM dbo.Class c
+            INNER JOIN dbo.TSPDetail td ON c.TSPID = td.TSPID
+            INNER JOIN dbo.TSPMaster tm ON td.TSPMasterID = tm.TSPMasterID
+            WHERE tm.UserID = {UserID}
+              AND td.SchemeID IN ({SchemeID})
+            GROUP BY c.ClassID, c.ClassCode";
+
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);
+                return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public DataTable FetchSchemesByProgramCategory(int PCategoryID)
         {

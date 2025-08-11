@@ -103,6 +103,19 @@ namespace PSDF_BSS.Controllers
             }
         }
         [HttpGet]
+        [Route("FetchTSPsByMultipleSchemes")]
+        public IActionResult FetchTSPsByMultipleSchemes(string SchemeID)
+        {
+            try
+            {
+                return Ok(this.srvDashboard.FetchTSPsByMultipleSchemes(SchemeID));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+        [HttpGet]
         [Route("FetchClassesBySchemeTSP")]
         public IActionResult FetchClassesBySchemeTSP(int SchemeID, int TspID)
         {
@@ -122,6 +135,19 @@ namespace PSDF_BSS.Controllers
             try
             {
                 return Ok(this.srvDashboard.FetchClassesByTSP(TspID));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+        [HttpGet]
+        [Route("FetchMultipleClassesByTSP")]
+        public IActionResult FetchMultipleClassesByTSP(string TspID)
+        {
+            try
+            {
+                return Ok(this.srvDashboard.FetchMultipleClassesByTSP(TspID));
             }
             catch (Exception e)
             {
@@ -179,6 +205,20 @@ namespace PSDF_BSS.Controllers
             try
             {
                 return Ok(this.srvDashboard.FetchClassesBySchemeUser(SchemeID, UserID));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("FetchClassesByMultipleSchemeUser")]
+        public IActionResult FetchClassesByMultipleSchemeUser(string SchemeID, int UserID)
+        {
+            try
+            {
+                return Ok(this.srvDashboard.FetchClassesByMultipleSchemeUser(SchemeID, UserID));
             }
             catch (Exception e)
             {

@@ -13,10 +13,13 @@
           <div class="row">
             <div class="col-sm-3">
               <mat-form-field fxFlex>
-                <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl()"
-                  (selectionChange)="[getDependantFilters()]" id="SchemeId" matInput required>
-                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
-                      [formControl]="SearchSch" /></mat-optgrp>
+                <!-- Modified: Changed mat-select to multiple for Scheme dropdown -->
+                <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" multiple
+                  (openedChange)="EmptyCtrl()" (selectionChange)="getDependantFilters()" id="SchemeId" matInput
+                  required>
+                  <mat-optgrp disabled class="ddlsrchheader">
+                    <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" />
+                  </mat-optgrp>
                   <mat-option value="0">--Select--</mat-option>
                   <mat-option *ngFor="let s of Scheme | like:['SchemeName',SearchSch.value]"
                     [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
@@ -25,10 +28,12 @@
             </div>
             <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
               <mat-form-field fxFlex>
-                <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl()"
-                  (selectionChange)="[getClassesByTsp(tsp.value)]" id="TspId" matInput required>
-                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
-                      [formControl]="SearchTSP" autofocus /></mat-optgrp>
+                <!-- Modified: Changed mat-select to multiple for TSP dropdown -->
+                <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" multiple (openedChange)="EmptyCtrl()"
+                  (selectionChange)="getClassesByTsp(tsp.value)" id="TspId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader">
+                    <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus />
+                  </mat-optgrp>
                   <mat-option value="0">--Select--</mat-option>
                   <mat-option *ngFor="let s of TSPDetail | like:['TSPName',SearchTSP.value]"
                     [value]="s.TSPID">{{s.TSPName}}</mat-option>
@@ -37,10 +42,12 @@
             </div>
             <div class="col-sm-3">
               <mat-form-field fxFlex>
-                <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl()" id="ClassId"
-                  matInput required>
-                  <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
-                      [formControl]="SearchCls" /></mat-optgrp>
+                <!-- Modified: Changed mat-select to multiple for Class dropdown -->
+                <mat-select placeholder="Class" [formControl]="classFilter" multiple (openedChange)="EmptyCtrl()"
+                  id="ClassId" matInput required>
+                  <mat-optgrp disabled class="ddlsrchheader">
+                    <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" />
+                  </mat-optgrp>
                   <mat-option value="0">--Select--</mat-option>
                   <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]"
                     [value]="item.ClassID">{{item.ClassCode}}</mat-option>

@@ -122,7 +122,11 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   public employeedata = [];
   count = 5;
   filters: IMasterSheetFilter = {
-    SchemeID: 0, ClassID: 0, TSPID: 0, UserID: 0, ClassStatusID: 0, // Class Status
+    Schemes: [], // Modified: Changed to array to support multiple Scheme IDs
+    Classes: [], // Modified: Changed to array to support multiple Class IDs
+    TSPs: [], // Modified: Changed to array to support multiple TSP IDs
+    UserID: 0,
+    ClassStatusID: 0, // Class Status
     StartDate: '', // Start Date
     EndDate: '', // End Date
     FundingCategoryID: 0, // Project 
@@ -137,9 +141,10 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
   isTSPUser = false;
   // Pagination\\
   resultsLength: number;
-  schemeFilter = new FormControl(0);
-  tspFilter = new FormControl(0);
-  classFilter = new FormControl(0);
+  // Modified: Initialized as arrays to support multiple selections
+  schemeFilter = new FormControl([]);
+  tspFilter = new FormControl([]);
+  classFilter = new FormControl([]);
 
   kamFilter = new FormControl(0);
   SearchKam = new FormControl('');
@@ -246,22 +251,26 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
       // this.classObj = response[1];
     });
   }
-  getTSPDetailByScheme(schemeId: number) {
+  getTSPDetailByScheme(schemeIds: number[]) {
     this.classesArray = [];
-    this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=` + schemeId)
+    // Modified: Join array of scheme IDs for API call
+    const schemeIdParam = schemeIds.length > 0 ? schemeIds.join(',') : '0';
+    this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByMultipleSchemes?SchemeID=${schemeIdParam}`)
       .subscribe(data => {
         this.TSPDetail = (data as any[]);
       }, error => {
         this.error = error;
-      })
+      });
   }
-  getClassesByTsp(tspId: number) {
-    this.ComSrv.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${tspId}`)
+  getClassesByTsp(tspIds: number[]) {
+    // Modified: Join array of TSP IDs for API call
+    const tspIdParam = tspIds.length > 0 ? tspIds.join(',') : '0';
+    this.ComSrv.getJSON(`api/Dashboard/FetchMultipleClassesByTSP?TspID=${tspIdParam}`)
       .subscribe(data => {
         this.classesArray = (data as any[]);
       }, error => {
         this.error = error;
-      })
+      });
   }
   // added KAM api endpoint:
   getKam() {
@@ -303,9 +312,14 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
 
     const startDate = this.filters.StartDate ? this.filters.StartDate : '';
     const endDate = this.filters.EndDate ? this.filters.EndDate : '';
+    // Modified: Join array of IDs for API query parameters
+    const schemeIdParam = this.filters.Schemes.length > 0 ? this.filters.Schemes.join(',') : '0';
+    const tspIdParam = this.filters.TSPs.length > 0 ? this.filters.TSPs.join(',') : '0';
+    const classIdParam = this.filters.Classes.length > 0 ? this.filters.Classes.join(',') : '0';
 
-    const url = `api/MasterSheet/GetFilteredMasterSheet?schemeId=${this.filters.SchemeID}&tspId=${this.filters.TSPID}&classId=${this.filters.ClassID}&userId=${this.filters.UserID}&oId=${this.ComSrv.OID.value}&classStatusId=${this.filters.ClassStatusID}&fundingCategoryId=${this.filters.FundingCategoryID}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&kamId=${this.filters.KamID}`;
 
+    // const url = `api/MasterSheet/GetFilteredMasterSheet?schemeId=${this.filters.SchemeID}&tspId=${this.filters.TSPID}&classId=${this.filters.ClassID}&userId=${this.filters.UserID}&oId=${this.ComSrv.OID.value}&classStatusId=${this.filters.ClassStatusID}&fundingCategoryId=${this.filters.FundingCategoryID}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&kamId=${this.filters.KamID}`;
+    const url = `api/MasterSheet/GetFilteredMasterSheet?schemeId=${schemeIdParam}&tspId=${tspIdParam}&classId=${classIdParam}&userId=${this.filters.UserID}&oId=${this.ComSrv.OID.value}&classStatusId=${this.filters.ClassStatusID}&fundingCategoryId=${this.filters.FundingCategoryID}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&kamId=${this.filters.KamID}`;
     if (this.isTSPUser) {
       this.ComSrv.getJSON(url)
         .subscribe((data: any) => {
@@ -361,9 +375,10 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
 
     }
     this.ComSrv.OID.subscribe(OID => {
-      this.filters.SchemeID = 0;
-      this.filters.TSPID = 0;
-      this.filters.ClassID = 0;
+      // Modified: Initialize filters as arrays
+      this.filters.Schemes = [];
+      this.filters.TSPs = [];
+      this.filters.Classes = [];
       this.filters.UserID = 0;
       this.filters.ClassStatusID = 0;
       this.filters.StartDate = '';
@@ -539,9 +554,10 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
             , SearchColumn: ''
             , SearchValue: ''
           };
-          this.filters.SchemeID = this.schemeFilter.value || 0;
-          this.filters.TSPID = this.tspFilter.value || 0;
-          this.filters.ClassID = this.classFilter.value || 0;
+          // Modified: Assign array values to filters
+          this.filters.Schemes = this.schemeFilter.value || [];
+          this.filters.TSPs = this.tspFilter.value || [];
+          this.filters.Classes = this.classFilter.value || [];
           this.filters.KamID = this.kamFilter.value || 0;
           this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
           this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
@@ -564,24 +580,33 @@ export class MasterSheetComponent implements OnInit, AfterViewInit {
         });
   }
   getPagedData(pagingModel, filterModel) {
-    return this.ComSrv.postJSON('api/MasterSheet/GetFilteredMasterSheetPaged', { pagingModel, filterModel });
+    // Added: Create a modified filter where array fields are converted to comma-separated strings
+    const modFilter = {
+      ...filterModel,
+      Schemes: Array.isArray(filterModel.Schemes) ? filterModel.Schemes.join(',') : '0',
+      TSPs: Array.isArray(filterModel.TSPs) ? filterModel.TSPs.join(',') : '0',
+      Classes: Array.isArray(filterModel.Classes) ? filterModel.Classes.join(',') : '0'
+    };
+    return this.ComSrv.postJSON('api/MasterSheet/GetFilteredMasterSheetPaged', { pagingModel, filterModel: modFilter });
   }
   getDependantFilters() {
     if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
       this.getClassesBySchemeFilter();
     }
     else {
-      this.getTSPDetailByScheme(this.filters.SchemeID);
+      this.getTSPDetailByScheme(this.filters.Schemes);
     }
   }
   getClassesBySchemeFilter() {
-    this.filters.ClassID = 0;
-    this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.filters.SchemeID}&UserID=${this.userid}`)
+    // Modified: Handle array of scheme IDs
+    this.filters.Classes = [];
+    const schemeIdParam = this.filters.Schemes.length > 0 ? this.filters.Schemes.join(',') : '0';
+    this.ComSrv.getJSON(`api/Dashboard/FetchClassesByMultipleSchemeUser?SchemeID=${schemeIdParam}&UserID=${this.userid}`)
       .subscribe(data => {
         this.classesArray = (data as any[]);
       }, error => {
         this.error = error;
-      })
+      });
   }
   openClassJourneyDialogue(data: any): void {
     this.dialogueService.openClassJourneyDialogue(data);

@@ -17,14 +17,17 @@ namespace DataLayer.Interfaces
         public DataTable FetchTSPs();
         public DataTable FetchTSPDetail();
         public DataTable FetchTSPsByScheme(int SchemeID);
+        public DataTable FetchTSPsByMultipleSchemes(string SchemeID);
         public DataTable FetchClassesBySchemeTSP(int SchemeID, int TspID);
         public DataTable FetchClassesByTSP(int TspID);
+        public DataTable FetchMultipleClassesByTSP(string TspID);
         public DataTable FetchPrograms();
         public DataTable FetchSchemesByKam(int KamID);
         public DataTable FetchTSPsByKamScheme(int KamID, int SchemeID);
         public DataTable FetchSchemesByUsers(int UserID);
         public DataTable FetchSchemesByGSRUsers(int UserID);
         public DataTable FetchClassesBySchemeUser(int SchemeID, int UserID);
+        public DataTable FetchClassesByMultipleSchemeUser(string SchemeID, int UserID);
         public DataTable FetchSchemesByProgramCategory(int PCategoryID);
         public DataTable FetchClasses();
         public DataTable FetchClassesByUser(int UserID);
