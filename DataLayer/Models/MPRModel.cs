@@ -36,4 +36,10 @@ namespace DataLayer.Models
         public int UserID { get; set; }
         public int? KAMID { get; set; }
         public int? FundingCategoryID { get; set; }
+
+        public string Classes { get; set; }
+        public string Schemes { get; set; }
+        public string TSPs { get; set; }
+
+
     }}

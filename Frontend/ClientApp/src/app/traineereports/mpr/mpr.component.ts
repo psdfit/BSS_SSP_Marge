@@ -18,7 +18,7 @@ import * as _moment from 'moment';
 import { Moment } from 'moment';
 import * as XLSX from 'xlsx';
 import { DialogueService } from '../../shared/dialogue.service';
-import { SearchFilter, ExportExcel } from '../../shared/Interfaces';
+import { SearchFilter, ExportExcel, SearchFilterMultiSelect } from '../../shared/Interfaces';
 import { EnumExcelReportType, EnumUserLevel, EnumUserRoles } from '../../shared/Enumerations';
 import { UsersModel } from '../../master-data/users/users.component';
 import { environment } from '../../../environments/environment';
@@ -74,7 +74,12 @@ export class MPRComponent implements OnInit {
     monthlympr: any[];
     errorHTTP: any;
     month = new FormControl(moment());
-    filters: SearchFilter = { SchemeID: 0, TSPID: 0, ClassID: 0 };
+    // Modified: Updated to use SearchFilterMultiSelect with array-based filters
+    filters: SearchFilterMultiSelect = {
+        Schemes: [],
+        TSPs: [],
+        Classes: [],
+    };
     schemeArray: any[];
     classesArray: any[];
     tspDetailArray: any[];
@@ -140,23 +145,23 @@ export class MPRComponent implements OnInit {
     }
 
     GetMPR() {
-        // let month = new Date('2020-03-01');
-        this.ComSrv.postJSON(`api/MPR/RD_MPRBy`,
-            {
-                Month: this.month.value,
-                SchemeID: this.filters.SchemeID,
-                TSPID: this.filters.TSPID,
-                ClassID: this.filters.ClassID,
-                KAMID: this.kamFilter.value,
-                FundingCategoryID: this.fundingCategoryFilter.value,
-            }).subscribe(
-                (data: any) => {
-                    this.mpr = data.MPR;
-                    this.schemeArray = data.Schemes;
-                    this.MPRIDsArray = this.mpr.map(o => o.MPRID);
-                    this.MPRIDs = this.MPRIDsArray.join(',');
-                }
-            );
+        // Modified: Convert array filters to comma-separated strings
+        const modFilters = {
+            Month: this.month.value,
+            Schemes: Array.isArray(this.filters.Schemes) ? (this.filters.Schemes.length > 0 ? this.filters.Schemes.join(',') : '0') : '0',
+            TSPs: Array.isArray(this.filters.TSPs) ? (this.filters.TSPs.length > 0 ? this.filters.TSPs.join(',') : '0') : '0',
+            Classes: Array.isArray(this.filters.Classes) ? (this.filters.Classes.length > 0 ? this.filters.Classes.join(',') : '0') : '0',
+            KAMID: this.filters.KamID,
+            FundingCategoryID: this.filters.FundingCategoryID
+        };
+        this.ComSrv.postJSON(`api/MPR/RD_MPRBy`, modFilters).subscribe(
+            (data: any) => {
+                this.mpr = data.MPR;
+                this.schemeArray = data.Schemes;
+                this.MPRIDsArray = this.mpr.map(o => o.MPRID);
+                this.MPRIDs = this.MPRIDsArray.join(',');
+            }
+        );
     }
 
     // added KAM api endpoint:
@@ -246,24 +251,28 @@ export class MPRComponent implements OnInit {
 
 
     getTSPDetailByScheme() {
-        this.filters.TSPID = 0;
-        this.filters.ClassID = 0;
-        this.classesArray = [];
-        this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=` + this.filters.SchemeID)
+        // Modified: Handle array of scheme IDs
+        this.filters.TSPs = [];
+        this.filters.Classes = [];
+        const schemeIdParam = this.filters.Schemes.length > 0 ? this.filters.Schemes.join(',') : '0';
+        this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByMultipleSchemes?SchemeID=${schemeIdParam}`)
             .subscribe(data => {
                 this.tspDetailArray = (data as any[]);
             }, error => {
-                console.error(error);
-            })
+                this.error = error;
+            });
     }
+
     getClassesByTsp() {
-        this.filters.ClassID = 0;
-        this.ComSrv.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${this.filters.TSPID}`)
+        // Modified: Handle array of TSP IDs
+        this.filters.Classes = [];
+        const tspIdParam = this.filters.TSPs.length > 0 ? this.filters.TSPs.join(',') : '0';
+        this.ComSrv.getJSON(`api/Dashboard/FetchMultipleClassesByTSP?TspID=${tspIdParam}`)
             .subscribe(data => {
                 this.classesArray = (data as any[]);
             }, error => {
-                console.error(error);
-            })
+                this.error = error;
+            });
     }
 
     // exportToExcel() {
@@ -328,14 +337,15 @@ export class MPRComponent implements OnInit {
         this.dialogueService.openClassJourneyDialogue(data);
     }
     getClassesBySchemeFilter() {
-        this.filters.ClassID = 0;
+        // Modified: Handle array of scheme IDs
+        this.filters.Classes = [];
         this.filters.TraineeID = 0;
-        this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.filters.SchemeID}&UserID=${this.currentUser.UserID}`)
+        const schemeIdParam = this.filters.Schemes.length > 0 ? this.filters.Schemes.join(',') : '0';
+        this.ComSrv.getJSON(`api/Dashboard/FetchClassesByMultipleSchemeUser?SchemeID=${schemeIdParam}&UserID=${this.currentUser.UserID}`)
             .subscribe(data => {
                 this.classesArray = (data as any[]);
-                // this.activeClassesArrayFilter = this.classesArrayFilter.filter(x => x.ClassStatusID == 3);
             }, error => {
-                // this.error = error;
-            })
+                this.error = error;
+            });
     }
 }

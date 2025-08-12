@@ -435,7 +435,7 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
 
   // Modified: Updated to handle array of scheme IDs
   getClassesBySchemeFilter() {
-    // this.filters.ClassID = [];
+    this.filters.Classes = [];
     const schemeIdParam = this.schemeFilter.value.length > 0 ? this.schemeFilter.value.join(',') : '0';
     this.commonService.getJSON(`api/Dashboard/FetchClassesByMultipleSchemeUser?SchemeID=${schemeIdParam}&UserID=${this.currentUser.UserID}`)
       .subscribe(data => {
