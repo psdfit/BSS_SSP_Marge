@@ -2,17 +2,19 @@
   <mat-card-content>
     <div>
       <mat-toolbar color="accent" class="slim slim">
-        <span class="spacer">Trainee Status Report </span>
+        <span class="spacer">Trainee Status Report</span>
         <div class="spacer"></div>
         <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
       </mat-toolbar>
       <div class="row">
         <div class="col-sm-3">
           <mat-form-field fxFlex>
+            <!-- Modified: Added multiple attribute to enable multi-select for Scheme -->
             <mat-select #scheme placeholder="Scheme" [formControl]="schemeFilter" (openedChange)="EmptyCtrl($event)"
-              matInput>
+              matInput multiple>
               <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
                   [formControl]="SearchSch" autofocus /></mat-optgrp>
+              <!-- Modified: Removed single-select specific options, adjusted for multi-select -->
               <mat-option *ngFor="let s of schemeArray | like:['SchemeName',SearchSch.value]"
                 [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
             </mat-select>
@@ -20,11 +22,12 @@
         </div>
         <div class="col-sm-3" *ngIf="currentUser.UserLevel != enumUserLevel.TSP">
           <mat-form-field fxFlex>
-            <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl($event)" matInput>
+            <!-- Modified: Added multiple attribute to enable multi-select for TSP -->
+            <mat-select #tsp placeholder="TSP" [formControl]="tspFilter" (openedChange)="EmptyCtrl($event)" matInput
+              multiple>
               <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
                   [formControl]="SearchTSP" autofocus /></mat-optgrp>
-              <mat-option value="0" selected>--All--</mat-option>
-
+              <!-- Modified: Removed --All-- option for multi-select consistency -->
               <mat-option *ngFor="let s of tspDetailArray | like:['TSPName',SearchTSP.value]"
                 [value]="s.TSPID">{{s.TSPName}}</mat-option>
             </mat-select>
@@ -32,10 +35,12 @@
         </div>
         <div class="col-sm-3">
           <mat-form-field fxFlex>
-            <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl($event)" matInput>
+            <!-- Modified: Added multiple attribute to enable multi-select for Class -->
+            <mat-select placeholder="Class" [formControl]="classFilter" (openedChange)="EmptyCtrl($event)" matInput
+              multiple>
               <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
                   [formControl]="SearchCls" autofocus /></mat-optgrp>
-              <mat-option value="0" selected>--All--</mat-option>
+              <!-- Modified: Removed --All-- option for multi-select consistency -->
               <mat-option *ngFor="let item of classesArray | like:['ClassCode',SearchCls.value]"
                 [value]="item.ClassID">{{item.ClassCode}}</mat-option>
             </mat-select>

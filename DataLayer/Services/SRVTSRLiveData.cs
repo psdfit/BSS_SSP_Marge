@@ -220,9 +220,12 @@ namespace DataLayer.Services
                 try
                 {
                     SqlParameter[] param = new SqlParameter[15];
-                    param[0] = new SqlParameter("@SchemeID", filters.SchemeID);
-                    param[1] = new SqlParameter("@TSPID", filters.TSPID);
-                    param[2] = new SqlParameter("@ClassID", filters.ClassID);
+                    param[0] = new SqlParameter("@Schemes", filters.Schemes);
+                    param[1] = new SqlParameter("@TSPs", filters.TSPs);
+                    param[2] = new SqlParameter("@Classes", filters.Classes);
+                    //param[0] = new SqlParameter("@SchemeID", filters.SchemeID);
+                    //param[1] = new SqlParameter("@TSPID", filters.TSPID);
+                    //param[2] = new SqlParameter("@ClassID", filters.ClassID);
                     param[3] = new SqlParameter("@TraineeID", filters.TraineeID);
                     param[4] = new SqlParameter("@UserID", filters.UserID);
                     param[5] = new SqlParameter("@OID", filters.OID);
@@ -560,9 +563,13 @@ namespace DataLayer.Services
             try
             {
                 List<SqlParameter> param = new List<SqlParameter>();
-                param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
-                param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
-                param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                //param.Add(new SqlParameter("@SchemeID", filterModel.SchemeID));
+                //param.Add(new SqlParameter("@TSPID", filterModel.TSPID));
+                //param.Add(new SqlParameter("@ClassID", filterModel.ClassID));
+                // ✅ Updated to allow multiple IDs as comma-separated strings
+                param.Add(new SqlParameter("@Schemes", string.IsNullOrEmpty(filterModel.Schemes) ? DBNull.Value : (object)filterModel.Schemes));
+                param.Add(new SqlParameter("@TSPs", string.IsNullOrEmpty(filterModel.TSPs) ? DBNull.Value : (object)filterModel.TSPs));
+                param.Add(new SqlParameter("@Classes", string.IsNullOrEmpty(filterModel.Classes) ? DBNull.Value : (object)filterModel.Classes));
                 param.Add(new SqlParameter("@TraineeID", filterModel.TraineeID));
                 param.Add(new SqlParameter("@UserID", filterModel.UserID));
                 param.Add(new SqlParameter("@OID", filterModel.OID));

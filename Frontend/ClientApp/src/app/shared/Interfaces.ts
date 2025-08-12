@@ -15,6 +15,26 @@ export interface SearchFilter {
   KamID?: number // KAM
 }
 
+export interface SearchFilterMultiSelect {
+  SchemeID?: [];
+  TSPID?: [];
+  ClassID?: [];
+  Schemes?: [];
+  TSPs?: [];
+  Classes?: [];
+  TraineeID?: number;
+  OID?: number;
+  SelectedColumns?: string[]
+  ClassStatusID?: number, // Class Status
+  StartDate?: string, // Start Date
+  EndDate?: string, // End Date
+  FundingCategoryID?: number, // Project 
+  KamID?: number // KAM
+}
+
+
+
+
 export interface SearchFilterTAR {
   SchemeID: number;
   TSPID: number;
@@ -33,7 +53,8 @@ export interface ExportExcel {
   List1: any[];
   List2?: any[];
   ImageFieldNames?: string[];
-  SearchFilters?: SearchFilter;
+  SearchFilters?: SearchFilter | SearchFilterMultiSelect;
+  // SearchFilterMultiSelect?: SearchFilterMultiSelect;
   DataModel?: object;
   LoadDataAsync?: any;
   Month?: Date;

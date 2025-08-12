@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { environment } from '../../../environments/environment';
 import { MatPaginator } from '@angular/material/paginator';
-import { SearchFilter, ExportExcel } from '../../shared/Interfaces';
+import { SearchFilter, SearchFilterMultiSelect, ExportExcel } from '../../shared/Interfaces';
 import { MatSort } from '@angular/material/sort';
 import { CommonSrvService } from '../../common-srv.service';
 import { FormControl } from '@angular/forms';
@@ -54,8 +54,22 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   schemeArray = [];
   tspDetailArray = [];
   classesArray: any[];
-  filters: SearchFilter = {
-    SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.commonService.OID.value, SelectedColumns: [], ClassStatusID: 0, // Class Status
+  // filters: SearchFilter = {
+  //   SchemeID: 0, TSPID: 0, ClassID: 0, TraineeID: 0, OID: this.commonService.OID.value, SelectedColumns: [], ClassStatusID: 0, // Class Status
+  //   StartDate: '', // Start Date
+  //   EndDate: '', // End Date
+  //   FundingCategoryID: 0, // Project 
+  //   KamID: 0
+  // };
+  // Modified: Changed SchemeID, TSPID, ClassID to arrays for multi-select support
+  filters: SearchFilterMultiSelect = {
+    Schemes: [],
+    TSPs: [],
+    Classes: [],
+    TraineeID: 0,
+    OID: this.commonService.OID.value,
+    SelectedColumns: [],
+    ClassStatusID: 0, // Class Status
     StartDate: '', // Start Date
     EndDate: '', // End Date
     FundingCategoryID: 0, // Project 
@@ -64,9 +78,10 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   error = '';
-  schemeFilter = new FormControl(0);
-  tspFilter = new FormControl(0);
-  classFilter = new FormControl(0);
+  // Modified: Initialized as array for multi-select
+  schemeFilter = new FormControl([]);
+  tspFilter = new FormControl([]);
+  classFilter = new FormControl([]);
   SearchSch = new FormControl('');
   SearchTSP = new FormControl('');
   SearchCls = new FormControl('');
@@ -101,6 +116,7 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.commonService.setTitle('Trainee Status Report');
     this.currentUser = this.commonService.getUserDetails();
+
     this.schemeFilter.valueChanges.subscribe(value => {
       if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
         this.getDependantFilters();
@@ -113,9 +129,9 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.commonService.OID.subscribe(OID => {
-      this.schemeFilter.setValue(0);
-      this.tspFilter.setValue(0);
-      this.classFilter.setValue(0);
+      this.schemeFilter.setValue([]);
+      this.tspFilter.setValue([]);
+      this.classFilter.setValue([]);
       this.filters.OID = OID;
       this.getData();
       this.initPagedData();
@@ -213,10 +229,12 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getTSPDetailByScheme(schemeId: number) {
-    this.tspFilter.setValue(0);
-    this.classFilter.setValue(0);
-    this.commonService.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=${schemeId}`)
+  // Modified: Updated to handle array of scheme IDs
+  getTSPDetailByScheme(schemeIds: number[]) {
+    this.tspFilter.setValue([]);
+    this.classFilter.setValue([]);
+    const schemeIdParam = schemeIds.length > 0 ? schemeIds.join(',') : '0';
+    this.commonService.getJSON(`api/Dashboard/FetchTSPsByMultipleSchemes?SchemeID=${schemeIdParam}`)
       .subscribe(data => {
         this.tspDetailArray = (data as any[]);
       }, error => {
@@ -224,9 +242,11 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getClassesByTsp(tspId: number) {
-    this.classFilter.setValue(0);
-    this.commonService.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${tspId}`)
+  // Modified: Updated to handle array of TSP IDs
+  getClassesByTsp(tspIds: number[]) {
+    this.classFilter.setValue([]);
+    const tspIdParam = tspIds.length > 0 ? tspIds.join(',') : '0';
+    this.commonService.getJSON(`api/Dashboard/FetchMultipleClassesByTSP?TspID=${tspIdParam}`)
       .subscribe(data => {
         this.classesArray = (data as any[]);
       }, error => {
@@ -257,9 +277,10 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
             SearchColumn: '',
             SearchValue: '',
           };
-          this.filters.SchemeID = this.schemeFilter.value;
-          this.filters.TSPID = this.tspFilter.value;
-          this.filters.ClassID = this.classFilter.value;
+          // Modified: Assigned array values
+          this.filters.Schemes = this.schemeFilter.value || [];
+          this.filters.TSPs = this.tspFilter.value || [];
+          this.filters.Classes = this.classFilter.value || [];
           this.filters.KamID = this.kamFilter.value || 0;
           this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
           this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
@@ -274,13 +295,21 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   }
 
   getPagedData(pagingModel, filterModel) {
-    return this.commonService.postJSON('api/TSRLiveData/RD_TSRPaged', { pagingModel, filterModel });
+    // Added: Convert array filters to comma-separated strings for backend compatibility
+    const modFilter = {
+      ...filterModel,
+      Schemes: Array.isArray(filterModel.Schemes) ? filterModel.Schemes.join(',') : '0',
+      TSPs: Array.isArray(filterModel.TSPs) ? filterModel.TSPs.join(',') : '0',
+      Classes: Array.isArray(filterModel.Classes) ? filterModel.Classes.join(',') : '0'
+    };
+    return this.commonService.postJSON('api/TSRLiveData/RD_TSRPaged', { pagingModel, filterModel: modFilter });
   }
 
   exportToExcel() {
-    this.filters.SchemeID = this.schemeFilter.value;
-    this.filters.TSPID = this.tspFilter.value;
-    this.filters.ClassID = this.classFilter.value;
+    // Modified: Assigned array values and converted to strings where needed
+    this.filters.Schemes = this.schemeFilter.value || [];
+    this.filters.TSPs = this.tspFilter.value || [];
+    this.filters.Classes = this.classFilter.value || [];
     this.filters.KamID = this.kamFilter.value || 0;
     this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
     this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
@@ -303,7 +332,27 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
   }
 
   async loadDataAsync(that: any) {
-    await that.commonService.postJSON(`api/TSRLiveData/GetFilteredTSRData`, that.input.SearchFilters)
+    // Added: Convert array filters to comma-separated strings before API call
+    const modFilters = {
+      ...(that.input.SearchFilters || {}),
+      Schemes: Array.isArray(that.input.SearchFilters?.Schemes)
+        ? (that.input.SearchFilters.Schemes.length > 0
+          ? that.input.SearchFilters.Schemes.join(',')
+          : '0')
+        : '0',
+      TSPs: Array.isArray(that.input.SearchFilters?.TSPs)
+        ? (that.input.SearchFilters.TSPs.length > 0
+          ? that.input.SearchFilters.TSPs.join(',')
+          : '0')
+        : '0',
+      Classes: Array.isArray(that.input.SearchFilters?.Classes)
+        ? (that.input.SearchFilters.Classes.length > 0
+          ? that.input.SearchFilters.Classes.join(',')
+          : '0')
+        : '0'
+    };
+
+    await that.commonService.postJSON(`api/TSRLiveData/GetFilteredTSRData`, modFilters)
       .toPromise()
       .then((responseData: any[]) => {
         that.input.Data = {
@@ -384,10 +433,11 @@ export class TraineeStatusReportComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // Modified: Updated to handle array of scheme IDs
   getClassesBySchemeFilter() {
-    this.filters.ClassID = 0;
-    this.filters.TraineeID = 0;
-    this.commonService.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.schemeFilter.value}&UserID=${this.currentUser.UserID}`)
+    // this.filters.ClassID = [];
+    const schemeIdParam = this.schemeFilter.value.length > 0 ? this.schemeFilter.value.join(',') : '0';
+    this.commonService.getJSON(`api/Dashboard/FetchClassesByMultipleSchemeUser?SchemeID=${schemeIdParam}&UserID=${this.currentUser.UserID}`)
       .subscribe(data => {
         this.classesArray = (data as any[]);
       }, error => {
