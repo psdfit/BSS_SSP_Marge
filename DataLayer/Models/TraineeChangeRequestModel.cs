@@ -65,5 +65,8 @@ namespace DataLayer.Models
         public int FundingCategoryID { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string? Schemes { get; set; }
+        public string? TSPs { get; set; }
+        public string? Classes { get; set; }
 
     }}

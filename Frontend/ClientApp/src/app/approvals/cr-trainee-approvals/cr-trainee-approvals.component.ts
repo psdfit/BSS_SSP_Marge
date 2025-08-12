@@ -21,9 +21,16 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
   displayedColumnsTSP = ["Action", 'TSPName', 'Address', 'HeadName', 'HeadDesignation', 'HeadLandline', 'HeadEmail', 'CPName', 'CPDesignation', 'CPLandline', 'CPEmail',
     'BankName', 'BankAccountNumber', 'AccountTitle', 'BankBranch'];
   //schemes: MatTableDataSource<any>;
+  // Modified: Changed SchemeID, TSPID, ClassID to arrays for multi-select support
   filters: ICRTraineeListFilter = {
-    SchemeID: 0, ClassID: 0, TSPID: 0, UserID: 0, KAMID: 0,
-    startDate: null, endDate: null, FundingCategoryID: 0
+    Schemes: [],
+    TSPs: [],
+    Classes: [],
+    UserID: 0,
+    KAMID: 0,
+    FundingCategoryID: 0,
+    startDate: null,
+    endDate: null
   };
 
   SearchSchemeList = new FormControl('',);
@@ -122,23 +129,31 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
     );
   }
 
-  getTSPDetailByScheme(schemeId: number) {
+  // Modified: Updated to handle array of scheme IDs
+  getTSPDetailByScheme(schemeIds: number[]) {
     this.classesArray = [];
-    this.http.getJSON(`api/TSPDetail/GetTSPDetailByScheme/` + schemeId)
+    // Modified: Join array of scheme IDs for API call
+    const schemeIdParam = schemeIds.length > 0 ? schemeIds.join(',') : '0';
+    this.http.getJSON(`api/Dashboard/FetchTSPsByMultipleSchemes?SchemeID=${schemeIdParam}`)
       .subscribe(data => {
-        this.TSPDetail = <any[]>data;
+        this.TSPDetail = (data as any[]);
       }, error => {
         this.error = error;
-      })
+      });
   }
-  getClassesByTsp(tspId: number) {
-    this.http.getJSON(`api/Class/GetClassesByTsp/` + tspId)
+
+  // Modified: Updated to handle array of TSP IDs
+  getClassesByTsp(tspIds: number[]) {
+    // Modified: Join array of TSP IDs for API call
+    const tspIdParam = tspIds.length > 0 ? tspIds.join(',') : '0';
+    this.http.getJSON(`api/Dashboard/FetchMultipleClassesByTSP?TspID=${tspIdParam}`)
       .subscribe(data => {
-        this.classesArray = <any[]>data;
+        this.classesArray = (data as any[]);
       }, error => {
         this.error = error;
-      })
+      });
   }
+
 
   // added KAM api endpoint:
   getKam() {
@@ -165,16 +180,21 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
   }
 
   GetSubmittedTrainees() {
-    this.http.postJSON('api/TraineeChangeRequest/GetTraineeChangeRequest/', {
-      Process_Key: "CR_TRAINEE_UNVERIFIED", UserID: this.userid,
-      OID: this.http.OID.value, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID, ClassID: this.filters.ClassID,
-      KAMID: this.filters.KAMID, StartDate: this.filters.startDate,
-      EndDate: this.filters.endDate, FundingCategoryID: this.filters.FundingCategoryID
-    }).subscribe((d: any) => {
+    // Modified: Convert array filters to comma-separated strings for backend compatibility
+    const modFilters = {
+      Process_Key: "CR_TRAINEE_UNVERIFIED",
+      UserID: this.userid,
+      OID: this.http.OID.value,
+      Schemes: Array.isArray(this.filters.Schemes) ? this.filters.Schemes.join(',') : '0',
+      TSPs: Array.isArray(this.filters.TSPs) ? this.filters.TSPs.join(',') : '0',
+      Classes: Array.isArray(this.filters.Classes) ? this.filters.Classes.join(',') : '0',
+      KAMID: this.filters.KAMID,
+      StartDate: this.filters.startDate,
+      EndDate: this.filters.endDate,
+      FundingCategoryID: this.filters.FundingCategoryID
+    };
+    this.http.postJSON('api/TraineeChangeRequest/GetTraineeChangeRequest/', modFilters).subscribe((d: any) => {
       this.trainees = d[0];
-
-      //this.tsps.paginator = this.paginator;
-      //this.tsps.sort = this.sort;
     },
       error => this.error = error // error path
       , () => {
@@ -278,9 +298,9 @@ export class TraineeChangeRequestApprovalsComponent implements OnInit {
 }
 
 export interface ICRTraineeListFilter {
-  SchemeID: number;
-  TSPID: number;
-  ClassID: number;
+  Schemes: [];
+  TSPs: [];
+  Classes: [];
   UserID: number;
   KAMID: number;
   FundingCategoryID: number;  // Add this line

@@ -189,6 +189,9 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@SchemeID", mod.SchemeID));
                 param.Add(new SqlParameter("@TSPID", mod.TSPID));
                 param.Add(new SqlParameter("@ClassID", mod.ClassID));
+                param.Add(new SqlParameter("@Schemes", string.IsNullOrEmpty(mod.Schemes) ? DBNull.Value : (object)mod.Schemes));
+                param.Add(new SqlParameter("@TSPs", string.IsNullOrEmpty(mod.TSPs) ? DBNull.Value : (object)mod.TSPs));
+                param.Add(new SqlParameter("@Classes", string.IsNullOrEmpty(mod.Classes) ? DBNull.Value : (object)mod.Classes));
                 param.Add(new SqlParameter("@KAMID", mod.KAMID));
                 param.Add(new SqlParameter("@FundingCategoryID", mod.FundingCategoryID));
                 param.Add(new SqlParameter("@StartDate", mod.StartDate));
