@@ -21,7 +21,7 @@ import { DialogueService } from '../../shared/dialogue.service';
 export class KAMComponent implements OnInit {
     kamassignmentform: FormGroup;
     title: string; savebtn: string;
-    filters: IQueryFilters = { RegionID: 0, DistrictID: 0, UserID: 0, TSPID: 0 };
+    filters: IQueryFiltersMultiSelect = { RegionID: 0, DistrictID: 0, Users: [], TSPs: [] };
 
 
     displayedColumns = ['Action', 'TSPID','RegionName', 'DistrictName', 'KAM'];
@@ -180,23 +180,25 @@ export class KAMComponent implements OnInit {
         this.TSPs = this.TSPsArray.filter(x => x.RegionID == this.filters.RegionID && x.DistrictID == this.filters.DistrictID);
     }
     FilterKAMAssignmentsByTSPOrKAM() {
-        if (this.filters.TSPID == 0) {
-            this.kamassignment = new MatTableDataSource(this.kamassignmentArray.filter(x => x.UserID == this.filters.UserID));
+        let filteredData = this.kamassignmentArray;
+        // Modified: Handle multiple Users and TSPs
+        if (this.filters.Users.length > 0) {
+            filteredData = filteredData.filter(x => this.filters.Users.includes(x.UserID));
         }
-        if (this.filters.UserID == 0) {
-            this.kamassignment = new MatTableDataSource(this.kamassignmentArray.filter(y => y.TspID == this.filters.TSPID));
-
+        if (this.filters.TSPs.length > 0) {
+            filteredData = filteredData.filter(x => this.filters.TSPs.includes(x.TspID));
         }
-        if (this.filters.UserID && this.filters.TSPID) {
-            this.kamassignment = new MatTableDataSource(this.kamassignmentArray.filter(x => x.TspID == this.filters.TSPID && x.UserID == this.filters.UserID));
-        }
+        this.kamassignment = new MatTableDataSource(filteredData);
         this.kamassignment.paginator = this.paginator;
         this.kamassignment.sort = this.sort;
     }
 
     ResetFilters() {
-        this.filters.TSPID = 0;
-        this.filters.UserID = 0;
+        // Modified: Reset array-based filters
+        this.filters.Users = [];
+        this.filters.TSPs = [];
+        this.filters.RegionID = 0;
+        this.filters.DistrictID = 0;
         this.kamassignment = new MatTableDataSource(this.kamassignmentArray);
         this.kamassignment.paginator = this.paginator;
         this.kamassignment.sort = this.sort;
@@ -297,6 +299,13 @@ export interface IQueryFilters {
     DistrictID: number;
     UserID: number;
     TSPID: number;
+    
+}
+export interface IQueryFiltersMultiSelect {
+    RegionID: number;
+    DistrictID: number;
+    Users: number[];
+    TSPs: number[];
     
 }
 

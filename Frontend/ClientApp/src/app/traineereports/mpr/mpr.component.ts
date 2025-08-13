@@ -141,7 +141,6 @@ export class MPRComponent implements OnInit {
         this.monthlympr = []
         this.getKam();
         this.getFundingCategories();
-
     }
 
     GetMPR() {
