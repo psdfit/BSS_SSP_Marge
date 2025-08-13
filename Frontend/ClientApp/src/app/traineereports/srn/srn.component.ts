@@ -72,7 +72,13 @@ export class SrnComponent implements OnInit {
     SearchKAM = new FormControl('');
     SearchTSP = new FormControl('');
     //filters: ISRNReportFilter = { SchemeID: 0, TSPID: 0, KAMID: 0 };
-    filters: ISRNReportFilter = { SchemeID: 0, TSPMasterID: 0, KAMID: 0, FundingCategoryID: 0, ClassStatusID: 0 };
+    filters: ISRNReportFilterMultiSelect = {
+        Schemes: [],
+        TSPMasterIDs: [],
+        KAMID: 0,
+        FundingCategoryID: 0,
+        ClassStatusID: 0
+    };
     kamusers: []; schemes: []; tsps: []; tspMasters: []; srnDetailsArray: any[];
     currentUser: UsersModel;
     enumUserLevel = EnumUserLevel;
@@ -152,27 +158,24 @@ export class SrnComponent implements OnInit {
     }
 
     GetSRN() {
-
-        this.filters.FundingCategoryID = this.fundingCategoryFilter.value || 0;
-        this.filters.ClassStatusID = this.ClassStatusFilter.value || 0;
-
-        // let month = new Date('2020-03-01');
-        this.http.postJSON(`api/SRN/GetSRN`,
-            {
-                Month: this.month.value,
-                OID: this.http.OID.value,
-                KAMID: this.filters.KAMID,
-                SchemeID: this.filters.SchemeID,
-                TSPMasterID: this.filters.TSPMasterID,
-                ClassStatusID: this.filters.ClassStatusID,
-                FundingCategoryID: this.filters.FundingCategoryID
-            }).subscribe(
-                //this.http.postJSON(`api/SRN/GetSRN`, { Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID  }).subscribe(
-                (data: any) => {
-                    this.srn = data;
-                }
-            );
+        // Modified: Convert array filters to comma-separated strings
+        const modFilters = {
+            Month: this.month.value,
+            OID: this.http.OID.value,
+            KAMID: this.filters.KAMID,
+            Schemes: Array.isArray(this.filters.Schemes) ? this.filters.Schemes.join(',') : '0',
+            TSPMasters: Array.isArray(this.filters.TSPMasterIDs) ? this.filters.TSPMasterIDs.join(',') : '0',
+            ClassStatusID: this.filters.ClassStatusID,
+            FundingCategoryID: this.filters.FundingCategoryID
+        };
+        this.http.postJSON(`api/SRN/GetSRN`, modFilters).subscribe(
+            (data: any) => {
+                this.srn = data;
+            }
+        );
     }
+
+
     GetSrnDetails(r: any) {
         if (r.srnDetails) {
             r.srnDetails = null;
@@ -374,6 +377,15 @@ export class SrnComponent implements OnInit {
 export interface ISRNReportFilter {
     SchemeID: number;
     TSPMasterID: number;
+    //TSPID: number;
+    KAMID: number;
+    FundingCategoryID?: number;
+    ClassStatusID?: number;
+}
+
+export interface ISRNReportFilterMultiSelect {
+    Schemes: [];
+    TSPMasterIDs: [];
     //TSPID: number;
     KAMID: number;
     FundingCategoryID?: number;

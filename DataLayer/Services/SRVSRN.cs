@@ -47,6 +47,8 @@ namespace DataLayer.Services
                 //param.Add(new SqlParameter("@SchemeId", SRN.SrnId));
                 //param.Add(new SqlParameter("@TspId", SRN.ReportId));
                 //param.Add( new SqlParameter("@ClassId", SRN.TraineeId));
+                param.Add(new SqlParameter("@Schemes", string.IsNullOrEmpty(mod?.Schemes) ? DBNull.Value : (object)mod.Schemes));
+                param.Add(new SqlParameter("@TSPMasters", string.IsNullOrEmpty(mod.TSPMasters) ? DBNull.Value : (object)mod.TSPMasters));
                 param.Add(new SqlParameter("@Month", mod.Month));
                 param.Add(new SqlParameter("@OID", mod.OID));
                 param.Add(new SqlParameter("@KAMID", mod.KAMID));

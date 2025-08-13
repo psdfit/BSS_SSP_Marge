@@ -34,5 +34,8 @@ namespace DataLayer.Models
         public int? ClassStatusID { get; set; }
         public int? FundingCategoryID { get; set; }
         public string ProcessKey { get; set; }
+        public string Schemes { get; set; }
+        public string TSPMasters { get; set; }
+
     }
 }
