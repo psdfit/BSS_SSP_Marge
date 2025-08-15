@@ -102,6 +102,32 @@ namespace PSDF_BSSMaster.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetOrgConfigMultipleTSP/{schemeIds}")]
+        public IActionResult GetOrgConfigTSP(string schemeIds)
+        {
+            try
+            {
+                // Convert comma-separated string into int list
+                var ids = schemeIds.Split(',')
+                                   .Select(id => int.TryParse(id, out var parsed) ? parsed : 0)
+                                   .Where(id => id > 0)
+                                   .ToList();
+
+                if (!ids.Any())
+                    return BadRequest("No valid Scheme IDs provided.");
+
+                var result = srvTSPD.FetchTSPDetailBySchemes(ids);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException?.ToString() ?? e.Message);
+            }
+        }
+
+
         // GET: GETOrgConfigClass
         [HttpGet]
         [Route("GetOrgConfigClass/{tid}")]
@@ -137,6 +163,21 @@ namespace PSDF_BSSMaster.Controllers
                 return BadRequest(e.Message.ToString());
             }
         }
+
+        [HttpGet]
+        [Route("GetOrgConfigMultiSelect/{id}/{ruletype}/{schemeIds}/{tspIds}")]
+        public IActionResult GetOrgConfigMultiSelect(int id, string ruletype, string schemeIds, string tspIds)
+        {
+            try
+            {
+                return Ok(srv.FetchOrgConfigMultiSelect(id, ruletype, schemeIds, tspIds));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
 
         // RD: OrgConfig
         [HttpGet]

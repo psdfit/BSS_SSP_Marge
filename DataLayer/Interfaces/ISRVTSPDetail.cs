@@ -15,6 +15,7 @@ namespace DataLayer.Interfaces
 
         List<TSPDetailModel> FetchTSPDetail(TSPDetailModel mod);
         List<TSPDetailModel> FetchTSPDetailByScheme(int schemeId, SqlTransaction transaction = null);
+        List<TSPDetailModel> FetchTSPDetailBySchemes(List<int> schemeIds, SqlTransaction transaction = null);
         List<TSPDetailModel> FetchTSPDetail();
         List<TSPDetailModel> FetchTSPDetail(bool InActive);
 

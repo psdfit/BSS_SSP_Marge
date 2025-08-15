@@ -23,6 +23,7 @@ namespace DataLayer.Interfaces
 
         //List<OrgConfigModel> FetchOrgConfig(int OID, string ruleType,int sid,int tid, int cid);
         List<OrgConfigModel> FetchOrgConfig(int OID, string ruleType, int sid,int tid);
+        List<OrgConfigModel> FetchOrgConfigMultiSelect(int OID, string ruleType, string schemeIds, string tspIds);
         bool ComparreNewAndPreviousListOfOrgConfig(List<OrgConfigModel> D, List<OrgConfigModel> PreviousOrgConfigList,int UserID);
         int OrgConfigLog(List<OrgConfigModel> ls, int @BatchFkey, int CurUserID);
     }

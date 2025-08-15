@@ -133,6 +133,21 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+            public List<OrgConfigModel> FetchOrgConfigMultiSelect(int OID, string ruleType, string schemeIds, string tspIds)
+        {
+            try
+            {
+                //List<SqlParameter> prm = new List<SqlParameter>() { new SqlParameter("@BusinessRuleType", ruleType), new SqlParameter("@OID", OID), new SqlParameter("@SchemeID", sid), new SqlParameter("@TSPID", tid), new SqlParameter("@ClassID", cid) };
+                List<SqlParameter> prm = new List<SqlParameter>() { new SqlParameter("@BusinessRuleType", ruleType), new SqlParameter("@OID", OID), new SqlParameter("@Schemes", schemeIds), new SqlParameter("@TSPs", tspIds)};
+                using (DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "GetOrgConfig", prm.ToArray()).Tables[0])
+                {
+                    List<OrgConfigModel> ls = LoopinData(dt);
+                    dt.Dispose();
+                    return ls;
+                }
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
         public List<OrgConfigModel> GetOrgConfig(int OID = 0, int SchemeID = 0, int TSPID = 0, int ClassID = 0)
         {

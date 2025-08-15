@@ -238,6 +238,35 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        public List<TSPDetailModel> FetchTSPDetailBySchemes(List<int> schemeIds, SqlTransaction transaction = null)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                // Join IDs into comma-separated string for SQL parameter
+                string idsCsv = string.Join(",", schemeIds);
+
+                SqlParameter param = new SqlParameter("@SchemeIDs", idsCsv);
+
+                if (transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "RD_TSPDetailByScheme", param).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPDetailByScheme", param).Tables[0];
+                }
+
+                return LoopinData(dt);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
         public int GetTSPSequence()
         {
             try

@@ -24,16 +24,16 @@ export class OrgConfigComponent implements OnInit {
   EnText: string = "Organizations Configuration";
   error: String;
   OrgConfigs: OrgConfigModel[] = [];
-  OrgCon: OrgConfigModel =new OrgConfigModel();
+  OrgCon: OrgConfigModel = new OrgConfigModel();
   Genders = [];
   Educations = [];
   programs = [];
   Organizations = [];
   OrganizationID: number;
   SchemeName = [];
-  SID: any;
+  selectedSchemes: any[] = []; // Changed from SID to selectedSchemes
   TSPName = [];
-  TID: any;
+  selectedTSPs: any[] = []; // Changed from TID to selectedTSPs
   ClassArray = [];
   CID: number;
   excelsheetArray: any[];
@@ -43,13 +43,13 @@ export class OrgConfigComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   working: boolean = false;
   constructor(private fb: FormBuilder, private http: CommonSrvService, public dialogueService: DialogueService) {
-    
-   this.rights = http.getFormRights();
+
+    this.rights = http.getFormRights();
   }
 
   GetData() {
-    this.SID = "0";
-    this.TID = "0";
+    this.selectedSchemes = ["0"]; // Initialize with "--All--"
+    this.selectedTSPs = ["0"]; // Initialize with "--All--"
     this.http.getJSON('api/OrgConfig/GetOrgConfig').subscribe((d: any) => {
       this.Genders = d[1];
       this.Organizations = d[0];
@@ -66,37 +66,36 @@ export class OrgConfigComponent implements OnInit {
   }
 
   EmptyCtrl() {
-    this.TID = 0;
-    }
+    this.selectedTSPs = ["0"];
+  }
 
   GetDataScheme() {
-    this.TID = "0";
-    this.http.getJSON('api/OrgConfig/GetOrgConfigScheme/' + this.BusinessRuleType + '').subscribe((d: any) => {
-      this.SchemeName = d[0];
-      //this.GetConfig()
-    }, error => this.error = error // error path
-    );
-
+    this.selectedTSPs = ["0"];
+    this.http.getJSON('api/OrgConfig/GetOrgConfigScheme/' + this.BusinessRuleType).subscribe((d: any) => {
+      this.SchemeName = Array.isArray(d[0]) ? d[0] : (d[0] ? [d[0]] : []);
+      this.selectedSchemes = ["0"];
+    }, error => this.error = error);
   }
 
   GetDataTSP() {
-    
-    this.http.getJSON('api/OrgConfig/GetOrgConfigTSP/' + this.SID + '').subscribe((d: any) => {
-      this.TSPName = d[0];
-      this.TID = "0";
+    // Handle multiple scheme selections
+    const schemeIds = this.selectedSchemes.includes("0") ? "0" : this.selectedSchemes.join(",");
+    this.http.getJSON('api/OrgConfig/GetOrgConfigMultipleTSP/' + schemeIds).subscribe((d: any) => {
+      this.TSPName = Array.isArray(d) ? d.map(item => ({
+        TSPID: item.TSPID,
+        TSPName: item.TSPName
+      })) : [];
+      //  this.selectedTSPs = ["0"];
       this.GetConfig();
-    }, error => this.error = error // error path
-    );
-
+    }, error => this.error = error);
   }
 
   GetDataClass() {
-    this.http.getJSON('api/OrgConfig/GetOrgConfigClass/' + this.TID + '').subscribe((d: any) => {
+    // Handle multiple TSP selections
+    const tspIds = this.selectedTSPs.includes("0") ? "0" : this.selectedTSPs.join(",");
+    this.http.getJSON('api/OrgConfig/GetOrgConfigClass/' + tspIds).subscribe((d: any) => {
       this.ClassArray = d[0];
-
-    }, error => this.error = error // error path
-    );
-
+    }, error => this.error = error);
   }
 
   ngOnInit() {
@@ -104,19 +103,18 @@ export class OrgConfigComponent implements OnInit {
     this.title = "Add New ";
     this.savebtn = "Save ";
     this.GetData();
-   }
+  }
 
   Submit(mform: NgForm) {
-    if (!mform.valid)
-      return;
+    if (!mform.valid) return;
     if (this.OrgConfigs.length == 0) {
       this.http.ShowError("No data to submit " + this.BusinessRuleType);
       return;
     }
     this.working = true;
-    this.OrgConfigs[0].BusinessRuleTypeForGetPreviousList=this.BusinessRuleType
-    this.http.postJSON('api/OrgConfig/Save', this.OrgConfigs)
-      .subscribe((d: any) => {
+    this.OrgConfigs[0].BusinessRuleTypeForGetPreviousList = this.BusinessRuleType;
+    this.http.postJSON('api/OrgConfig/Save', this.OrgConfigs).subscribe(
+      (d: any) => {
         this.http.openSnackBar(environment.UpdateMSG.replace("${Name}", this.EnText));
         this.reset(mform);
         this.title = "Add New ";
@@ -126,47 +124,52 @@ export class OrgConfigComponent implements OnInit {
       (error) => {
         this.error = error.error;
         this.http.ShowError(error.error);
-        
-      });
+        this.working = false;
+      }
+    );
   }
   reset(mform: NgForm) {
     mform.resetForm();
+    this.selectedSchemes = ["0"];
+    this.selectedTSPs = ["0"];
     this.title = "Add New ";
     this.savebtn = "Save ";
   }
+
   GetConfig() {
     if (this.OrganizationID > 0 && this.BusinessRuleType) {
-      //this.http.getJSON('api/OrgConfig/GetOrgConfig/' + this.OrganizationID + "/" + this.BusinessRuleType + "/" + this.SID + "/" + this.TID + "/" + this.CID).subscribe((REs: any) => {
-      this.http.getJSON('api/OrgConfig/GetOrgConfig/' + this.OrganizationID + "/" + this.BusinessRuleType + "/" + this.SID + "/" + this.TID).subscribe((REs: any) => {
-      this.OrgConfigs = REs;
-        if (this.OrgConfigs.length == 0)
+      const schemeIds = this.selectedSchemes.includes("0") ? "0" : this.selectedSchemes.join(",");
+      const tspIds = this.selectedTSPs.includes("0") ? "0" : this.selectedTSPs.join(",");
+      this.http.getJSON(`api/OrgConfig/GetOrgConfigMultiSelect/${this.OrganizationID}/${this.BusinessRuleType}/${schemeIds}/${tspIds}`).subscribe((REs: any) => {
+        this.OrgConfigs = REs;
+        if (this.OrgConfigs.length == 0) {
           this.http.ShowWarning("No data found for " + this.BusinessRuleType);
-      }, error => this.error = error // error path
-      );
+        }
+      }, error => this.error = error);
     }
     this.title = "Update ";
     this.savebtn = "Save ";
   }
 
- // ==============Excel Export============================
+  // ==============Excel Export============================
   getExcelExportData() {
-    console.log('1');
     if (this.OrganizationID > 0 && this.BusinessRuleType) {
-      console.log('2');
-      this.http.getJSON('api/OrgConfig/GetOrgConfig/' + this.OrganizationID + "/" + this.BusinessRuleType + "/" + this.SID + "/" + this.TID).subscribe((REs: any) => {
+      const schemeIds = this.selectedSchemes.includes("0") ? "0" : this.selectedSchemes.join(",");
+      const tspIds = this.selectedTSPs.includes("0") ? "0" : this.selectedTSPs.join(",");
+      this.http.getJSON(`api/OrgConfig/GetOrgConfig/${this.OrganizationID}/${this.BusinessRuleType}/${schemeIds}/${tspIds}`).subscribe((REs: any) => {
         this.excelsheetArray = REs;
-
         const exportExcel: ExportExcel = {
           Title: 'Organizations Configuration',
-            Author: "",
-            Type: EnumExcelReportType.orgconfigration,
-            Data: {},
+          Author: "",
+          Type: EnumExcelReportType.orgconfigration,
+          Data: {},
           List1: this.populateOrgData(this.excelsheetArray)
-          };
+        };
         this.dialogueService.openExportConfirmDialogue(exportExcel).subscribe();
-        });
+      });
     }
   }
+
   populateOrgData(data: any) {
     return data
       .filter((item) => item.ClassID != "0")
@@ -203,19 +206,19 @@ export class OrgConfigComponent implements OnInit {
   }
 
 
-  
+
   //==========================================================
   GetOrgRow(item: OrgConfigModel, BusinessRuleType) {
-    return (item.OID > 0 && item.BusinessRuleType == BusinessRuleType  && item.SchemeID==0 && item.TSPID==0)
+    return (item.OID > 0 && item.BusinessRuleType == BusinessRuleType && item.SchemeID == 0 && item.TSPID == 0)
   }
   GetSchemeRow(item: OrgConfigModel) {
-    return (item.SchemeID>0 && item.TSPID==0)
+    return (item.SchemeID > 0 && item.TSPID == 0)
   }
   GetNotSchemeRow(item: OrgConfigModel) {
-    return (item.SchemeID>0 && item.TSPID>0)
+    return (item.SchemeID > 0 && item.TSPID > 0)
   }
   GetTSPRow(item: OrgConfigModel) {
-    return (item.SchemeID > 0 && item.TSPID > 0 && item.ClassID==0);
+    return (item.SchemeID > 0 && item.TSPID > 0 && item.ClassID == 0);
   }
   GetNotTSPRow(item: OrgConfigModel) {
     return (item.SchemeID > 0 && item.TSPID > 0 && item.ClassID > 0);
@@ -257,6 +260,6 @@ export class OrgConfigModel {
   StipNoteGenGTMonth: number;
   StipNoteGenLTMonth: number;
   MPRDenerationDay: number;
-  BusinessRuleTypeForGetPreviousList:string;
+  BusinessRuleTypeForGetPreviousList: string;
   TSPConfigurationCounter: number;
 }
