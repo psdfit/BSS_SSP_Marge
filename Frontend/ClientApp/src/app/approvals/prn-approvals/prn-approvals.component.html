@@ -192,10 +192,9 @@
         <div class="text-center" *ngIf="!PRNMaster">
           <p>No Pending Approval</p>
         </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="table-responsive" *ngIf="PRNMaster" #TABLE>
-              <table class="table table-bordered d-md-table">
+        
+            <div class="table-responsive" style="width:100%;" *ngIf="PRNMaster" #TABLE >
+              <table class="table-bordered d-md-table">
                 <thead>
                   <tr>
                     <th>Sr#</th>
@@ -333,7 +332,7 @@
                                 <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">Certification Cost Deduction (All
                                   Types)</th>
                                 <!--<th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">Extra Trainee Deduction</th>
-  <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">Unverified Deduction</th>-->
+                                <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">Unverified Deduction</th>-->
                                 <!--<th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">Dropout Testing Cost Deduction</th>-->
 
                                 <th>Payment To Be Released Trainees</th>
@@ -345,11 +344,11 @@
                                 </th>
 
                                 <!--<th>DropOut</th>
-  <th>Trainees Found In VISIT 1</th>
-  <th>Trainees Found In VISIT 2</th>
-  <th>Payment 100p</th>
-  <th>Payment 50p</th>
-  <th>CreatedDate</th>-->
+                                <th>Trainees Found In VISIT 1</th>
+                                <th>Trainees Found In VISIT 2</th>
+                                <th>Payment 100p</th>
+                                <th>Payment 50p</th>
+                                <th>CreatedDate</th>-->
                               </tr>
                             </thead>
                             <tbody>
@@ -515,11 +514,11 @@
                                 </td>
 
                                 <!--<td>{{c.DropOut}}</td>
-  <td>{{c.TraineesFoundInVISIT1}}</td>
-  <td>{{c.TraineesFoundInVISIT2}}</td>
-  <td>{{c.Payment100p}}</td>
-  <td>{{c.Payment50p}}</td>
-  <td>{{c.CreatedDate | date:environment.DateTimeFormat}}</td>-->
+                                <td>{{c.TraineesFoundInVISIT1}}</td>
+                                <td>{{c.TraineesFoundInVISIT2}}</td>
+                                <td>{{c.Payment100p}}</td>
+                                <td>{{c.Payment50p}}</td>
+                                <td>{{c.CreatedDate | date:environment.DateTimeFormat}}</td>-->
                               </tr>
                             </tbody>
                           </table>
@@ -530,8 +529,7 @@
                   </ng-container>
                 </tbody>
               </table>
-            </div>
-          </div>
+
         </div>
       </div>
     </mat-card-content>
