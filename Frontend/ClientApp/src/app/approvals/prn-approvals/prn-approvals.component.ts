@@ -105,7 +105,7 @@ export class PrnApprovalsComponent implements OnInit {
   PRNMaster: any;
   PRNMasterIDsArray: any;
   error = '';
-  PRNMonth:any;
+  PRNMonth: any;
   matTableData: MatTableDataSource<any>;
   enumApprovalProcess = EnumApprovalProcess;
   processKey = '';
@@ -115,8 +115,9 @@ export class PrnApprovalsComponent implements OnInit {
     , { value: EnumApprovalProcess.PRN_F, text: 'Final' }
   ]
   //filters: IPRNApprovalFilter = { SchemeID: 0, TSPID: 0, KAMID: 0 };
-  
-  filters: IPRNApprovalFilter = { SchemeID: 0, TSPMasterID: 0, KAMID: 0, StatusID: 0 };
+
+  // Modified filters to use arrays for SchemeIDs and TSPMasterIDs
+  filters: IPRNApprovalFilter = { SchemeIDs: [], TSPMasterIDs: [], KAMID: 0, StatusID: 0 };
 
   kamusers: [];
   schemes: any[];
@@ -124,10 +125,10 @@ export class PrnApprovalsComponent implements OnInit {
   tspMasters: [];
   prnDetailsArray: any[];
   PRNDetailsBulkArray: any[];
-  PenaltyBtn=false;
+  PenaltyBtn = false;
   month = new FormControl(moment());
 
-  constructor(private http: CommonSrvService, private dialogue: DialogueService, private datePipe: DatePipe,public dialog: MatDialog) {
+  constructor(private http: CommonSrvService, private dialogue: DialogueService, private datePipe: DatePipe, public dialog: MatDialog) {
     this.http.setTitle('Payment Recommendation Note');
   }
 
@@ -136,6 +137,9 @@ export class PrnApprovalsComponent implements OnInit {
     this.SearchTSP.setValue('');
     this.SearchSch.setValue('');
     this.SearchStatus.setValue('');
+    // Reset arrays for multiselect
+    this.filters.SchemeIDs = [];
+    this.filters.TSPMasterIDs = [];
   }
 
   ngOnInit(): void {
@@ -145,10 +149,10 @@ export class PrnApprovalsComponent implements OnInit {
     this.http.OID.subscribe(OID => {
       this.GetPRNMasterForApproval();
       this.GetFiltersData();
-     
+
     });
 
-   }
+  }
 
   GetClassMonthview(ClassID: number, Month: Date, processkey: string): void {
     this.dialogue.openClassMonthviewDialogue(ClassID, Month, processkey).subscribe(result => {
@@ -170,21 +174,22 @@ export class PrnApprovalsComponent implements OnInit {
   // }
 
   GetPRNMasterForApproval() {
-    //this.http.postJSON(`api/PRNMaster/GetPRNMasterForApproval`, { ProcessKey: this.processKey, Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID }).subscribe(
-    this.http.postJSON(`api/PRNMaster/GetPRNMasterForApproval`, { ProcessKey: this.processKey, Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPMasterID: this.filters.TSPMasterID, StatusID: this.filters.StatusID}).subscribe(
+    // Updated payload to send arrays of SchemeIDs and TSPMasterIDs
+    this.http.postJSON(`api/PRNMaster/GetPRNMasterForApproval`, {
+      ProcessKey: this.processKey,
+      Month: this.month.value,
+      OID: this.http.OID.value,
+      KAMID: this.filters.KAMID,
+      Schemes: this.filters.SchemeIDs.length > 0 ? this.filters.SchemeIDs.join(',') : '0',
+      TSPs: this.filters.TSPMasterIDs.length > 0 ? this.filters.TSPMasterIDs.join(',') : '0',
+      StatusID: this.filters.StatusID
+    }).subscribe(
       (data: any) => {
         this.PRNMaster = data;
         this.PRNMasterIDsArray = this.PRNMaster.map(o => o.PRNMasterID);
         this.PRNMasterIDs = this.PRNMasterIDsArray.join(',');
-
-        // {
-        //    return { PRNMasterID: o.PRNMasterID };
-        // });
-
-
-        // this.PRNMaster.values['PRNMasterID'];
-      }
-      , (error) => {
+      },
+      (error) => {
         console.error(JSON.stringify(error));
       }
     );
@@ -208,7 +213,7 @@ export class PrnApprovalsComponent implements OnInit {
 
   GetPRN(r: any) {
     //this.PenaltyBtn=false;
-    this.getApprovalHistory(r,r.PRNMasterID,r.ProcessKey,r.Month);
+    this.getApprovalHistory(r, r.PRNMasterID, r.ProcessKey, r.Month);
     r.HasPRN = !r.HasPRN;
 
     if (r.PRN) {
@@ -296,7 +301,7 @@ export class PrnApprovalsComponent implements OnInit {
 
   clearMonth() {
     this.month = new FormControl(moment(null));
-   // this.month.setValue(null);
+    // this.month.setValue(null);
     this.GetPRNMasterForApproval();
   }
 
@@ -368,15 +373,15 @@ export class PrnApprovalsComponent implements OnInit {
   populatePRNByIDsData(data: any, _ProcessKey: string) {
     return data.map(item => {
       return {
-          'Project': item.FundingCategory
-         ,'Scheme': item.SchemeName
-         ,'TSP': item.TSPName
-         ,'KAM': item.kam
-         ,'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
-         ,'Class Code': item.ClassCode
+        'Project': item.FundingCategory
+        , 'Scheme': item.SchemeName
+        , 'TSP': item.TSPName
+        , 'KAM': item.kam
+        , 'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
+        , 'Class Code': item.ClassCode
         , 'Invoice No': item.InvoiceNumber
         , Trade: item.TradeName
-        , 'Certification Authority':item.CertAuthName
+        , 'Certification Authority': item.CertAuthName
         , Duration: item.Duration
         , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
         , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
@@ -437,14 +442,14 @@ export class PrnApprovalsComponent implements OnInit {
       return data.map(item => {
         return {
           'Project': item.FundingCategory
-          ,'Scheme': item.SchemeName
-          ,'TSP': item.TSPName
-          ,'KAM': item.kam
-          ,'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
-           , 'Class Code': item.ClassCode
+          , 'Scheme': item.SchemeName
+          , 'TSP': item.TSPName
+          , 'KAM': item.kam
+          , 'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
+          , 'Class Code': item.ClassCode
           , 'Invoice No': item.InvoiceNumber
           , Trade: item.TradeName
-          , 'Certification Authority':item.CertAuthName
+          , 'Certification Authority': item.CertAuthName
           , Duration: item.Duration
           , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
           , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
@@ -497,14 +502,14 @@ export class PrnApprovalsComponent implements OnInit {
       return data.map(item => {
         return {
           'Project': item.FundingCategory
-          ,'Scheme': item.SchemeName
-          ,'TSP': item.TSPName
-          ,'KAM': item.kam
-          ,'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
-           , 'Class Code': item.ClassCode
+          , 'Scheme': item.SchemeName
+          , 'TSP': item.TSPName
+          , 'KAM': item.kam
+          , 'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
+          , 'Class Code': item.ClassCode
           , 'Invoice No': item.InvoiceNumber
           , Trade: item.TradeName
-          , 'Certification Authority':item.CertAuthName
+          , 'Certification Authority': item.CertAuthName
           , Duration: item.Duration
           , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
           , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
@@ -553,14 +558,14 @@ export class PrnApprovalsComponent implements OnInit {
       return data.map(item => {
         return {
           'Project': item.FundingCategory
-          ,'Scheme': item.SchemeName
-          ,'TSP': item.TSPName
-          ,'KAM': item.kam
-          ,'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
-           , 'Class Code': item.ClassCode
+          , 'Scheme': item.SchemeName
+          , 'TSP': item.TSPName
+          , 'KAM': item.kam
+          , 'PRN Month': this.datePipe.transform(item.Month, 'MM/yyyy')
+          , 'Class Code': item.ClassCode
           , 'Invoice No': item.InvoiceNumber
           , Trade: item.TradeName
-          , 'Certification Authority':item.CertAuthName
+          , 'Certification Authority': item.CertAuthName
           , Duration: item.Duration
           , 'Class Start Date': this.datePipe.transform(item.ClassStartDate, 'dd/MM/yyyy')
           , 'Class End Date': this.datePipe.transform(item.ClassEndDate, 'dd/MM/yyyy')
@@ -612,16 +617,15 @@ export class PrnApprovalsComponent implements OnInit {
     );
   }
 
-  openClassJourneyDialogue(data: any): void
-  {
-		this.dialogue.openClassJourneyDialogue(data);
+  openClassJourneyDialogue(data: any): void {
+    this.dialogue.openClassJourneyDialogue(data);
   }
 
-  getApprovalHistory(row,PRNMasterID,ProcessKey,Month) {
-    this.PRNMonth=null;
-    this.PRNMonth=Month;
+  getApprovalHistory(row, PRNMasterID, ProcessKey, Month) {
+    this.PRNMonth = null;
+    this.PRNMonth = Month;
     /// data object must have ProcessKey & FormID
-    this.http.postJSON('api/Approval/GetApprovalHistory', {ProcessKey, FormID: PRNMasterID}).subscribe(
+    this.http.postJSON('api/Approval/GetApprovalHistory', { ProcessKey, FormID: PRNMasterID }).subscribe(
       (responseData: any) => {
         // debugger;
         if (responseData.length === 1 && responseData[0].ApproverIDs.indexOf(this.currentUser.UserID) !== -1) {
@@ -636,8 +640,8 @@ export class PrnApprovalsComponent implements OnInit {
   }
 
 
-  openDialogPenaltyImposedByME(data:any): void {
-    data.PRNMonth=this.PRNMonth;
+  openDialogPenaltyImposedByME(data: any): void {
+    data.PRNMonth = this.PRNMonth;
     const dialogRef = this.dialog.open(PrnApprovalPenaltyComponent, {
       width: '400px',
       data: { data }
@@ -649,8 +653,10 @@ export class PrnApprovalsComponent implements OnInit {
         const PenaltyAndUniBagRecvInputRemarks = result.value.PenaltyAndUniBagRecvInputRemarks;
         const DeductionUniformBagReceiving = result.value.DeductionUniformBagReceiving;
 
-        this.http.postJSON('api/PRN/PenaltyImposedByMEAndDeductionUniformBag', { ClassID : data.ClassID,
-          PRNID: data.PRNID, PenaltyImposedByME, PenaltyAndUniBagRecvInputRemarks,DeductionUniformBagReceiving})
+        this.http.postJSON('api/PRN/PenaltyImposedByMEAndDeductionUniformBag', {
+          ClassID: data.ClassID,
+          PRNID: data.PRNID, PenaltyImposedByME, PenaltyAndUniBagRecvInputRemarks, DeductionUniformBagReceiving
+        })
           .subscribe((d: any) => {
             this.http.openSnackBar(environment.UpdateMSG.replace('${Name}', 'Penalty Imposed By ME'));
             this.GetPRNMasterForApproval();
@@ -659,7 +665,7 @@ export class PrnApprovalsComponent implements OnInit {
             error => this.error = error // error path
             , () => {
             }
-        );
+          );
       }
     });
   }
@@ -668,9 +674,9 @@ export class PrnApprovalsComponent implements OnInit {
 }
 
 export interface IPRNApprovalFilter {
-  SchemeID: number;
+  SchemeIDs: [];
   //TSPID: number;
-  TSPMasterID: number;
+  TSPMasterIDs: [];
   KAMID: number;
   StatusID: number;
 }

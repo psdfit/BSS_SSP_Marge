@@ -84,7 +84,7 @@
       </div>-->
 
         <div class="row">
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-label>Process</mat-label>
               <mat-select #process [(ngModel)]="processKey" (selectionChange)="GetPRNMasterForApproval()" matInput>
@@ -97,7 +97,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-label>Month</mat-label>
               <input matInput #ref [matDatepicker]="customDatePicker" [formControl]="month" readonly>
@@ -109,7 +109,7 @@
                 (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
             </mat-form-field>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-select placeholder="KAM" [(ngModel)]="filters.KAMID" (openedChange)="EmptyCtrl()"
                 (selectionChange)="GetPRNMasterForApproval()" id="kamuserid" matInput required>
@@ -121,15 +121,19 @@
               </mat-select>
             </mat-form-field>
           </div>
+          <!-- Modified Scheme dropdown to support multiselect -->
           <div class="col-sm-3">
             <mat-form-field fxFlex>
-              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()"
-                (selectionChange)="GetPRNMasterForApproval()" id="SchemeId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
-                    [formControl]="SearchSch" /></mat-optgrp>
+              <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeIDs" multiple
+                (openedChange)="EmptyCtrl()" (selectionChange)="GetPRNMasterForApproval()" id="SchemeId" matInput
+                required>
+                <mat-optgrp disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchSch" />
+                </mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
                 <mat-option *ngFor="let s of schemes | like:['SchemeName',SearchSch.value]" [value]="s.SchemeID">
-                  {{s.SchemeName}}</mat-option>
+                  {{s.SchemeName}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -144,16 +148,19 @@
     </mat-form-field>
   </div>-->
 
+          <!-- Modified TSP dropdown to support multiselect -->
           <div class="col-sm-3">
             <mat-form-field fxFlex>
-              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPMasterID" (openedChange)="EmptyCtrl()"
-                (selectionChange)="GetPRNMasterForApproval()" id="TspMasterId" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
-                    [formControl]="SearchTSP" autofocus /></mat-optgrp>
+              <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPMasterIDs" multiple
+                (openedChange)="EmptyCtrl()" (selectionChange)="GetPRNMasterForApproval()" id="TspMasterId" matInput
+                required>
+                <mat-optgrp disabled class="ddlsrchheader">
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSP" autofocus />
+                </mat-optgrp>
                 <mat-option value="0">--Select--</mat-option>
                 <mat-option *ngFor="let s of tspMasters | like:['TSPName',SearchTSP.value]" [value]="s.TSPMasterID">
-                  {{s.TSPName}}</mat-option>
-                <!--| like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]-->
+                  {{s.TSPName}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -161,10 +168,9 @@
           <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-select placeholder="Status" [(ngModel)]="filters.StatusID" (openedChange)="EmptyCtrl()"
-                          (selectionChange)="GetPRNMasterForApproval()" id="StatusId" matInput required>
+                (selectionChange)="GetPRNMasterForApproval()" id="StatusId" matInput required>
                 <mat-optgrp disabled class="ddlsrchheader">
-                  <input type="text" (keydown)="$event.stopPropagation()"
-                         [formControl]="SearchStatus" />
+                  <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchStatus" />
                 </mat-optgrp>
                 <mat-option value="0" selected>-- All --</mat-option>
                 <mat-option value="1">Pending (Step 1)</mat-option>
@@ -335,8 +341,9 @@
                                 <th>Approval Date</th>
                                 <th>Creation Date</th>
                                 <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C && r.PenaltyBtn"> Action</th>
-                                <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R &&  r.ApprovalStepID=='1'"> Action</th>
-                             
+                                <th *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R &&  r.ApprovalStepID=='1'"> Action
+                                </th>
+
                                 <!--<th>DropOut</th>
   <th>Trainees Found In VISIT 1</th>
   <th>Trainees Found In VISIT 2</th>
@@ -455,7 +462,8 @@
                                 <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_F">
                                   {{c.VerifiedToCompletedCommitment}} %</td>
                                 <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C">
-                                  {{c.ExtraTraineeDeductCompletion + c.UnVDeductCompletion + c.DropOutDeductCompletion + c.AbsentDeductCompletion}}
+                                  {{c.ExtraTraineeDeductCompletion + c.UnVDeductCompletion + c.DropOutDeductCompletion +
+                                  c.AbsentDeductCompletion}}
                                 </td>
                                 <td class="number-align-center" *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R">
                                   {{c.ExpelledRegularVerifiedForTheMonth}}</td>
@@ -490,7 +498,7 @@
                                 <td class="number-align-center">{{c.FinalApprovalDate | date:environment.DateFormat}}
                                 </td>
                                 <td class="number-align-center"> r.ProcessKey</td>
-                                <td  *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R && r.ApprovalStepID=='1'">
+                                <td *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R && r.ApprovalStepID=='1'">
                                   <a color="primary"
                                     *ngIf="r.ProcessKey == enumApprovalProcess.PRN_R && r.ApprovalStepID=='1'"
                                     matTooltip="Penalty Imposed By ME &  Deduction Uniform Bag Receiving"
@@ -498,8 +506,8 @@
                                     <mat-icon>subtitles</mat-icon>
                                   </a>
                                 </td>
-                                <td  *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C  && r.PenaltyBtn">
-                                  <a color="primary" 
+                                <td *ngIf="r.ProcessKey == enumApprovalProcess.PRN_C  && r.PenaltyBtn">
+                                  <a color="primary"
                                     matTooltip="Penalty Imposed By ME &  Deduction Uniform Bag Receiving"
                                     mat-icon-button (click)="openDialogPenaltyImposedByME(c)">
                                     <mat-icon>subtitles</mat-icon>

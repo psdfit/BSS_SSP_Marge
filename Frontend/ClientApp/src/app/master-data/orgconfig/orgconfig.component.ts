@@ -85,7 +85,7 @@ export class OrgConfigComponent implements OnInit {
         TSPID: item.TSPID,
         TSPName: item.TSPName
       })) : [];
-      //  this.selectedTSPs = ["0"];
+       this.selectedTSPs = ["0"];
       this.GetConfig();
     }, error => this.error = error);
   }
@@ -156,7 +156,7 @@ export class OrgConfigComponent implements OnInit {
     if (this.OrganizationID > 0 && this.BusinessRuleType) {
       const schemeIds = this.selectedSchemes.includes("0") ? "0" : this.selectedSchemes.join(",");
       const tspIds = this.selectedTSPs.includes("0") ? "0" : this.selectedTSPs.join(",");
-      this.http.getJSON(`api/OrgConfig/GetOrgConfig/${this.OrganizationID}/${this.BusinessRuleType}/${schemeIds}/${tspIds}`).subscribe((REs: any) => {
+      this.http.getJSON(`api/OrgConfig/GetOrgConfigMultiSelect/${this.OrganizationID}/${this.BusinessRuleType}/${schemeIds}/${tspIds}`).subscribe((REs: any) => {
         this.excelsheetArray = REs;
         const exportExcel: ExportExcel = {
           Title: 'Organizations Configuration',

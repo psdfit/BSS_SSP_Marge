@@ -29,6 +29,8 @@ namespace DataLayer.Models
         //=================================================
         public string SchemeName { get; set; }
         public int ApprovalStepID { get; set; }   // gives the step at which the approval process lies
+        public string Schemes { get; set; }
+        public string TSPs { get; set; }
 
     }
 }

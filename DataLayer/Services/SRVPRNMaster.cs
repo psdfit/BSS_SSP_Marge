@@ -48,6 +48,8 @@ namespace DataLayer.Services
             param.Add(new SqlParameter("@TSPMasterID", model.TSPMasterID));
             param.Add(new SqlParameter("@UserID", model.UserID));
             param.Add(new SqlParameter("@StatusID", model.StatusID));
+            param.Add(new SqlParameter("@Schemes", model.Schemes));
+            param.Add(new SqlParameter("@TSPs", model.TSPs));
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PRNMaster", param.ToArray()).Tables[0];
 
             return LoopinPRN(dt);
