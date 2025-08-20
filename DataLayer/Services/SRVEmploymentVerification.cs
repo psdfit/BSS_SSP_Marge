@@ -71,6 +71,48 @@ namespace DataLayer.Services
             catch (Exception ex)
             { throw new Exception(ex.Message); }
         }
+        public List<EmploymentVerificationModel> SaveEmploymentVerificationOJT(EmploymentVerificationModel EmploymentVerification)
+        {
+            try
+            {
+                //FilePaths path = new FilePaths();
+                string AttachmentPath = Common.AddFile(EmploymentVerification.Attachment, FilePaths.TSP_FILE_DIR);
+
+                SqlParameter[] param = new SqlParameter[28];
+                param[0] = new SqlParameter("@ID", EmploymentVerification.ID);
+                param[1] = new SqlParameter("@PlacementID", EmploymentVerification.PlacementID);
+                param[2] = new SqlParameter("@PhysicalVerificationStatus", EmploymentVerification.IsVerified);
+                param[3] = new SqlParameter("@VerificationMethodID", EmploymentVerification.VerificationMethodID);
+                param[4] = new SqlParameter("@IsVerified", EmploymentVerification.IsVerified);
+                param[5] = new SqlParameter("@Comments", EmploymentVerification.Comments);
+                param[6] = new SqlParameter("@Attachment", AttachmentPath);
+                param[7] = new SqlParameter("@SupervisorContact", EmploymentVerification.SupervisorContact);
+                param[8] = new SqlParameter("@SupervisorName", EmploymentVerification.SupervisorName);
+                param[9] = new SqlParameter("@OfficeContactNo", EmploymentVerification.OfficeContactNo);
+                param[10] = new SqlParameter("@Designation", EmploymentVerification.Designation);
+                param[11] = new SqlParameter("@Department", EmploymentVerification.Department);
+                param[12] = new SqlParameter("@EmploymentDuration", EmploymentVerification.EmploymentDuration);
+                param[13] = new SqlParameter("@Salary", EmploymentVerification.Salary);
+                param[14] = new SqlParameter("@EmploymentStartDate", EmploymentVerification.EmploymentStartDate);
+                param[15] = new SqlParameter("@EmploymentStatus", EmploymentVerification.EmploymentStatus);
+                param[16] = new SqlParameter("@EmploymentType", EmploymentVerification.EmploymentType);
+                param[17] = new SqlParameter("@EmployerName", EmploymentVerification.EmployerName);
+                param[18] = new SqlParameter("@EmployerBusinessType", EmploymentVerification.EmployerBusinessType);
+                param[19] = new SqlParameter("@EmploymentAddress", EmploymentVerification.EmploymentAddress);
+                param[20] = new SqlParameter("@District", EmploymentVerification.District);
+                param[21] = new SqlParameter("@EmploymentTehsil", EmploymentVerification.EmploymentTehsil);
+                param[22] = new SqlParameter("@EmploymentTiming", EmploymentVerification.EmploymentTiming);
+                param[23] = new SqlParameter("@CurUserID", EmploymentVerification.CurUserID);
+                param[24] = new SqlParameter("@PlatformName", EmploymentVerification.PlatformName);
+                param[25] = new SqlParameter("@NameofTraineeStorePage", EmploymentVerification.NameofTraineeStorePage);
+                param[26] = new SqlParameter("@LinkofTraineeStorePage", EmploymentVerification.LinkofTraineeStorePage);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "U_DEOPlacementVerificationOJT", param);
+
+                return FetchEmploymentVerification();
+            }
+            catch (Exception ex)
+            { throw new Exception(ex.Message); }
+        }
         private List<EmploymentVerificationModel> LoopinData(DataTable dt)
         {
             List<EmploymentVerificationModel> EmploymentVerificationL = new List<EmploymentVerificationModel>();
@@ -96,6 +138,16 @@ namespace DataLayer.Services
             try
             {
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementVerification").Tables[0];
+                return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+
+        }
+        public List<EmploymentVerificationModel> FetchEmploymentVerificationOJT()
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_PlacementVerificationOJT").Tables[0];
                 return LoopinData(dt);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
@@ -139,6 +191,20 @@ namespace DataLayer.Services
             SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AI_EmploymentVerification]", PLead);
         }
         public int SubmitVerification(int ClassID, int CurUserID)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[2];
+                param[0] = new SqlParameter("@ClassID", ClassID);
+                param[1] = new SqlParameter("@CurUserID", CurUserID);
+
+
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[SubmitVerificationEmployment]", new SqlParameter("@ClassID", ClassID));
+                return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "CalculateROSIOnEmploymentSubmission", param);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public int SubmitVerificationOJT(int ClassID, int CurUserID)
         {
             try
             {
@@ -226,6 +292,47 @@ namespace DataLayer.Services
             catch (Exception ex)
             { throw new Exception(ex.Message); }
         }
+        public List<EmploymentVerificationModel> UpdateTelephonicEmploymentVerificationOJT(EmploymentVerificationModel EmploymentVerification)
+        {
+            try
+            {
+                bool VerifiedMatrixBit = CreateMatrixForVerificarion(EmploymentVerification);
+
+
+                //FilePaths path = new FilePaths();
+                string AttachmentPath = Common.AddFile(EmploymentVerification.Attachment, FilePaths.TSP_FILE_DIR);
+
+                SqlParameter[] param = new SqlParameter[25];
+                param[0] = new SqlParameter("@ID", EmploymentVerification.ID);
+                param[1] = new SqlParameter("@PlacementID", EmploymentVerification.PlacementID);
+                param[2] = new SqlParameter("@EmploymentTiming", EmploymentVerification.EmploymentTiming);
+                param[3] = new SqlParameter("@TelephonicVerificationStatus", VerifiedMatrixBit);
+                param[4] = new SqlParameter("@VerificationMethodID", EmploymentVerification.VerificationMethodID);
+                param[5] = new SqlParameter("@IsVerified", VerifiedMatrixBit);
+                param[6] = new SqlParameter("@Comments", EmploymentVerification.Comments);
+                param[7] = new SqlParameter("@Attachment", AttachmentPath);
+                param[8] = new SqlParameter("@CurUserID", EmploymentVerification.CurUserID);
+                param[9] = new SqlParameter("@SupervisorContact", EmploymentVerification.SupervisorContact);
+                param[10] = new SqlParameter("@SupervisorName", EmploymentVerification.SupervisorName);
+                param[11] = new SqlParameter("@EmploymentAddress", EmploymentVerification.EmploymentAddress);
+                param[12] = new SqlParameter("@OfficeContactNo", EmploymentVerification.OfficeContactNo);
+                param[13] = new SqlParameter("@Designation", EmploymentVerification.Designation);
+                param[14] = new SqlParameter("@Department", EmploymentVerification.Department);
+                param[15] = new SqlParameter("@EmploymentDuration", EmploymentVerification.EmploymentDuration);
+                param[16] = new SqlParameter("@Salary", EmploymentVerification.Salary);
+                param[17] = new SqlParameter("@EmploymentStartDate", EmploymentVerification.EmploymentStartDate);
+                param[18] = new SqlParameter("@EmploymentStatus", EmploymentVerification.EmploymentStatus);
+                param[19] = new SqlParameter("@EmploymentType", EmploymentVerification.EmploymentType);
+                param[20] = new SqlParameter("@EmployerName", EmploymentVerification.EmployerName);
+                param[21] = new SqlParameter("@EmployerBusinessType", EmploymentVerification.EmployerBusinessType);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "U_TelephonicPlacementVerificationOJT", param);
+                A_CallCenterVerificationHistoryOJT(EmploymentVerification);
+
+                return FetchEmploymentVerificationOJT();
+            }
+            catch (Exception ex)
+            { throw new Exception(ex.Message); }
+        }
 
         public static bool CreateMatrixForVerificarion(EmploymentVerificationModel EmploymentVerification)
         {
@@ -287,6 +394,21 @@ namespace DataLayer.Services
                 param[3] = new SqlParameter("@CallCenterVerificationCommentsID", EmploymentVerification.CallCenterVerificationCommentsID);
                 param[4] = new SqlParameter("@CurUserID", EmploymentVerification.CurUserID);
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_CallCenterVerificationHistory", param);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public static void A_CallCenterVerificationHistoryOJT(EmploymentVerificationModel EmploymentVerification)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[8];
+                param[0] = new SqlParameter("@PlacementID", EmploymentVerification.PlacementID);
+                param[1] = new SqlParameter("@CallCenterVerificationTraineeID", EmploymentVerification.CallCenterVerificationTraineeID);
+                param[2] = new SqlParameter("@CallCenterVerificationSupervisorID", EmploymentVerification.CallCenterVerificationSupervisorID);
+                param[3] = new SqlParameter("@CallCenterVerificationCommentsID", EmploymentVerification.CallCenterVerificationCommentsID);
+                param[4] = new SqlParameter("@CurUserID", EmploymentVerification.CurUserID);
+                SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_CallCenterVerificationHistoryOJT", param);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }

@@ -11,6 +11,7 @@ namespace DataLayer.Interfaces
         List<PlacementTypeModel> FetchPlacementType(PlacementTypeModel mod);
         List<PlacementTypeModel> FetchPlacementType();
         List<PlacementTypeModel> FetchPlacementType(bool InActive);
+        List<PlacementTypeModel> FetchPlacementTypeOJT(bool InActive);
         void ActiveInActive(int PlacementTypeID, bool? InActive, int CurUserID);
     }
 }

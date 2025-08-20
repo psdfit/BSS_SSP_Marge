@@ -128,6 +128,22 @@ namespace Users.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
+
+        // POST: EmploymentVerificationOJT/Save
+        [HttpPost]
+        [Route("OJTSave")]
+        public IActionResult OJTSave(EmploymentVerificationModel D)
+        {
+            try
+            {
+                D.CurUserID = Convert.ToInt32(User.Identity.Name);
+                return Ok(srvEmploymentVerification.SaveEmploymentVerificationOJT(D));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
         // POST: EmploymentVerification/Save
         [HttpPost]
         [Route("SaveBulk")]
@@ -186,6 +202,64 @@ namespace Users.Controllers
             }
         }
 
+        // POST: EmploymentVerification/SaveOJT
+        [HttpPost]
+        [Route("SaveBulkOJT")]
+        public IActionResult SaveBulkOJT(List<EmploymentVerificationModel> list)
+        {
+            try
+            {
+                //D.CurUserID = Convert.ToInt32(User.Identity.Name);
+                foreach (var item in list)
+                {
+                    EmploymentVerificationModel model = new EmploymentVerificationModel();
+                    model.ID = item.ID;
+                    model.PlacementID = item.PlacementID;
+                    model.TraineeName = item.TraineeName;
+                    model.VerificationMethodID = item.VerificationMethodID;
+                    model.EmploymentStatus = item.EmploymentStatus;
+                    model.EmploymentType = item.EmploymentType;
+                    model.District = item.District;
+                    model.EmploymentTehsil = item.EmploymentTehsil;
+                    model.EmploymentStartDate = item.EmploymentStartDate;
+                    model.EmployerBusinessType = item.EmployerBusinessType;
+                    model.Designation = item.Designation;
+                    model.Department = item.Department;
+                    model.EmployerName = item.EmployerName;
+                    model.EmploymentAddress = item.EmploymentAddress;
+                    model.EmploymentDuration = item.EmploymentDuration;
+                    model.EmploymentTiming = item.EmploymentTiming;
+                    model.OfficeContactNo = item.OfficeContactNo;
+                    model.Salary = item.Salary;
+                    model.SupervisorContact = item.SupervisorContact;
+                    model.SupervisorName = item.SupervisorName;
+                    model.TraineeName = item.TraineeName;
+                    model.IsVerified = item.IsVerified;
+                    model.Comments = item.Comments;
+                    model.Attachment = item.Attachment;
+
+                    if (!String.IsNullOrEmpty(item.Attachment))
+                    {
+                        var path = "\\Documents\\TSPEmployment\\";
+
+                        var fileName = Common.AddFile(item.Attachment, path);
+
+                        model.Attachment = fileName;
+                        model.Attachment = fileName;
+                    }
+
+                    model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                    srvEmploymentVerification.SaveEmploymentVerificationOJT(model);
+                }
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
         [HttpPost]
         [Route("SubmitClassVerification")]
         public async Task<IActionResult> SubmitClassVerification(TSPEmploymentModel m)
@@ -194,6 +268,21 @@ namespace Users.Controllers
             {
                 m.CurUserID = Convert.ToInt32(User.Identity.Name);
                 return Ok(srvEmploymentVerification.SubmitVerification(m.ClassID ?? 0,m.CurUserID));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("SubmitClassVerificationOJT")]
+        public async Task<IActionResult> SubmitClassVerificationOJT(TSPEmploymentModel m)
+        {
+            try
+            {
+                m.CurUserID = Convert.ToInt32(User.Identity.Name);
+                return Ok(srvEmploymentVerification.SubmitVerificationOJT(m.ClassID ?? 0,m.CurUserID));
             }
             catch (Exception e)
             {
@@ -248,6 +337,24 @@ namespace Users.Controllers
                 return BadRequest(e.InnerException.ToString());
             }
         }
+
+        [HttpPost]
+        [Route("UpdateVerifyStatusOJT")]
+        public IActionResult UpdateVerifyStatusOJT(EmploymentVerificationModel d)
+        {
+            try
+            {
+                d.CurUserID = Convert.ToInt32(User.Identity.Name);
+
+                srvEmploymentVerification.SaveEmploymentVerificationOJT(d);
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
         // POST: EmploymentVerification/Save
         [HttpPost]
         [Route("UpdateTelephonicEmploymentVerification")]
@@ -265,7 +372,21 @@ namespace Users.Controllers
         }
 
 
-       
+        // POST: EmploymentVerification/Save
+        [HttpPost]
+        [Route("UpdateTelephonicEmploymentVerificationOJT")]
+        public IActionResult UpdateTelephonicEmploymentVerificationOJT(EmploymentVerificationModel D)
+        {
+            try
+            {
+                D.CurUserID = Convert.ToInt32(User.Identity.Name);
+                return Ok(srvEmploymentVerification.UpdateTelephonicEmploymentVerificationOJT(D));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
 
 
         [HttpGet]
@@ -338,6 +459,67 @@ namespace Users.Controllers
 
                     model.CurUserID = Convert.ToInt32(User.Identity.Name);
                     srvEmploymentVerification.UpdateTelephonicEmploymentVerification(model);
+                }
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        // POST: EmploymentVerification/OJTSave
+        [HttpPost]
+        [Route("TelephonicSaveBulkOJT")]
+        public IActionResult TelephonicSaveBulkOJT(List<EmploymentVerificationModel> list)
+        {
+            try
+            {
+                //D.CurUserID = Convert.ToInt32(User.Identity.Name);
+                foreach (var item in list)
+                {
+                    EmploymentVerificationModel model = new EmploymentVerificationModel();
+                    model.ID = item.ID;
+                    model.PlacementID = item.PlacementID;
+                    model.TraineeName = item.TraineeName;
+                    model.VerificationMethodID = item.VerificationMethodID;
+                    model.EmploymentStatus = item.EmploymentStatus;
+                    model.EmploymentType = item.EmploymentType;
+                    model.District = item.District;
+                    model.EmploymentTehsil = item.EmploymentTehsil;
+                    model.EmploymentStartDate = item.EmploymentStartDate;
+                    model.EmployerBusinessType = item.EmployerBusinessType;
+                    model.Designation = item.Designation;
+                    model.Department = item.Department;
+                    model.EmployerName = item.EmployerName;
+                    model.EmploymentAddress = item.EmploymentAddress;
+                    model.EmploymentDuration = item.EmploymentDuration;
+                    model.EmploymentTiming = item.EmploymentTiming;
+                    model.OfficeContactNo = item.OfficeContactNo;
+                    model.Salary = item.Salary;
+                    model.SupervisorContact = item.SupervisorContact;
+                    model.SupervisorName = item.SupervisorName;
+                    model.TraineeName = item.TraineeName;
+                    model.IsVerified = item.IsVerified;
+                    model.Comments = item.Comments;
+                    model.Attachment = item.Attachment;
+                    model.CallCenterVerificationTraineeID = item.CallCenterVerificationTraineeID;
+                    model.CallCenterVerificationSupervisorID = item.CallCenterVerificationSupervisorID;
+                    model.CallCenterVerificationCommentsID = item.CallCenterVerificationCommentsID;
+
+                    if (!String.IsNullOrEmpty(item.Attachment))
+                    {
+                        var path = "\\Documents\\TSPEmployment\\";
+
+                        var fileName = Common.AddFile(item.Attachment, path);
+
+                        model.Attachment = fileName;
+                        model.Attachment = fileName;
+                    }
+
+                    model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                    srvEmploymentVerification.UpdateTelephonicEmploymentVerificationOJT(model);
                 }
 
                 return Ok();

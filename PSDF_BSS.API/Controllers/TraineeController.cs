@@ -202,7 +202,7 @@ namespace PSDF_BSS.API.Controllers
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = string.IsNullOrEmpty(errMsg) ? "Error occurred while saving the profile." : errMsg,
-                    Data = new { isSaved = false }
+                    Data = null
                 });
             }
             else

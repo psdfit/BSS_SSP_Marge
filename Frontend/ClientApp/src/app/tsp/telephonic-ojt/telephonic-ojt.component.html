@@ -1,0 +1,291 @@
+<div>
+  <mat-card>
+    <mat-card-content>
+      <div fxLayoutAlign="space-around space-around" fxLayout="column">
+        <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
+          <mat-icon class="material-icons">view_comfy</mat-icon>
+          <span class="spacer">Telephonic Verification</span>
+          <div class="spacer"></div>
+        </mat-toolbar>
+
+        <mat-tab-group #tabGroup (selectedTabChange)="[getSelectedTabData()]">
+
+          <mat-tab label="Employed Trainees by TSP">
+
+
+            <div class="row" style="line-height: 5rem;">
+
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (selectionChange)="[GetEmploymentClassesByTSP(),GetTelephonicEmploymentClassesList()]" id="TspId" matInput>
+                    <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchTSPList" autofocus /></mat-optgrp>
+                    <mat-option value="0">-- All --</mat-option>
+                    <mat-option *ngFor="let s of TSPList | like:['TSPName',SearchTSPList.value] " [value]="s.TSPID">{{s.TSPName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Class" [(ngModel)]="filters.ClassID" (selectionChange)="GetTelephonicEmploymentClassesList()" id="ClassId" matInput>
+                    <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()" [formControl]="SearchCls" /></mat-optgrp>
+                    <mat-option value="0">--Select--</mat-option>
+                    <mat-option *ngFor="let item of ClassList | like:['ClassCode',SearchCls.value] " [value]="item.ClassID">{{item.ClassCode}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-3">
+                <button mat-raised-button color="success" style="float:right" (click)="exportToExcelTraineesData()">Export Trainees Data to Excel</button>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table class="table table-bordered d-md-table">
+                    <thead>
+                      <tr>
+                       
+                        <th class="sm"></th>
+                        <th class="sm">
+                          Actions
+                        </th>
+                        <th>Class Code</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Employement Submission Date</th>
+                        <th>TSP Name</th>
+                        <th>Scheme Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let r of ClassListFiltered">
+                        <tr>
+                        
+                          <td class="sm">
+
+                            <a color="primary" matTooltip="Expande/Collapse"
+                               mat-icon-button (click)="GetTraineeOfClass(r.ClassID,r)" >
+                              <mat-icon>{{r.HasTrainees ?'remove_circle':'control_point' }}</mat-icon>
+                            </a>
+                            <span class="p-4 text-dark" *ngIf="r.CallCentreVerificationSubmitted">Submitted</span>
+                          </td>
+                          <td class="sm">
+                            <a color="primary" *ngIf="!r.CallCentreVerificationSubmitted" matTooltip="Submit Trainees Emplyment Data" (click)="SubmitClassData(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
+                              <mat-icon>save</mat-icon>
+
+                            </a>
+                            <a color="primary" matTooltip="Verify Trainees Employment Data" (click)="getTSPemploymentList(r.ClassID,r.TSPID)" mat-icon-button class="file-lable">
+                              <mat-icon>supervisor_account</mat-icon>
+                            </a>
+                          </td>
+                          <td> <a class="myAnchor" (click)="openClassJourneyDialogue(r.ClassID)" style="color: #005b9e;"> <strong>{{r.ClassCode}}</strong> </a></td>
+                          <td>{{r.StartDate| date:'dd-MMM-yyyy'}}</td>
+                          <td>{{r.EndDate| date:'dd-MMM-yyyy'}}</td>
+                          <td style="text-align: center;">{{r.EmploymentSubmitedDate| date:'dd-MMM-yyyy'}}</td>
+                          <td>{{r.TSPName}}</td>
+                          <td>{{r.SchemeName}}</td>
+                        </tr>
+                        <tr *ngIf="r.HasTrainees" [@enterAnimation]>
+                          <td colspan="16">
+                            <div class="table-responsive">
+                              <table class="table table-bordered" style="color:lightslategrey; width:100%;">
+                                <thead>
+                                  <tr>
+                                    <th>Trainee Name</th>
+                                    <th>Trainee Code</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Supervisor Name</th>
+                                    <th>Employment Start Date</th>
+                                    <th>Office Contact No</th>
+
+                                    <th>Trainee</th>
+                                    <th>Supervisor</th>
+                                    <th>Comments</th>
+
+                                    <!-- <th>Verified</th> -->
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let c of r.TraineeList">
+                                    <td> <a class="myAnchor" (click)="openTraineeJourneyDialogue(c.TraineeCode)" style="color: #005b9e;"> {{c.TraineeName}} </a></td>
+                                    <td>{{c.TraineeCode}}</td>
+                                    <td>{{c.Department}}</td>
+                                    <td>{{c.Designation}}</td>
+                                    <td>{{c.SupervisorName}}</td>
+                                    <td>{{c.EmploymentStartDate| date:'dd-MMM-yyyy'}}</td>
+                                    <td>{{c.OfficeContactNo| imask:mask}}</td>
+                                    <td>{{c.CallCenterVerificationTraineeName}}</td>
+
+                                    <td>{{c.CallCenterVerificationSupervisorName}}</td>
+                                    <td>{{c.CallCenterVerificationTraineeComment}}</td>
+
+                                   <!--  <td>
+                                      <span *ngIf="c.IsVerified == true" class="badge badge-success">Approved</span>
+                                      <span *ngIf="c.IsVerified == null" class="badge badge-warning">Not Answered</span>
+                                      <span *ngIf="c.IsVerified == false" class="badge badge-danger">Not Approved</span>
+                                    </td> -->
+                                    <td>
+                                      <button matTooltip="Verify Trainee Record"  mat-icon-button color="primary" (click)="openDialog(c)" *ngIf="!r.CallCentreVerificationSubmitted">
+                                        <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
+                                      </button>
+                                     <!--  <button matTooltip="Trainee Record Verified" disabled *ngIf="c.IsVerified != null" mat-icon-button color="primary">
+                                        <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
+                                      </button> -->
+                                    </td>
+
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- <div class="table-responsive">
+              <table class="table table-bordered" style="color:lightslategrey; width:100%;">
+                <thead>
+                  <tr>
+                    <th>Trainee Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Supervisor Name</th>
+                    <th>Employment Start Date</th>
+                    <th>Office Contact No</th>
+                    <th>Verified</th>
+                    <th>Comment</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of TraineeList">
+                    <td><a class="myAnchor" (click)="openTraineeJourneyDialogue(c.TraineeCode)" style="color: #005b9e;"> {{c.TraineeName}} </a></td>
+                    <td>{{c.Department}}</td>
+                    <td>{{c.Designation}}</td>
+                    <td>{{c.SupervisorName}}</td>
+                    <td>{{c.EmploymentStartDate | date:'dd-MMM-yyyy'}}</td>
+                    <td>{{c.OfficeContactNo}}</td>
+                    <td>
+                      <span *ngIf="c.IsVerified == true" class="badge badge-success">Approved</span>
+                      <span *ngIf="c.IsVerified == null" class="badge badge-warning">Not Answered</span>
+                      <span *ngIf="c.IsVerified == false" class="badge badge-danger">Not Approved</span>
+                    </td>
+                    <td>{{c.Comments}}</td>
+                    <td>
+                      <button matTooltip="Verify Trainee Record" *ngIf="c.IsVerified == null" mat-icon-button color="primary" (click)="openDialog(c)">
+                        <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
+                      </button>
+                      <button matTooltip="Trainee Record Verified" disabled *ngIf="c.IsVerified != null" mat-icon-button color="primary">
+                        <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div> -->
+          </mat-tab>
+
+
+          <!--<mat-tab label="Verify Interested Trainees for PSP">
+
+
+            <div class="row" style="line-height: 5rem;">
+
+
+              <div class="col-sm-4">
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Batch" [(ngModel)]="pspfilters.PSPBatchID" (selectionChange)="GetPSPBatchTraineeList()" id="ClassId" matInput>
+                    <mat-option value="0">--Select--</mat-option>
+                    <mat-option *ngFor="let item of BatchList" [value]="item.PSPBatchID">{{item.BatchName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <button mat-raised-button color="success" style="float:right" *ngIf="BatchTraineeList?.length > 0" (click)="SubmitPSPemploymentList()">Submit Status</button>
+              </div>
+
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-bordered" style="color:lightslategrey; width:100%;">
+                <thead>
+                  <tr>
+                    <th>Trainee Name</th>
+                    <th>Father Name</th>
+                    <th>Trainee CNIC</th>
+                    <th>Contact Number</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of BatchTraineeList">
+                    <td>{{c.TraineeName}}</td>
+                    <td>{{c.FatherName}}</td>
+                    <td>{{c.TraineeCNIC}}</td>
+                    <td>{{c.ContactNumber1}}</td>
+                    <td>
+                      <mat-radio-group aria-labelledby="example-radio-group-label"
+                                       [(ngModel)]="c.IsInterested">
+
+                        <mat-radio-button class="example-radio-button" [value]="true">
+                          Interested
+                        </mat-radio-button>
+                        <mat-radio-button class="example-radio-button" [value]="false">
+                          Not Interested
+                        </mat-radio-button>
+                      </mat-radio-group>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </mat-tab>-->
+        </mat-tab-group>
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

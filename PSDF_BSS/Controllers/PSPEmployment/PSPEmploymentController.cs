@@ -100,6 +100,27 @@ namespace PSDF_BSS.Controllers.PSPEmployment
         }
 
         [HttpGet]
+        [Route("GetPSPBatchesOJT")]
+
+        public IActionResult GetPSPBatchesOJT()
+        {
+            try
+            {
+
+                List<object> ls = new List<object>();
+
+                ls.Add(srv.FetchPSPBatchesOJT());
+
+
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("GetPSPTraineeAssignment/{id}")]
 
         public IActionResult GetPSPTraineeAssignment(int id)
@@ -146,6 +167,30 @@ namespace PSDF_BSS.Controllers.PSPEmployment
             try
             {
                 var data = srv.FetchPlacementFormE_PSP(new PSPEmploymentModel
+                {
+                    PlacementTypeID = pId,
+                    VerificationMethodId = vmId,
+                    PSPBatchID = bId
+                });
+                return Ok(new
+                {
+                    SelfList = data,
+                    TypeID = pId
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPSPSelfEmploymentListOJT")]
+        public IActionResult GetPSPSelfEmploymentListOJT(int pId, int vmId, int bId)
+        {
+            try
+            {
+                var data = srv.FetchPlacementFormE_PSPOJT(new PSPEmploymentModel
                 {
                     PlacementTypeID = pId,
                     VerificationMethodId = vmId,
@@ -363,6 +408,34 @@ namespace PSDF_BSS.Controllers.PSPEmployment
         }
 
         [HttpPost]
+        [Route("GetPSPTraineeForDEOVerificationOJT")]
+        public IActionResult GetPSPTraineeForDEOVerificationOJT(QueryFilters filters)
+        {
+            try
+            {
+                int userID = filters.UserID;
+                int oID = filters.OID;
+                int classID = filters.ClassID;
+                int curUserID = Convert.ToInt32(User.Identity.Name);
+                int loggedInUserLevel = srvUsers.GetByUserID(curUserID).UserLevel;
+                curUserID = loggedInUserLevel == (int)EnumUserLevel.TSP ? curUserID : 0;
+
+                List<object> ls = new List<object>();
+
+                ls.Add(srv.GetCompletedTraineeByClassOJT(filters));
+
+                //return Ok(srv.FetchMasterSheetByFilters(filter));
+                //ls.Add(srvScheme.FetchSchemeForFilter(false));
+
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("SavePSPBatch")]
         public async Task<IActionResult> SavePSPBatch(PSPBatchModel D)
         { 
@@ -521,6 +594,27 @@ namespace PSDF_BSS.Controllers.PSPEmployment
                 return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("EmployeeVerificationDropdownOJT")]
+        public IActionResult EmployeeVerificationDropdownOJT()
+        {
+            try
+            {
+                var placementTypes = srvPlacementType.FetchPlacementTypeOJT(false);
+                var verificationMethods = srvVerificationMethod.FetchAll();
+                return Ok(new
+                {
+                    placementTypes,
+                    verificationMethods
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
+        }
+
 
 
 

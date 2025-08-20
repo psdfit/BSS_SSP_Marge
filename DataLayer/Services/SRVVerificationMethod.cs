@@ -29,6 +29,20 @@ namespace DataLayer.Services
             }
             
         }
+        //public List<VerificationMethodModel> FetchAllOJT()
+        //{
+        //    try
+        //    {
+        //        var query = @"Select VerificationMethodID, VerificationMethodType, PlacementTypeID From VerificationMethod";
+        //        var list = _dapper.Query<VerificationMethodModel>(query);
+        //        return list;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new List<VerificationMethodModel>();
+        //    }
+            
+        //}
 
     }
 }

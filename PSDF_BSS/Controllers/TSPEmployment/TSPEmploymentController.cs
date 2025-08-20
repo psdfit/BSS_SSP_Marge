@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 
 namespace PSDF_BSS.Controllers.TSPEmployment
@@ -54,6 +55,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             this.srvScheme = srvScheme;
         }
 
+
         [HttpGet]
         [Route("GetClass")]
         public IActionResult GetClass()
@@ -73,12 +75,47 @@ namespace PSDF_BSS.Controllers.TSPEmployment
         }
 
         [HttpGet]
+        [Route("GetClassOJT")]
+        public IActionResult GetClassOJT()
+        {
+            try
+            {
+                var userID = Convert.ToInt32(User.Identity.Name);
+                return Ok(new
+                {
+                    ClassList = srv.GetClassesOJT(userID)
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
         [Route("GetDeoDashboardStats")]
         public IActionResult GetDeoDashboardStats()
         {
             try
             {
                 return Ok(srv.GetDeoDashboardStats());
+                //{
+                //    ClassList = srv.GetClasses(userID)
+                //});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("GetDeoDashboardStatsOJT")]
+        public IActionResult GetDeoDashboardStatsOJT()
+        {
+            try
+            {
+                return Ok(srv.GetDeoDashboardStatsOJT());
                 //{
                 //    ClassList = srv.GetClasses(userID)
                 //});
@@ -328,6 +365,7 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return BadRequest(e.Message);
             }
         }
+
         [HttpGet]
         [Route("TraineeForVerificationExportExcel")]
         public IActionResult TraineeForVerificationExportExcel(int pId, int vmId, int tspId, int cId)
@@ -335,6 +373,31 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             try
             {
                 var data = srv.FetchPlacementsForDEOToExport(new TSPEmploymentExcelModel
+                {
+                    PlacementTypeID = pId,
+                    VerificationMethodId = vmId,
+                    TSPID = tspId,
+                    ClassID = cId
+                });
+                return Ok(new
+                {
+                    SelfList = data,
+                    TypeID = pId
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("TraineeForVerificationExportExcelOJT")]
+        public IActionResult TraineeForVerificationExportExcelOJT(int pId, int vmId, int tspId, int cId)
+        {
+            try
+            {
+                var data = srv.FetchPlacementsForDEOToExportOJT(new TSPEmploymentExcelModel
                 {
                     PlacementTypeID = pId,
                     VerificationMethodId = vmId,
@@ -376,12 +439,49 @@ namespace PSDF_BSS.Controllers.TSPEmployment
         }
 
         [HttpPost]
+        [Route("ReportedOJTExportExcel")]
+        public IActionResult ReportedOJTExportExcel(QueryFilters filters)
+        {
+            try
+            {
+                var data = srv.FetchReportedOJTToExport(filters);
+                //{
+                //    filters
+                //});
+                return Ok(data);
+                //{
+                //    SelfList = data,
+                //    TypeID = pId
+                //});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("VerifiedEmploymentExportExcel")]
         public IActionResult VerifiedEmploymentExportExcel(QueryFilters filters)
         {
             try
             {
                 var data = srv.FetchVerifiedPlacementToExport(filters);
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("VerifiedOJTExportExcel")]
+        public IActionResult VerifiedOJTExportExcel(QueryFilters filters)
+        {
+            try
+            {
+                var data = srv.FetchVerifiedOJTToExport(filters);
                 return Ok(data);
             }
             catch (Exception e)
@@ -581,12 +681,59 @@ namespace PSDF_BSS.Controllers.TSPEmployment
         }
 
         [HttpGet]
+        [Route("EmployeeVerificationDropdownOJT")]
+        public IActionResult EmployeeVerificationDropdownOJT()
+        {
+            try
+            {
+                var placementTypes = srvPlacementType.FetchPlacementTypeOJT(false);
+                var verificationMethods = srvVerificationMethod.FetchAll();
+                //var verificationMethods = srvVerificationMethod.FetchAllOJT();
+                return Ok(new
+                {
+                    placementTypes,
+                    verificationMethods
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
+        }
+
+
+        [HttpGet]
         [Route("GetSelfEmploymentList")]
         public IActionResult GetSelfEmploymentList(int pId, int vmId, int cId, int? TSPID)
         {
             try
             {
                 var data = srv.FetchPlacementFormE(new TSPEmploymentModel
+                {
+                    PlacementTypeID = pId,
+                    VerificationMethodId = vmId,
+                    ClassID = cId,
+                    TSPID = TSPID
+                });
+                return Ok(new
+                {
+                    SelfList = data,
+                    TypeID = pId
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetSelfEmploymentListOJT")]
+        public IActionResult GetSelfEmploymentListOJT(int pId, int vmId, int cId, int? TSPID)
+        {
+            try
+            {
+                var data = srv.FetchPlacementFormEOJT(new TSPEmploymentModel
                 {
                     PlacementTypeID = pId,
                     VerificationMethodId = vmId,
@@ -636,6 +783,21 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             }
         }
 
+        [HttpPost]
+        [Route("ForwardedToTelephonicOJT")]
+        public IActionResult ForwardedToTelephonicOJT(ForwardToTelephonicVerification Model)
+        {
+            try
+            {
+                var success = srv.ForwardedToTelephonicOJT(Model);
+                return Ok(success);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
         [HttpGet]
         [Route("GetTspClassese")]
         public IActionResult GetTspClassese()
@@ -645,6 +807,23 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return Ok(new
                 {
                     ClassList = srv.GetClasses(0)
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTspClassesOJT")]
+        public IActionResult GetTspClassesOJT()
+        {
+            try
+            {
+                return Ok(new
+                {
+                    ClassList = srv.GetClassesOJT(0)
                 });
             }
             catch (Exception e)
@@ -663,6 +842,23 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return Ok(new
                 {
                     TSPsList = srv.GetTPSDetailForEmploymentVerification(placementTypeId, verificationMethodId)
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTspForEmploymentVerificationOJT")]
+        public IActionResult GetTspForEmploymentVerificationOJT(int placementTypeId, int verificationMethodId)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    TSPsList = srv.GetTPSDetailForEmploymentVerificationOJT(placementTypeId, verificationMethodId)
                 });
             }
             catch (Exception e)
@@ -705,6 +901,23 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             }
         }
 
+        [HttpGet]
+        [Route("GetEmploymentVerificationClassesOJT")]
+        public IActionResult GetEmploymentVerificationClassesOJT(int pId, int vmId, int tspId, int cId)
+        {
+            try
+            {
+                return Ok(new
+                { 
+                    ClassList = srv.GetClassesForEmploymentVerificationOJT(pId, vmId, tspId, cId)
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
 
         [HttpGet]
         [Route("GetTelephonicEmploymentVerificationClasses")]
@@ -715,6 +928,23 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                 return Ok(new
                 {
                     ClassList = srv.GetTelephonicEmploymentVerificationClasses(pId, vmId, tspId, cId)
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTelephonicEmploymentVerificationClassesOJT")]
+        public IActionResult GetTelephonicEmploymentVerificationClassesOJT(int pId, int vmId, int tspId, int cId)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    ClassList = srv.GetTelephonicEmploymentVerificationClassesOJT(pId, vmId, tspId, cId)
                 });
             }
             catch (Exception e)
@@ -741,6 +971,23 @@ namespace PSDF_BSS.Controllers.TSPEmployment
         }
 
         [HttpGet]
+        [Route("GetTraineesForEmploymentVerificationOJT")]
+        public IActionResult GetTraineesForEmploymentVerificationOJT(int pId, int vmId, int tspId, int cId)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    PlacementData = srv.FetchPlacementFormEForVerificationOJT(new TSPEmploymentModel { PlacementTypeID = pId, VerificationMethodId = vmId, TSPID = tspId, ClassID = Convert.ToInt32(cId) })
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
         [Route("GetTraineeForEmploymentVerification")]
         public IActionResult GetTraineeForEmploymentVerification(int traineeId)
         {
@@ -748,6 +995,22 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             {
                 return Ok(
                     srv.FetchTraineeForEmploymentVerification(new TSPEmploymentModel { TraineeID = traineeId })
+                );
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTraineeForEmploymentVerificationOJT")]
+        public IActionResult GetTraineeForEmploymentVerificationOJT(int traineeId)
+        {
+            try
+            {
+                return Ok(
+                    srv.FetchTraineeForEmploymentVerificationOJT(new TSPEmploymentModel { TraineeID = traineeId })
                 );
             }
             catch (Exception e)
@@ -774,6 +1037,23 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             }
         }
 
+        [HttpGet]
+        [Route("GetTelephonicTraineesForEmploymentVerificationOJT")]
+        public IActionResult GetTelephonicTraineesForEmploymentVerificationOJT(int pId, int vmId, int tspId, int cId)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    PlacementData = srv.FetchTelephonicPlacementFormEOJT(new TSPEmploymentModel { PlacementTypeID = pId, VerificationMethodId = vmId, TSPID = tspId, ClassID = Convert.ToInt32(cId) })
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
 
         [HttpGet]
         [Route("GetTelephonicEmploymentList")]
@@ -782,6 +1062,31 @@ namespace PSDF_BSS.Controllers.TSPEmployment
             try
             {
                 var data = srv.FetchTelephonicPlacementFormE(new TSPEmploymentModel
+                {
+                    PlacementTypeID = pId,
+                    VerificationMethodId = vmId,
+                    ClassID = cId,
+                    TSPID = TSPID
+                });
+                return Ok(new
+                {
+                    SelfList = data,
+                    TypeID = pId
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException != null ? e.InnerException.Message : e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTelephonicEmploymentListOJT")]
+        public IActionResult GetTelephonicEmploymentListOJT(int pId, int vmId, int cId, int? TSPID)
+        {
+            try
+            {
+                var data = srv.FetchTelephonicPlacementFormEOJT(new TSPEmploymentModel
                 {
                     PlacementTypeID = pId,
                     VerificationMethodId = vmId,
@@ -819,6 +1124,35 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                     {
                         if (model.ClassID != 0)
                             Parallel.Invoke(() => ls.Add("EmploymentData", srv.FetchPlacementFormE(new TSPEmploymentModel { ClassID = model.ClassID }))
+                                           );
+                    }
+                }
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("GetEmploymentDataForVerificationOJT")]
+        public IActionResult GetEmploymentDataForVerificationOJT(TSPEmploymentModel model)
+        {
+            try
+            {
+                Dictionary<string, object> ls = new Dictionary<string, object>();
+                if (model.ClassID != null && model.ClassID != 0)
+                {
+                    if (model.TraineeID != 0 && model.TraineeID != null)
+                    {
+                        Parallel.Invoke(() => ls.Add("EmploymentData", srv.FetchPlacementFormEOJT(new TSPEmploymentModel { ClassID = model.ClassID }))
+                                       );
+                    }
+                    else
+                    {
+                        if (model.ClassID != 0)
+                            Parallel.Invoke(() => ls.Add("EmploymentData", srv.FetchPlacementFormEOJT(new TSPEmploymentModel { ClassID = model.ClassID }))
                                            );
                     }
                 }

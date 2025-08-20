@@ -38,14 +38,17 @@ namespace DataLayer.Interfaces
         public void SavePSPBatch(PSPBatchModel mod);
 
         public List<PSPBatchModel> FetchPSPBatches();
+        public List<PSPBatchModel> FetchPSPBatchesOJT();
         public List<PSPBatchModel> FetchPSPBatchTraineeByID(PSPBatchModel mod);
         public void SavePSPBatchTrainees(List<PSPBatchModel> ls);
         public List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClass(QueryFilters filters);
+        public List<RD_CompletedTraineeByClassModel> GetCompletedTraineeByClassOJT(QueryFilters filters);
         public List<PSPBatchModel> FetchPSPInterestedTraineesForAssignment(int pspbatchid);
         public void UpdateTraineesPSP(PSPBatchModel mod);
         public List<PSPBatchModel> FetchPSPAssignedTrainees(PSPBatchModel mod);
         public List<PSPBatchModel> GetPSPTraineeForDEOVerification(QueryFilters filters);
         public List<PSPEmploymentModel> FetchPlacementFormE_PSP(PSPEmploymentModel mod);
+        public List<PSPEmploymentModel> FetchPlacementFormE_PSPOJT(PSPEmploymentModel mod);
         public List<RD_CompletedTraineeByTraineeIDsModel> GetCompletedTraineeByTraineeIDs(string TraineeIDs);
         public bool SavePlacementFormE(PSPEmploymentModel PlacementFormE);
 
