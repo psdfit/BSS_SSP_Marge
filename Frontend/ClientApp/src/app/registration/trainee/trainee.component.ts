@@ -813,8 +813,11 @@ debugger;
         if (scheme.MinimumEducation == 25 || scheme.MinimumEducation == 26) {
           this.ddlEducationTypes = this.EducationTypes.filter(x => x.EducationTypeID <= scheme.MinimumEducation && x.EducationTypeID <= scheme.MaximumEducation || x.EducationTypeID == 25 || x.EducationTypeID == 26);
         }
+        //else {
+        //  this.ddlEducationTypes = this.EducationTypes.filter(x => x.EducationTypeID >= scheme.MinimumEducation && x.EducationTypeID <= scheme.MaximumEducation);
+        //}
         else {
-          this.ddlEducationTypes = this.EducationTypes.filter(x => x.EducationTypeID >= scheme.MinimumEducation && x.EducationTypeID <= scheme.MaximumEducation);
+          this.ddlEducationTypes = this.EducationTypes.filter(x => x.EducationTypeID >= this.traineeClass.EntryQualification && x.EducationTypeID <= scheme.MaximumEducation);
         }
         //debugger;
         this.setDisplayedColumns();
