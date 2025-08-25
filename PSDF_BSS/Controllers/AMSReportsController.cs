@@ -118,6 +118,7 @@ namespace PSDF_BSS.Controllers
             catch (Exception e)
             { return BadRequest(e.InnerException.ToString()); }
         }
+
         [HttpPost]
         [Route("GetCMVReport")]
         public IActionResult GetCMVReport([FromBody] AMSReportsParamModel m)
@@ -129,6 +130,7 @@ namespace PSDF_BSS.Controllers
             catch (Exception e)
             { return BadRequest(e.InnerException.ToString()); }
         }
+
         [HttpPost]
         [Route("GetEVRReport")]
         public IActionResult GetEVRReport([FromBody] AMSReportsParamModel m)

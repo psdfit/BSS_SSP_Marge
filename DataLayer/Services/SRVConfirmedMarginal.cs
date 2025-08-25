@@ -22,7 +22,7 @@ namespace DataLayer.Services
                 String yy = datevalue.Year.ToString();
                 string strMonth = yy + "-" + Month + "-" + Day;
 
-                SqlParameter[] param = new SqlParameter[7];
+                SqlParameter[] param = new SqlParameter[10];
                 param[0] = new SqlParameter("@ClassID", model.ClassID);
                 param[1] = new SqlParameter("@SchemeID", model.SchemeID);
                 param[2] = new SqlParameter("@TSPID", model.TSPID);
@@ -30,6 +30,11 @@ namespace DataLayer.Services
                 param[4] = new SqlParameter("@UserID", model.UserID);
                 param[5] = new SqlParameter("@KAMID", model.KAMID ?? (object)DBNull.Value);
                 param[6] = new SqlParameter("@FundingCategoryID", model.FundingCategoryID ?? (object)DBNull.Value);
+                param[7] = new SqlParameter("@Schemes", string.IsNullOrEmpty(model.Schemes) ? DBNull.Value : (object)model.Schemes);
+                param[8] = new SqlParameter("@TSPs", string.IsNullOrEmpty(model.TSPs) ? DBNull.Value : (object)model.TSPs);
+                param[9] = new SqlParameter("@Classes", string.IsNullOrEmpty(model.Classes) ? DBNull.Value : (object)model.Classes);
+
+
 
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_ConfirmedMarginalTrainees", param).Tables[0];
                 if (dt.Rows.Count > 0)

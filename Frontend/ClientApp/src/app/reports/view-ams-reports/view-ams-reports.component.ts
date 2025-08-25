@@ -55,6 +55,9 @@ export class ViewAmsReportsComponent implements OnInit {
     SchemeID: 0,
     ClassID: 0,
     TSPID: 0,
+    Schemes: [],
+    Classes: [],
+    TSPs: [],
     UserID: 0,
     ReportName: '',
     DateMonth: '',
@@ -83,9 +86,9 @@ export class ViewAmsReportsComponent implements OnInit {
   ReportArray: any[] = [];
   genForm = this.fb.group({
     ReportName: ['', [Validators.required]],
-    SchemeID: ['0'],
-    TSPID: ['', [Validators.required]],
-    ClassID: ['', [Validators.required]],
+    SchemeID: [[]],
+    TSPID: [[], [Validators.required]],
+    ClassID: [[], [Validators.required]],
     DateMonth: [moment(), [Validators.required]]
   });
   // cmReportData: any;
@@ -99,6 +102,8 @@ export class ViewAmsReportsComponent implements OnInit {
   fundingCategoryFilter = new FormControl('');
   SearchFundingCategory = new FormControl('');
   Project: any[] = [];
+
+  showMultiSelect: boolean = true;
 
 
   constructor(private ComSrv: CommonSrvService, private fb: FormBuilder, private datePipe: DatePipe) { }
@@ -140,12 +145,22 @@ export class ViewAmsReportsComponent implements OnInit {
         this.updateRequiredValidator(this.TSPID, false);
         this.updateRequiredValidator(this.DateMonth, true);
       }
+      if (value === EnumAmsReports.CenterInspection || value === EnumAmsReports.FormIII
+        || value === EnumAmsReports.FormIV || value === EnumAmsReports.ProfileVerification
+      ) {
+        this.showMultiSelect = false
+      } else {
+        this.showMultiSelect = true
+      }
+
     })
 
     this.getKam();
     this.getFundingCategories();
 
   }
+
+
 
   updateRequiredValidator(control: AbstractControl, isRequired: boolean) {
     if (isRequired) {
@@ -222,6 +237,7 @@ export class ViewAmsReportsComponent implements OnInit {
     );
   }
   getDependantFilters() {
+    this.filters.Schemes = this.SchemeID.value || [];
     if (this.currentUser.UserLevel === this.enumUserLevel.TSP) {
       this.getClassesBySchemeFilter();
     }
@@ -230,89 +246,114 @@ export class ViewAmsReportsComponent implements OnInit {
     }
   }
   getClassesBySchemeFilter() {
-    this.filters.ClassID = 0;
-    this.ComSrv.getJSON(`api/Dashboard/FetchClassesBySchemeUser?SchemeID=${this.SchemeID.value}&UserID=${this.userid}`)
+    // Modified: Handle array of scheme IDs
+    this.filters.Classes = [];
+    // this.filters.TraineeID = 0;
+    const schemeIdParam = this.filters.Schemes.length > 0 ? this.filters.Schemes.join(',') : '0';
+    this.ComSrv.getJSON(`api/Dashboard/FetchClassesByMultipleSchemeUser?SchemeID=${schemeIdParam}&UserID=${this.currentUser.UserID}`)
       .subscribe(data => {
         this.classesArray = (data as any[]);
       }, error => {
         this.error = error;
-      })
+      });
   }
   getUserRelevantTSPs() {
-    this.filters.SchemeID = this.SchemeID.value;
-    if (this.kamRoleId) {
-      this.KAMRelevantTSPsByScheme();
-    }
-    else {
-      this.getTSPDetailByScheme(this.filters.SchemeID);
+    this.TSPDetail = [];
+    this.classesArray = [];
+    this.TSPID.setValue('');
+    this.ClassID.setValue([]);
+    const schemeVal = this.SchemeID.value;
+
+    if ((Array.isArray(schemeVal) && schemeVal.length > 0) || (!Array.isArray(schemeVal) && schemeVal)) {
+      if (this.kamRoleId) {
+        this.KAMRelevantTSPsByScheme();
+      } else {
+        this.getTSPDetailByScheme();
+      }
     }
   }
   KAMRelevantTSPsByScheme() {
     this.TSPDetail = [];
     this.classesArray = [];
     this.TSPID.setValue('');
-    this.ClassID.setValue('');
-    if (this.SchemeID.value != '') {
+    this.ClassID.setValue([]);
+    if (this.SchemeID.value.length > 0) {
       this.ComSrv.getJSON(
-        `api/Dashboard/FetchTSPsByKamScheme?SchemeID=${this.SchemeID.value}&KamID=${this.userid}`
+        `api/Dashboard/FetchTSPsByKamScheme?SchemeIDs=${this.SchemeID.value.join(',')}&KamID=${this.userid}`
       ).subscribe(
         (data) => {
           this.TSPDetail = (data as any[]);
         },
         (error) => {
           this.error = `${error.name} , ${error.statusText}`;
-          console.log(error)
+          console.log(error);
         }
       );
     }
   }
-  getTSPDetailByScheme(schemeId: number) {
-    this.TSPDetail = [];
-    this.classesArray = [];
-    this.TSPID.setValue('');
-    this.ClassID.setValue('');
-    if (this.SchemeID.value != '') {
-      this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByScheme?SchemeID=` + schemeId
-      ).subscribe(
-        (data) => {
+  getTSPDetailByScheme() {
+    this.filters.TSPs = [];
+    this.filters.Classes = [];
+
+    let schemeVal = this.filters.Schemes;
+
+    // Normalize schemeVal into an array
+    if (!Array.isArray(schemeVal)) {
+      schemeVal = schemeVal ? [schemeVal] : [];
+    }
+
+    const schemeIdParam = schemeVal.length > 0 ? schemeVal.join(',') : '0';
+
+    this.ComSrv.getJSON(`api/Dashboard/FetchTSPsByMultipleSchemes?SchemeID=${schemeIdParam}`)
+      .subscribe(
+        data => {
           this.TSPDetail = (data as any[]);
         },
-        (error) => {
-          this.error = `${error.name} , ${error.statusText}`;
-          console.log(error)
+        error => {
+          this.error = error;
         }
       );
+  }
+
+  getClassesByTsp() {
+    let tspVal = this.TSPID.value || [];
+
+    // Normalize tspVal into an array
+    if (!Array.isArray(tspVal)) {
+      tspVal = tspVal ? [tspVal] : [];
     }
+
+    this.filters.TSPs = tspVal;
+    this.filters.Classes = [];
+
+    const tspIdParam = tspVal.length > 0 ? tspVal.join(',') : '0';
+    this.ComSrv.getJSON(`api/Dashboard/FetchMultipleClassesByTSP?TspID=${tspIdParam}`)
+      .subscribe(
+        data => {
+          this.classesArray = (data as any[]);
+        },
+        error => {
+          this.error = error;
+        }
+      );
   }
-  getClassesByTsp(tspId: any) {
-    if (tspId === '') return
-    this.ClassID.setValue('');
-    this.classesArray = [];
-    this.ComSrv.getJSON(`api/Dashboard/FetchClassesByTSP?TspID=${tspId}`).subscribe(
-      (data) => {
-        this.error = '';
-        this.classesArray = (data as any[]);
-      },
-      (error) => {
-        // debugger
-        this.error = `${error.name} , ${error.statusText}`;
-      }
-    );
-  }
+
 
   generateReport() {
     let getFilter;
     if (!this.genForm.valid) return;
+    // Sync filters.Classes with ClassID form control value
+    this.filters.Classes = this.ClassID.value || [];
     if (this.genForm.valid) {
       if (this.SchemeID.value != '') {
         const filter = {
-          SchemeID: this.SchemeID.value
-          , TSPID: this.TSPID.value
-          , ClassID: this.ClassID.value
-          , Month: this.DateMonth.value
-          , UserID: this.filters.UserID
-          , KAMID: this.kamFilter.value
-          , FundingCategoryID: this.fundingCategoryFilter.value
+          Schemes: Array.isArray(this.filters.Schemes) ? (this.filters.Schemes.length > 0 ? this.filters.Schemes.join(',') : '') : '',
+          TSPs: Array.isArray(this.filters.TSPs) ? (this.filters.TSPs.length > 0 ? this.filters.TSPs.join(',') : '') : '',
+          Classes: Array.isArray(this.filters.Classes) ? (this.filters.Classes.length > 0 ? this.filters.Classes.join(',') : '') : '',
+          Month: this.DateMonth.value,
+          UserID: this.filters.UserID,
+          KAMID: this.kamFilter.value,
+          FundingCategoryID: this.fundingCategoryFilter.value
         };
         switch (this.ReportName.value) {
           case EnumAmsReports.ConfirmedMarginal:
@@ -494,7 +535,6 @@ export class ViewAmsReportsComponent implements OnInit {
   getFundingCategories() {
     this.ComSrv.getJSON(`api/Scheme/GetScheme?OID=${this.ComSrv.OID.value}`).subscribe((d: any) => {
       this.Project = d[4];
-      console.log(this.Project, 'projecttt')
     },
       (error) => {
         this.error = error.error;

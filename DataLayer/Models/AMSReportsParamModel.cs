@@ -17,9 +17,10 @@ namespace DataLayer.Models
         public int UserID { get; set; }
         public DateTime Month { get; set; }
         //public int UserID { get; set; }
-        public string? KAMID { get; set; }
-        public string? FundingCategoryID { get; set; }
-
-
+        public string KAMID { get; set; }
+        public string FundingCategoryID { get; set; }
+        public string Schemes { get; set; }
+        public string TSPs { get; set; }
+        public string Classes { get; set; }
     }
 }
