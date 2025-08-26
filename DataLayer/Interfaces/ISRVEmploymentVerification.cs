@@ -26,6 +26,7 @@ namespace DataLayer.Interfaces
         public List<CallCenterVerificationSupervisorModel> GetCallCenterVerificationSupervisor();
         public List<CallCenterVerificationCommentsModel> GetCallCenterVerificationComments();
         public int SubmitVerificationByCallCenter(int ClassID, int CurUserID);
+        public int SubmitVerificationByCallCenterOJT(int ClassID, int CurUserID);
 
     }
 }

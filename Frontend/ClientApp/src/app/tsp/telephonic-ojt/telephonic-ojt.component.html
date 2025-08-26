@@ -68,10 +68,10 @@
                                mat-icon-button (click)="GetTraineeOfClass(r.ClassID,r)" >
                               <mat-icon>{{r.HasTrainees ?'remove_circle':'control_point' }}</mat-icon>
                             </a>
-                            <span class="p-4 text-dark" *ngIf="r.CallCentreVerificationSubmitted">Submitted</span>
+                            <span class="p-4 text-dark" *ngIf="r.OJTCallCentreVerificationSubmitted">Submitted</span>
                           </td>
                           <td class="sm">
-                            <a color="primary" *ngIf="!r.CallCentreVerificationSubmitted" matTooltip="Submit Trainees Emplyment Data" (click)="SubmitClassData(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
+                            <a color="primary" *ngIf="!r.OJTCallCentreVerificationSubmitted" matTooltip="Submit Trainees Emplyment Data" (click)="SubmitClassData(r.ClassID,r.ClassCode)" mat-icon-button class="file-lable">
                               <mat-icon>save</mat-icon>
 
                             </a>
@@ -128,7 +128,7 @@
                                       <span *ngIf="c.IsVerified == false" class="badge badge-danger">Not Approved</span>
                                     </td> -->
                                     <td>
-                                      <button matTooltip="Verify Trainee Record"  mat-icon-button color="primary" (click)="openDialog(c)" *ngIf="!r.CallCentreVerificationSubmitted">
+                                      <button matTooltip="Verify Trainee Record"  mat-icon-button color="primary" (click)="openDialog(c)" *ngIf="!r.OJTCallCentreVerificationSubmitted">
                                         <mat-icon aria-label="Edit this row">queue_play_next</mat-icon>
                                       </button>
                                      <!--  <button matTooltip="Trainee Record Verified" disabled *ngIf="c.IsVerified != null" mat-icon-button color="primary">

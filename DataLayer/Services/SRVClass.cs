@@ -617,6 +617,10 @@ namespace DataLayer.Services
             {
                 Class.OtherTrainingCost = r["OtherTrainingCost"] != DBNull.Value ? Convert.ToInt32(r["OtherTrainingCost"]) : 0;
             }
+            if (r.Table.Columns.Contains("OJTSubmited"))
+            {
+                Class.OJTSubmited = Convert.ToBoolean(r["OJTSubmited"]);
+            }
             return Class;
         }
 

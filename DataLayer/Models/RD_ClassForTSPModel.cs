@@ -31,9 +31,12 @@ namespace DataLayer.Models
         public int? TSPID { get; set; }
         public bool OJTSubmited { get; set; }
         public bool OJTVerificationSubmited { get; set; }
+
+        public DateTime? OJTEmploymentSubmitedDate { get; set; }
+        public bool OJTCallCentreVerificationSubmitted { get; set; }
     }
-    
-    
+
+
     public class RD_TSPForEmploymentVerificationModel
     {
         public int TSPID { get; set; }

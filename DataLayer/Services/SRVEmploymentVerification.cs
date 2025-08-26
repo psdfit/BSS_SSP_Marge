@@ -108,7 +108,7 @@ namespace DataLayer.Services
                 param[26] = new SqlParameter("@LinkofTraineeStorePage", EmploymentVerification.LinkofTraineeStorePage);
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "U_DEOPlacementVerificationOJT", param);
 
-                return FetchEmploymentVerification();
+                return FetchEmploymentVerificationOJT();
             }
             catch (Exception ex)
             { throw new Exception(ex.Message); }
@@ -461,6 +461,20 @@ namespace DataLayer.Services
 
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[SubmitVerificationEmploymentByCallCenter]", new SqlParameter("@ClassID", ClassID));
                 return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "CalculateROSIOnEmploymentSubmission", param);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        public int SubmitVerificationByCallCenterOJT(int ClassID, int CurUserID)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[2];
+                param[0] = new SqlParameter("@ClassID", ClassID);
+                param[1] = new SqlParameter("@CurUserID", CurUserID);
+
+
+                return SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[SubmitVerificationEmploymentByCallCenterOJT]", new SqlParameter("@ClassID", ClassID));
+                 // --SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "CalculateROSIOnEmploymentSubmission", param);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }

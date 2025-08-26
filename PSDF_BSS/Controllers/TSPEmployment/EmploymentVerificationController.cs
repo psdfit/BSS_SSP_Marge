@@ -305,9 +305,24 @@ namespace Users.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("SubmitClassVerificationByCallCenterOJT")]
+        public async Task<IActionResult> SubmitClassVerificationByCallCenterOJT(TSPEmploymentModel m)
+        {
+            try
+            {
+                m.CurUserID = Convert.ToInt32(User.Identity.Name);
+                return Ok(srvEmploymentVerification.SubmitVerificationByCallCenterOJT(m.ClassID ?? 0, m.CurUserID));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
+        }
+
         // POST: EmploymentVerification/ActiveInActive
         [HttpPost]
-        [Route("ActiveInActive")]
+        [Route("ActiveInActive")]                                                                                                                                                                                                      
         public IActionResult ActiveInActive(EmploymentVerificationModel d)
         {
             try

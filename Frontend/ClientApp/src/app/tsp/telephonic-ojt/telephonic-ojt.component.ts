@@ -286,7 +286,7 @@ export class TelephonicOJTComponent implements OnInit {
         else {
           this.http.confirm('Class Employment submit Confirmation', Dif > 0 ? Dif + ' Trainee data not saved Are you sure to submit?' : 'Are you sure to submit?').subscribe((res) => {
             if (res === true) {
-              this.http.postJSON('api/EmploymentVerification/SubmitClassVerificationByCallCenter', { ClassID }).subscribe((d: any) => {
+              this.http.postJSON('api/EmploymentVerification/SubmitClassVerificationByCallCenterOJT', { ClassID }).subscribe((d: any) => {
                 this.http.openSnackBar('Class Employment submited successfuly.');
               });
             }

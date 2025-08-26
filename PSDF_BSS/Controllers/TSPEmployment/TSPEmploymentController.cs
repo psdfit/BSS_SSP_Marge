@@ -1277,9 +1277,9 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                                         () => ls.Add("District", srvDistrict.FetchAllPakistanDistrict(false)),
                                         () => ls.Add("Tehsil", srvTehsil.FetchAllPakistanTehsil(false)),
                                         () => ls.Add("EmploymentData", srv.FetchEmployedTraineesOJTForTSP(new TSPEmploymentModel { ClassID = model.ClassID })),
-                                        () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.EmploymentDeadline : 0),
+                                        () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.OJTDeadline : 0),
                                         () => ls.Add("DeadlineStatus", DeadlineStatus),
-                                        () => ls.Add("EmploymentSubmited", Class.EmploymentSubmited),
+                                        () => ls.Add("EmploymentSubmited", Class.OJTSubmited),
                                         () => ls.Add("TraineeProfile", srv.GetTraineeDataOJT((int)model.ClassID, (int)model.TraineeID)),
                                         () => ls.Add("VerificationMethods", srvVerificationMethod.FetchAll())
                                        );
@@ -1295,9 +1295,9 @@ namespace PSDF_BSS.Controllers.TSPEmployment
                                            () => ls.Add("District", srvDistrict.FetchAllPakistanDistrict(false)),
                                            () => ls.Add("Tehsil", srvTehsil.FetchAllPakistanTehsil(false)),
                                            () => ls.Add("EmploymentData", srv.FetchEmployedTraineesOJTForTSP(new TSPEmploymentModel { ClassID = model.ClassID })),
-                                           () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.EmploymentDeadline : 0),
+                                           () => ls.Add("OrgConfig", orgConfig != null ? orgConfig.OJTDeadline : 0),
                                            () => ls.Add("DeadlineStatus", DeadlineStatus),
-                                           () => ls.Add("EmploymentSubmited", Class.EmploymentSubmited),
+                                           () => ls.Add("EmploymentSubmited", Class.OJTSubmited),
 
                                            () => ls.Add("VerificationMethods", srvVerificationMethod.FetchAll())
                                           );

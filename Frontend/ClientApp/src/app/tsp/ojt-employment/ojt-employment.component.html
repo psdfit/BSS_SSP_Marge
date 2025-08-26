@@ -129,8 +129,8 @@
               </div>
               <div class="col-sm-3">
                 <mat-form-field fxFlex>
-                  <input type="number" id="salary" placeholder="Salary / Income (PKR)" NumberOnly
-                    formControlName="Salary" matInput required>
+                  <input type="text" id="salary" placeholder="Salary / Income (PKR)" NumberOnly
+                    formControlName="Salary" matInput required maxlength="6" pattern="^[0-9]{1,6}$">
                   <mat-error *ngIf="Salary.invalid && Salary.errors.required"><strong>This is
                       required</strong></mat-error>
                 </mat-form-field>
@@ -178,7 +178,7 @@
               <div class="col-sm-3">
                 <mat-form-field fxFlex>
                   <input type="text" formControlName="Designation" placeholder="Designation" matInput maxlength="250"
-                    required />
+                    required Alpha/>
                   <mat-label>Designation</mat-label>
                   <mat-error *ngIf="Designation.invalid && Designation.errors.required"><strong>This is
                       required</strong></mat-error>
@@ -187,7 +187,7 @@
               <div class="col-sm-3">
                 <mat-form-field fxFlex>
                   <input type="text" formControlName="Department" placeholder="Department" matInput maxlength="250"
-                    required />
+                    required Alpha/>
                   <mat-label>Department</mat-label>
                   <mat-error *ngIf="Department.invalid && Department.errors.required"><strong>This is
                       required</strong></mat-error>
@@ -223,7 +223,7 @@
               <div class="col-sm-3">
                 <mat-form-field fxFlex>
                   <input type="text" formControlName="EmployerName" placeholder="Employer Name" matInput maxlength="250"
-                    required />
+                    required Alpha/>
                   <mat-label>Employer Name</mat-label>
                   <mat-error *ngIf="EmployerName.invalid && EmployerName.errors.required"><strong>This is
                       required</strong></mat-error>

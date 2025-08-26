@@ -113,5 +113,7 @@ namespace DataLayer.Models
         public int MedicalCost { get; set; }
         public int PrometricCost { get; set; }
         public int OtherTrainingCost { get; set; }
+
+        public bool? OJTSubmited { get; set; }
     }
 }
