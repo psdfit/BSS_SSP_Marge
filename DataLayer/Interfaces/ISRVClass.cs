@@ -46,6 +46,8 @@ namespace DataLayer.Interfaces
         public List<ClassModel> FetchClassForPBTEFilter();
         public List<ClassModel> FetchClassesForPRNCompletion(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated);
         public List<ClassModel> FetchClassesForPRNFinal(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated);
+        public List<ClassModel> FetchClassesForOJT(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated);
+
         public List<ClassModel> FetchClassesForTRN(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated);
         public DataTable FetchDeveiceStatus(int UserID);
     }

@@ -10,7 +10,7 @@ import { GeneratePvrnComponent } from './generate-pvrn/generate-pvrn.component';
 import { GenerateMrnComponent } from './generate-mrn/generate-mrn.component';
 import { GeneratePcrnComponent } from './generate-pcrn/generate-pcrn.component';
 import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
-
+import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 const routes: Routes = [
   {
     path: 'generate-prn-completion',
@@ -100,6 +100,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Generate OTRN',
+    },
+  },
+  {
+    path: 'generate-ojt',
+    component: GenerateOjtComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate OJT',
     },
   },
 ];

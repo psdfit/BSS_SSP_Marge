@@ -236,6 +236,15 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public List<SchemeModel> FetchSchemeOJT()
+        {
+            try
+            {
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_Scheme").Tables[0];
+                return LoopinData(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
 
         public List<SchemeModel> FetchAllScheme(SchemeModel mod)
         {

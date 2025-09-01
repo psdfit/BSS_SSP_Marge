@@ -15,8 +15,8 @@ namespace PSDF_BSS.Controllers
     public class SRNCourseraController : ControllerBase
     {
         private readonly ISRVSRNCoursera srvsrnCoursera;
-       
-       
+
+
         public SRNCourseraController(ISRVSRNCoursera srvsrnCoursera)
         {
             this.srvsrnCoursera = srvsrnCoursera;
@@ -43,6 +43,35 @@ namespace PSDF_BSS.Controllers
             {
                 List<object> ls = new List<object>();
                 ls.Add(srvsrnCoursera.GenerateSRNCoursera(mod, out string IsGenerated));
+                ls.Add(Convert.ToBoolean(IsGenerated));
+                return Ok(ls);
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
+
+        [HttpPost]
+        [Route("GetOJTClasses")]
+        public IActionResult GetOJTClasses([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                return Ok(srvsrnCoursera.FetchOJT(mod));
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
+
+        [HttpPost]
+        [Route("GenerateSRNOJT")]
+        public IActionResult GenerateSRNOJT([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+                ls.Add(srvsrnCoursera.GenerateSRNOJT(mod, out string IsGenerated));
                 ls.Add(Convert.ToBoolean(IsGenerated));
                 return Ok(ls);
 

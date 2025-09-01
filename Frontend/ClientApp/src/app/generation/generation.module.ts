@@ -11,6 +11,7 @@ import { GenerateMrnComponent } from './generate-mrn/generate-mrn.component';
 import { GeneratePvrnComponent } from './generate-pvrn/generate-pvrn.component';
 import { GeneratePcrnComponent } from './generate-pcrn/generate-pcrn.component';
 import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
+import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
     GenerateMrnComponent,
     GeneratePvrnComponent,
     GeneratePcrnComponent,
-    GenerateOtrnComponent
+    GenerateOtrnComponent,
+    GenerateOjtComponent
   ],
   imports: [
     CommonModule,

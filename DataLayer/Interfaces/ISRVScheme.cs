@@ -15,7 +15,7 @@ namespace DataLayer.Interfaces
         List<SchemeModel> SaveScheme(SchemeModel Scheme);
 
         List<SchemeModel> FetchScheme(SchemeModel mod);
-
+        List<SchemeModel> FetchSchemeOJT();
         List<SchemeModel> FetchScheme();
 
         List<SchemeModel> FetchScheme(bool InActive);

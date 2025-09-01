@@ -1081,7 +1081,27 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
-
+        public List<ClassModel> FetchClassesForOJT(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@SchemeID", filters.SchemeID));
+                param.Add(new SqlParameter("@TSPID", filters.TSPID));
+                param.Add(new SqlParameter("@Month", filters.Month));
+                TotalCompletedClasses = null;
+                IsGenerated = null;
+                CompletedClassesWithResult = null;
+                DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "dbo.RD_ClassesForPRNFinal", param.ToArray());
+                TotalCompletedClasses = ds.Tables[0].Rows[0]["TotalCompletedClasses"].ToString();
+                CompletedClassesWithResult = ds.Tables[0].Rows[0]["CompletedClassesWithResult"].ToString();
+                IsGenerated = ds.Tables[0].Rows[0]["IsGenerated"].ToString();
+                if (ds.Tables.Count > 0 && ds.Tables[1].Rows.Count > 0)
+                    return LoopinData(ds.Tables[1]);
+                return null;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
         public List<ClassModel> FetchClassesForTRN(QueryFilters filters, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated)
         {
             try

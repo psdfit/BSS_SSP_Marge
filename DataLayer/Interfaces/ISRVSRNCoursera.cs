@@ -8,6 +8,7 @@ namespace DataLayer.Interfaces
     {
         public DataTable FetchSRNCourseraTrainees(QueryFilters model);
         public DataTable GenerateSRNCoursera(QueryFilters model, out string IsGenerated);
-
+        public DataTable FetchOJT(QueryFilters model);
+        public DataTable GenerateSRNOJT(QueryFilters model, out string IsGenerated);
     }
 }

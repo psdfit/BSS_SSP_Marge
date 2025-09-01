@@ -119,5 +119,24 @@ namespace PSDF_BSS.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [HttpPost]
+        [Route("RD_ClassesForOJT")]
+        public IActionResult RD_ClassesForOJT(QueryFilters mod)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+
+                ls.Add(srvClass.FetchClassesForOJT(mod, out string TotalCompletedClasses, out string CompletedClassesWithResult, out string IsGenerated));
+                ls.Add(Convert.ToInt32(TotalCompletedClasses));
+                ls.Add(Convert.ToInt32(CompletedClassesWithResult));
+                ls.Add(Convert.ToInt32(IsGenerated));
+                return Ok(ls);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

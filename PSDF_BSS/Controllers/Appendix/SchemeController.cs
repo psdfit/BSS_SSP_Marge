@@ -533,5 +533,18 @@ namespace MasterDataModule.Controllers
                 return Ok(e);
             }
         }
+        [HttpGet]
+        [Route("GetSchemeByIDOJT")]
+        public IActionResult GetSchemeByIDOJT()
+        {
+            try
+            {
+                return Ok(srvScheme.FetchSchemeOJT());
+            }
+            catch (Exception e)
+            {
+                return Ok(e);
+            }
+        }
     }
 }
