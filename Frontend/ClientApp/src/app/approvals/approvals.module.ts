@@ -40,6 +40,7 @@ import { PcrnApprovalsDialogueComponent } from './pcrn-approvals-dialogue/pcrn-a
 import { PcrnApprovalsComponent } from './pcrn-approvals/pcrn-approvals.component';
 import { OtrnApprovalsDialogueComponent } from './otrn-approvals-dialogue/otrn-approvals-dialogue.component';
 import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.component';
+import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.component';
 
 @NgModule({
   declarations: [ApprovalsComponent, SrnApprovalsComponent, GurnApprovalsComponent, DeletionApprovalsComponent, InvoiceApprovalsComponent,
@@ -48,7 +49,12 @@ import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.componen
     ClassChangeRequestApprovalsComponent, TraineeChangeRequestApprovalsComponent, InstructorChangeRequestApprovalsComponent,
     InceptionReportChangeRequestApprovalsComponent, NewInstructorRequestApprovalsComponent,
     ReplaceInstructorChangeRequestApprovalsComponent, VerifiedTraineeChangeRequestApprovalsComponent,
-    ClassDatesChangeRequestApprovalsComponent, TestComponent, RegistrationApprovalComponent, AnnualPlanApprovalComponent, CriteriaTemplateApprovalComponent, VrnApprovalsComponent, TprnApprovalsComponent, TprnApprovalsDialogueComponent, MrnApprovalsComponent, PvrnApprovalsComponent, PvrnApprovalsDialogueComponent, MrnApprovalsDialogueComponent, PcrnApprovalsDialogueComponent,PcrnApprovalsComponent, OtrnApprovalsDialogueComponent, OtrnApprovalsComponent],
+    ClassDatesChangeRequestApprovalsComponent, TestComponent, RegistrationApprovalComponent, 
+    AnnualPlanApprovalComponent, CriteriaTemplateApprovalComponent, VrnApprovalsComponent, 
+    TprnApprovalsComponent, TprnApprovalsDialogueComponent, MrnApprovalsComponent, PvrnApprovalsComponent,
+     PvrnApprovalsDialogueComponent, MrnApprovalsDialogueComponent, PcrnApprovalsDialogueComponent,
+     PcrnApprovalsComponent, OtrnApprovalsDialogueComponent, 
+     OtrnApprovalsComponent, OJTSrnApprovalsComponent],
   imports: [
     CommonModule,
     SharedModule,

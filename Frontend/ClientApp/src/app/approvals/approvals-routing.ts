@@ -31,6 +31,7 @@ import { PvrnApprovalsComponent } from './pvrn-approvals/pvrn-approvals.componen
 import { MrnApprovalsComponent } from './mrn-approvals/mrn-approvals.component';
 import { PcrnApprovalsComponent } from './pcrn-approvals/pcrn-approvals.component';
 import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.component';
+import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,16 @@ const routes: Routes = [
       icon: "verified_user",
       inMenu: true,
       title: "SRN Approval Requests",
+    },
+  },
+  {
+    path: "ojt-srn-approvals",
+    component: OJTSrnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "OJT SRN Approval Requests",
     },
   },
   {

@@ -35,9 +35,9 @@ export const MY_FORMATS = {
 };
 
 @Component({
-    selector: 'app-srn-approvals',
-    templateUrl: './srn-approvals.component.html',
-    styleUrls: ['./srn-approvals.component.scss'],
+    selector: 'app-ojt-srn-approvals',
+    templateUrl: './ojt-srn-approvals.component.html',
+    styleUrls: ['./ojt-srn-approvals.component.scss'],
     providers: [
         // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
         // application's root module. We provide it at the component level here, due to limitations of
@@ -53,7 +53,7 @@ export const MY_FORMATS = {
     ],
 
 })
-export class SrnApprovalsComponent implements OnInit {
+export class OJTSrnApprovalsComponent implements OnInit {
     environment = environment;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -128,7 +128,7 @@ export class SrnApprovalsComponent implements OnInit {
             (data: any) => {
                 console.log(data, 'ttt')
                 // 🔹 Remove unwanted ProcessKey before doing anything else
-                data = data.filter((x: any) => x.ProcessKey !== "OJT_SRN");
+                data = data.filter((x: any) => x.ProcessKey === "OJT_SRN");
                 console.log(data, 'ojttttt')
                 this.srnMasterArray = data.map(o => o.SRNID);
                 this.SRNMasterIDs = this.srnMasterArray.join(',');
@@ -226,6 +226,18 @@ export class SrnApprovalsComponent implements OnInit {
         const dialogRef = this.dialog.open(SrnApprovalsDialogueComponent, {
             width: '60%',
             data: { ProcessKey: EnumApprovalProcess.SRN, FormIDs: srnGroup.map(x => x.SRNID) }
+        })
+
+    }
+    public openOJTSRNApprovalDialogue(srnGroup: any[]): void {
+        console.log(srnGroup)
+        debugger;
+        //let datas: IApprovalHistory = { ProcessKey: processKey, FormID: formID };
+        var processk = srnGroup.map(x => x.ProcessKey)
+
+        const dialogRef = this.dialog.open(SrnApprovalsDialogueComponent, {
+            width: '60%',
+            data: { ProcessKey: EnumApprovalProcess.OJT_SRN, FormIDs: srnGroup.map(x => x.SRNID) }
         })
 
     }

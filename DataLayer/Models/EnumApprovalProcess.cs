@@ -82,5 +82,8 @@ namespace DataLayer.Models
         public const string IPMC = "IPMC";
         public const string IPPC = "IPPC";
         public const string IPOT = "IPOT";
+
+        public const string PO_OJT_SRN = "PO_OJT_SRN";
+        public const string INV_OJT_SRN = "INV_OJT_SRN";
     }
 }

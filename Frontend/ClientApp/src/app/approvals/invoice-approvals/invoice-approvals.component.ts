@@ -142,6 +142,7 @@ export class InvoiceApprovalsComponent implements OnInit {
     
     if (
       row.ProcessKey === EnumApprovalProcess.INV_SRN 
+      || row.ProcessKey === EnumApprovalProcess.INV_OJT_SRN 
       || row.ProcessKey === EnumApprovalProcess.INV_TRN 
       || row.ProcessKey === EnumApprovalProcess.INV_TPRN 
       || row.ProcessKey === EnumApprovalProcess.INV_GURN 

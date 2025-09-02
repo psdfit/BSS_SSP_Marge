@@ -257,7 +257,11 @@ namespace DataLayer.Services
                             if (ProcessKey == "VRN")
                             {
                                 srvPurchaseOrder.CreatePOForSRN(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_VRN, model.CurUserID, _transaction);
+                            } else if (ProcessKey == "OJT_SRN")
+                            {
+                                srvPurchaseOrder.CreatePOForSRN(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_OJT_SRN, model.CurUserID, _transaction);
                             }
+
                             else
                             {
                                 srvPurchaseOrder.CreatePOForSRN(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_SRN, model.CurUserID, _transaction);
@@ -1673,6 +1677,34 @@ namespace DataLayer.Services
                                                 _transaction.Commit();
                                                 result = true;
                                                 break;
+                                            case EnumApprovalProcess.PO_OJT_SRN:
+                                                srvPurchaseOrder.POHeaderApproveReject(new POHeaderModel()
+                                                {
+                                                    POHeaderID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    ModifiedUserID = model.CurUserID
+                                                }, _transaction);
+
+                                                //Enter Purchase Order in SAP
+                                                var mdOJTSRN = new POHeaderModel { POHeaderID = model.FormID, ProcessKey = "", Month = null };
+                                                var poHeaderOJTSRN = srvPOHeader.FetchPOHeader(mdOJTSRN, _transaction).First();
+                                                var poLinesOJTSRN = srvPOLines.GetPOLinesByPOHeaderID(model.FormID, _transaction);
+                                                if (string.IsNullOrEmpty(poHeaderOJTSRN?.DocNum) || poHeaderOJTSRN?.DocNum == "0")
+                                                {
+                                                    var sapSRNResponse = srvSAPApi.SaveSAPPurchaseOrder(poHeaderOJTSRN, poLinesOJTSRN, _transaction).Result;
+                                                    if (sapSRNResponse.Status == "1"
+                                                        //|| (sapSRNResponse.Status == "0" && sapSRNResponse.POModel.DocEntry > 0 && !string.IsNullOrEmpty(sapSRNResponse.POModel.DocNum))
+                                                        )
+                                                    {
+                                                        new SRVPOHeader().UpdateSAPInPOHeader(model.FormID, sapSRNResponse.POModel.DocEntry, sapSRNResponse.POModel.DocNum, _transaction);
+                                                        // new SRVPOLines().UpdateSAPInPOLines(model.FormID, sapSRNResponse.POModel.PODetail, poLinesSRN, _transaction);
+                                                    }
+                                                }
+                                                srvSRN.GenerateInvoiceHeader_SRN(model.FormID, _transaction, EnumApprovalProcess.INV_OJT_SRN);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
 
                                             case EnumApprovalProcess.PO_TPRN:
                                                 srvPurchaseOrder.POHeaderApproveReject(new POHeaderModel()
@@ -1904,6 +1936,7 @@ namespace DataLayer.Services
 
                                             case EnumApprovalProcess.INV_C:
                                             case EnumApprovalProcess.INV_SRN:
+                                            case EnumApprovalProcess.INV_OJT_SRN:
                                             case EnumApprovalProcess.INV_TPRN:
                                             case EnumApprovalProcess.INV_PVRN:
                                             case EnumApprovalProcess.INV_PCRN:
@@ -2298,6 +2331,7 @@ namespace DataLayer.Services
                                         case EnumApprovalProcess.INV_C:
                                         case EnumApprovalProcess.INV_F:
                                         case EnumApprovalProcess.INV_SRN:
+                                        case EnumApprovalProcess.INV_OJT_SRN:
                                             List<InvoiceMasterModel> invoiceHeader = srvInvoiceMaster.GetInvoicesForApproval(new InvoiceMasterModel() { InvoiceHeaderID = model.FormID, ProcessKey = model.ProcessKey }, _transaction);
                                             srvInvoiceMaster.InvoiceHeaderApproveReject(new InvoiceMasterModel()
                                             {
@@ -2433,7 +2467,7 @@ namespace DataLayer.Services
                                     List<PRNMasterModel> PRNMasterModel = srvPRNMaster.GetPRNMasterForApproval(model.FormID);
                                     nextApproval.CustomComments = "Approved .PRN for the month of (" + PRNMasterModel[0].Month + ") has been approved for Class Code (" + PRNMasterModel[0].ClassCode + ")";
                                 }
-                                else if (model.ProcessKey == EnumApprovalProcess.INV_1ST || model.ProcessKey == EnumApprovalProcess.INV_2ND || model.ProcessKey == EnumApprovalProcess.INV_C || model.ProcessKey == EnumApprovalProcess.INV_F || model.ProcessKey == EnumApprovalProcess.INV_R || model.ProcessKey == EnumApprovalProcess.INV_SRN || model.ProcessKey == EnumApprovalProcess.INV_GURN || model.ProcessKey == EnumApprovalProcess.INV_TRN)
+                                else if (model.ProcessKey == EnumApprovalProcess.INV_1ST || model.ProcessKey == EnumApprovalProcess.INV_2ND || model.ProcessKey == EnumApprovalProcess.INV_C || model.ProcessKey == EnumApprovalProcess.INV_F || model.ProcessKey == EnumApprovalProcess.INV_R || model.ProcessKey == EnumApprovalProcess.INV_SRN || model.ProcessKey == EnumApprovalProcess.INV_OJT_SRN || model.ProcessKey == EnumApprovalProcess.INV_GURN || model.ProcessKey == EnumApprovalProcess.INV_TRN)
                                 {
                                     ApprovalProcessModel ApprovalProcessInvoice = _srvApprovalProcess.GetByProcessKey(model.ProcessKey);
                                     List<InvoiceMasterModel> invoiceHeader = srvInvoiceMaster.GetInvoicesForApproval(new InvoiceMasterModel() { InvoiceHeaderID = model.FormID, ProcessKey = "" });
@@ -2629,6 +2663,9 @@ namespace DataLayer.Services
                                     case EnumApprovalProcess.PO_SRN:
                                         srvSendEmail.GenerateEmailToApprovers(srvApproval.FetchApproval(new ApprovalModel() { ProcessKey = EnumApprovalProcess.INV_SRN, Step = 1 }).FirstOrDefault(), new ApprovalHistoryModel() { ApprovalStatusID = (int)EnumApprovalStatus.Pending });
                                         break;
+                                    case EnumApprovalProcess.PO_OJT_SRN:
+                                        srvSendEmail.GenerateEmailToApprovers(srvApproval.FetchApproval(new ApprovalModel() { ProcessKey = EnumApprovalProcess.INV_OJT_SRN, Step = 1 }).FirstOrDefault(), new ApprovalHistoryModel() { ApprovalStatusID = (int)EnumApprovalStatus.Pending });
+                                        break;
                                     case EnumApprovalProcess.PO_GURN:
                                         srvSendEmail.GenerateEmailToApprovers(srvApproval.FetchApproval(new ApprovalModel() { ProcessKey = EnumApprovalProcess.INV_GURN, Step = 1 }).FirstOrDefault(), new ApprovalHistoryModel() { ApprovalStatusID = (int)EnumApprovalStatus.Pending });
                                         break;
@@ -2648,6 +2685,7 @@ namespace DataLayer.Services
 
                                     case EnumApprovalProcess.INV_C:
                                     case EnumApprovalProcess.INV_SRN:
+                                    case EnumApprovalProcess.INV_OJT_SRN:
                                     case EnumApprovalProcess.INV_GURN:
                                     case EnumApprovalProcess.INV_F:
                                         ApprovalProcessModel ApprovalProcessInvoiceF = _srvApprovalProcess.GetByProcessKey(model.ProcessKey);
@@ -2758,7 +2796,7 @@ namespace DataLayer.Services
                                 List<PRNMasterModel> PRNMasterModel = srvPRNMaster.GetPRNMasterForApproval(model.FormID);
                                 previousApproval.CustomComments = "SendBack to you with Remarks .PRN for the month of (" + PRNMasterModel[0].Month + ") and  Class Code (" + PRNMasterModel[0].ClassCode + ")";
                             }
-                            else if (model.ProcessKey == EnumApprovalProcess.INV_1ST || model.ProcessKey == EnumApprovalProcess.INV_2ND || model.ProcessKey == EnumApprovalProcess.INV_C || model.ProcessKey == EnumApprovalProcess.INV_F || model.ProcessKey == EnumApprovalProcess.INV_R || model.ProcessKey == EnumApprovalProcess.INV_SRN || model.ProcessKey == EnumApprovalProcess.INV_GURN || model.ProcessKey == EnumApprovalProcess.INV_TRN || model.ProcessKey == EnumApprovalProcess.INV_TRN)
+                            else if (model.ProcessKey == EnumApprovalProcess.INV_1ST || model.ProcessKey == EnumApprovalProcess.INV_2ND || model.ProcessKey == EnumApprovalProcess.INV_C || model.ProcessKey == EnumApprovalProcess.INV_F || model.ProcessKey == EnumApprovalProcess.INV_R || model.ProcessKey == EnumApprovalProcess.INV_SRN || model.ProcessKey == EnumApprovalProcess.INV_OJT_SRN || model.ProcessKey == EnumApprovalProcess.INV_GURN || model.ProcessKey == EnumApprovalProcess.INV_TRN || model.ProcessKey == EnumApprovalProcess.INV_TRN)
                             {
                                 ApprovalProcessModel ApprovalProcessInvoice = _srvApprovalProcess.GetByProcessKey(model.ProcessKey);
                                 List<InvoiceMasterModel> invoiceHeaderINV = srvInvoiceMaster.GetInvoicesForApproval(new InvoiceMasterModel() { InvoiceHeaderID = model.FormID, ProcessKey = "" });
@@ -2945,6 +2983,7 @@ namespace DataLayer.Services
                                 case EnumApprovalProcess.INV_C:
                                 case EnumApprovalProcess.INV_F:
                                 case EnumApprovalProcess.INV_SRN:
+                                case EnumApprovalProcess.INV_OJT_SRN:
                                 case EnumApprovalProcess.INV_GURN:
                                     List<InvoiceMasterModel> invoiceHeader = srvInvoiceMaster.GetInvoicesForApproval(new InvoiceMasterModel() { InvoiceHeaderID = model.FormID, ProcessKey = model.ProcessKey });
                                     if (invoiceHeader != null && invoiceHeader[0].CreatedUserID != null && invoiceHeader[0].CreatedUserID != 0)
