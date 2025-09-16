@@ -313,7 +313,9 @@ export class MedicalCostComponent implements OnInit {
         this.LoadMatTable(IPTrainees); // Load the fetched data into the table
         this.noRecords = false;
       } else {
-        this.ComSrv.ShowWarning('No records found', 'Close');
+        if (!this.noRecords) {
+          this.ComSrv.ShowWarning('No records found', 'Close');
+        }
         this.noRecords = true;
       }
     } catch (error) {

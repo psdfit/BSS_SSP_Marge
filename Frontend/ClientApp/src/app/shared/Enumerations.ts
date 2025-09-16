@@ -175,13 +175,7 @@ export enum EnumExcelReportType {
   PCRN = 30,
   OTRN = 31,
   TAR = 32,
-  TakamolRecommendationNote = 33
-  PVRN=28,
-  MRN=29,
-  PCRN=30,
-  OTRN=31,
-  TAR=32
-
+  TakamolRecommendationNote = 33,
 }
 
 

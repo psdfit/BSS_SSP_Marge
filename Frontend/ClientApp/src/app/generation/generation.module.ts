@@ -25,7 +25,7 @@ import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
     GeneratePvrnComponent,
     GeneratePcrnComponent,
     GenerateOtrnComponent,
-    GenerateTakamolRecommnedationNoteComponent
+    GenerateTakamolRecommnedationNoteComponent,
     GenerateOtrnComponent,
     GenerateOjtComponent
   ],
@@ -36,4 +36,4 @@ import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class GenerationModule {}
+export class GenerationModule { }
