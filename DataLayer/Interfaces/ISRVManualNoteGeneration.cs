@@ -16,6 +16,8 @@ namespace DataLayer.Interfaces
         DataTable GeneratePCRN(QueryFilters model, out string IsGenerated);
         DataTable FetchEligibleClassDataForOTRN(QueryFilters data);
         DataTable GenerateOTRN(QueryFilters model, out string IsGenerated);
+        DataTable GenerateTakamolRecommnedationNote(QueryFilters model, out string IsGenerated);
+        DataTable FetchEligibleClassDataForTakamolRecommnedationNote(QueryFilters data);
 
 
     }

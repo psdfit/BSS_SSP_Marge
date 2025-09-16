@@ -6,6 +6,7 @@ import { VisaStampingComponent } from './visa-stamping/visa-stamping.component';
 import { MedicalCostComponent } from './medical-cost/medial-cost.component';
 import { PrometricCostComponent } from './prometric-cost/prometric-cost.component';
 import { OtherTrainingCostComponent } from './other-training-cost/other-training-cost.component';
+import { TakamolCostComponent } from './takamol-cost/takamol-cost.component';
 
 
 
@@ -48,6 +49,16 @@ const routes: Routes = [
       icon: "verified_user",
       inMenu: true,
       title: "Other Training Cost",
+    },
+  },
+  {
+    path: "takamol-cost",
+    component: TakamolCostComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "Takamol Cost",
     },
   },
 ];

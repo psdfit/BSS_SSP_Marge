@@ -25,6 +25,7 @@ export enum EnumApprovalProcess {
   , INV_PVRN = 'INV_PVRN'
   , INV_PCRN = 'INV_PCRN'
   , INV_OTRN = 'INV_OTRN'
+  , INV_TakamolRecommendationNote = 'INV_TakamolRecommendationNote'
   , INV_MRN = 'INV_MRN'
   , INV_F = 'INV_F'
   , INV_TRN = 'INV_TRN'
@@ -49,11 +50,13 @@ export enum EnumApprovalProcess {
   , PVRN = 'PVRN'
   , PCRN = 'PCRN'
   , OTRN = 'OTRN'
+  , TakamolRecommendationNote = 'TakamolRecommendationNote'
   , MRN = 'MRN'
   , PO_TPRN = 'PO_TPRN'
   , PO_PVRN = 'PO_PVRN'
   , PO_PCRN = 'PO_PCRN'
   , PO_OTRN = 'PO_OTRN'
+  , PO_TakamolRecommendationNote = 'PO_TakamolRecommendationNote'
   , PO_MRN = 'PO_MRN'
   , VRN = 'VRN'
   , INV_VRN = 'INV_VRN'
@@ -65,6 +68,7 @@ export enum EnumApprovalProcess {
   , IPPC = 'IPPC'
   , IPMC = 'IPMC'
   , IPOT = 'IPOT'
+  , IPT = 'IPT'
   , IPVS = 'IPVS'
 
 }
@@ -166,6 +170,12 @@ export enum EnumExcelReportType {
   TPRN = 25,
   PO_TPRN = 26,
   GURN = 27,
+  PVRN = 28,
+  MRN = 29,
+  PCRN = 30,
+  OTRN = 31,
+  TAR = 32,
+  TakamolRecommendationNote = 33
   PVRN=28,
   MRN=29,
   PCRN=30,

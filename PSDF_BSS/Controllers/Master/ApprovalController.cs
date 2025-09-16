@@ -352,6 +352,28 @@ namespace MasterDataModule.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost]
+        [Route("SaveTakamolRecommendationNoteApprovalHistory")]
+        public IActionResult SaveTakamolRecommendationNoteApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveTakamolRecommendationNoteApprovalHistory(ref wrapperModel);
+                serviceApprovalHistory.SendTPRNApprovalNotification(wrapperModel);
+
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost]
         [Route("GetApprovalHistory")]
         public IActionResult GetApprovalHistory(ApprovalHistoryModel model)

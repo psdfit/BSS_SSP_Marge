@@ -144,7 +144,10 @@ export class MedicalCostComponent implements OnInit {
       'IsIPOTDocUploaded',
       'OtherTraineeCostApprovalStatus',
       'IsIPVSDocUploaded',
-      'VisaStampingApprovalStatus'
+      'VisaStampingApprovalStatus',
+      'IsIPTDocUploaded',
+      'TakamolCostApprovalStatus',
+
     ];
     if (tableData.length > 0) {
       const processedData = tableData.map(row => {
@@ -167,7 +170,7 @@ export class MedicalCostComponent implements OnInit {
         )
       ];
       this.TableColumns.push('Document');
-      
+
       this.TablesData = new MatTableDataSource(processedData);
       this.TablesData.paginator = this.paginator;
       this.TablesData.sort = this.sort;
@@ -200,7 +203,9 @@ export class MedicalCostComponent implements OnInit {
       'IsIPOTDocUploaded',
       'OtherTraineeCostApprovalStatus',
       'IsIPVSDocUploaded',
-      'VisaStampingApprovalStatus'
+      'VisaStampingApprovalStatus',
+      'IsIPTDocUploaded',
+      'TakamolCostApprovalStatus',
     ];
     const exportData = this.TablesData.filteredData.map((row: any) => {
       let newRow = { ...row };
@@ -336,7 +341,7 @@ export class MedicalCostComponent implements OnInit {
   openVisaStampingDialog(row: any): void {
     const dialogRef = this.dialog.open(MedicalCostDocDialogComponent, {
       height: "92%",
-            width: "60%",
+      width: "60%",
       data: {
         traineeID: row.TraineeID,
         traineeName: row.TraineeName,

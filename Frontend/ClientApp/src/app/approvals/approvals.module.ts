@@ -40,6 +40,8 @@ import { PcrnApprovalsDialogueComponent } from './pcrn-approvals-dialogue/pcrn-a
 import { PcrnApprovalsComponent } from './pcrn-approvals/pcrn-approvals.component';
 import { OtrnApprovalsDialogueComponent } from './otrn-approvals-dialogue/otrn-approvals-dialogue.component';
 import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.component';
+import { TakamolRecommendationNoteApprovalsComponent } from './takamol-recommendation-note-approvals/takamol-recommendation-note-approvals.component';
+import { TakamolRecommendationNoteApprovalsDialogueComponent } from './takamol-recommendation-note-approvals-dialogue/takamol-recommendation-note-approvals-dialogue.component';
 import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.component';
 
 @NgModule({
@@ -49,6 +51,12 @@ import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.
     ClassChangeRequestApprovalsComponent, TraineeChangeRequestApprovalsComponent, InstructorChangeRequestApprovalsComponent,
     InceptionReportChangeRequestApprovalsComponent, NewInstructorRequestApprovalsComponent,
     ReplaceInstructorChangeRequestApprovalsComponent, VerifiedTraineeChangeRequestApprovalsComponent,
+    ClassDatesChangeRequestApprovalsComponent, TestComponent, RegistrationApprovalComponent, AnnualPlanApprovalComponent, 
+    CriteriaTemplateApprovalComponent, VrnApprovalsComponent, TprnApprovalsComponent, 
+    TprnApprovalsDialogueComponent, MrnApprovalsComponent, PvrnApprovalsComponent, 
+    PvrnApprovalsDialogueComponent, MrnApprovalsDialogueComponent, PcrnApprovalsDialogueComponent,
+    PcrnApprovalsComponent, OtrnApprovalsDialogueComponent, OtrnApprovalsComponent, 
+    TakamolRecommendationNoteApprovalsComponent, TakamolRecommendationNoteApprovalsDialogueComponent],
     ClassDatesChangeRequestApprovalsComponent, TestComponent, RegistrationApprovalComponent, 
     AnnualPlanApprovalComponent, CriteriaTemplateApprovalComponent, VrnApprovalsComponent, 
     TprnApprovalsComponent, TprnApprovalsDialogueComponent, MrnApprovalsComponent, PvrnApprovalsComponent,

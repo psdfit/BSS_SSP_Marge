@@ -31,6 +31,7 @@ import { PvrnApprovalsComponent } from './pvrn-approvals/pvrn-approvals.componen
 import { MrnApprovalsComponent } from './mrn-approvals/mrn-approvals.component';
 import { PcrnApprovalsComponent } from './pcrn-approvals/pcrn-approvals.component';
 import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.component';
+import { TakamolRecommendationNoteApprovalsComponent } from './takamol-recommendation-note-approvals/takamol-recommendation-note-approvals.component';
 import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.component';
 
 const routes: Routes = [
@@ -104,26 +105,36 @@ const routes: Routes = [
       title: "MRN Approval Requests",
     },
   },
-{
-  path: "pcrn-approvals",
-  component: PcrnApprovalsComponent,
-  canActivate: [AuthGuardService],
-  data: {
-    icon: "verified_user",
-    inMenu: true,
-    title: "PCRN Approval Requests",
+  {
+    path: "pcrn-approvals",
+    component: PcrnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "PCRN Approval Requests",
+    },
   },
-},
-{
-  path: "otrn-approvals",
-  component: OtrnApprovalsComponent,
-  canActivate: [AuthGuardService],
-  data: {
-    icon: "verified_user",
-    inMenu: true,
-    title: "OTRN Approval Requests",
+  {
+    path: "otrn-approvals",
+    component: OtrnApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "OTRN Approval Requests",
+    },
   },
-},
+  {
+    path: "takamol-recommendation-note-approvals",
+    component: TakamolRecommendationNoteApprovalsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "Takamol Recommendation Note Approval Requests",
+    },
+  },
   {
     path: "vrn-approvals",
     component: VrnApprovalsComponent,
@@ -349,4 +360,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ApprovalsRoutingModule {}
+export class ApprovalsRoutingModule { }

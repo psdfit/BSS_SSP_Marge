@@ -56,13 +56,19 @@ namespace DataLayer.Services
         private readonly ISRVPVRN srvPVRN;
         private readonly ISRVPCRN srvPCRN;
         private readonly ISRVOTRN srvOTRN;
-        public SRVApprovalHistory(ISRVTSPDetail srv, ISRVProgramDesign srvProgramDesign, ISRVCriteriaTemplate srvCriteria, ISRVApprovalProcess srvApprovalProcess, ISRVTSPMaster srvTSPMaster, ISRVScheme srvScheme, ISRVPurchaseOrder srvPurchaseOrder, ISRVGenerateInvoice generateInvoice,
-            ISRVSRN srvSRN, ISRVTPRN srvTPRN, ISRVMRN srvMRN, ISRVPCRN srvPCRN, ISRVOTRN srvOTRN, ISRVPVRN srvPVRN, ISRVTrade srvTrade, ISRVPRN srvPRN, ISRVSAPApi srvSAPApi, ISRVTrn srvTRN, ISRVPRNMaster srvPRNMaster,
-            ISRVGURN srvGURN,
-            ISRVApproval srvApproval, ISRVInvoiceMaster srvInvoiceMaster, ISRVInvoice srvInvoice, ISRVUsers srvUsers,
-            ISRVPOHeader srvPOHeader, ISRVPOLines srvPOLines, ISRVSendEmail srvSendEmail, ISRVClassInvoiceExtMap srvcancel, ISRVClassInvoiceMap srvInvMap,
-            ISRVSchemeChangeRequest srvCrScheme, ISRVTSPChangeRequest srvCrTSP, ISRVClassChangeRequest srvCrClass, ISRVTraineeChangeRequest srvCrTrainee,
-            ISRVInstructorChangeRequest srvCrInstructor, ISRVInceptionReportChangeRequest srvCrInceptionReport, ISRVIPDocsVerification srvIPDocsVerification ,ISRVInstructorReplaceChangeRequest srvCrInstructorReplace, IDapperConfig dapper)
+        private readonly ISRVTakamolRecommendationNote srvTakamolRecommendationNote;
+        public SRVApprovalHistory(ISRVTSPDetail srv, ISRVProgramDesign srvProgramDesign, ISRVCriteriaTemplate srvCriteria,
+            ISRVApprovalProcess srvApprovalProcess, ISRVTSPMaster srvTSPMaster, ISRVScheme srvScheme, 
+            ISRVPurchaseOrder srvPurchaseOrder, ISRVGenerateInvoice generateInvoice,
+            ISRVSRN srvSRN, ISRVTPRN srvTPRN, ISRVMRN srvMRN, ISRVPCRN srvPCRN, ISRVOTRN srvOTRN, ISRVTakamolRecommendationNote srvTakamolRecommendationNote,
+            ISRVPVRN srvPVRN, ISRVTrade srvTrade, ISRVPRN srvPRN, ISRVSAPApi srvSAPApi, ISRVTrn srvTRN, 
+            ISRVPRNMaster srvPRNMaster, ISRVGURN srvGURN, ISRVApproval srvApproval, ISRVInvoiceMaster srvInvoiceMaster,
+            ISRVInvoice srvInvoice, ISRVUsers srvUsers, ISRVPOHeader srvPOHeader, ISRVPOLines srvPOLines, 
+            ISRVSendEmail srvSendEmail, ISRVClassInvoiceExtMap srvcancel, ISRVClassInvoiceMap srvInvMap,
+            ISRVSchemeChangeRequest srvCrScheme, ISRVTSPChangeRequest srvCrTSP, ISRVClassChangeRequest srvCrClass,
+            ISRVTraineeChangeRequest srvCrTrainee, ISRVInstructorChangeRequest srvCrInstructor, 
+            ISRVInceptionReportChangeRequest srvCrInceptionReport, ISRVIPDocsVerification srvIPDocsVerification, 
+            ISRVInstructorReplaceChangeRequest srvCrInstructorReplace, IDapperConfig dapper)
         {
             this.srvTSPDetail = srv;
             this.srvProgramDesign = srvProgramDesign;
@@ -99,6 +105,7 @@ namespace DataLayer.Services
             this.srvPVRN = srvPVRN;
             this.srvPCRN = srvPCRN;
             this.srvOTRN = srvOTRN;
+            this.srvTakamolRecommendationNote = srvTakamolRecommendationNote;
             _dapper = dapper;
 
             //this.srvInvMap = srvInvMap;
@@ -916,6 +923,111 @@ namespace DataLayer.Services
                 return result;
             }
         }
+
+
+        public bool SaveTakamolRecommendationNoteApprovalHistory(ref ApprovalWrapperModel wrapperModel)
+        {
+            var model = wrapperModel.approvalHistoryModel;
+            using (SqlConnection connection = new SqlConnection(SqlHelper.GetCon()))
+            {
+                connection.Open();
+                bool result = false;
+                var _transaction = connection.BeginTransaction();
+                try
+                {
+                    List<ApprovalModel> approvals = srvApproval.FetchApproval(new ApprovalModel() { ProcessKey = model.ProcessKey }, _transaction);
+                    ApprovalModel currentApproval = approvals.Where(x => x.Step == model.Step).FirstOrDefault();
+                    bool isFinalApprover = currentApproval.Step == approvals.Count;
+                    wrapperModel.approvals = approvals;
+                    wrapperModel.currentApproval = currentApproval;
+                    wrapperModel.isFinalApprover = isFinalApprover;
+                    if (currentApproval.UserIDs.Split(',').Contains(model.CurUserID.ToString()) && model.FormIDs.Count() > 0)
+                    {
+                        foreach (var id in model.FormIDs)
+                        {
+                            var current = FetchApprovalHistory(new ApprovalHistoryModel()
+                            {
+                                FormID = id,
+                                ProcessKey = model.ProcessKey,
+                                ApprovalStatusID = (int)EnumApprovalStatus.Pending
+                            }, _transaction).OrderByDescending(x => x.ApprovalHistoryID).FirstOrDefault();
+                            current.ApprovalStatusID = model.ApprovalStatusID;
+                            current.ApproverID = model.ApproverID;
+                            current.Comments = model.Comments;
+                            current.CurUserID = model.CurUserID;
+                            //model.FormID = id;
+                            if (AU_ApprovalHistory(current, _transaction))
+                            {
+                                ApprovalHistoryModel next = new ApprovalHistoryModel()
+                                {
+                                    ApprovalHistoryID = 0,
+                                    ProcessKey = current.ProcessKey,
+                                    FormID = current.FormID,
+                                    ApprovalStatusID = (int)EnumApprovalStatus.Pending,
+                                    Comments = "Pending",
+                                    ApproverID = null,
+                                    CurUserID = current.CurUserID,
+                                    InActive = false
+                                };
+                                switch (current.ApprovalStatusID)
+                                {
+                                    case (int)EnumApprovalStatus.Approved:
+                                        if (!isFinalApprover)
+                                        {
+                                            next.Step = currentApproval.Step + 1;
+                                            AU_ApprovalHistory(next, _transaction);
+                                        }
+                                        else
+                                        {
+                                            srvTakamolRecommendationNote.TakamolRecommendationNoteApproveReject(new TakamolRecommendationNoteModel()
+                                            {
+                                                TakamolRecommendationNoteID = next.FormID,
+                                                IsApproved = true,
+                                                IsRejected = false,
+                                                CurUserID = next.CurUserID
+                                            }, _transaction);
+                                        }
+                                        break;
+                                    case (int)EnumApprovalStatus.SendBack:
+                                        next.Step = currentApproval.Step - 1;
+                                        AU_ApprovalHistory(next, _transaction);
+                                        break;
+                                    case (int)EnumApprovalStatus.Rejected:
+                                        srvTakamolRecommendationNote.TakamolRecommendationNoteApproveReject(new TakamolRecommendationNoteModel()
+                                        {
+                                            TakamolRecommendationNoteID = next.FormID,
+                                            IsApproved = false,
+                                            IsRejected = true,
+                                            CurUserID = next.CurUserID
+                                        }, _transaction);
+                                        break;
+                                }
+                            }
+                        }
+                        if (isFinalApprover)
+                        {
+                            var ProcessKey = model.ProcessKey;
+                            if (ProcessKey == "VRN")
+                            {
+                                srvPurchaseOrder.CreatePOForTakamolRecommendationNote(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_VRN, model.CurUserID, _transaction);
+                            }
+                            else
+                            {
+                                srvPurchaseOrder.CreatePOForTakamolRecommendationNote(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_TakamolRecommendationNote, model.CurUserID, _transaction);
+                            }
+                        }
+                        _transaction.Commit();
+                        result = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    _transaction.Rollback();
+                    throw;
+                }
+                return result;
+            }
+        }
         public void SendPVRNApprovalNotification(ApprovalWrapperModel wrapperModel)
         {
             var model = wrapperModel.approvalHistoryModel;
@@ -1068,6 +1180,63 @@ namespace DataLayer.Services
                         var FormIDs = string.Join(",", model.FormIDs);
                         string KAMAndTspUserByFormIds = this._srvTSPMaster.GET_KAMAndTspUserByOTRNIDs_Notification(FormIDs);
                         ApprovalHistoryModel ConcateClassescodebyFormIds = this._srvTSPMaster.GET_ConcateClassescodebyOTRNID_Notification(FormIDs);
+                        approvalsModelForNotification.UserIDs = KAMAndTspUserByFormIds;
+                        approvalsModelForNotification.ProcessKey = model.ProcessKey;
+                        model.ApprovalStatusID = (int)EnumApprovalStatus.Pending;
+                        approvalsModelForNotification.CustomComments = "Approved";
+                        approvalsModelForNotification.isUserMapping = true;
+                        srvSendEmail.GenerateEmailAndSendNotification(approvalsModelForNotification, model);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public void SendTakamolRecommendationNoteApprovalNotification(ApprovalWrapperModel wrapperModel)
+        {
+            var model = wrapperModel.approvalHistoryModel;
+            var approvals = wrapperModel.approvals;
+            var currentApproval = wrapperModel.currentApproval;
+            var isFinalApprover = wrapperModel.isFinalApprover;
+            try
+            {
+                ApprovalModel approvalsModelForNotification = new ApprovalModel();
+                if (currentApproval.UserIDs.Split(',').Contains(model.CurUserID.ToString()) && model.FormIDs.Count() > 0)
+                {
+                    if (!isFinalApprover)
+                    {
+                        switch (model.ApprovalStatusID)
+                        {
+                            case (int)EnumApprovalStatus.Approved:
+                                var nextApproval = approvals.Where(x => x.Step == currentApproval.Step + 1).FirstOrDefault();
+                                // srvSendEmail.GenerateEmailToApprovers(nextApproval, model);
+                                approvalsModelForNotification.UserIDs = nextApproval.UserIDs;
+                                approvalsModelForNotification.ProcessKey = model.ProcessKey;
+                                srvSendEmail.GenerateEmailAndSendNotification(approvalsModelForNotification, model);
+                                break;
+                            case (int)EnumApprovalStatus.SendBack:
+                                var previousApproval = approvals.Where(x => x.Step == currentApproval.Step - 1).FirstOrDefault();
+                                //srvSendEmail.GenerateEmailToApprovers(previousApproval, model);
+                                approvalsModelForNotification.UserIDs = previousApproval.UserIDs;
+                                approvalsModelForNotification.ProcessKey = model.ProcessKey;
+                                srvSendEmail.GenerateEmailAndSendNotification(approvalsModelForNotification, model);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        var firstApproval = srvApproval.FetchApproval(new ApprovalModel() { ProcessKey = EnumApprovalProcess.PO_TakamolRecommendationNote, Step = 1 }).FirstOrDefault();
+                        srvSendEmail.GenerateEmailToApprovers(firstApproval, new ApprovalHistoryModel() { ApprovalStatusID = (int)EnumApprovalStatus.Pending });
+                        // Notification send to TSP and KAM
+                        var FormIDs = string.Join(",", model.FormIDs);
+                        string KAMAndTspUserByFormIds = this._srvTSPMaster.GET_KAMAndTspUserByTakamolRecommendationNoteIDs_Notification(FormIDs);
+                        ApprovalHistoryModel ConcateClassescodebyFormIds = this._srvTSPMaster.GET_ConcateClassescodebyTakamolRecommendationNoteID_Notification(FormIDs);
                         approvalsModelForNotification.UserIDs = KAMAndTspUserByFormIds;
                         approvalsModelForNotification.ProcessKey = model.ProcessKey;
                         model.ApprovalStatusID = (int)EnumApprovalStatus.Pending;
@@ -1562,6 +1731,18 @@ namespace DataLayer.Services
                                                 result = true;
                                                 break;
 
+                                            case EnumApprovalProcess.IPT:
+                                                srvIPDocsVerification.TakamolCostApproveReject(new TakamolCostResponseModel()
+                                                {
+                                                    TakamolDocumentsID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    CurUserID = model.CurUserID
+                                                }, _transaction);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
+
                                             case EnumApprovalProcess.PRN_R:
                                                 List<PRNMasterModel> PRNMasterModel = srvPRNMaster.GetPRNMasterForApproval(model.FormID, _transaction);
                                                 ApprovalProcessModel ApprovalProcessModelR = _srvApprovalProcess.GetByProcessKey(EnumApprovalProcess.INV_R);
@@ -1847,6 +2028,37 @@ namespace DataLayer.Services
                                                 _transaction.Commit();
                                                 result = true;
                                                 break;
+
+
+
+                                            case EnumApprovalProcess.PO_TakamolRecommendationNote:
+                                                srvPurchaseOrder.POHeaderApproveReject(new POHeaderModel()
+                                                {
+                                                    POHeaderID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    ModifiedUserID = model.CurUserID
+                                                }, _transaction);
+
+                                                //Enter Purchase Order in SAP
+                                                var mdTakamolRecommendationNote = new POHeaderModel { POHeaderID = model.FormID, ProcessKey = "", Month = null };
+                                                var poHeaderTakamolRecommendationNote = srvPOHeader.FetchPOHeader(mdTakamolRecommendationNote, _transaction).First();
+                                                var poLinesTakamolRecommendationNote = srvPOLines.GetPOLinesByPOHeaderID(model.FormID, _transaction);
+                                                if (string.IsNullOrEmpty(poHeaderTakamolRecommendationNote?.DocNum) || poHeaderTakamolRecommendationNote?.DocNum == "0")
+                                                {
+                                                    var sapTakamolRecommendationNoteResponse = srvSAPApi.SaveSAPPurchaseOrder(poHeaderTakamolRecommendationNote, poLinesTakamolRecommendationNote, _transaction).Result;
+                                                    if (sapTakamolRecommendationNoteResponse.Status == "1"
+                                                        //|| (sapSRNResponse.Status == "0" && sapSRNResponse.POModel.DocEntry > 0 && !string.IsNullOrEmpty(sapSRNResponse.POModel.DocNum))
+                                                        )
+                                                    {
+                                                        new SRVPOHeader().UpdateSAPInPOHeader(model.FormID, sapTakamolRecommendationNoteResponse.POModel.DocEntry, sapTakamolRecommendationNoteResponse.POModel.DocNum, _transaction);
+                                                        // new SRVPOLines().UpdateSAPInPOLines(model.FormID, sapSRNResponse.POModel.PODetail, poLinesSRN, _transaction);
+                                                    }
+                                                }
+                                                srvTakamolRecommendationNote.GenerateInvoiceHeader_TakamolRecommendationNote(model.FormID, _transaction, EnumApprovalProcess.INV_TakamolRecommendationNote);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
                                             case EnumApprovalProcess.PO_GURN:
                                                 srvPurchaseOrder.POHeaderApproveReject(new POHeaderModel()
                                                 {
@@ -1941,6 +2153,7 @@ namespace DataLayer.Services
                                             case EnumApprovalProcess.INV_PVRN:
                                             case EnumApprovalProcess.INV_PCRN:
                                             case EnumApprovalProcess.INV_OTRN:
+                                            case EnumApprovalProcess.INV_TakamolRecommendationNote:
                                             case EnumApprovalProcess.INV_MRN:
                                             case EnumApprovalProcess.INV_GURN:
                                             case EnumApprovalProcess.INV_VRN:

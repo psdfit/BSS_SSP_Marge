@@ -10,6 +10,8 @@ import { GeneratePvrnComponent } from './generate-pvrn/generate-pvrn.component';
 import { GenerateMrnComponent } from './generate-mrn/generate-mrn.component';
 import { GeneratePcrnComponent } from './generate-pcrn/generate-pcrn.component';
 import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
+import { GenerateTakamolRecommnedationNoteComponent } from './generate-takamol-recommnedation-note/generate-takamol-recommnedation-note.component';
+
 import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 const routes: Routes = [
   {
@@ -100,6 +102,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Generate OTRN',
+    },
+  },
+  {
+    path: 'generate-takamol-recommnedation-note',
+    component: GenerateTakamolRecommnedationNoteComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate Takamol Recommnedation Note',
     },
   },
   {

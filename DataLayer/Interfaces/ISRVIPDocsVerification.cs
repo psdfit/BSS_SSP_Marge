@@ -30,6 +30,10 @@ namespace DataLayer.Interfaces
        void SaveOtherTrainingCostDocs(int traineeID, string traineeCode, string traineeName, int tspID, string classCode, List<string> filePaths);
        DataTable GetOtherTrainingCostDocs(int traineeID);
        public bool OtherTrainingCostApproveReject(OtherTrainingCostResponseModel model, SqlTransaction transaction = null);
+       void SaveTakamolCostDocs(int traineeID, string traineeCode, string traineeName, int tspID, string classCode, List<string> filePaths);
+       DataTable GetTakamolCostDocs(int traineeID);
+       public bool TakamolCostApproveReject(TakamolCostResponseModel model, SqlTransaction transaction = null);
+
 
     }
 }

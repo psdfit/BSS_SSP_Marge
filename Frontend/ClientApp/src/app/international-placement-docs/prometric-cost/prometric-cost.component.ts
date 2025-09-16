@@ -144,7 +144,9 @@ export class PrometricCostComponent implements OnInit {
       'IsIPOTDocUploaded',
       'OtherTraineeCostApprovalStatus',
       'IsIPMCDocUploaded',
-      'MedicalCostApprovalStatus'
+      'MedicalCostApprovalStatus',
+      'IsIPTDocUploaded',
+      'TakamolCostApprovalStatus',
     ];
 
     if (tableData.length > 0) {
@@ -200,7 +202,9 @@ export class PrometricCostComponent implements OnInit {
       'IsIPOTDocUploaded',
       'OtherTraineeCostApprovalStatus',
       'IsIPMCDocUploaded',
-      'MedicalCostApprovalStatus'
+      'MedicalCostApprovalStatus',
+      'IsIPTDocUploaded',
+      'TakamolCostApprovalStatus',
     ];
     const exportData = this.TablesData.filteredData.map((row: any) => {
       let newRow = { ...row };

@@ -28,6 +28,10 @@ namespace DataLayer.Models
         public const string PO_OTRN = "PO_OTRN";
         public const string INV_OTRN = "INV_OTRN";
 
+        public const string TakamolRecommendationNote = "TakamolRecommendationNote";
+        public const string PO_TakamolRecommendationNote = "PO_TakamolRecommendationNote";
+        public const string INV_TakamolRecommendationNote = "INV_TakamolRecommendationNote";
+
         public const string PCRN = "PCRN";
         public const string PO_PCRN = "PO_PCRN";
         public const string INV_PCRN = "INV_PCRN";
@@ -85,5 +89,6 @@ namespace DataLayer.Models
 
         public const string PO_OJT_SRN = "PO_OJT_SRN";
         public const string INV_OJT_SRN = "INV_OJT_SRN";
+        public const string IPT = "IPT";
     }
 }

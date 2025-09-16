@@ -160,6 +160,31 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+
+
+        public bool TakamolRecommendationNoteApproveReject(TakamolRecommendationNoteModel model, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@TakamolRecommendationNoteID", model.TakamolRecommendationNoteID));
+                param.Add(new SqlParameter("@IsApproved", model.IsApproved));
+                param.Add(new SqlParameter("@IsRejected", model.IsRejected));
+                param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, "U_TakamolRecommendationNoteApproveReject", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.StoredProcedure, "U_TakamolRecommendationNoteApproveReject", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+
         public bool TRNApproveReject(TRNMasterModel model, SqlTransaction transaction = null)
         {
             try

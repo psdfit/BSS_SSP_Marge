@@ -1,0 +1,303 @@
+table {
+  border: 1px solid #80808029 !important;
+}
+// .mat-header-cell {
+//   border: 1px solid #80808029;
+// }
+.mat-sort-header-container {
+  align-items: left !important;
+  position: relative !important;
+  right: 8px !important;
+}
+mat-row,
+mat-header-row,
+mat-footer-row {
+  display: table-row !important;
+}
+mat-cell,
+mat-header-cell,
+mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+}
+body .mat-tab-label {
+  border-radius: 1px important;
+  color: #000;
+  margin: 2px !important;
+}
+body .mat-tab-label-active {
+  background: #fdb813 !important;
+  color: #000;
+}
+mat-row,
+mat-footer-row {
+  min-height: 30px !important;
+}
+th {
+  background-color: burlywood;
+}
+.mat-cell {
+  flex: 0 0 220px;
+}
+.mat-header-cell {
+  flex: 0 0 220px;
+}
+.mat-cell,
+.mat-footer-cell {
+  border: 0;
+  padding: 7px;
+}
+.mat-cell {
+  border: 1px solid black;
+}
+.mat-header-cell {
+  border: 1px solid black;
+}
+mat-row,
+mat-footer-row {
+  display: table-row !important;
+  min-height: 19px !important;
+  height: 40px !important;
+}
+mat-header-row {
+  min-height: 23px !important;
+  display: table-row !important;
+}
+.table-responsive {
+  white-space: nowrap !important;
+}
+body .mat-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+mat-cell,
+mat-header-cell,
+mat-footer-cell {
+  display: table-cell !important;
+  vertical-align: middle;
+}
+.myAnchor {
+  color: #005b9e;
+}
+.myAnchor:hover {
+  color: #fbb417;
+}
+.select-all {
+  margin: 5px 17px;
+}
+
+.mat-header-cell.mat-column-Action {
+  padding-left: 40px !important;
+}
+
+.no-records {
+  text-align: center;
+  font-size: 1.2em;
+  color: gray;
+  margin: 20px 0;
+}
+
+//drag drop css:
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  height: 460px;
+}
+
+.drop-zone {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border: 2px dashed #1976d2;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+  background: white;
+}
+
+.drop-zone p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.drop-zone.dragging {
+  background: #e3f2fd;
+  border-color: #1565c0;
+}
+
+button {
+  width: 150px;
+  margin: 5px;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 400px;
+}
+
+.file-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+mat-icon {
+  cursor: pointer;
+}
+
+/* View Documents Tab */
+
+.document-container {
+  display: flex;
+  height: 100%;
+  background: #f9f9f9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.document-list {
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  background: #fff;
+  padding: 10px;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.document-item:hover {
+  background: #f1f1f1;
+}
+
+.document-info {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.document-icon {
+  font-size: 24px;
+  color: #1976d2;
+  margin-right: 12px;
+}
+
+.document-name {
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button.mat-icon-button {
+  color: #666;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+button.mat-icon-button:hover {
+  color: #1976d2;
+  transform: scale(1.1);
+}
+
+.document-preview {
+  flex-grow: 1;
+  padding: 2px;
+  background: #fff;
+  height: 100%; /* Make it take full height */
+  display: flex;
+  flex-direction: column; /* Ensures header and content stack properly */
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+  padding: 4px;
+}
+
+.preview-header h3 {
+  font-size: 15px;
+  color: #333;
+  font-weight: 600;
+  margin: 0;
+}
+
+.preview-content {
+  flex: 1; /* Takes remaining height after header */
+  overflow-y: auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-content iframe,
+.preview-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.no-documents {
+  text-align: center;
+  padding: 30px;
+  color: #888;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.upload-message {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+// /* Ensure mat-dialog-content takes full height */
+mat-dialog-content.documentHeight {
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+}
+
+// /* Ensure mat-tab-group takes full height */
+mat-tab-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure iframe takes full height */
+.preview-content iframe {
+  width: 100%;
+  height: 100%; /* Take full height of the container */
+  border: none; /* Remove iframe border */
+}
