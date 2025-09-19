@@ -81,7 +81,7 @@ namespace DataLayer.Services
             SRNDetailsModel model = new SRNDetailsModel();
             model.SRNID = row.Field<int>("SRNID");
             model.ReportId = row.Field<string>("ReportId");
-            model.Amount = row.Field<decimal>("Amount");
+            model.Amount = row.IsNull("Amount") ? 0 : row.Field<decimal>("Amount");  //row.Field<decimal>("Amount");
             model.TokenNumber = row.Field<string>("TokenNumber");
             model.TransactionNumber = row.Field<string>("TransactionNumber");
             model.Comments = row.Field<string>("Comments");
