@@ -244,7 +244,7 @@ namespace DataLayer.Services
 
 
 
-                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPTradeDesign", param.ToArray()).Tables[0];
+                DataTable dt = SqlHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, "AU_SSPTradeDesign", param.ToArray()).Tables[0];
 
                 var TradeDesignID = 0;
 
@@ -256,7 +256,42 @@ namespace DataLayer.Services
                 {
                     TradeDesignID = Convert.ToInt32(dt.Rows[dt.Rows.Count - 1]["TradeDesignID"]);
                 }
-                BatchInsert(data.TradeLot, data.ProgramDesignOn, data.Province, data.Cluster, data.District, TradeDesignID, data.UserID, data.Trade, data.TradeLayer, transaction);
+
+                List<Payments> payments = data.Payments;
+
+                payments.AddRange(new List<Payments>
+                {
+                    new Payments
+                    {
+                        PaymentType = "Program | Skills Training | 0",
+                        PaymentFrequency = "Monthly",
+                        Amount = data.CTM
+                    },
+                    new Payments
+                    {
+                        PaymentType = "Program | Stipend | 0",
+                        PaymentFrequency = "Monthly",
+                        Amount = data.Stipend
+                    },
+                    new Payments
+                    {
+                        PaymentType = "Program | Testing Certification | 0",
+                        PaymentFrequency = "One-Time",
+                        Amount = data.ExamCost
+                    }
+                }
+
+                   );
+                //SaveOtherPayment(payments, data.s, Scheme, transaction);
+
+
+
+
+                BatchInsert(data.TradeLot, data.Scheme, data.ProgramDesignOn, data.Province, data.Cluster, data.District, TradeDesignID, data.UserID, data.Trade, data.TradeLayer, transaction);
+
+
+
+
                 SaveOtherPayment(data.Payments, TradeDesignID, data.Scheme, transaction);
                 transaction.Commit();
                 return dt;
@@ -276,9 +311,10 @@ namespace DataLayer.Services
 
 
 
-        public int BatchInsert(List<TradeLot> ls, string ProgramDesignOn, int[] Province, int[] Cluster, int[] District, int BatchFkey, int CurUserID, int TradeID, int TradeDetailID,SqlTransaction transaction)
+        public int BatchInsert(List<TradeLot> ls, int Scheme, string ProgramDesignOn, int[] Province, int[] Cluster, int[] District, int BatchFkey, int CurUserID, int TradeID, int TradeDetailID, SqlTransaction transaction)
         {
             int rowsAffected = 0;
+
             foreach (var item in ls)
             {
                 List<SqlParameter> param = new List<SqlParameter>();
@@ -316,12 +352,16 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@TotalCost", item.TotalCost));
 
 
+
+
                 rowsAffected += SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "AU_SSPTradeLot", param.ToArray());
             }
             return rowsAffected;
         }
 
-        public static int SaveOtherPayment(List<Payments> ls,int TradeDesignID,int ProgramDesignID,SqlTransaction transaction)
+
+
+        public static int SaveOtherPayment(List<Payments> ls, int TradeDesignID, int ProgramDesignID, SqlTransaction transaction)
         {
             int rowsAffected = 0;
             foreach (var item in ls)
@@ -652,6 +692,21 @@ namespace DataLayer.Services
             {
                 SqlParameter param = new SqlParameter("@ProgramID", ProgramID);
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TradeLotEstimatedBudgetBreakdown", param).Tables[0];
+
+                return dt;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+        }
+        public DataTable GetBudgetPivotByProgram(int ProgramID)
+        {
+            try
+            {
+                SqlParameter param = new SqlParameter("@ProgramID", ProgramID);
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "GetBudgetPivotByProgram", param).Tables[0];
 
                 return dt;
             }

@@ -314,13 +314,13 @@ const routes: Routes = [
     },
   },
   {
-    path: "program-design-approval",
+    path: "scheme-plan-approval",
     component: AnnualPlanApprovalComponent,
     canActivate: [AuthGuardService],
     data: {
       icon: "verified_user",
       inMenu: true,
-      title: "Program Design",
+      title: "Scheme Plan Approval",
     },
   },
   {

@@ -27,12 +27,12 @@
                      <!-- <fieldset class="border sub-fieldset">
                   <legend>Program Details</legend> -->
                      <div class="row border-top">
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
                            <mat-form-field>
                               <mat-label>Select Program</mat-label>
                               <mat-select (openedChange)="EmptyCtrl()" formControlName="SAPProgram" matInput>
-                                 <mat-option *ngFor="let s of programBudget; " [value]="s.U_Program">{{s.U_Program}} |
-                                    Budget: {{s.U_Amount}}</mat-option>
+                                 <mat-option *ngFor="let s of programBudget; " [matTooltip]="s.U_Program+' | Total:'+s.U_Amount+' | Left:'+s.LeftBudget" [value]="s.U_Program">{{s.U_Program}} |
+                                    Budget: {{'Total:'+s.U_Amount+' | BL:'+s.LeftBudget}}</mat-option>
                               </mat-select>
                               <mat-error *ngFor="let error of AnnualPlanInfoForm.get('SAPProgram').errors | keyvalue">{{
                                  getErrorMessage(error.key, error.value) }}
@@ -40,9 +40,9 @@
                            </mat-form-field>
                         </div>
                         <div class="col-sm-3">
-                           <mat-form-field class="mat-form-field-disabled">
+                           <mat-form-field>
                               <mat-label>Program Budget</mat-label>
-                              <input formControlName="ProgramBudget" readonly placeholder="Enter Program Budget"
+                              <input formControlName="ProgramBudget"  placeholder="Enter Program Budget"
                                  matInput required />
                               <mat-error
                                  *ngFor="let error of AnnualPlanInfoForm.get('ProgramBudget').errors | keyvalue">{{
@@ -794,19 +794,25 @@
                               <mat-cell *matCellDef="let row">
                                  <!-- Default Text Cell -->
                                  <ng-container
-                                    *ngIf="column !== 'Actions'  && column !== 'ProgramBudget'    && column !== 'AttachmentCriteriaEvidence'  && column !== 'AttachmentTORsEvidence'  && column !== 'ApprovalEvidence'">
+                                    *ngIf="column !== 'Actions'  && column !== 'ProgramBudget'  && column !== 'IsSubmitted'    && column !== 'AttachmentCriteriaEvidence'  && column !== 'AttachmentTORsEvidence'  && column !== 'ApprovalEvidence'">
                                     &nbsp;{{ row[column] }}</ng-container>
                                  <!-- Action Buttons -->
                                  <ng-container *ngIf="column === 'Actions'">
                                     <a mat-button color="primary" (click)="UpdateRecord(row)">
                                        <mat-icon>edit</mat-icon> Edit
                                     </a>
-                                    <a mat-button color="primary" (click)="openProgramReviewDialogue(row)">
+                                    <!-- <a mat-button color="primary" (click)="openProgramReviewDialogue(row)">
                                        <mat-icon>rate_review</mat-icon> Review
-                                    </a>
+                                    </a> -->
                                  </ng-container>
                                  <ng-container *ngIf="column === 'ProgramBudget'">
                                     {{row[column] | number}}
+                                 </ng-container>
+                                 <ng-container *ngIf="column == 'IsSubmitted'">
+                              
+                                    <span *ngIf="row[column]==false" class="label label-warning">Draft Saved</span>
+                                    <span *ngIf="row[column]==true" class="label label-success">Final Submitted</span>
+                                 
                                  </ng-container>
                                  <!-- Document Attachments -->
                                  <ng-container

@@ -189,9 +189,10 @@ namespace PSDF_BSS.Controllers
                 var SAPProgramBudget = srv.FetchDropDownList("RD_SAPProgramBudget");
                 var otherPaymentCost = srv.FetchDropDownList("RD_OtherPaymentCost");
                 var EducationTypes = srv.FetchDropDownList("RD_EducationTypes");
-                var TradePlannedBudget = srv.FetchDropDownList("RD_TradePlannedBudget");
-                var SchemePlannedBudget = srv.FetchDropDownList("RD_SchemePlannedBudget");
                 var ProgramPlannedBudget = srv.FetchDropDownList("RD_ProgramPlannedBudget");
+                var SchemePlannedBudget = srv.FetchDropDownList("RD_SchemePlannedBudget");
+                var TradePlannedBudget = srv.FetchDropDownList("RD_TradePlannedBudget");
+                var TradeLotsPlannedBudget = srv.FetchDropDownList("RD_TradeLotsPlannedBudget");
                 var province = srvProvinces.FetchProvince(false);
                 var cluster = srvCluster.FetchCluster(false);
                 var district = srvDistrict.FetchDistrict(false);
@@ -218,7 +219,12 @@ namespace PSDF_BSS.Controllers
                     programHeadBudget = ProgramHeadBudget,
                     SAPProgramBudget = SAPProgramBudget,
                     otherPaymentCost= otherPaymentCost,
-                    educationTypes= EducationTypes
+                    educationTypes= EducationTypes,
+                    programPlannedBudget= ProgramPlannedBudget,
+                    schemePlannedBudget= SchemePlannedBudget,
+                    tradePlannedBudget= TradePlannedBudget,
+                    tradeLotsPlannedBudget= TradeLotsPlannedBudget,
+
                 };
 
                 return Ok(data);
@@ -243,6 +249,11 @@ namespace PSDF_BSS.Controllers
                 var SelectionMethods = srv.FetchDropDownList("RD_SSPSelectionMethods");
                 var ProgramHeadBudget = srv.FetchDropDownList("RD_SAPProgramHeadBudget");
                 var ProgramBudget = srv.FetchDropDownList("RD_SAPProgramBudget");
+
+                var appendixScheme = srv.FetchDropDownList("RD_AppendixScheme");
+                var appendixTSPs = srv.FetchDropDownList("RD_AppendixTSPs");
+                var appendixClasses = srv.FetchDropDownList("RD_AppendixClasses");
+                var appendixInstructors = srv.FetchDropDownList("RD_AppendixInstructors");
                 var data = new
                 {
                     programDesignSummary = programDesignSummary,
@@ -251,7 +262,10 @@ namespace PSDF_BSS.Controllers
                     planingType = PlaningType,
                     selectionMethods = SelectionMethods,
                     programHeadBudget= ProgramHeadBudget,
-                    programBudget= ProgramBudget
+                    programBudget= ProgramBudget,
+                   scheme =appendixScheme,
+                   tsps= appendixTSPs,classes=appendixClasses,instructors=appendixInstructors
+
                 };
 
                 return Ok(data);
@@ -594,13 +608,15 @@ namespace PSDF_BSS.Controllers
                     var estimatedBudget = srv.GetProgramEstimatedBudgetBreakdownDataById(ProgramID);
                     var tradeBudget = srv.GetTradeEstimatedBudgetBreakdownDataById(ProgramID);
                     var tradeLotBudget = srv.GetTradeLotEstimatedBudgetBreakdownDataById(ProgramID);
+                    var programBudgetHead = srv.GetBudgetPivotByProgram(ProgramID);
 
                     var result = new
                     {
                         Overview = overview,
                         ProgramBudget = estimatedBudget,
                         TradeBudget = tradeBudget,
-                        TradeLotBudget = tradeLotBudget
+                        TradeLotBudget = tradeLotBudget,
+                        programBudgetHead= programBudgetHead
                     };
 
                     return Ok(result);

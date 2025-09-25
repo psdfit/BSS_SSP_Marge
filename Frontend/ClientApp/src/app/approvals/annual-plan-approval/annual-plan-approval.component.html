@@ -2,7 +2,7 @@
   <mat-card-content>
     <mat-toolbar color="accent" class=" slim slim">
       <mat-icon class="material-icons"> view_comfy </mat-icon>
-      <span class="spacer">Program Design</span>
+      <span class="spacer">Scheme Plan</span>
       <input *ngIf="TapIndex==0" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
       <button *ngIf="TapIndex==0" mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
         (click)="DataExcelExport(TablesData.filteredData,'Program Design')">
@@ -16,7 +16,7 @@
     </ng-container>
     <div class="table-responsive">
       <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
-        <mat-tab label="Program Design">
+        <mat-tab label="Scheme Plan">
           <div class="table-responsive">
             <form *ngIf="selectedRow.hasOwnProperty('ProgramID') && currentUser.RoleTitle === 'Procurement'"
               (ngSubmit)="SaveAnnualPlanInfo()" [formGroup]="AnnualPlanInfoForm">
@@ -77,18 +77,20 @@
                   <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
                   <mat-cell *matCellDef="let row">
                     <ng-container
-                      *ngIf="column !='IsInitiated' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart' && column !='ApprovalStatus'">
+                      *ngIf="column !='IsInitiated' && column !='Actions' && column !='ClassStartDate' && column !='TentativeProcessStart' && column !='ApprovalStatus'">
                       &nbsp; {{ row[column] }}
                     </ng-container>
 
-                    <ng-container *ngIf="column =='Action'">
-                        <ng-container *ngIf="column === 'Action' && row['IsInitiated'] ===true; else elseBlock1">
+                    <!-- <ng-container *ngIf="column =='Actions'">
+                        <ng-container *ngIf="column === 'Actions' && row['IsInitiated'] ===true; else elseBlock1">
                         <a color="primary" (click)="ShowDetail(row, row['ProgramName'])" mat-button>
                           <mat-icon>keyboard_arrow_down</mat-icon> Detail
                         </a>
-                        <a color="primary" mat-button (click)="DataExcelExport([row],row.ProgramName+'_Report')">
-                          <mat-icon>file_download</mat-icon> Export
+                       
+                           <a color="primary" mat-button (click)="exportAppendix(row.ProgramID)">
+                          <mat-icon>file_download</mat-icon> Export Appendix
                         </a>
+
                         <a color="primary" mat-button (click)="openProgramReviewDialogue(row)">
                           <mat-icon>rate_review</mat-icon> Review
                         </a>
@@ -107,7 +109,46 @@
                           -----
                         </button>
                       </ng-template>
-                    </ng-container>
+                    </ng-container> -->
+
+                      <ng-container *ngIf="column =='Actions'">
+                        <a mat-button [matMenuTriggerFor]="menu">
+                          Actions <mat-icon>keyboard_arrow_down</mat-icon>
+                        </a>
+                        <mat-menu #menu="matMenu">
+                         <ng-container *ngIf="column === 'Actions' && row['IsInitiated'] ===true; else elseBlock1">
+                        <button color="primary" (click)="ShowDetail(row, row['ProgramName'])" mat-button>
+                          <mat-icon>keyboard_arrow_down</mat-icon> Detail
+                        </button>
+                       
+                           <button color="primary" mat-button (click)="exportAppendix(row.ProgramID)">
+                          <mat-icon>file_download</mat-icon> Export Appendix
+                        </button>
+
+                        <button color="primary" mat-button (click)="openProgramReviewDialogue(row)">
+                          <mat-icon>rate_review</mat-icon> Review
+                        </button>
+                        <button color="primary" mat-button (click)="openApprovalDialogue(row)">
+                          <mat-icon>gavel</mat-icon> Decision
+                        </button>
+                        <button color="primary" mat-button (click)="updatePlanningType(row)"
+                          *ngIf="currentUser.RoleTitle==='Procurement'">
+                          <mat-icon>edit</mat-icon> Update
+                        </button>
+                        </ng-container>
+                      <span *ngIf="row[column]===false" class="label label-warning">No</span>
+                      <ng-template #elseBlock1>
+                        <button mat-icon-button color="primary"
+                          matTooltip="Program has not been initiated by the PD dept.">
+                          -----
+                        </button>
+                      </ng-template>
+                        </mat-menu>
+                        <span class="p-4 text-dark" *ngIf="row.IsApproved=='YES'">Approved</span>
+                        <a mat-button (click)="openApprovalDialogue(row)" *ngIf="row.IsApproved=='NO'">Decision</a>
+                      </ng-container>
+
+
                     <ng-container *ngIf="column =='IsInitiated'">
                       &nbsp;
                       <span *ngIf="row[column]===false" class="label label-warning">No</span>

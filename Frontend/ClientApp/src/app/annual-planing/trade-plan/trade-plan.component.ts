@@ -24,16 +24,23 @@ import { MatSelect, MatSelectChange } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
 import { ErrorLogTableComponent } from "src/app/custom-components/error-log-table/error-log-table.component";
 import { MatAccordion } from "@angular/material/expansion";
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from "@angular/animations";
+import { th } from "date-fns/locale";
 @Component({
   selector: "app-trade-plan",
   templateUrl: "./trade-plan.component.html",
   styleUrls: ["./trade-plan.component.scss"],
   animations: [
-    trigger('expandCollapse', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', opacity: 0 })),
-      state('expanded', style({ height: '*', visibility: 'visible', opacity: 1 })),
-      transition('expanded <=> collapsed', animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    trigger("expandCollapse", [
+      state("collapsed", style({ height: "0px", opacity: 0 })),
+      state("expanded", style({ height: "*", opacity: 1 })),
+      transition("collapsed <=> expanded", animate("300ms ease-in-out")),
     ]),
   ],
 })
@@ -67,7 +74,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   CreadOnly = true;
   DreadOnly = true;
   error: any;
-  
   currentUser: any;
   GetDataObject: any = {};
   programDesign: any = [];
@@ -92,7 +98,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   isProgramInfoPanelOpen: boolean = false;
   programHeadBudget: any = [];
   otherPaymentCost: any = [];
-  educationTypes: any=[]
+  educationTypes: any = [];
   constructor(
     private ComSrv: CommonSrvService,
     private ActiveRoute: ActivatedRoute,
@@ -100,19 +106,11 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private Dialog: MatDialog
   ) {
-
-    this.loadData();
     this.updatePagination();
   }
   @ViewChild(MatAccordion) accordion: MatAccordion;
   step: number = 0;
-  // paymentForm: FormGroup;
-  // paymentTypes = [
-  //   { type: "Credit Card", maxAmount: 5000 },
-  //   { type: "Debit Card", maxAmount: 3000 },
-  //   { type: "PayPal", maxAmount: 2000 },
-  //   { type: "Bank Transfer", maxAmount: 10000 },
-  // ];
+
   get payments(): FormArray {
     return this.TradeDesignInfoForm.get("payments") as FormArray;
   }
@@ -151,17 +149,14 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   groupedPaymentsByType() {
     if (this.TradeDesignInfoForm.valid) {
       const rawPayments = this.TradeDesignInfoForm.value.payments;
-
       // Group payments by paymentType
       const groupedPayments: {
         [type: string]: { amount: number; paymentFrequency: string };
       } = {};
-
       rawPayments.forEach((payment) => {
         const type = payment.paymentType;
         const amount = +payment.amount;
         const frequency = payment.paymentFrequency;
-
         if (groupedPayments[type]) {
           groupedPayments[type].amount += amount;
           // Optional: You can check for consistency in frequency if needed
@@ -172,7 +167,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
           };
         }
       });
-
       // Convert to array of { paymentType, amount, paymentFrequency }
       const consolidated = Object.entries(groupedPayments).map(
         ([paymentType, { amount, paymentFrequency }]) => ({
@@ -181,13 +175,11 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
           paymentFrequency,
         })
       );
-
       this.consolidatedPaymentByType = consolidated;
     } else {
       this.TradeDesignInfoForm.markAllAsTouched();
     }
   }
-
   setStep(index: number) {
     this.step = index;
   }
@@ -207,7 +199,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     this.accordion.closeAll();
     this.step = -1;
   }
-    minDate: Date;
+  minDate: Date;
   ngOnInit(): void {
     this.TapIndex = 0;
     this.currentUser = this.ComSrv.getUserDetails();
@@ -259,12 +251,9 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       GenderID: ["", Validators.required],
       EntryLevelEducation: ["", Validators.required],
       StartDate: [new Date(), Validators.required],
-
       TradeLot: this.fb.array([]),
       payments: this.fb.array([]),
     });
-
-
     this.addPaymentRow();
     const clearTradeLotOnChange = (fields: string[]) => {
       fields.forEach((field) => {
@@ -390,7 +379,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       );
       return;
     }
-
     if (this.TradeDesignInfoForm.invalid) {
       this.ComSrv.ShowWarning("All * fields are required for form submission");
       return;
@@ -440,7 +428,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       examCost,
       perDisContraTarget
     );
-
     return {
       UserID: this.currentUser.UserID,
       ProgramDesignID: 0,
@@ -478,7 +465,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       examCost * perDisContraTarget
     );
   }
-
   calculateOtherTrainingCost(
     duration: number,
     perDisContraTarget: number
@@ -486,7 +472,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     debugger;
     const rawPayments = this.TradeDesignInfoForm.value.payments || [];
     let totalCost = 0;
-
     rawPayments.forEach((payment: any) => {
       const amount = Number(payment.amount) || 0;
       if (payment.paymentFrequency === "Monthly") {
@@ -495,10 +480,8 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         totalCost += amount * perDisContraTarget;
       }
     });
-
     return totalCost;
   }
-
   updateTradeLotFormArray() {
     this.TradeLot = this.TradeDesignInfoForm.get("TradeLot") as FormArray;
     this.TradeLot.clear();
@@ -605,6 +588,12 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         this.programDesign = this.GetDataObject.programDesign.filter(
           (d) => d.IsInitiate == 0 || d.IsInitiate == false
         );
+        // populate top-level programs and ensure each row has an `expanded` boolean
+        this.programPlannedBudget = (
+          this.GetDataObject.programPlannedBudget || []
+        ).map((p) => ({ ...p, expanded: false }));
+        // build dynamic columns for all levels
+        this.createTablesColumns();
         this.educationTypes = this.GetDataObject.educationTypes;
         this.otherPaymentCost = this.GetDataObject.otherPaymentCost;
         this.programFocus = this.GetDataObject.programFocus;
@@ -626,6 +615,125 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
         this.ComSrv.ShowError(`${error.message}`, "Close", 3000);
       }
     );
+  }
+  applyFilter1(
+    arrayName:
+      | "programPlannedBudget"
+      | "schemePlannedBudget"
+      | "tradePlannedBudget"
+      | "tradeLotsPlannedBudget",
+    event: Event
+  ) {
+    const inputValue = (event.target as HTMLInputElement).value.toLowerCase();
+    // Use original data to filter from (avoid cumulative filtering)
+    const originalArray = this.GetDataObject[arrayName] || [];
+    this[arrayName] = originalArray.filter((item: any) =>
+      Object.values(item).some(
+        (val) =>
+          val !== null &&
+          val !== undefined &&
+          val.toString().toLowerCase().includes(inputValue)
+      )
+    );
+  }
+  // Data arrays
+  programPlannedBudget: any[] = [];
+  schemePlannedBudget: any[] = [];
+  tradePlannedBudget: any[] = [];
+  tradeLotsPlannedBudget: any[] = [];
+  // Column configs
+  programExcludedColumns = [""];
+  schemeExcludedColumns = [""];
+  tradeExcludedColumns = ["ClassStartDate", "SSPWorkflow"];
+  tradeLotsExcludedColumns = ["Action"];
+  programPlannedBudgetColumns: string[] = [];
+  schemePlannedBudgetColumns: string[] = [];
+  tradePlannedBudgetColumns: string[] = [];
+  tradeLotsPlannedBudgetColumns: string[] = [];
+  // Expansion tracking
+  expandedProgram: string | null = null;
+  expandedScheme: string | null = null;
+  expandedTrade: string | null = null;
+  // Build column arrays (Action + data columns)
+  createTablesColumns() {
+    if (!this.GetDataObject?.programPlannedBudget?.length) return;
+    this.programPlannedBudgetColumns = Object.keys(
+      this.GetDataObject.programPlannedBudget[0]
+    ).filter(
+      (key) => !key.includes("ID") && !this.programExcludedColumns.includes(key)
+    );
+    this.programPlannedBudgetColumns.unshift("Action");
+    if (this.GetDataObject.schemePlannedBudget?.length) {
+      this.schemePlannedBudgetColumns = Object.keys(
+        this.GetDataObject.schemePlannedBudget[0]
+      ).filter(
+        (key) =>
+          !key.includes("ID") && !this.schemeExcludedColumns.includes(key)
+      );
+      this.schemePlannedBudgetColumns.unshift("Action");
+    }
+    if (this.GetDataObject.tradePlannedBudget?.length) {
+      this.tradePlannedBudgetColumns = Object.keys(
+        this.GetDataObject.tradePlannedBudget[0]
+      ).filter(
+        (key) => !key.includes("ID") && !this.tradeExcludedColumns.includes(key)
+      );
+      this.tradePlannedBudgetColumns.unshift("Action");
+    }
+    if (this.GetDataObject.tradeLotsPlannedBudget?.length) {
+      this.tradeLotsPlannedBudgetColumns = Object.keys(
+        this.GetDataObject.tradeLotsPlannedBudget[0]
+      ).filter(
+        (key) =>
+          !key.includes("ID") && !this.tradeLotsExcludedColumns.includes(key)
+      );
+    }
+  }
+  getSchemeDetails(program: any) {
+    program.expanded = !program.expanded;
+    // Always reset children on toggle
+    program.schemes = [];
+    if (program.expanded) {
+      program.schemes = this.GetDataObject.schemePlannedBudget.filter(
+        (s) => s.ProgramName === program.ProgramName
+      );
+    }
+  }
+  getTradeDetails(scheme: any) {
+    scheme.expanded = !scheme.expanded;
+    // Reset children
+    scheme.trades = [];
+    if (scheme.expanded) {
+      scheme.trades = this.GetDataObject.tradePlannedBudget.filter(
+        (t) => t.SchemeID === scheme.SchemeID
+      );
+    }
+  }
+  getTradeLotsDetails(trade: any) {
+    trade.expanded = !trade.expanded;
+    // Reset children
+    trade.lots = [];
+    if (trade.expanded) {
+      trade.lots = this.GetDataObject.tradeLotsPlannedBudget.filter(
+        (l) => l.TradeDesignID === trade.TradeDesignID
+      );
+    }
+  }
+  // Optional: simple trackBy to avoid rerenders (useful for large lists)
+  trackById(index: number, item: any) {
+    return item?.id ?? item?.ProgramName ?? index;
+  }
+  // Debug helper (call from console or temporarily console.log inside methods)
+  debugState() {
+    console.log({
+      programs: this.programPlannedBudget,
+      cols: {
+        program: this.programPlannedBudgetColumns,
+        scheme: this.schemePlannedBudgetColumns,
+        trade: this.tradePlannedBudgetColumns,
+        lots: this.tradeLotsPlannedBudgetColumns,
+      },
+    });
   }
   selectedProgram: any = {};
   LoadProgramData(programId) {
@@ -758,14 +866,12 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     const totalLotContractedTrainee = this.sumArray(
       TradeLot.map((d) => d.TraineeContTarget)
     );
-
     if (this.TradeDesignInfoForm.get("payments").invalid) {
       this.ComSrv.ShowError(
         "Minimum one other payment is required to proceed next."
       );
       return;
     }
-
     if (this.TradeDesignInfoForm.invalid) {
       this.ComSrv.ShowError("All * filed is required to form submission");
     }
@@ -932,11 +1038,23 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
   }
   LoadMatTable(tableData: any[], ReportName: string) {
     if (tableData.length > 0) {
+      const excludedTradePlanColumnArray = ["EntryLevelEducation"];
       switch (ReportName) {
         case "tradeWiseTarget":
+
+
+          const excludeTradeColumnArray = [
+            "ClassStartDate","ProgramName","ProposedDistrict","EntryLevelEducation"
+          ];
           this.TradeWiseTableColumns = Object.keys(tableData[0]).filter(
-            (key) => !key.toLowerCase().includes("id")
+            (key) => !key.includes("ID") && !excludeTradeColumnArray.includes(key)
           );
+
+          // this.TradeWiseTableColumns = Object.keys(tableData[0]).filter(
+          //   (key) =>
+          //     !key.toLowerCase().includes("id") &&
+          //     !excludedTradePlanColumnArray.includes(key)
+          // );
           this.TradeWiseTablesData = new MatTableDataSource(tableData);
           this.TradeWiseTablesData.paginator = this.tpaginator;
           this.TradeWiseTablesData.sort = this.tsort;
@@ -951,7 +1069,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
           break;
         case "programWiseBudget":
           const excludeColumnArray = [
-            "ClassStartDate",
+            "ClassStartDate","ProgramName","ProposedDistrict",
             "SSPWorkflow",
             "IsSubmitted",
             "TentativeProcessStart",
@@ -976,6 +1094,7 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
             "EndDate",
             "StatusRemarks",
             "IsFinalApproved",
+            "EntryLevelEducation",
           ];
           this.ProgramWiseTableColumns = Object.keys(tableData[0]).filter(
             (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
@@ -1059,7 +1178,6 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
     this.TradeDesignInfoForm.get("GenderID").setValue(GenderID[0]);
     await this.LoadTradeLayerData(selectedTradeDesign[0].TradeLayer);
     await this.OnLocationChange();
-
     await this.GetTradeLot(selectedTradeDesign[0].TradeDesignID);
     this.TradeLot = this.TradeDesignInfoForm.get("TradeLot") as FormArray;
     this.TradeLot.controls.forEach((control: FormGroup, index: number) => {
@@ -1251,117 +1369,25 @@ export class TradePlanComponent implements OnInit, AfterViewInit {
       });
     }
   }
-
   trades: any[] = [];
   itemsPerPage: number = 5;
   currentPage: number = 1;
   totalPages: number = 1;
-
- 
   toggleDetails(trade: any): void {
     trade.showDetails = !trade.showDetails;
   }
-
   openApprovalDialogue(trade: any): void {
-    console.log('Open dialog for:', trade);
+    console.log("Open dialog for:", trade);
     // Implement MatDialog logic, e.g.:
     // this.dialog.open(YourDialogComponent, { data: trade });
   }
-
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
     }
   }
-
   updatePagination(): void {
     this.totalPages = Math.ceil(this.trades.length / this.itemsPerPage);
   }
-
-  loadData(): void {
-    this.trades = [
-      {
-        id: 1,
-        TradeName: 'Web Development',
-        TradeCode: 'WD101',
-        SectorName: 'IT',
-        SubSectorName: 'Web Technologies',
-        showDetails: false,
-        designs: [
-          {
-            id: 1,
-            Duration: '6 Months',
-            TotalTrainingHours: 300,
-            showLots: false,
-            lots: [
-              {
-                id: 1,
-                District: 'Delhi',
-                Cluster: 'North',
-                showPayments: false,
-                payments: [
-                  { id: 1, PaymentType: 'Stipend', Amount: 6000 },
-                  { id: 2, PaymentType: 'Desktop Payment', Amount: 5000 },
-                  { id: 3, PaymentType: 'Internet/Dongle', Amount: 1500 },
-                ],
-              },
-              {
-                id: 2,
-                District: 'Mumbai',
-                Cluster: 'West',
-                showPayments: false,
-                payments: [
-                  { id: 4, PaymentType: 'Stipend', Amount: 6000 },
-                  { id: 5, PaymentType: 'Desktop Payment', Amount: 5000 },
-                ],
-              },
-            ],
-          },
-          {
-            id: 2,
-            Duration: '3 Months',
-            TotalTrainingHours: 150,
-            showLots: false,
-            lots: [
-              {
-                id: 3,
-                District: 'Pune',
-                Cluster: 'Central',
-                showPayments: false,
-                payments: [{ id: 6, PaymentType: 'Stipend', Amount: 3000 }],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 2,
-        TradeName: 'Mobile App Development',
-        TradeCode: 'MAD202',
-        SectorName: 'IT',
-        SubSectorName: 'Mobile Technologies',
-        showDetails: false,
-        designs: [
-          {
-            id: 3,
-            Duration: '6 Months',
-            TotalTrainingHours: 280,
-            showLots: false,
-            lots: [
-              {
-                id: 4,
-                District: 'Hyderabad',
-                Cluster: 'South',
-                showPayments: false,
-                payments: [
-                  { id: 7, PaymentType: 'Stipend', Amount: 7000 },
-                  { id: 8, PaymentType: 'Internet/Dongle', Amount: 2000 },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ];
-  }
+ 
 }

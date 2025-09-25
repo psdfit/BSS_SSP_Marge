@@ -13,13 +13,13 @@ import { ProgramPlanComponent } from "./program-plan/program-plan.component";
 import { ProgramInitiateComponent } from "./program-initiate/program-initiate.component";
 const routes: Routes = [
   {
-    path: "program-plan",
+    path: "scheme-plan",
     component: ProgramPlanComponent,
     canActivate: [AuthGuardService],
     data: {
       icon: "verified_user",
       inMenu: true,
-      title: "Program Plan",
+      title: "Scheme Plan",
     },
   },
   {
@@ -33,13 +33,13 @@ const routes: Routes = [
     },
   },
   {
-    path: "program-initiate",
+    path: "initiate-scheme-approval",
     component: ProgramInitiateComponent,
     canActivate: [AuthGuardService],
     data: {
       icon: "verified_user",
       inMenu: true,
-      title: "Program Initiate",
+      title: "Initiate Scheme Approval",
     },
   },
   {

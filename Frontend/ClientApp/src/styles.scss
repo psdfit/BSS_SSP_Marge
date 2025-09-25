@@ -19,6 +19,9 @@ body {
 
 .mat-tab-body-wrapper {
   flex-grow: 1;
+  border: 1px solid  rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  margin-top: 3px ;
 }
 
 .timepicker-overlay {
@@ -1031,5 +1034,10 @@ mat-table mat-row:focus {
 }
 
 .mat-expansion-panel-content{
-  border-top: 2px solid #FFC107 !important;
+  border-top:  1px solid #e2e8f0 !important;
+}
+
+.sidemenu {
+
+    height: 100vh !important;
 }

@@ -2160,8 +2160,12 @@ body {
   }
 }
 
-td {
-  font-size: 0.98rem;
+mat-cell {
+  font-size: 0.7rem !important;
+  padding-left: 10px !important;
 }
 
-
+mat-table mat-cell {
+  border-bottom: 1px solid #eee !important;
+    border: 0px solid #eee !important;
+}

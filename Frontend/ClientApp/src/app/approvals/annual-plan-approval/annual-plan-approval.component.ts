@@ -13,9 +13,13 @@ import {
   Validators,
 } from "@angular/forms";
 import { environment } from "../../../environments/environment";
-import { EnumApprovalProcess } from "src/app/shared/Enumerations";
+// import { EnumApprovalProcess } from "src/app/shared/Enumerations";
 import { DialogueService } from "src/app/shared/dialogue.service";
 import { ProgramReviewComponent } from "src/app/custom-components/program-review/program-review.component";
+import { Workbook } from 'exceljs';
+import * as fs from 'file-saver';
+import { AppendixImportSheetNames, EnumProgramCategory, EnumApprovalProcess } from '../../shared/Enumerations';
+import * as XLSX from 'xlsx';
 @Component({
   selector: "app-annual-plan-approval",
   templateUrl: "./annual-plan-approval.component.html",
@@ -205,6 +209,7 @@ export class AnnualPlanApprovalComponent implements OnInit {
           "StatusRemarks",
           "IsFinalApproved",
           "IsInitiated",
+          "ProgramName","SupportItems"
         ];
 
         if (this.currentUser.RoleTitle == "Program Development") {
@@ -219,7 +224,7 @@ export class AnnualPlanApprovalComponent implements OnInit {
           (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
         );
 
-        this.TableColumns.unshift("Action");
+        this.TableColumns.unshift("Actions");
         this.TablesData = new MatTableDataSource(tableData);
         this.TablesData.paginator = this.Paginator;
         this.TablesData.sort = this.Sort;
@@ -257,6 +262,74 @@ export class AnnualPlanApprovalComponent implements OnInit {
   DataExcelExport(data: any, title) {
     this.ComSrv.ExcelExporWithForm(data, title);
   }
+      
+   exportAppendix(schemeID: number): void {
+    // Get data from service
+    // const data = this.getDataObject;
+    
+    const scheme: any | undefined = this.GetDataObject.scheme.find(x => x.SchemeID === schemeID);
+    const tsps: any[] = this.GetDataObject.tsps;
+    const classes: any[] = this.GetDataObject.classes.filter(x => x.SchemeID === schemeID);
+    const instructors: any[] = this.GetDataObject.instructors;
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+
+    // Scheme worksheet (exclude SchemeID)
+    if (scheme) {
+      const schemeWithoutId = { ...scheme };
+      delete schemeWithoutId.SchemeID; // Remove SchemeID
+      const wsScheme = XLSX.utils.json_to_sheet([schemeWithoutId]);
+      XLSX.utils.book_append_sheet(wb, wsScheme, AppendixImportSheetNames.Scheme);
+    } else {
+      console.warn(`No scheme found for SchemeID: ${schemeID}`);
+    }
+
+    // TSPs worksheet
+    if (tsps.length > 0) {
+      const wsTsps = XLSX.utils.json_to_sheet(tsps);
+      XLSX.utils.book_append_sheet(wb, wsTsps, AppendixImportSheetNames.TSP);
+    } else {
+      console.warn('No TSPs data available');
+    }
+
+    // Classes worksheet (exclude SchemeID)
+    if (classes.length > 0) {
+      
+      const classesWithoutId = classes.map(cls => {
+        const { SchemeID, ...rest } = cls; // Destructure to exclude SchemeID
+        return rest;
+      });
+      const wsClasses = XLSX.utils.json_to_sheet(classesWithoutId);
+      XLSX.utils.book_append_sheet(wb, wsClasses, AppendixImportSheetNames.Class);
+    } else {
+      console.warn(`No classes data available for SchemeID: ${schemeID}`);
+    }
+
+    // Instructors worksheet
+    if (instructors.length > 0) {
+      const wsInstructors = XLSX.utils.json_to_sheet(instructors);
+      XLSX.utils.book_append_sheet(wb, wsInstructors, AppendixImportSheetNames.Instructor);
+    } else {
+      console.warn('No instructors data available');
+    }
+
+    // Write and download file
+    this.writeAndDownloadFile(wb, `Appendix_${schemeID}`);
+  }
+  
+  private writeAndDownloadFile(wb: XLSX.WorkBook, name: string): void {
+    try {
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob, `${name}.xlsx`);
+    } catch (error) {
+      console.error('Error generating Excel file:', error);
+      // Optionally, integrate a toast service for user feedback
+      // this.toastr.error('Failed to export Excel file');
+    }
+  }
+
   openApprovalDialogue(row: any): void {
     let processKey = EnumApprovalProcess.PROG_APP;
     this.dialogue

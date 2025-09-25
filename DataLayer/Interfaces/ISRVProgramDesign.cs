@@ -38,6 +38,7 @@ namespace DataLayer.Interfaces
         DataTable GetProgramEstimatedBudgetBreakdownDataById(int ProgramID);
         DataTable GetTradeEstimatedBudgetBreakdownDataById(int ProgramID);
         DataTable GetTradeLotEstimatedBudgetBreakdownDataById(int ProgramID);
+        DataTable GetBudgetPivotByProgram(int ProgramID);
 
     }
 }

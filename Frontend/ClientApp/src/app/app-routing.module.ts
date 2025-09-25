@@ -369,7 +369,7 @@ const routes: Routes = [
         canLoad: [AuthGuardService],
       },
       {
-        path: 'program-design',
+        path: 'scheme-plan',
         loadChildren: () =>
           import('./annual-planing/annual-planing.module').then(
             (m) => m.AnnualPlaningModule

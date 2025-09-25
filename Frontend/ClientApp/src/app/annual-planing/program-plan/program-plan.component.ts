@@ -227,12 +227,12 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
 
     this.checkDuplicate(
       "Program",
-      "Program name is already in use. Please choose another name.",
+      "Scheme name is already in use. Please choose another name.",
       "Program"
     );
     this.checkDuplicate(
       "ProgramCode",
-      "Program Code is already in use. Please choose another code.",
+      "Scheme Code is already in use. Please choose another code.",
       "ProgramCode"
     );
 
@@ -245,9 +245,9 @@ export class ProgramPlanComponent implements OnInit, AfterViewInit {
 
   
 
-this.AnnualPlanInfoForm.get('ProgramBudget')?.setValue(selectedProgram.U_Amount.replace(/,/g, '').trim());
+// this.AnnualPlanInfoForm.get('ProgramBudget')?.setValue(selectedProgram.LeftBudget.replace(/,/g, '').trim());
 this.AnnualPlanInfoForm.get('FinancialYearID')?.setValue(selectedYear.Id);
-this.AnnualPlanInfoForm.get('Program')?.setValue(selectedProgram.U_Program);
+// this.AnnualPlanInfoForm.get('Program')?.setValue(selectedProgram.U_Program);
 
     })
     // this.AnnualPlanInfoForm.get('PlaningTypeID').valueChanges.subscribe(d => {
@@ -538,7 +538,7 @@ setTimeout(() => {
   LoadMatTable(tableData: any[]) {
     const excludeColumnArray = [
       "AttachmentTORs",
-      "IsSubmitted",
+      // "IsSubmitted",
       "AttachmentCriteria",
       "ApprovalAttachment",
       "ApprovalEvidence",
@@ -549,7 +549,9 @@ setTimeout(() => {
         (key) => !key.includes("ID") && !excludeColumnArray.includes(key)
       );
       this.TableColumns.unshift("Actions")
-      this.TablesData = new MatTableDataSource(tableData);
+      
+      this.TablesData = new MatTableDataSource([...tableData].sort((a, b) => b.ProgramID - a.ProgramID));
+    
       this.TablesData.paginator = this.paginator;
       this.TablesData.sort = this.sort;
     }

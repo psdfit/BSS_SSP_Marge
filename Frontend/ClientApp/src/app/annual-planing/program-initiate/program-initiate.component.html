@@ -1,22 +1,18 @@
-
-
-
-
 <mat-card>
   <mat-toolbar *ngIf="TapIndex==0" color="accent" class=" slim slim">
     <mat-icon class="material-icons"> add_circle </mat-icon>
     <span class="spacer">{{SpacerTitle}}</span>
   </mat-toolbar>
   <mat-card-content>
-    <div class="row"  *ngIf="TapIndex==0">
+    <div class="row" *ngIf="TapIndex==0">
       <div class="col-sm-12">
         <form (ngSubmit)="Save()" [formGroup]="SchemeInfoForm">
           <fieldset class="border">
-            <legend>Program Initialization</legend>
+            <legend>Scheme Initialization</legend>
             <div class="row">
               <div class="col-sm-3">
                 <mat-form-field>
-                  <mat-label>Select Program</mat-label>
+                  <mat-label>Select Scheme</mat-label>
                   <mat-select (openedChange)="EmptyCtrl()" [(ngModel)]="programId" [ngModelOptions]="{standalone: true}"
                     (selectionChange)="LoadProgramData($event.value)" matInput required>
                     <mat-optgrp class="ddlsrchheader"> <input placeholder="Search" (keydown)="$event.stopPropagation()"
@@ -63,8 +59,7 @@
               <div class="col-sm-3">
                 <mat-form-field class="mat-form-field-disabled">
                   <mat-label>Total Trade </mat-label>
-                  <input formControlName="TotalTrade" placeholder="Total Trade " readonly
-                    matInput required />
+                  <input formControlName="TotalTrade" placeholder="Total Trade " readonly matInput required />
                   <mat-error *ngFor="let error of SchemeInfoForm.get('TotalTrade').errors | keyvalue">{{
                     getErrorMessage(error.key, error.value) }}</mat-error>
                 </mat-form-field>
@@ -111,11 +106,11 @@
         </form>
       </div>
     </div>
-    <mat-toolbar  color="accent" class=" slim slim mt-2">
+    <mat-toolbar color="accent" class=" slim slim mt-2">
       <mat-icon class="material-icons"> view_comfy </mat-icon>
       <span class="spacer">Annual Program List</span>
-      <input  *ngIf="TapIndex==0" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
-      <button  *ngIf="TapIndex==0" mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+      <input *ngIf="TapIndex==0" placeholder="Search" (keyup)="applyFilter(TablesData,$event)" class="search" />
+      <button *ngIf="TapIndex==0" mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
         (click)="DataExcelExport(TablesData.filteredData,'Program Design')">
         <i class="fas fa-file-export"></i> Export Excel</button>
     </mat-toolbar>
@@ -141,106 +136,108 @@
       </mat-table>
       <mat-paginator #tpaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator> -->
       <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
-        <mat-tab [label]="TapIndex===0?'Program List':'Program Initialization'" >
-           <div class="table-responsive">
-              <mat-table [dataSource]="TablesData" #Sort="matSort" matSort class="table table-bordered">
+        <mat-tab [label]="TapIndex===0?'Scheme List':'Scheme Initialization'">
+          <div class="table-responsive">
+            <mat-table [dataSource]="TablesData" #Sort="matSort" matSort class="table table-bordered">
               <ng-container *ngFor="let column of TableColumns" [matColumnDef]="column">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                <mat-cell *matCellDef="let row">
 
-                 <ng-container *ngIf="column !='IsInitiated' && column !='ApprovalStatus' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart'">
+                  <ng-container
+                    *ngIf="column !='IsInitiated' && column !='ApprovalStatus' && column !='Action' && column !='ClassStartDate' && column !='TentativeProcessStart'">
                     &nbsp; {{ row[column] }}
-                 </ng-container>
+                  </ng-container>
 
-                 <ng-container *ngIf="column =='Action'">
+                  <ng-container *ngIf="column =='Action'">
 
-                  <!-- <button mat-icon-button color="accent" matTooltip="View Detail"
+                    <!-- <button mat-icon-button color="accent" matTooltip="View Detail"
                   (click)="ShowDetail(row, row['ProgramName'])">
                   <mat-icon role="img"
                      class="mat-icon notranslate material-icons mat-icon-no-color"
                      aria-hidden="true">control_point</mat-icon>
                    </button> -->
 
-                   <a color="primary" (click)="ShowDetail(row, row['ProgramName'])" mat-button> Detail
-                    <mat-icon>keyboard_arrow_down</mat-icon></a>
+                    <a color="primary" (click)="ShowDetail(row, row['ProgramName'])" mat-button> Detail
+                      <mat-icon>keyboard_arrow_down</mat-icon></a>
 
-                 </ng-container>
+                  </ng-container>
 
-                 <ng-container *ngIf="column =='IsInitiated'">
-                   &nbsp;
+                  <ng-container *ngIf="column =='IsInitiated'">
+                    &nbsp;
                     <span *ngIf="row[column]===false" class="label label-warning">No</span>
                     <span *ngIf="row[column]===true" class="label label-success">Yes</span>
-                 </ng-container>
-                 <ng-container *ngIf="column =='ApprovalStatus'">
-                   &nbsp;
-                  <span *ngIf="row[column]=='Pending'" class="label label-warning">{{row[column]}}</span>
+                  </ng-container>
+                  <ng-container *ngIf="column =='ApprovalStatus'">
+                    &nbsp;
+                    <span *ngIf="row[column]=='Pending'" class="label label-warning">{{row[column]}}</span>
                     <span *ngIf="row[column]=='Approved'" class="label label-success">{{row[column]}}</span>
                     <span *ngIf="row[column]=='Rejected'" class="label label-danger">{{row[column]}}</span>
-                 </ng-container>
-                 <ng-container *ngIf="column =='ClassStartDate' || column =='TentativeProcessStart'">
+                  </ng-container>
+                  <ng-container *ngIf="column =='ClassStartDate' || column =='TentativeProcessStart'">
                     &nbsp; {{ row[column] | date:environment.DateFormat }}
-                 </ng-container>
-              </mat-cell>
+                  </ng-container>
+                </mat-cell>
               </ng-container>
               <mat-header-row *matHeaderRowDef="TableColumns"></mat-header-row>
               <mat-row *matRowDef="let row; columns: TableColumns;"></mat-row>
-              </mat-table>
-              <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
-           </div>
-           <!-- record list end -->
+            </mat-table>
+            <mat-paginator #Paginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+          </div>
+          <!-- record list end -->
         </mat-tab>
         <mat-tab [label]="TapTitle" *ngIf="isChecked">
-        <!-- start trade wise budget list -->
-        <mat-toolbar color="accent" class=" slim slim mt-2">
-           <mat-icon class="material-icons"> view_comfy </mat-icon>
-           <span class="spacer">Trade Wise Budget</span>
-           <input placeholder="Search" (keyup)="applyFilter(tradeTablesData,$event)" class="search" />
-           <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+          <!-- start trade wise budget list -->
+          <mat-toolbar color="accent" class=" slim slim mt-2">
+            <mat-icon class="material-icons"> view_comfy </mat-icon>
+            <span class="spacer">Trade Wise Budget</span>
+            <input placeholder="Search" (keyup)="applyFilter(tradeTablesData,$event)" class="search" />
+            <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
               (click)="DataExcelExport(tradeTablesData.filteredData,'Lot-Wise-Target')">
-           <i class="fas fa-file-export"></i> Export Excel
-           </button>
-        </mat-toolbar>
-        <div class="table-responsive">
-           <mat-table [dataSource]="tradeTablesData" #tSort="matSort" matSort class="table table-bordered">
-           <ng-container *ngFor="let column of tradeTableColumns" [matColumnDef]="column">
-           <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
-           <mat-cell *matCellDef="let row">
-              <ng-container> &nbsp; {{ row[column] }}</ng-container>
-           </mat-cell>
-           </ng-container>
-           <mat-header-row *matHeaderRowDef="tradeTableColumns"></mat-header-row>
-           <mat-row *matRowDef="let row; columns: tradeTableColumns;"></mat-row>
-           </mat-table>
-           <mat-paginator #tPaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
-        </div>
-        <!-- end trade wise budget list -->
-        <!-- start lot wise budget list -->
-        <mat-toolbar color="accent" class=" slim slim">
-           <mat-icon class="material-icons"> view_comfy </mat-icon>
-           <span class="spacer">Trade Lot Wise Budget</span>
-           <input placeholder="Search" (keyup)="applyFilter(lotTablesData,$event)" class="search" />
-           <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
+              <i class="fas fa-file-export"></i> Export Excel
+            </button>
+          </mat-toolbar>
+          <div class="table-responsive">
+            <mat-table [dataSource]="tradeTablesData" #tSort="matSort" matSort class="table table-bordered">
+              <ng-container *ngFor="let column of tradeTableColumns" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <ng-container> &nbsp; {{ row[column] }}</ng-container>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="tradeTableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: tradeTableColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #tPaginator="matPaginator" [pageSize]="10"
+              [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+          </div>
+          <!-- end trade wise budget list -->
+          <!-- start lot wise budget list -->
+          <mat-toolbar color="accent" class=" slim slim">
+            <mat-icon class="material-icons"> view_comfy </mat-icon>
+            <span class="spacer">Trade Lot Wise Budget</span>
+            <input placeholder="Search" (keyup)="applyFilter(lotTablesData,$event)" class="search" />
+            <button mat-raised-button style="float:right;margin: 0px 7px;background: #c3d9ff"
               (click)="DataExcelExport(lotTablesData.filteredData,'Lot-Wise-Target')">
-           <i class="fas fa-file-export"></i> Export Excel
-           </button>
-        </mat-toolbar>
-        <div class="table-responsive">
-           <mat-table [dataSource]="lotTablesData" #lSort="matSort" matSort class="table table-bordered">
-           <ng-container *ngFor="let column of lotTableColumns" [matColumnDef]="column">
-           <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
-           <mat-cell *matCellDef="let row">
-              <ng-container> &nbsp; {{ row[column] }}</ng-container>
-           </mat-cell>
-           </ng-container>
-           <mat-header-row *matHeaderRowDef="lotTableColumns"></mat-header-row>
-           <mat-row *matRowDef="let row; columns: lotTableColumns;"></mat-row>
-           </mat-table>
-           <mat-paginator #lPaginator="matPaginator" [pageSize]="10" [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
-        </div>
-        <!-- end lot wise budget list -->
+              <i class="fas fa-file-export"></i> Export Excel
+            </button>
+          </mat-toolbar>
+          <div class="table-responsive">
+            <mat-table [dataSource]="lotTablesData" #lSort="matSort" matSort class="table table-bordered">
+              <ng-container *ngFor="let column of lotTableColumns" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ camelCaseToWords(column) }}</mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <ng-container> &nbsp; {{ row[column] }}</ng-container>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="lotTableColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: lotTableColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #lPaginator="matPaginator" [pageSize]="10"
+              [pageSizeOptions]="[5,10,20, 100]"></mat-paginator>
+          </div>
+          <!-- end lot wise budget list -->
         </mat-tab>
-     </mat-tab-group>
+      </mat-tab-group>
     </div>
   </mat-card-content>
 </mat-card>
-
