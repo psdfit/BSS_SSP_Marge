@@ -104,8 +104,8 @@ namespace DataLayer.Services
             Invoice.ProcessKey = r["ProcessKey"].ToString();
             Invoice.InvoiceNumber = Convert.ToInt32(r["InvoiceNumber"]);
             Invoice.MiscProfileDeductionCount = Convert.ToInt32(r["MiscProfileDeductionCount"]);
-            Invoice.LineTotal = Convert.ToDouble(r["LineTotal"]);
-            Invoice.TotalLC = Convert.ToDouble(r["TotalLC"]);
+            Invoice.LineTotal = Convert.IsDBNull(r["LineTotal"]) ? 0  : Convert.ToDouble(r["LineTotal"]);
+            Invoice.TotalLC = Convert.IsDBNull(r["TotalLC"]) ? 0 : Convert.ToDouble(r["TotalLC"]);
             Invoice.MiscProfileDeductionAmount = Convert.ToDouble(r["MiscProfileDeductionAmount"]);
             Invoice.TotalCostPerTrainee = Convert.ToDouble(r["TotalCostPerTrainee"]);
             Invoice.CnicDeductionAmount = Convert.ToDouble(r["CnicDeductionAmount"]);
@@ -114,10 +114,10 @@ namespace DataLayer.Services
             Invoice.PenaltyPercentage = Convert.ToDouble(r["PenaltyPercentage"]);
             Invoice.MiscDeductionAmount = Convert.ToDouble(r["MiscDeductionAmount"]);
             Invoice.PenaltyAmount = Convert.ToDouble(r["PenaltyAmount"]);
-            Invoice.NetPayableAmount = Convert.ToDouble(r["NetPayableAmount"]);
+            Invoice.NetPayableAmount = Convert.IsDBNull(r["NetPayableAmount"]) ? 0 : Convert.ToDouble(r["NetPayableAmount"]);
             Invoice.NetTrainingCost = Convert.ToDouble(r["NetTrainingCost"]);
-            Invoice.TotalMonthlyPayment = Convert.ToDouble(r["TotalMonthlyPayment"]);
-            Invoice.GrossPayable = Convert.ToDouble(r["GrossPayable"]);
+            Invoice.TotalMonthlyPayment = Convert.IsDBNull(r["TotalMonthlyPayment"]) ? 0 : Convert.ToDouble(r["TotalMonthlyPayment"]);
+            Invoice.GrossPayable = Convert.IsDBNull(r["GrossPayable"]) ? 0 : Convert.ToDouble(r["GrossPayable"]);
             Invoice.TestingFee = Convert.ToDouble(r["TestingFee"]);
             Invoice.Stipend = Convert.ToDouble(r["Stipend"]);
             Invoice.UniformBag = Convert.ToDouble(r["UniformBag"]);
