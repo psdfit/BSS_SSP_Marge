@@ -650,6 +650,7 @@ export class ClassComponent implements OnInit {
     ls.push(this.notForm.controls.Batch);
     ls.push(this.notForm.controls.MinHoursPerMonth);
 
+
     ls.forEach(c => {
       if (parseFloat(c.value) == 0) {
         c.setErrors({ zero: true });
@@ -938,8 +939,8 @@ export class ClassComponent implements OnInit {
               parseInt(f['Protectorate and Visa Stamping']),
               parseInt(f['Medical cost']),
               parseInt(f['Prometric costs']),
-              parseInt(f['Other Training and supporting cost']),
               parseInt(f['Takamol cost']),
+              parseInt(f['Other Training and supporting cost']),
               item.trainees
 
               //this.notForm.controls.TrainingCostPerTraineePerMonthInTax.value,
@@ -951,7 +952,6 @@ export class ClassComponent implements OnInit {
               //parseInt(item.trainees)
 
             );
-
           // let classCode = `${this.scheme[0]?.SchemeCode ?? ''}-${tsp?.TSPCode ?? ''}-${seq[index]}`;
           let form = this.getNewRow();
           //let validator = this.notForm.controls.GeoTagging.validator;
@@ -1137,17 +1137,17 @@ export class ClassComponent implements OnInit {
   }
   calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend,
     testingCert, uniformBag, ojt, Guru, transportation, ProtectorateandVisa,
-    MedicalCost, PrometricCost,
-    OtherTrainingCost, 
-    TakamolCost,
-    trainees) {
+    MedicalCost, PrometricCost, TakamolCost, OtherTrainingCost, trainees) {
     let val = 0
     if (duration < 1) {
-      val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru) + 
-      ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost
+      val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru) +
+        ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost
       ) * trainees);
     }
-    else { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)) * trainees); }
+    else {
+      val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)
+        + ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost) * trainees);
+    }
     return parseFloat(val.toFixed(this.decimalPlaces));
   }
   emptyClass() {
@@ -1275,7 +1275,6 @@ export class ClassComponent implements OnInit {
 
 
   highlightInvalidPopulatedList(row: any) {
-
     var regEx = new RegExp(this.geoTagPattern);
     //row['InvalidGeoTagging'] = row.GeoTagging.length > 0 && !regEx.test(row.GeoTagging)
     if (!regEx.test(row.GeoTagging) && row.RequiredLocationGeoTag) {

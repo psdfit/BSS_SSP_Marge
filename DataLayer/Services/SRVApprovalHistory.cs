@@ -2496,6 +2496,17 @@ namespace DataLayer.Services
                                             _transaction.Commit();
                                             result = true;
                                             break;
+                                        case EnumApprovalProcess.IPT:
+                                            srvIPDocsVerification.TakamolCostApproveReject(new TakamolCostResponseModel()
+                                            {
+                                                TakamolDocumentsID = model.FormID,
+                                                IsApproved = false,
+                                                IsRejected = true,
+                                                CurUserID = model.CurUserID
+                                            }, _transaction);
+                                            _transaction.Commit();
+                                            result = true;
+                                            break;
 
                                         case EnumApprovalProcess.PRN_R:
                                         case EnumApprovalProcess.PRN_C:

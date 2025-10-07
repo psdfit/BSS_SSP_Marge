@@ -96,9 +96,9 @@ export class OtherTrainingCostDocDialogComponent implements OnInit {
 
 
   setUploadRestrictions(selectedDocument: any) {
-    if (selectedDocument === "Approved") {
+    if (selectedDocument === "Approved" || selectedDocument === "Rejected") {
       this.isUploadDisabled = true;
-      this.uploadMessage = "You are not allowed to upload a new document as your document has already been approved.";
+      this.uploadMessage = `You are not allowed to upload a new document as your document has already been ${selectedDocument}.`;
     } else {
       this.isUploadDisabled = false;
       this.uploadMessage = "";

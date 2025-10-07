@@ -81,15 +81,20 @@
                         &nbsp; {{ i + 1 }}
                      </ng-container>
                      <ng-container *ngIf="column == 'Document'">
+                        <!-- TSP button -->
                         <button mat-button color="accent" (click)="openVisaStampingDialog(row)"
                            *ngIf="currentUser.UserLevel === enumUserLevel.TSP">
                            {{ row.DocumentsUploaded === "Yes" ? 'View Document' : 'Upload Document' }}
                         </button>
+
+                        <!-- Non-TSP button -->
                         <button mat-button color="accent" (click)="openVisaStampingDialog(row)"
-                           *ngIf="currentUser.UserLevel !== enumUserLevel.TSP">
+                           *ngIf="currentUser.UserLevel !== enumUserLevel.TSP"
+                           [disabled]="row.DocumentsUploaded !== 'Yes'">
                            View Document
                         </button>
                      </ng-container>
+
 
                      <!-- <ng-container *ngIf="column == 'Decision'">
                         <button mat-raised-button color="primary" type="button" mat-button
