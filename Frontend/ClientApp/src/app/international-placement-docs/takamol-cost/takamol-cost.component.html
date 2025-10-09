@@ -74,7 +74,8 @@
                      {{ camelCaseToWords(column) }}
                   </mat-header-cell>
                   <mat-cell *matCellDef="let row; let i = index">
-                     <ng-container *ngIf="column !== 'Sr#' && column !== 'Document'">
+                     <ng-container
+                        *ngIf="column !== 'Sr#' && column !== 'Document' && column !== 'TakamolCostApprovalStatus'">
                         &nbsp;{{ row[column] }}
                      </ng-container>
                      <ng-container *ngIf="column == 'Sr#'">
@@ -93,6 +94,15 @@
                            [disabled]="row.DocumentsUploaded !== 'Yes'">
                            View Document
                         </button>
+                     </ng-container>
+
+                     <ng-container *ngIf="column === 'TakamolCostApprovalStatus'">
+                        <div class="d-flex justify-content-center align-items-center">
+                           <span class="badge"
+                              [ngClass]="{'bg-warning text-dark': row[column] === 'Pending', 'bg-success text-white': row[column] === 'Approved','bg-danger text-white': row[column] === 'Rejected'}">
+                              {{ row[column] }}
+                           </span>
+                        </div>
                      </ng-container>
 
 
