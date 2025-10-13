@@ -15,6 +15,7 @@ namespace DataLayer.Interfaces
         bool SaveMRNApprovalHistory(ref ApprovalWrapperModel model);
         bool SavePCRNApprovalHistory(ref ApprovalWrapperModel model);
         bool SaveOTRNApprovalHistory(ref ApprovalWrapperModel model);
+        bool SaveTakamolRecommendationNoteApprovalHistory(ref ApprovalWrapperModel model);
         public void SendTPRNApprovalNotification(ApprovalWrapperModel model);
         bool SaveApprovalHistory(ref ApprovalWrapperModel wrapperModel);
         public void SendApprovalNotification(ApprovalWrapperModel wrapperModel);

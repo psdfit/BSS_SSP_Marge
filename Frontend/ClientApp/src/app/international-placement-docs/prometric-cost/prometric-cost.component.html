@@ -74,20 +74,35 @@
                      {{ camelCaseToWords(column) }}
                   </mat-header-cell>
                   <mat-cell *matCellDef="let row; let i = index">
-                     <ng-container *ngIf="column !== 'Sr#' && column !== 'Document'">
+                     <ng-container
+                        *ngIf="column !== 'Sr#' && column !== 'Document' && column !== 'PrometricCostApprovalStatus'">
                         &nbsp;{{ row[column] }}
                      </ng-container>
                      <ng-container *ngIf="column == 'Sr#'">
                         &nbsp; {{ i + 1 }}
                      </ng-container>
                      <ng-container *ngIf="column == 'Document'">
+                        <!-- TSP button -->
                         <button mat-button color="accent" (click)="openVisaStampingDialog(row)"
                            *ngIf="currentUser.UserLevel === enumUserLevel.TSP">
-                           {{ row.DocumentsUploaded === "Yes" ? 'View Document' : 'Upload Document' }} </button>
+                           {{ row.DocumentsUploaded === "Yes" ? 'View Document' : 'Upload Document' }}
+                        </button>
+
+                        <!-- Non-TSP button -->
                         <button mat-button color="accent" (click)="openVisaStampingDialog(row)"
-                           *ngIf="currentUser.UserLevel !== enumUserLevel.TSP">
+                           *ngIf="currentUser.UserLevel !== enumUserLevel.TSP"
+                           [disabled]="row.DocumentsUploaded !== 'Yes'">
                            View Document
                         </button>
+                     </ng-container>
+
+                     <ng-container *ngIf="column === 'PrometricCostApprovalStatus'">
+                        <div class="d-flex justify-content-center align-items-center">
+                           <span class="badge"
+                              [ngClass]="{'bg-warning text-dark': row[column] === 'Pending', 'bg-success text-white': row[column] === 'Approved','bg-danger text-white': row[column] === 'Rejected'}">
+                              {{ row[column] }}
+                           </span>
+                        </div>
                      </ng-container>
 
                      <!-- <ng-container *ngIf="column == 'Decision'">

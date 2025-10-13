@@ -90,7 +90,7 @@ namespace DataLayer.Services
         {
             try
             {
-                SqlParameter[] param = new SqlParameter[64];
+                SqlParameter[] param = new SqlParameter[65];
                 param[0] = new SqlParameter("@ClassID", Class.ClassID);
                 param[1] = new SqlParameter("@ClassCode", Class.ClassCode);
                 param[2] = new SqlParameter("@ClassStatusID", 1);
@@ -162,6 +162,7 @@ namespace DataLayer.Services
                 param[61] = new SqlParameter("@MedicalCost", Class.MedicalCost);
                 param[62] = new SqlParameter("@PrometricCost", Class.PrometricCost);
                 param[63] = new SqlParameter("@OtherTrainingCost", Class.OtherTrainingCost);
+                param[64] = new SqlParameter("@TakamolCost", Class.TakamolCost);
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_Class]", param);
                 int k = Convert.ToInt32(param[50].Value);
                 return GetByClassID(k);
@@ -612,6 +613,10 @@ namespace DataLayer.Services
             if (r.Table.Columns.Contains("PrometricCost"))
             {
                 Class.PrometricCost = r["PrometricCost"] != DBNull.Value ? Convert.ToInt32(r["PrometricCost"]) : 0;
+            }
+            if (r.Table.Columns.Contains("TakamolCost"))
+            {
+                Class.TakamolCost = r["TakamolCost"] != DBNull.Value ? Convert.ToInt32(r["TakamolCost"]) : 0;
             }
             if (r.Table.Columns.Contains("OtherTrainingCost"))
             {

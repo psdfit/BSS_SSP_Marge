@@ -205,6 +205,30 @@ namespace DataLayer.Services
             { throw new Exception(e.Message); }
         }
 
+
+        public bool CreatePOForTakamolRecommendationNote(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@TakamolRecommendationNoteIDs", srnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForTakamolRecommendationNote", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POForTakamolRecommendationNote" +
+                        "TPRN", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
         public bool CreatePOForMRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
         {
             try

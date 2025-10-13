@@ -142,6 +142,7 @@ export class ClassComponent implements OnInit {
       ProtectorateandVisa: 0,  //Added by Rao Ali Haider for International Plac
       MedicalCost: 0,
       PrometricCost: 0,
+      TakamolCost: 0,
       OtherTrainingCost: 0,
     }
     this.notForm = this._formBuilder.group({ ...this.classFormGroup, TotalClasses: [0, Validators.required] });
@@ -310,7 +311,7 @@ export class ClassComponent implements OnInit {
       this.registrationAuthority = d[15].Value;
       this.programFocus = d[16].Value;
       // console.log(this.programFocus);
-      
+
     }, error => this.error = error
     );
   }
@@ -430,6 +431,7 @@ export class ClassComponent implements OnInit {
               parseInt(this.notForm.controls.ProtectorateandVisa.value),
               parseInt(this.notForm.controls.MedicalCost.value),
               parseInt(this.notForm.controls.PrometricCost.value),
+              parseInt(this.notForm.controls.Takamol.value),
               parseInt(this.notForm.controls.OtherTrainingCost.value),
               parseInt(item.trainees)
             );
@@ -450,7 +452,7 @@ export class ClassComponent implements OnInit {
             let tradeName = this.trades.find(x => x.TradeID == this.notForm.controls.TradeID.value).TradeName ?? '';
             let genderName = this.genderOfTrainee.find(x => x.GenderID == this.notForm.controls.GenderID.value).GenderName || '';
             let certAuthName = this.certificationAgency.find(x => x.CertAuthID == this.notForm.controls.CertAuthID.value)?.CertAuthName || '';
-            
+
             let RegistrtionAuthorityName = this.registrationAuthority.find(x => x.RegistrationAuthorityID == this.notForm.controls.RegistrationAuthorityID.value)?.RegistrtionAuthorityName || '';
             let ProgramFocusName = this.programFocus.find(x => x.ProgramFocusID == this.notForm.controls.programFocusID.value)?.ProgramFocusName || '';
 
@@ -536,9 +538,10 @@ export class ClassComponent implements OnInit {
               this.tableList['Transportation'] = this.notForm.controls.Transportation.value,
               this.tableList['MedicalCost'] = this.notForm.controls.MedicalCost.value,  //Added by Rao Ali Haider for International Plac
               this.tableList['PrometricCost'] = this.notForm.controls.PrometricCost.value,
+              this.tableList['TakamolCost'] = this.notForm.controls.TakamolCost.value,
               this.tableList['OtherTrainingCost'] = this.notForm.controls.OtherTrainingCost.value,
               this.tableList['ProtectorateandVisa'] = this.notForm.controls.ProtectorateandVisa.value
-              this.populatedTableList.push(this.tableList);
+            this.populatedTableList.push(this.tableList);
             this.tableList = [];
 
             form.patchValue({
@@ -587,8 +590,9 @@ export class ClassComponent implements OnInit {
               ProtectorateandVisa: this.notForm.controls.ProtectorateandVisa.value,  //Added by Rao Ali Haider for International Plac
               MedicalCost: this.notForm.controls.MedicalCost.value,
               PrometricCost: this.notForm.controls.PrometricCost.value,
+              TakamolCost: this.notForm.controls.TakamolCost.value,
               OtherTrainingCost: this.notForm.controls.OtherTrainingCost.value
-              
+
             }, { emitEvent: true });
           });
       });
@@ -646,6 +650,7 @@ export class ClassComponent implements OnInit {
     ls.push(this.notForm.controls.Batch);
     ls.push(this.notForm.controls.MinHoursPerMonth);
 
+
     ls.forEach(c => {
       if (parseFloat(c.value) == 0) {
         c.setErrors({ zero: true });
@@ -670,7 +675,7 @@ export class ClassComponent implements OnInit {
       return;
     } else {
       let classes = this.classForm.value.Class
-      
+
       classes = classes.map((x: any) => {
         let geoTagging = x.GeoTagging?.split(',') ?? [];
         return {
@@ -860,11 +865,11 @@ export class ClassComponent implements OnInit {
       let regAuthorityName = this.registrationAuthority.find(x => f["Registration Authority"]?.toLowerCase() == x.RegistrationAuthorityName.toLowerCase())?.RegistrationAuthorityName || '';
 
 
-      
-      let programFocusID = this.programFocus.find(x => f['Program Focus']?.toLowerCase()   == x.ProgramFocusName.toLowerCase())?.ProgramFocusID || '';
+
+      let programFocusID = this.programFocus.find(x => f['Program Focus']?.toLowerCase() == x.ProgramFocusName.toLowerCase())?.ProgramFocusID || '';
       let ProgramFocusName = this.programFocus.find(x => f['Program Focus']?.toLowerCase() == x.ProgramFocusName.toLowerCase())?.ProgramFocusName || '';
 
-      
+
 
       let sectorID = this.sectors.find(x => f["Sector"]?.toLowerCase() == x.SectorName.toLowerCase())?.SectorID || '';
       let sectorName = this.sectors.find(x => f["Sector"]?.toLowerCase() == x.SectorName.toLowerCase())?.SectorName || '';
@@ -934,6 +939,7 @@ export class ClassComponent implements OnInit {
               parseInt(f['Protectorate and Visa Stamping']),
               parseInt(f['Medical cost']),
               parseInt(f['Prometric costs']),
+              parseInt(f['Takamol cost']),
               parseInt(f['Other Training and supporting cost']),
               item.trainees
 
@@ -946,7 +952,6 @@ export class ClassComponent implements OnInit {
               //parseInt(item.trainees)
 
             );
-
           // let classCode = `${this.scheme[0]?.SchemeCode ?? ''}-${tsp?.TSPCode ?? ''}-${seq[index]}`;
           let form = this.getNewRow();
           //let validator = this.notForm.controls.GeoTagging.validator;
@@ -1018,19 +1023,20 @@ export class ClassComponent implements OnInit {
             this.tableList['Stipend'] = Math.round(f['Stipend']),
             this.tableList['TotalCostPerClass'] = Math.round(TotalCost_temp),
             this.tableList['balloonpayment'] = f['On Job Training (OJT)'] ?? 0,
-            this.tableList['GuruPayment'] = f['Guru Payment'] ?? 0, 
+            this.tableList['GuruPayment'] = f['Guru Payment'] ?? 0,
             this.tableList['Transportation'] = f['Transportation'] ?? 0,
             this.tableList['ProtectorateandVisa'] = f['Protectorate and Visa Stamping'] ?? 0, //Added by Rao Ali Haider for International Placement
             this.tableList['MedicalCost'] = f['Medical cost'] ?? 0,
             this.tableList['PrometricCost'] = f['Prometric costs'] ?? 0,
+            this.tableList['TakamolCost'] = f['Takamol cost'] ?? 0,
             this.tableList['OtherTrainingCost'] = f['Other Training and supporting cost'] ?? 0,
             this.tableList['IsEditable'] = false
-          
+
           ///
 
           let tradeDetailID = this.checkAssignTradeDetailMapID(this.tableList);
-// console.log(programFocusID);
-// console.log(ProgramFocusName);
+          // console.log(programFocusID);
+          // console.log(ProgramFocusName);
 
           if (!tradeDetailID) {
             this.http.ShowError("No Trade Detail found against given specification in highlighted row.");
@@ -1044,7 +1050,7 @@ export class ClassComponent implements OnInit {
 
             this.highlightInvalidPopulatedList(this.tableList)
           this.populatedTableList.push(this.tableList);
-// console.log(this.tableList);
+          // console.log(this.tableList);
 
           this.tableList = [];
 
@@ -1088,12 +1094,13 @@ export class ClassComponent implements OnInit {
             EmploymentCommitmentFormal: Math.round(f['Employment Commitment Formal']),
             OverallEmploymentCommitment: Math.round(f['Employment Commitment Self'] + f['Employment Commitment Formal']),
             Stipend: Math.round(f['Stipend']),
-            balloonpayment: Math.round(f['On Job Training (OJT)']), 
+            balloonpayment: Math.round(f['On Job Training (OJT)']),
             GuruPayment: Math.round(f['Guru Payment']),
             Transportation: Math.round(f['Transportation']),
             ProtectorateandVisa: Math.round(f['Protectorate and Visa Stamping']),  //Added by Rao Ali Haider for International Plac
             MedicalCost: Math.round(f['Medical cost']),
             PrometricCost: Math.round(f['Prometric costs']),
+            TakamolCost: Math.round(f['Takamol cost']),
             OtherTrainingCost: Math.round(f['Other Training and supporting cost']),
             TotalCostPerClass: Math.round(TotalCost_temp)
           }, { emitEvent: true });
@@ -1128,10 +1135,19 @@ export class ClassComponent implements OnInit {
     //return (TrainingCostPerTraineePerMonthIncTaxes / (1 + SalesTaxRate))?.toFixed(2);
     return parseFloat((TrainingCostPerTraineePerMonthIncTaxes / (1 + SalesTaxRate)).toFixed(this.decimalPlaces));
   }
-  calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend, testingCert, uniformBag, ojt, Guru, transportation, ProtectorateandVisa, MedicalCost, PrometricCost, OtherTrainingCost, trainees) {
+  calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend,
+    testingCert, uniformBag, ojt, Guru, transportation, ProtectorateandVisa,
+    MedicalCost, PrometricCost, TakamolCost, OtherTrainingCost, trainees) {
     let val = 0
-    if (duration < 1) { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru) + ProtectorateandVisa + MedicalCost + PrometricCost +  OtherTrainingCost) * trainees); }
-    else { val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)) * trainees); }
+    if (duration < 1) {
+      val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru) +
+        ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost
+      ) * trainees);
+    }
+    else {
+      val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)
+        + ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost) * trainees);
+    }
     return parseFloat(val.toFixed(this.decimalPlaces));
   }
   emptyClass() {
@@ -1183,7 +1199,7 @@ export class ClassComponent implements OnInit {
     }
     );
 
-    
+
     this.populatedTableList[index].IsEditable = true;
   }
   save(index: any, row: any, form: any) {
@@ -1243,7 +1259,7 @@ export class ClassComponent implements OnInit {
     //    return item;
     //  }
     //});
-   
+
   }
   updateRow(index, row) {
     //let rowData = this.traineeList[index];
@@ -1259,7 +1275,6 @@ export class ClassComponent implements OnInit {
 
 
   highlightInvalidPopulatedList(row: any) {
-
     var regEx = new RegExp(this.geoTagPattern);
     //row['InvalidGeoTagging'] = row.GeoTagging.length > 0 && !regEx.test(row.GeoTagging)
     if (!regEx.test(row.GeoTagging) && row.RequiredLocationGeoTag) {
@@ -1306,6 +1321,7 @@ export class ClassComponent implements OnInit {
       (!row['ProtectorateandVisa'] && row['ProtectorateandVisa'] != 0) || //Added by Rao Ali Haider for International Plac
       (!row['MedicalCost'] && row['MedicalCost'] != 0) ||
       (!row['PrometricCost'] && row['PrometricCost'] != 0) ||
+      (!row['TakamolCost'] && row['TakamolCost'] != 0) ||
       (!row['OtherTrainingCost'] && row['OtherTrainingCost'] != 0) ||
       (row.RequiredLocationGeoTag && !regEx.test(row.GeoTagging)) ||
       !row['TradeDetailMapID']
@@ -1462,10 +1478,11 @@ export class ClassComponent implements OnInit {
       RequiredLocationGeoTag: ['', Validators.required],
       balloonpayment: 0,
       GuruPayment: 0,
-      Transportation: 0,      
+      Transportation: 0,
       ProtectorateandVisa: 0,
-      MedicalCost:0,
+      MedicalCost: 0,
       PrometricCost: 0,
+      TakamolCost: 0,
       OtherTrainingCost: 0
     },
       { updateOn: "change" }
@@ -1531,6 +1548,7 @@ export class ClassModel extends ModelBase {
   ProtectorateandVisa: number;
   MedicalCost: number;
   PrometricCost: number;
+  TakamolCost: number;
   OtherTrainingCost: number;
 }
 

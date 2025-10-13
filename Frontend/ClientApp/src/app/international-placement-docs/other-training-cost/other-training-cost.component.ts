@@ -144,7 +144,9 @@ export class OtherTrainingCostComponent implements OnInit {
       'IsIPVSDocUploaded',
       'VisaStampingApprovalStatus',
       'IsIPMCDocUploaded',
-      'MedicalCostApprovalStatus'
+      'MedicalCostApprovalStatus',
+      'IsIPTDocUploaded',
+      'TakamolCostApprovalStatus',
     ];
 
     if (tableData.length > 0) {
@@ -201,7 +203,9 @@ export class OtherTrainingCostComponent implements OnInit {
       'IsIPVSDocUploaded',
       'VisaStampingApprovalStatus',
       'IsIPMCDocUploaded',
-      'MedicalCostApprovalStatus'
+      'MedicalCostApprovalStatus',
+      'IsIPTDocUploaded',
+      'TakamolCostApprovalStatus',
     ];
     const exportData = this.TablesData.filteredData.map((row: any) => {
       let newRow = { ...row };
@@ -309,7 +313,9 @@ export class OtherTrainingCostComponent implements OnInit {
         this.LoadMatTable(IPTrainees); // Load the fetched data into the table
         this.noRecords = false;
       } else {
-        this.ComSrv.ShowWarning('No records found', 'Close');
+        if (!this.noRecords) {
+          this.ComSrv.ShowWarning('No records found', 'Close');
+        }
         this.noRecords = true;
       }
     } catch (error) {

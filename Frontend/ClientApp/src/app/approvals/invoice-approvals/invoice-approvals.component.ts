@@ -150,6 +150,7 @@ export class InvoiceApprovalsComponent implements OnInit {
       || row.ProcessKey === EnumApprovalProcess.INV_MRN
       || row.ProcessKey === EnumApprovalProcess.INV_PCRN
       || row.ProcessKey === EnumApprovalProcess.INV_OTRN
+      || row.ProcessKey === EnumApprovalProcess.INV_TakamolRecommendationNote
     ) {
       this.openApprovalDialogue(row);
     }

@@ -14,6 +14,7 @@ namespace DataLayer.Interfaces
         List<OTRNModel> FetchOTRN(bool InActive);
         void ActiveInActive(int OTRNId, bool? InActive, int CurUserID);
         bool OTRNApproveReject(OTRNModel model, SqlTransaction transaction = null);
+        bool TakamolRecommendationNoteApproveReject(TakamolRecommendationNoteModel model, SqlTransaction transaction = null);
         bool TRNApproveReject(TRNMasterModel model, SqlTransaction transaction = null);
 
         bool PO_TRNApproveReject(POHeaderModel model, SqlTransaction transaction = null);

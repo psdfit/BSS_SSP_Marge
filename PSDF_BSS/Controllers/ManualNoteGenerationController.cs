@@ -133,5 +133,33 @@ namespace PSDF_BSS.Controllers
             catch (Exception e)
             { return BadRequest(e.InnerException.ToString()); }
         }
+        [HttpPost]
+        [Route("GetTakamolRecommnedationNote")]
+        public IActionResult GetTakamolRecommnedationNoteReport([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                return Ok(_srvManualGen.FetchEligibleClassDataForTakamolRecommnedationNote(mod));
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
+
+        [HttpPost]
+        [Route("GenerateTakamolRecommnedationNote")]
+        public IActionResult GenerateTakamolRecommnedationNote([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+                ls.Add(_srvManualGen.GenerateTakamolRecommnedationNote(mod, out string IsGenerated));
+                ls.Add(Convert.ToBoolean(IsGenerated));
+                return Ok(ls);
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
     }
 }

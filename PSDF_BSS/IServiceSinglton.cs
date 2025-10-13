@@ -190,6 +190,9 @@ namespace PSDF_BSS
             services.AddSingleton(typeof(ISRVOTRN), typeof(SRVOTRN));
             services.AddSingleton(typeof(ISRVOTRNDetails), typeof(SRVOTRNDetails));
 
+            services.AddSingleton(typeof(ISRVTakamolRecommendationNote), typeof(SRVTakamolRecommendationNote));
+            services.AddSingleton(typeof(ISRVTakamolRecommendationNoteDetails), typeof(SRVTakamolRecommendationNoteDetails));
+
             services.AddSingleton(typeof(ISRVTPRNDetails), typeof(SRVTPRNDetails));
             services.AddSingleton(typeof(ISRVPVRNDetails), typeof(SRVPVRNDetails));
             services.AddSingleton(typeof(ISRVMRNDetails), typeof(SRVMRNDetails));

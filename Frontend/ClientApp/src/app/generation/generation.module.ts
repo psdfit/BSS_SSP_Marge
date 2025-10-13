@@ -11,6 +11,7 @@ import { GenerateMrnComponent } from './generate-mrn/generate-mrn.component';
 import { GeneratePvrnComponent } from './generate-pvrn/generate-pvrn.component';
 import { GeneratePcrnComponent } from './generate-pcrn/generate-pcrn.component';
 import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
+import { GenerateTakamolRecommnedationNoteComponent } from './generate-takamol-recommnedation-note/generate-takamol-recommnedation-note.component';
 import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 
 @NgModule({
@@ -24,6 +25,8 @@ import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
     GeneratePvrnComponent,
     GeneratePcrnComponent,
     GenerateOtrnComponent,
+    GenerateTakamolRecommnedationNoteComponent,
+    GenerateOtrnComponent,
     GenerateOjtComponent
   ],
   imports: [
@@ -33,4 +36,4 @@ import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class GenerationModule {}
+export class GenerationModule { }

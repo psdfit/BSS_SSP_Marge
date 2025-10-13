@@ -12,6 +12,8 @@ import { PrometricCostComponent } from "./prometric-cost/prometric-cost.componen
 import { PrometricCostDocDialogComponent } from "./prometric-cost-doc-dialog/prometric-cost-doc-dialog.component";
 import { OtherTrainingCostComponent } from "./other-training-cost/other-training-cost.component";
 import { OtherTrainingCostDocDialogComponent } from "./other-training-cost-doc-dialog/other-training-cost-doc-dialog.component";
+import { TakamolCostComponent } from "./takamol-cost/takamol-cost.component";
+import { TakamolCostDocDialogComponent } from "./takamol-cost-doc-dialog/takamol-cost-doc-dialog.component";
 
 @NgModule({
   declarations: [
@@ -20,12 +22,13 @@ import { OtherTrainingCostDocDialogComponent } from "./other-training-cost-doc-d
     MedicalCostComponent,
     PrometricCostComponent,
     OtherTrainingCostComponent,
+    TakamolCostComponent,
 
     VisaStampingDocDialogComponent,
     MedicalCostDocDialogComponent,
     PrometricCostDocDialogComponent,
     OtherTrainingCostDocDialogComponent,
-
+    TakamolCostDocDialogComponent
   ],
   imports: [CommonModule, SharedModule, InternationalPlacementRoutingModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

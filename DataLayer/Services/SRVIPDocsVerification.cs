@@ -427,5 +427,99 @@ namespace DataLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+
+
+        public void SaveTakamolCostDocs(
+            int traineeID,
+            string traineeCode,
+            string traineeName,
+            int tspID,
+            string classCode,
+            List<string> filePaths
+        )
+        {
+            foreach (var filePath in filePaths)
+            {
+                List<SqlParameter> param = new List<SqlParameter>
+                {
+                    new SqlParameter("@TraineeID", traineeID),
+                    new SqlParameter("@TraineeName", traineeName),
+                    new SqlParameter("@TraineeCode", traineeCode),
+                    new SqlParameter("@TspID", tspID),
+                    new SqlParameter("@ClassCode", classCode),
+                    new SqlParameter("@FilePath", filePath),
+                };
+
+                SqlHelper.ExecuteNonQuery(
+                    SqlHelper.GetCon(),
+                    CommandType.StoredProcedure,
+                    "SP_SaveTakamolDocs",
+                    param.ToArray()
+                );
+            }
+        }
+
+        public DataTable GetTakamolCostDocs(int traineeID)
+        {
+            List<SqlParameter> param = new List<SqlParameter>
+            {
+                new SqlParameter("@TraineeID", traineeID),
+            };
+
+            DataTable dt = SqlHelper
+                .ExecuteDataset(
+                    SqlHelper.GetCon(),
+                    CommandType.StoredProcedure,
+                    "RD_TakamolDocuments",
+                    param.ToArray()
+                )
+                .Tables[0];
+            return dt;
+        }
+
+        public bool TakamolCostApproveReject(
+            TakamolCostResponseModel model,
+            SqlTransaction transaction = null
+        )
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(
+                    new SqlParameter(
+                        "@TakamolDocumentsID",
+                        model.TakamolDocumentsID
+                    )
+                );
+                param.Add(new SqlParameter("@IsApproved", model.IsApproved));
+                param.Add(new SqlParameter("@IsRejected", model.IsRejected));
+                param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteScalar(
+                        transaction,
+                        CommandType.StoredProcedure,
+                        "U_IPTApproveReject",
+                        param.ToArray()
+                    );
+                }
+                else
+                {
+                    SqlHelper.ExecuteScalar(
+                        SqlHelper.GetCon(),
+                        CommandType.StoredProcedure,
+                        "U_IPTApproveReject",
+                        param.ToArray()
+                    );
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

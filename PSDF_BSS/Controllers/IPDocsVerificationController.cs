@@ -482,7 +482,105 @@ namespace PSDF_BSSMaster.Controllers
         }
 
 
+        [HttpPost]
+        [Route("UploadTakamolCostDocs")]
+        public IActionResult UploadTakamolCostDocs([FromBody] TakamolCostUploadModel model)
+        {
+            try
+            {
+                if (model == null || model.Files == null || model.Files.Count == 0)
+                {
+                    return BadRequest("No files received for upload.");
+                }
+                //string baseFolder = @"C:\Users\umair.nadeem\source\repos\BSS_SSP_Marge\PSDF_BSS\Documents\OtherTrainingCost";
+                //string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
+                //if (!Directory.Exists(traineeFolder))
+                //{
+                //    Directory.CreateDirectory(traineeFolder);
+                //}
 
+
+                string baseFolder = Path.Combine(_env.ContentRootPath, "Documents", "TakamolCost");
+                string traineeFolder = Path.Combine(baseFolder, model.ClassCode.ToString());
+                if (!Directory.Exists(traineeFolder))
+                {
+                    Directory.CreateDirectory(traineeFolder);
+                }
+
+                List<string> savedFilePaths = new List<string>();
+                foreach (var file in model.Files)
+                {
+                    string fileName = $"{Guid.NewGuid()}_{file.FileName}";
+                    string filePath = Path.Combine(traineeFolder, fileName);
+
+                    // Ensure fileContent is not null or empty
+                    if (string.IsNullOrEmpty(file.FileContent))
+                    {
+                        return BadRequest("File content is missing or empty.");
+                    }
+                    byte[] fileBytes = Convert.FromBase64String(file.FileContent);
+                    System.IO.File.WriteAllBytes(filePath, fileBytes);
+
+                    savedFilePaths.Add(filePath);
+                }
+                // Save file paths to database using Stored Procedure
+                srvIPDocsVerification.SaveTakamolCostDocs(model.TraineeID, model.TraineeCode, model.TraineeName, model.TspID, model.ClassCode, savedFilePaths);
+                return Ok(new { Message = "Files uploaded successfully", Paths = savedFilePaths });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in UploadTakamolCostDocs");
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("GetTakamolCostDocs/{traineeId}")]
+        public IActionResult GetTakamolCostDocs(int traineeId)
+        {
+            try
+            {
+                // Fetch document details from the database
+                var documents = srvIPDocsVerification.GetTakamolCostDocs(traineeId);
+                if (documents == null || documents.Rows.Count == 0)
+                {
+                    return NotFound("No documents found for this trainee.");
+                }
+                List<TakamolCostResponseModel> response = new List<TakamolCostResponseModel>();
+                foreach (DataRow row in documents.Rows)
+                {
+                    string filePath = row["TakamolDoc"].ToString();
+                    string base64Content = "";
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                        base64Content = Convert.ToBase64String(fileBytes);
+                    }
+                    else
+                    {
+                        return NotFound($"File not found at path: {filePath}");
+                    }
+                    response.Add(new TakamolCostResponseModel
+                    {
+                        TakamolDocumentsID = Convert.ToInt32(row["TakamolDocumentsID"]),
+                        TraineeID = Convert.ToInt32(row["TraineeID"]),
+                        TraineeName = row["TraineeName"].ToString(),
+                        TraineeCode = row["TraineeCode"].ToString(),
+                        TspID = Convert.ToInt32(row["TspID"]),
+                        ClassCode = row["ClassCode"].ToString(),
+                        FileName = Path.GetFileName(filePath),
+                        FileContentBase64 = base64Content
+                    });
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetTakamolCostDocs");
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
+        }
 
     }
 }
