@@ -90,7 +90,7 @@ namespace DataLayer.Services
         {
             try
             {
-                SqlParameter[] param = new SqlParameter[65];
+                SqlParameter[] param = new SqlParameter[67];
                 param[0] = new SqlParameter("@ClassID", Class.ClassID);
                 param[1] = new SqlParameter("@ClassCode", Class.ClassCode);
                 param[2] = new SqlParameter("@ClassStatusID", 1);
@@ -163,6 +163,8 @@ namespace DataLayer.Services
                 param[62] = new SqlParameter("@PrometricCost", Class.PrometricCost);
                 param[63] = new SqlParameter("@OtherTrainingCost", Class.OtherTrainingCost);
                 param[64] = new SqlParameter("@TakamolCost", Class.TakamolCost);
+                param[65] = new SqlParameter("@InterNetCost", Class.InterNetCost);
+                param[66] = new SqlParameter("@Hostel", Class.Hostel);
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_Class]", param);
                 int k = Convert.ToInt32(param[50].Value);
                 return GetByClassID(k);
@@ -625,6 +627,14 @@ namespace DataLayer.Services
             if (r.Table.Columns.Contains("OJTSubmited"))
             {
                 Class.OJTSubmited = Convert.ToBoolean(r["OJTSubmited"]);
+            }
+            if (r.Table.Columns.Contains("InterNetCost"))
+            {
+                Class.InterNetCost = r["InterNetCost"] != DBNull.Value ? Convert.ToInt32(r["InterNetCost"]) : 0;
+            }
+            if (r.Table.Columns.Contains("Hostel"))
+            {
+                Class.Hostel = r["Hostel"] != DBNull.Value ? Convert.ToInt32(r["Hostel"]) : 0;
             }
             return Class;
         }

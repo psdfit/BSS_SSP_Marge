@@ -114,6 +114,8 @@ namespace DataLayer.Models
         public int PrometricCost { get; set; }
         public int OtherTrainingCost { get; set; }
         public int TakamolCost { get; set; }
+        public int InterNetCost { get; set; }
+        public int Hostel { get; set; }
 
         public bool? OJTSubmited { get; set; }
     }

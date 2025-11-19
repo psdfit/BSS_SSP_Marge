@@ -136,14 +136,16 @@ export class ClassComponent implements OnInit {
       //StipendMode: ['Digital', Validators.required],
       TotalCostPerClass: [0, Validators.required],
       //TradeDetailMapID: ['']
-      balloonpayment: 0,
+      balloonpayment: 0, //All below Added by Rao Ali Haider  
       GuruPayment: 0,
       Transportation: 0,
-      ProtectorateandVisa: 0,  //Added by Rao Ali Haider for International Plac
+      ProtectorateandVisa: 0, 
       MedicalCost: 0,
       PrometricCost: 0,
       TakamolCost: 0,
       OtherTrainingCost: 0,
+      InterNetCost: 0,
+      Hostel: 0,
     }
     this.notForm = this._formBuilder.group({ ...this.classFormGroup, TotalClasses: [0, Validators.required] });
 
@@ -252,9 +254,6 @@ export class ClassComponent implements OnInit {
     this.populatedTableList.forEach(x => {
       this.highlightInvalidPopulatedList(x);
     })
-
-
-
   }
 
 
@@ -425,7 +424,7 @@ export class ClassComponent implements OnInit {
               parseInt(this.notForm.controls.Stipend.value),
               parseInt(this.notForm.controls.PerTraineeTestCertCost.value),
               parseInt(this.notForm.controls.UniformBagCost.value),
-              parseInt(this.notForm.controls.balloonpayment.value),
+              parseInt(this.notForm.controls.balloonpayment.value),  //Below all added by Rao Ali Haider
               parseInt(this.notForm.controls.GuruPayment.value),
               parseInt(this.notForm.controls.Transportation.value),
               parseInt(this.notForm.controls.ProtectorateandVisa.value),
@@ -433,6 +432,8 @@ export class ClassComponent implements OnInit {
               parseInt(this.notForm.controls.PrometricCost.value),
               parseInt(this.notForm.controls.Takamol.value),
               parseInt(this.notForm.controls.OtherTrainingCost.value),
+              parseInt(this.notForm.controls.InterNetCost.value), //Added by Ali Haider on 29-Sep-25
+              parseInt(this.notForm.controls.Hostel.value), //Added by Ali Haider on 29-Sep-25
               parseInt(item.trainees)
             );
 
@@ -541,6 +542,8 @@ export class ClassComponent implements OnInit {
               this.tableList['TakamolCost'] = this.notForm.controls.TakamolCost.value,
               this.tableList['OtherTrainingCost'] = this.notForm.controls.OtherTrainingCost.value,
               this.tableList['ProtectorateandVisa'] = this.notForm.controls.ProtectorateandVisa.value
+              this.tableList['InterNetCost'] = this.notForm.controls.InterNetCost.value
+              this.tableList['Hostel'] = this.notForm.controls.Hostel.value
             this.populatedTableList.push(this.tableList);
             this.tableList = [];
 
@@ -591,7 +594,9 @@ export class ClassComponent implements OnInit {
               MedicalCost: this.notForm.controls.MedicalCost.value,
               PrometricCost: this.notForm.controls.PrometricCost.value,
               TakamolCost: this.notForm.controls.TakamolCost.value,
-              OtherTrainingCost: this.notForm.controls.OtherTrainingCost.value
+              OtherTrainingCost: this.notForm.controls.OtherTrainingCost.value,
+              InterNetCost: this.notForm.controls.InterNetCost.value,
+              Hostel: this.notForm.controls.Hostel.value
 
             }, { emitEvent: true });
           });
@@ -931,7 +936,7 @@ export class ClassComponent implements OnInit {
               //parseInt(f['Stipend']),
               parseInt(this.notForm.controls.Stipend.value),
               parseInt(f['Testing & Certification Fee per Trainee']),
-              parseInt(f['Uniform & Bag Cost per Trainee / Hostel']),
+              parseInt(f['Uniform & Bag Cost per Trainee']),
               //parseInt(this.notForm.controls.UniformBagCost.value),
               parseInt(f['On Job Training (OJT)']),
               parseInt(f['Guru Payment']),
@@ -941,6 +946,8 @@ export class ClassComponent implements OnInit {
               parseInt(f['Prometric costs']),
               parseInt(f['Takamol cost']),
               parseInt(f['Other Training and supporting cost']),
+              parseInt(f['Internet / Dongal Cost']),
+              parseInt(f['Hostel per trainee Cost']),
               item.trainees
 
               //this.notForm.controls.TrainingCostPerTraineePerMonthInTax.value,
@@ -1014,7 +1021,7 @@ export class ClassComponent implements OnInit {
             this.tableList['TrainingCostPerTraineePerMonthExTax'] = TrainingCostPerTraineePerMonthExTaxes_temp,
             this.tableList['SalesTax'] = Math.round(SalesTax_temp),
             this.tableList['TrainingCostPerTraineePerMonthInTax'] = TrainingCostPerTraineePerMonthIncTaxes_temp,
-            this.tableList['UniformBagCost'] = f['Uniform & Bag Cost per Trainee / Hostel'],
+            this.tableList['UniformBagCost'] = f['Uniform & Bag Cost per Trainee'],
             this.tableList['PerTraineeTestCertCost'] = Math.round(f['Testing & Certification Fee per Trainee']),
             this.tableList['BoardingAllowancePerTrainee'] = Math.round(f['Boarding & Other Allowances per trainee']),
             this.tableList['EmploymentCommitmentSelf'] = Math.round(f['Employment Commitment Self']),
@@ -1030,6 +1037,8 @@ export class ClassComponent implements OnInit {
             this.tableList['PrometricCost'] = f['Prometric costs'] ?? 0,
             this.tableList['TakamolCost'] = f['Takamol cost'] ?? 0,
             this.tableList['OtherTrainingCost'] = f['Other Training and supporting cost'] ?? 0,
+            this.tableList['InterNetCost'] = f['Internet / Dongal Cost'] ?? 0,
+            this.tableList['Hostel'] = f['Hostel per trainee Cost'] ?? 0,
             this.tableList['IsEditable'] = false
 
           ///
@@ -1087,7 +1096,7 @@ export class ClassComponent implements OnInit {
             TrainingCostPerTraineePerMonthExTax: TrainingCostPerTraineePerMonthExTaxes_temp,
             SalesTax: Math.round(SalesTax_temp),
             TrainingCostPerTraineePerMonthInTax: TrainingCostPerTraineePerMonthIncTaxes_temp,
-            UniformBagCost: f['Uniform & Bag Cost per Trainee / Hostel'],
+            UniformBagCost: f['Uniform & Bag Cost per Trainee'],
             PerTraineeTestCertCost: Math.round(f['Testing & Certification Fee per Trainee']),
             BoardingAllowancePerTrainee: Math.round(f['Boarding & Other Allowances per trainee']),
             EmploymentCommitmentSelf: Math.round(f['Employment Commitment Self']),
@@ -1102,6 +1111,8 @@ export class ClassComponent implements OnInit {
             PrometricCost: Math.round(f['Prometric costs']),
             TakamolCost: Math.round(f['Takamol cost']),
             OtherTrainingCost: Math.round(f['Other Training and supporting cost']),
+            InterNetCost: Math.round(f['Internet / Dongal Cost']),
+            Hostel: Math.round(f['Hostel per trainee Cost']),
             TotalCostPerClass: Math.round(TotalCost_temp)
           }, { emitEvent: true });
           form.markAllAsTouched();
@@ -1137,16 +1148,16 @@ export class ClassComponent implements OnInit {
   }
   calculateTotalCost(trainingCostPerTraineePerMonthIncTaxes, duration, boarding, stipend,
     testingCert, uniformBag, ojt, Guru, transportation, ProtectorateandVisa,
-    MedicalCost, PrometricCost, TakamolCost, OtherTrainingCost, trainees) {
+    MedicalCost, PrometricCost, TakamolCost, OtherTrainingCost, InternetCost, HostelCost, trainees) {
     let val = 0
     if (duration < 1) {
       val = Math.round(((trainingCostPerTraineePerMonthIncTaxes) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + uniformBag + ojt + (duration * Guru) +
-        ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost
+        ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost + InternetCost + HostelCost
       ) * trainees);
     }
     else {
       val = Math.round(((trainingCostPerTraineePerMonthIncTaxes * duration) + (duration * boarding) + (duration * stipend) + (duration * transportation) + testingCert + (duration * uniformBag) + ojt + (duration * Guru)
-        + ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost) * trainees);
+        + ProtectorateandVisa + MedicalCost + PrometricCost + OtherTrainingCost + TakamolCost + InternetCost + (duration * HostelCost)) * trainees);
     }
     return parseFloat(val.toFixed(this.decimalPlaces));
   }
@@ -1323,6 +1334,8 @@ export class ClassComponent implements OnInit {
       (!row['PrometricCost'] && row['PrometricCost'] != 0) ||
       (!row['TakamolCost'] && row['TakamolCost'] != 0) ||
       (!row['OtherTrainingCost'] && row['OtherTrainingCost'] != 0) ||
+      (!row['InterNetCost'] && row['InterNetCost'] != 0) ||
+      (!row['Hostel'] && row['Hostel'] != 0) ||
       (row.RequiredLocationGeoTag && !regEx.test(row.GeoTagging)) ||
       !row['TradeDetailMapID']
     ) {
@@ -1483,7 +1496,9 @@ export class ClassComponent implements OnInit {
       MedicalCost: 0,
       PrometricCost: 0,
       TakamolCost: 0,
-      OtherTrainingCost: 0
+      OtherTrainingCost: 0,
+      InterNetCost: 0,
+      Hostel: 0
     },
       { updateOn: "change" }
 
@@ -1550,6 +1565,8 @@ export class ClassModel extends ModelBase {
   PrometricCost: number;
   TakamolCost: number;
   OtherTrainingCost: number;
+  InterNetCost: number;
+  Hostel: number;
 }
 
 
