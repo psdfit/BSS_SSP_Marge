@@ -77,6 +77,7 @@ export class TraineeComponent implements OnInit {
   TempTehsil: any;
   TraineeDisability: any[];
   IncomeRange: any[];
+  MaritalStatus: any[];
   ReferralSource: any[];
   Sections: any;
   //Scheme: any;
@@ -248,6 +249,7 @@ export class TraineeComponent implements OnInit {
       ReferralSourceID: ['', [Validators.required]],
       TraineeIndividualIncomeID: ['', [Validators.required]],
       HouseHoldIncomeID: ['', [Validators.required]],
+      MaritalStatusID: ['', [Validators.required]],
       EmploymentStatusBeforeTrainingID: ['', [Validators.required]],
       GuardianNextToKinName: ['', [Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]],
       GuardianNextToKinContactNo: ['', [Validators.required]],
@@ -644,9 +646,9 @@ export class TraineeComponent implements OnInit {
       this.BankName.clearValidators();
       this.BankName.disable();
 
-      this.IBANNumber.setValue('');
-      this.IBANNumber.clearValidators();
-      this.IBANNumber.disable();
+      //this.IBANNumber.setValue('');
+      //this.IBANNumber.clearValidators();
+      //this.IBANNumber.disable();
 
 
       this.Accounttitle.setValue('');
@@ -675,6 +677,7 @@ export class TraineeComponent implements OnInit {
         this.EmploymentStatus = d.EmploymentStatus;
         this.province = d.Province;
         this.TemporaryProvince = d.TemporaryProvince;
+        this.MaritalStatus = d.MaritalStatus;
         if (this.paramClassId) {
           this.classId = parseInt(this.paramClassId);
           this.onEditTraineeClass();
@@ -1242,6 +1245,7 @@ debugger;
   get ReferralSourceID() { return this.traineeProfileForm.get("ReferralSourceID"); }
   get TraineeIndividualIncomeID() { return this.traineeProfileForm.get("TraineeIndividualIncomeID"); }
   get HouseHoldIncomeID() { return this.traineeProfileForm.get("HouseHoldIncomeID"); }
+  get MaritalStatusID() { return this.traineeProfileForm.get("MaritalStatusID"); }
   get EmploymentStatusBeforeTrainingID() { return this.traineeProfileForm.get("EmploymentStatusBeforeTrainingID"); }
   get Undertaking() { return this.traineeProfileForm.get("Undertaking"); }
   get GuardianNextToKinName() { return this.traineeProfileForm.get("GuardianNextToKinName"); }

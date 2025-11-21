@@ -553,7 +553,7 @@
                         </mat-form-field>
                       </div>
                       <!---Added by Ali Haider for International Placement--->
-                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                      <div class="col-sm-3" *ngIf="IsInternationalPlacement">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="Accounttitle"
                                  placeholder="Account title" matInput required />
@@ -561,7 +561,7 @@
                           <mat-error *ngIf="Accounttitle.invalid && Accounttitle.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
-                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                      <div class="col-sm-3" *ngIf="IsInternationalPlacement">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="BankName"
                                  placeholder="Bank Name" matInput required />
@@ -569,16 +569,29 @@
                           <mat-error *ngIf="BankName.invalid && BankName.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
-                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement">
+                      <!--<div class="col-sm-3" *ngIf="IsInternationalPlacement">-->
+
+                      <div class="col-sm-3">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="IBANNumber"
-                                 placeholder="IBAN Number" matInput required />
+                                 placeholder="IBAN Number" matInput required minlength="24" maxlength="24" [disabled]="isFormDisabled" />
                           <mat-label>IBAN Number</mat-label>
                           <mat-error *ngIf="IBANNumber.invalid && IBANNumber.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
+
+                      <div class="col-sm-3">
+                        <mat-form-field>
+                          <mat-select placeholder="Marital Status" formControlName="MaritalStatusID"
+                                      [disabled]="isFormDisabled" matInput required>
+                            <mat-option *ngFor="let s of MaritalStatus"
+                                        [value]="s.MaritalStatusID">{{s.MaritalStatusName}}</mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="MaritalStatusID.invalid && MaritalStatusID.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
                     </div>
-                  </fieldset>
+</fieldset>
 
 
 

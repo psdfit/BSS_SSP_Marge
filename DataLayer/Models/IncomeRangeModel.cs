@@ -14,4 +14,14 @@ namespace DataLayer.Models
         public decimal RangeFrom { get; set; }
         public decimal RangeTo { get; set; }
     }
+    public class MartitalStatusModel : ModelBase
+    {
+        public MartitalStatusModel() : base()
+        {
+        }
+        public int MaritalStatusID { get; set; }
+        public string MaritalStatusName { get; set; }
+
+    }
+
 }

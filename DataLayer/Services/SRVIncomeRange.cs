@@ -50,5 +50,35 @@ namespace DataLayer.Services
             return obj;
         }
 
+        public List<MartitalStatusModel> FetchMartitalStatus()
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "GetMaritalStatus", param.ToArray()).Tables[0];
+                return LoopinDataMartitalStatus(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        private List<MartitalStatusModel> LoopinDataMartitalStatus(DataTable dt)
+        {
+            List<MartitalStatusModel> list = new List<MartitalStatusModel>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                list.Add(RowOfMartitalStatus(r));
+            }
+            return list;
+        }
+
+        private MartitalStatusModel RowOfMartitalStatus(DataRow row)
+        {
+            MartitalStatusModel obj = new MartitalStatusModel();
+            obj.MaritalStatusID = row.Field<int>("MaritalStatusID");
+            obj.MaritalStatusName = row.Field<string>("MaritalStatusName"); 
+            return obj;
+        }
+
     }
 }

@@ -199,6 +199,7 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@IBANNumber", traineeProfile.IBANNumber));
                 param.Add(new SqlParameter("@BankName", traineeProfile.BankName));
                 param.Add(new SqlParameter("@Accounttitle", traineeProfile.Accounttitle));
+                param.Add(new SqlParameter("@MaritalStatusID", traineeProfile.MaritalStatusID));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
 
 
@@ -1486,6 +1487,7 @@ namespace DataLayer.Services
             {
                 TraineeProfile.IBANNumber = row.Field<string>("IBANNumber");
             }
+            TraineeProfile.MaritalStatusID = row.Field<int?>("MaritalStatusID") ?? 0;
             return TraineeProfile;
         }
 

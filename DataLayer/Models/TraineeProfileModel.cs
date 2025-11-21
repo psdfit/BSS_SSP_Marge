@@ -125,8 +125,8 @@ namespace DataLayer.Models
         public string Accounttitle { get; set; }
         public string BankName { get; set; }
         public string IBANNumber { get; set; }
-
-
+        public int MaritalStatusID { get; set; }
+        
 
     }
 }
