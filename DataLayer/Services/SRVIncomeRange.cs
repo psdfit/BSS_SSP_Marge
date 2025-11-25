@@ -40,7 +40,7 @@ namespace DataLayer.Services
         {
             IncomeRangeModel obj = new IncomeRangeModel();
             obj.IncomeRangeID = row.Field<int>("IncomeRangeID");
-            obj.RangeName = row.Field<string>("RangeName"); ;
+            obj.RangeName = row.Field<string>("RangeName");
             obj.InActive = row.Field<bool>("InActive");
             obj.CreatedUserID = row.Field<int>("CreatedUserID");
             obj.ModifiedUserID = row.Field<int?>("ModifiedUserID") ?? 0;

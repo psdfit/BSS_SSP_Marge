@@ -110,6 +110,7 @@ export class TraineeComponent implements OnInit {
   IsSkillsScholrship: boolean = false;
   IsSkillsScholrshipProgram: boolean = false;
   IsInternationalPlacement: boolean = false;
+  IsWDD: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("ngForm") ngFrom: NgForm;
@@ -656,6 +657,18 @@ export class TraineeComponent implements OnInit {
       this.Accounttitle.disable();
     }
   }
+  RemoveWDDFields() { ///Hide the remove the validation of bank fields
+    if (!this.IsWDD) {
+      this.MaritalStatus.setValue('');
+      this.MaritalStatus.clearValidators();
+      this.MaritalStatus.disable();
+    }
+    if (!this.IsWDD || !this.IsInternationalPlacement) {
+      this.IBANNumber.setValue('');
+      this.IBANNumber.clearValidators();
+      this.IBANNumber.disable();
+    }
+  }
 
   getData() {
     this.http.getJSON(`api/TraineeProfile/GetData?OID=${this.http.OID.value}`).subscribe(
@@ -765,6 +778,12 @@ debugger;
         if (scheme.ProgramTypeID !== 7) {  //Skills Scolarship
           this.IsSkillsScholrship = false;
         }
+        if (scheme.FundingCategoryID == 22){ //WDD scheme
+           this.IsWDD = true; }
+            else {
+            this.RemoveWDDFields(); //remove validator of Marital status
+          }
+
         
         if (scheme.FundingCategoryID == 18) //CM-SDP-Transgender
         {

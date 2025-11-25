@@ -571,7 +571,7 @@
                       </div>
                       <!--<div class="col-sm-3" *ngIf="IsInternationalPlacement">-->
 
-                      <div class="col-sm-3">
+                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement || IsWDD">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="IBANNumber"
                                  placeholder="IBAN Number" matInput required minlength="24" maxlength="24" [disabled]="isFormDisabled" />
@@ -580,7 +580,7 @@
                         </mat-form-field>
                       </div>
 
-                      <div class="col-sm-3">
+                      <div class="col-sm-3" *ngIf="IsWDD">
                         <mat-form-field>
                           <mat-select placeholder="Marital Status" formControlName="MaritalStatusID"
                                       [disabled]="isFormDisabled" matInput required>

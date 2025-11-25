@@ -58,9 +58,9 @@ namespace DataLayer.Services
             WHERE IsApproved = 1
               AND InActive = 0
               AND IsMigrated = 0
-              AND ProgramTypeID = 7
+              AND FundingCategoryID = 18 
             ORDER BY SchemeID";
-
+                //18 is a only Transgender scheme
                 // Execute query
                 DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);
                 return ds.Tables[0];
@@ -170,9 +170,9 @@ namespace DataLayer.Services
             WHERE s.IsApproved = 1
               AND s.IsMigrated = 0
               AND tm.UserID = " + UserID + @"
-              AND s.ProgramTypeID = 7
+              AND s.FundingCategoryID = 18
             GROUP BY s.SchemeID, s.SchemeName;";
-
+                //18 is a transgender scheme
                 // Execute query
                 DataSet ds = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.Text, query);
                 return ds.Tables[0];
