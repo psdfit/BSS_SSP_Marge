@@ -659,9 +659,9 @@ export class TraineeComponent implements OnInit {
   }
   RemoveWDDFields() { ///Hide the remove the validation of bank fields
     if (!this.IsWDD) {
-      this.MaritalStatus.setValue('');
-      this.MaritalStatus.clearValidators();
-      this.MaritalStatus.disable();
+      this.MaritalStatusID.setValue('');
+      this.MaritalStatusID.clearValidators();
+      this.MaritalStatusID.disable();
     }
     if (!this.IsWDD || !this.IsInternationalPlacement) {
       this.IBANNumber.setValue('');
