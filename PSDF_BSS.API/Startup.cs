@@ -197,21 +197,29 @@ namespace PSDF_BSS.API
                 await next();
             });
 
-            if (!env.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts(); // Enable HSTS (Strict Transport Security) for production
-            }
+            //if (!env.IsDevelopment())
+            //{
+            //    app.UseExceptionHandler("/Error");
+            //    app.UseHsts(); // Enable HSTS (Strict Transport Security) for production
+            //}
 
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
+            //{
+            //    // Enable Swagger only in development
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI(option =>
+            //    {
+            //        option.SwaggerEndpoint("/swagger/v1/swagger.json", "PSDF-API");
+            //    });
+            //}
+            //
+
+            app.UseSwagger();
+            app.UseSwaggerUI(option =>
             {
-                // Enable Swagger only in development
-                app.UseSwagger();
-                app.UseSwaggerUI(option =>
-                {
-                    option.SwaggerEndpoint("/swagger/v1/swagger.json", "PSDF-API");
-                });
-            }
+                option.SwaggerEndpoint("/swagger/v1/swagger.json", "PSDF-API v1");
+                option.RoutePrefix = "swagger"; // URL: /swagger
+            });
 
             // Enable SignalR
             app.UseSignalR(route =>
