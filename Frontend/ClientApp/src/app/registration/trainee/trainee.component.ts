@@ -105,6 +105,7 @@ export class TraineeComponent implements OnInit {
   saveBtnTitle: string = "Save";
   EnText: string = "";
   error: string;
+  filteredProvinces = [];
   EDFScheme: boolean = false;
   SearchPro = new FormControl('');
   IsSkillsScholrship: boolean = false;
@@ -194,17 +195,33 @@ export class TraineeComponent implements OnInit {
 
   ControlProvince() {
     if (this.EDFScheme) {
-      this.ProvinceID.setValue('');
+
+      // Filter ONLY allowed provinces
+      this.filteredProvinces = this.province.filter(
+        p => p.ProvinceID === 5 || p.ProvinceID === 6
+      );
+
       this.ProvinceID.enable();
       this.IsFieldDisabled = false;
-    }
-    else {
+
+      // Reset invalid value
+      if (![5, 6].includes(this.ProvinceID.value)) {
+        this.ProvinceID.setValue(null);
+      }
+
+    } else {
+
+      // Show all provinces
+      this.filteredProvinces = [...this.province];
+
+      // Lock province to 6
       this.ProvinceID.setValue(6);
       this.ProvinceID.disable();
       this.IsFieldDisabled = true;
 
     }
   }
+
 
   onEmploymentStatusBeforeTrainingChange(event) {
     if (event.value == 2 || event.value == 3) {
@@ -757,7 +774,7 @@ debugger;
         if (scheme.FundingCategoryID == 16) {
           this.EDFScheme = true;
         }
-        else if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV') {
+        else if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV' || scheme.SchemeCode == 'GZII') {
           this.EDFScheme = true;
         }
         else if (scheme.FundingSourceID !== 12) //EDF Scheme

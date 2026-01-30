@@ -298,8 +298,10 @@
                         <mat-form-field fxFlex>
                           <mat-select placeholder="Province" formControlName="ProvinceID" [disabled]="IsFieldDisabled"
                             matInput required>
-                            <mat-option *ngFor="let s of province"
-                              [value]="s.ProvinceID">{{s.ProvinceName}}</mat-option>
+                            <mat-option *ngFor="let s of filteredProvinces"
+                                        [value]="s.ProvinceID">
+                              {{ s.ProvinceName }}
+                            </mat-option>
                           </mat-select>
                           <mat-error
                             *ngIf="ProvinceID.invalid && ProvinceID.errors.required">T<strong>required</strong></mat-error>
