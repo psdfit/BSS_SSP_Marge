@@ -58,13 +58,20 @@ export class ProfileComponent implements OnInit {
   ProfileForm: FormGroup;
   ContactInfoForm: FormGroup;
   @ViewChild("tabGroup") tabGroup: MatTabGroup;
+
+  modelData: any={}
   ngOnInit(): void {
+    
+    this.currentUser = this.ComSrv.getUserDetails();
+    this.modelData= this.ComSrv.getMessage();
+
     this.TapIndex = 0
     this.PageTitle();
-    this.currentUser = this.ComSrv.getUserDetails();
     this.GetData();
     this.InitProfileForm();
     this.InitContactInfoForm();
+
+
   }
   PageTitle(): void {
     this.ComSrv.setTitle(this.ActiveRoute.snapshot.data.title);
@@ -201,7 +208,7 @@ export class ProfileComponent implements OnInit {
   }
   async GetData() {
     this.GetTSPProfileScore()
-    this.ComSrv.postJSON("api/BusinessProfile/GetData", { UserID: this.currentUser.UserID }).subscribe(
+    this.ComSrv.postJSON("api/BusinessProfile/GetData", { UserID: this.currentUser.RoleTitle=='TSP' ? this.currentUser.UserID : this.modelData.UserID }).subscribe(
       (response) => {
         this.GetDataObject = response
         this.TehsilData = this.GetDataObject.tehsil

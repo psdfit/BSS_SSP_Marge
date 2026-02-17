@@ -10,7 +10,8 @@
   <mat-card-content>
     <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight (selectedTabChange)="[getSelectedTabData()]">
       <mat-tab label="Training Location">
-        <fieldset *ngIf="totalScore!=currentScore" class="border"
+<ng-container *ngIf="this.currentUser.RoleTitle=='TSP'">
+ <fieldset *ngIf="totalScore!=currentScore" class="border"
           style="padding: 3px 10px !important;margin-bottom: 5px !important;">
           <legend>Profile Completion </legend>
           <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
@@ -22,6 +23,9 @@
             </span> [{{PendingForm.join(", ")}}]
           </p>
         </fieldset>
+</ng-container>
+
+       
         <form (ngSubmit)="SaveTrainingInfo()" [formGroup]="TrainingForm">
           <fieldset class="border">
             <legend>Training Location Information</legend>
@@ -297,7 +301,7 @@
                   </mat-form-field>
                </div>
             </div> -->
-            <div class="row" style="float:right">
+            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP'">
               <div class="col-sm-12">
                 <button color="primary" mat-raised-button>
                   <i class="fas fa-check"></i> {{savebtn}} Record
@@ -480,7 +484,7 @@
                 </mat-error>
               </div>
             </div>
-            <div class="row" style="float:right">
+            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP'">
               <div class="col-sm-12">
                 <a (click)="PreviousTap()" mat-raised-button><i class="fa fa-arrow-left"></i> Previous</a> |
                 <button color="primary" mat-raised-button>
@@ -699,7 +703,7 @@
                 </mat-form-field>
               </div>
             </div>
-            <div class="row" style="float:right">
+            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP'">
               <div class="col-sm-12">
                 <a (click)="PreviousTap()" mat-raised-button><i class="fa fa-arrow-left"></i> Previous</a> |
                 <button color="primary" mat-raised-button>
@@ -1017,7 +1021,7 @@
                 </table>
               </div>
             </fieldset>
-            <div class="row" style="float:right">
+            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP'">
               <div class="col-sm-12">
                 <a (click)="PreviousTap()" mat-raised-button><i class="fa fa-arrow-left"></i> Previous</a> |
                 <button color="primary" mat-raised-button [disabled]="TspMappedTrades.length==0">
@@ -1173,7 +1177,7 @@
                 </mat-form-field>
               </div>
             </div>
-            <div class="row" style="float:right">
+            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP'">
               <div class="col-sm-12">
                 <a (click)="PreviousTap()" mat-raised-button><i class="fa fa-arrow-left"></i> Previous</a> |
                 <button color="primary" mat-raised-button>
@@ -1212,7 +1216,7 @@
                   &nbsp;
                   <span (click)="BankEdit(row)" style="color: #005b9e;text-decoration: underline;cursor: pointer;">
                     <strong>{{ row[column] }} </strong>
-                  </span> | <a color="primary" mat-button (click)="SetDefault(row)"> Set Default</a>
+                  </span> | <a color="primary" mat-button (click)="SetDefault(row)" *ngIf="this.currentUser.RoleTitle=='TSP'"> Set Default</a>
                 </ng-container>
                 <ng-container *ngIf="column =='CreatedDate'">
                   &nbsp; {{ row[column] | date:environment.DateFormat }}

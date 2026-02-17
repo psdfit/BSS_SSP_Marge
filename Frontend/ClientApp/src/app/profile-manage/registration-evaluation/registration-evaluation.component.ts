@@ -15,6 +15,8 @@ import { TspStatusUpdateComponent } from "src/app/custom-components/tsp-status-u
 // import { DatePipe, TitleCasePipe, formatCurrency } from "@angular/common";
 // import { GroupByPipe } from "angular-pipes";
 import { SelectionModel } from '@angular/cdk/collections';
+import { ProfileComponent } from "../profile/profile.component";
+import { BaseDataComponent } from "../base-data/base-data.component";
 @Component({
   selector: 'app-registration-evaluation',
   templateUrl: './registration-evaluation.component.html',
@@ -127,7 +129,7 @@ export class RegistrationEvaluationComponent implements OnInit {
       this.ComSrv.ShowError("Minimum One record is required.");
     }
   }
-  OpenDialogue(row) {
+  OpenDialogue(row:any) {
     const data = [row, [1], this.SelectedRow];
     const dialogRef = this.Dialog.open(TspStatusUpdateComponent, {
       // height: '45%',
@@ -143,6 +145,26 @@ export class RegistrationEvaluationComponent implements OnInit {
       }
     });
   }
+  openTSPProfileComponentDialogue(row:any) {
+    const data = [row, [1], this.SelectedRow];
+    console.log(row.UserID)
+    this.ComSrv.setMessage(row)
+   this.Dialog.open(ProfileComponent, {
+      width: '90%',
+      data: data,
+    });
+   
+  }
+    openTSPBaseDataComponentDialogue(row:any) {
+    const data = [row, [1], this.SelectedRow];
+        this.ComSrv.setMessage(row)
+   this.Dialog.open(BaseDataComponent, {
+      width: '90%',
+      data: data,
+    });
+   
+  }
+
   GetData() {
     this.FetchRecord()
   }

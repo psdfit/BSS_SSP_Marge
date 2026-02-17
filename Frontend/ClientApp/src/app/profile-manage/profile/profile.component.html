@@ -7,7 +7,9 @@
    <mat-tab-group #tabGroup mat-align-tabs="start" dynamicHeight>
       <!-- form start -->
       <mat-tab [label]="TapTTitle">
-         <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+
+         <ng-container *ngIf="this.currentUser.RoleTitle=='TSP'">
+ <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
             <legend>Profile Completion </legend>
 
             <!-- <div class="steps">
@@ -28,6 +30,9 @@
         
            
          </fieldset>
+
+         </ng-container>
+        
          <!-- <style>
          .progress-container {
             text-align: center;
@@ -351,7 +356,7 @@
                   </div>
                </div>
             </fieldset>
-            <div class="row" style="float:right">
+            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP'">
                <div class="col-sm-12">
                   <button color="primary" (click)="SaveProfile()" mat-raised-button ><i class="fas fa-check"></i> Save </button> |
                   <a color="accent" (click)="NextTap()" mat-raised-button ><i class="fa fa-arrow-right"></i> Next</a>
@@ -364,12 +369,16 @@
          </form>
       </mat-tab>
       <mat-tab label="Contact Person" >
-         <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
+
+         <ng-container  *ngIf="this.currentUser.RoleTitle=='TSP'">
+  <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
             <legend>Profile Completion </legend>
             <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
             <p>{{currentScore}} out of {{totalScore}} completed ({{progressPercentage | number: '1.0-0'}}%)</p>
             <p *ngIf="PendingForm.length>0" class="pt-1"><span style="color: red;" >Please complete the required form:</span> [{{PendingForm.join(", ")}}]</p>
          </fieldset>
+         </ng-container>
+       
          
          <form (ngSubmit)="SaveContactPersonInfo()" [formGroup]="ContactInfoForm" >
          <fieldset class="border">
@@ -482,7 +491,7 @@
                </div>
             </div>
          </fieldset>
-         <div class="row" style="padding-bottom:20px ; float:right">
+         <div class="row" style="padding-bottom:20px ; float:right"  *ngIf="this.currentUser.RoleTitle=='TSP'">
             <div class="col-sm-12">
                <a (click)="PreviousTap()" mat-raised-button ><i class="fa fa-arrow-left"></i> Previous</a> |
                 <button color="primary" mat-raised-button ><i class="fas fa-check"></i> Save</button> |

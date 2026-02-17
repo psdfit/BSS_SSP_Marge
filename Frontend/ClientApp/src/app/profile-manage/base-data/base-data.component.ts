@@ -97,8 +97,11 @@ export class BaseDataComponent implements OnInit {
   @ViewChild("TrainerPaginator") TrainerPaginator: MatPaginator;
   @ViewChild("TrainerSort") TrainerSort: MatSort;
   private ngUnsubscribe = new Subject();
+  modelData: any={};
   ngOnInit(): void {
     this.currentUser = this.ComSrv.getUserDetails();
+    
+    this.modelData= this.ComSrv.getMessage();
     this.TapIndex = 0;
     this.BankTablesData = new MatTableDataSource([]);
     this.TrainerTablesData = new MatTableDataSource([]);
@@ -616,7 +619,7 @@ export class BaseDataComponent implements OnInit {
   GetData() {
     this.GetTSPProfileScore();
     this.ComSrv.postJSON("api/BaseData/GetData", {
-      UserID: this.currentUser.UserID,
+      UserID: this.currentUser.RoleTitle=='TSP' ? this.currentUser.UserID : this.modelData.UserID ,
     }).subscribe(
       (response) => {
         this.GetDataObject = response;
@@ -958,9 +961,12 @@ export class BaseDataComponent implements OnInit {
     );
     if (businessProfileIncomplete || contactPersonIncomplete) {
       this.fieldSetDisabled = true;
-      this.ComSrv.ShowError(
+      if(this.currentUser.RoleTitle=='TSP'){
+  this.ComSrv.ShowError(
         "Please complete the Business Profile and Contact Person Information before completing the Base Data."
       );
+      }
+    
       this.TrainingForm.disable();
       this.Certificate.disable();
       this.TradeForm.disable();
