@@ -619,7 +619,7 @@ export class BaseDataComponent implements OnInit {
   GetData() {
     this.GetTSPProfileScore();
     this.ComSrv.postJSON("api/BaseData/GetData", {
-      UserID: this.currentUser.RoleTitle=='TSP' ? this.currentUser.UserID : this.modelData.UserID ,
+      UserID: (this.currentUser.RoleTitle == 'TSP' || this.currentUser.RoleTitle == 'SSPRegistration') ? this.currentUser.UserID : this.modelData.UserID ,
     }).subscribe(
       (response) => {
         this.GetDataObject = response;

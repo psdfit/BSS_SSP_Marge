@@ -81,9 +81,29 @@ export class CommonSrvService {
       }));
     this.userrights = JSON.parse(sessionStorage.getItem(environment.RightsToken));
     this.appConfig = this.appConfigService.getAppConfig();
+    this.apiBaseURL = this.getApiBaseUrl();
     // this.pageTitle.next(this.titleService.getTitle());
   }
 
+  apiBaseURL: string;
+  getApiBaseUrl() {
+    const configUrl = this.appConfig.UsersAPIURL;
+    const browserOrigin = window.location.origin;
+
+    console.log("Browser Origin:", browserOrigin);
+
+    const apiUrl = new URL(configUrl);
+    const apiPort = apiUrl.port;
+
+    // Check if same hostname
+    if (window.location.hostname === apiUrl.hostname) {
+      console.warn("Sending request to API with configuration URL:", configUrl);
+      return configUrl;
+    } else {
+      console.warn("Sending request to API with Browser Origin:", browserOrigin);
+      return apiPort ? `${browserOrigin}:${apiPort}/` : `${browserOrigin}/`;
+    }
+  }
 
   sharedDataObj: any = {}
 

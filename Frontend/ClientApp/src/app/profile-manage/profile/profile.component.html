@@ -8,7 +8,7 @@
       <!-- form start -->
       <mat-tab [label]="TapTTitle">
 
-         <ng-container *ngIf="this.currentUser.RoleTitle=='TSP'">
+         <ng-container *ngIf="this.currentUser.RoleTitle=='TSP' || this.currentUser.RoleTitle=='SSPRegistration'">
  <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
             <legend>Profile Completion </legend>
 
@@ -356,7 +356,7 @@
                   </div>
                </div>
             </fieldset>
-            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP'">
+            <div class="row" style="float:right" *ngIf="this.currentUser.RoleTitle=='TSP' || this.currentUser.RoleTitle=='SSPRegistration'">
                <div class="col-sm-12">
                   <button color="primary" (click)="SaveProfile()" mat-raised-button ><i class="fas fa-check"></i> Save </button> |
                   <a color="accent" (click)="NextTap()" mat-raised-button ><i class="fa fa-arrow-right"></i> Next</a>
@@ -370,7 +370,7 @@
       </mat-tab>
       <mat-tab label="Contact Person" >
 
-         <ng-container  *ngIf="this.currentUser.RoleTitle=='TSP'">
+         <ng-container  *ngIf="this.currentUser.RoleTitle=='TSP' || this.currentUser.RoleTitle=='SSPRegistration'">
   <fieldset *ngIf="totalScore!=currentScore" class="border" style="padding: 3px 10px !important;margin-bottom: 5px !important;">
             <legend>Profile Completion </legend>
             <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
@@ -491,7 +491,7 @@
                </div>
             </div>
          </fieldset>
-         <div class="row" style="padding-bottom:20px ; float:right"  *ngIf="this.currentUser.RoleTitle=='TSP'">
+         <div class="row" style="padding-bottom:20px ; float:right"  *ngIf="this.currentUser.RoleTitle=='TSP' || this.currentUser.RoleTitle=='SSPRegistration'">
             <div class="col-sm-12">
                <a (click)="PreviousTap()" mat-raised-button ><i class="fa fa-arrow-left"></i> Previous</a> |
                 <button color="primary" mat-raised-button ><i class="fas fa-check"></i> Save</button> |

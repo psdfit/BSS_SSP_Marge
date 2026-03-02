@@ -208,7 +208,7 @@ export class ProfileComponent implements OnInit {
   }
   async GetData() {
     this.GetTSPProfileScore()
-    this.ComSrv.postJSON("api/BusinessProfile/GetData", { UserID: this.currentUser.RoleTitle=='TSP' ? this.currentUser.UserID : this.modelData.UserID }).subscribe(
+    this.ComSrv.postJSON("api/BusinessProfile/GetData", { UserID: (this.currentUser.RoleTitle == 'TSP' || this.currentUser.RoleTitle == 'SSPRegistration') ? this.currentUser.UserID : this.modelData.UserID }).subscribe(
       (response) => {
         this.GetDataObject = response
         this.TehsilData = this.GetDataObject.tehsil
