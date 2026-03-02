@@ -198,6 +198,7 @@
             <mat-select (selectionChange)="onFormateChange()" [(ngModel)]="NTNFormat" [ngModelOptions]="{standalone: true}"  matInput>
               <mat-option  value="1" selected>0000000-0</mat-option>
               <mat-option  value="2">D000000</mat-option>
+              <mat-option  value="3">00000-0000000-0</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -205,12 +206,23 @@
         <div class="col-sm-3">
           <mat-form-field>
             <mat-label>Business NTN</mat-label>
-            <input formControlName="BusinessNTN"   [imask]="NTNFormat=='1'?{mask:'0000000-0'}:{mask:'a000000'}" [unmask]="false" matInput [placeholder]=" NTNFormat ==1 ?'0000000-0': 'D000000'"  required />
+  <input formControlName="BusinessNTN"  [imask]="
+    NTNFormat == '1' ? {mask:'0000000-0'} :
+    NTNFormat == '2' ? {mask:'a000000'} :
+    {mask:'00000-0000000-0'}
+  "
+  [placeholder]="
+    NTNFormat == '1' ? '0000000-0' :
+    NTNFormat == '2' ? 'D000000' :
+    '00000-0000000-0'
+  " [unmask]="false" matInput  required />
             <mat-error *ngFor="let error of signUp.get('BusinessNTN').errors | keyvalue">
               {{ getErrorMessage(error.key, error.value) }}
             </mat-error>
           </mat-form-field>
         </div>
+
+        
 
         <div class="col-sm-6">
           <mat-form-field>
