@@ -554,6 +554,54 @@
                           <mat-error *ngIf="GuardianNextToKinContactNo.invalid && GuardianNextToKinContactNo.errors.required"><strong>required</strong></mat-error>
                         </mat-form-field>
                       </div>
+                      <div class="col-sm-3">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="GuardianRelationship"
+                                 placeholder="e.g., Father, Mother, Brother, Sister, Uncle" matInput required />
+                          <mat-label>Guardian/(Next To Kin) Relationship</mat-label>
+                          <mat-error *ngIf="GuardianRelationship.invalid && GuardianRelationship.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3">
+                        <mat-form-field fxFlex>
+                          <input type="email" formControlName="GuardianEmail"
+                                 placeholder="e.g., guardian@example.com" matInput required />
+                          <mat-label>Guardian/(Next To Kin) Email</mat-label>
+                          <mat-error *ngIf="GuardianEmail.invalid && GuardianEmail.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="EmergencyContact"
+                                 placeholder="e.g., 0300-1234567 (Friend or Family Member)" matInput NumberOnly maxlength="11" required />
+                          <mat-label>Emergency contact number</mat-label>
+                          <mat-error *ngIf="EmergencyContact.invalid && EmergencyContact.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="WhatsAppContact"
+                                 placeholder="e.g.,(if different from primary contact number)" matInput NumberOnly maxlength="11" required />
+                          <mat-label>WhatsApp contact number</mat-label>
+                          <mat-error *ngIf="WhatsAppContact.invalid && WhatsAppContact.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="LinkedInURL"
+                                 placeholder="e.g., https://www.linkedin.com/in/your-profile" matInput maxlength="250" required />
+                          <mat-label>LinkedIn Profile URL</mat-label>
+                          <mat-error *ngIf="LinkedInURL.invalid && LinkedInURL.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-3">
+                        <mat-form-field fxFlex>
+                          <input type="text" formControlName="SocialMediaURL"
+                                 placeholder="e.g., Twitter / Instagram profile link" matInput maxlength="250" required />
+                          <mat-label>Social Media Handles (Optional)</mat-label>
+                          <mat-error *ngIf="SocialMediaURL.invalid && SocialMediaURL.errors.required"><strong>required</strong></mat-error>
+                        </mat-form-field>
+                      </div>
                       <!---Added by Ali Haider for International Placement--->
                       <div class="col-sm-3" *ngIf="IsInternationalPlacement">
                         <mat-form-field fxFlex>
@@ -573,7 +621,7 @@
                       </div>
                       <!--<div class="col-sm-3" *ngIf="IsInternationalPlacement">-->
 
-                      <div class="col-sm-3"  *ngIf="IsInternationalPlacement || IsWDD">
+                      <div class="col-sm-3" *ngIf="IsInternationalPlacement || IsWDD">
                         <mat-form-field fxFlex>
                           <input type="text" formControlName="IBANNumber"
                                  placeholder="IBAN Number" matInput required minlength="24" maxlength="24" [disabled]="isFormDisabled" />

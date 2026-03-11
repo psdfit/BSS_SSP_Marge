@@ -301,7 +301,14 @@ export class TraineeComponent implements OnInit {
       /// Added By Rao ALi haider for International Placement
       Accounttitle: ['', [Validators.required]],
       BankName: ['', [Validators.required]],
-      IBANNumber: ['', [Validators.required]]
+      IBANNumber: ['', [Validators.required]],
+
+      GuardianRelationship: ['', [Validators.required]],
+      GuardianEmail: ['', [Validators.required]],
+      EmergencyContact: ['', [Validators.required]],
+      WhatsAppContact: ['', [Validators.required]],
+      LinkedInURL: ['', [Validators.required]],
+      SocialMediaURL: ['']
     }, { updateOn: "change" });
     this.VoucherHolder.valueChanges.subscribe(checked => {
       if (checked) {
@@ -1302,6 +1309,12 @@ debugger;
   get Accounttitle() { return this.traineeProfileForm.get("Accounttitle"); }
   get BankName() { return this.traineeProfileForm.get("BankName"); }
   get IBANNumber() { return this.traineeProfileForm.get("IBANNumber"); }
+  get GuardianRelationship() { return this.traineeProfileForm.get("GuardianRelationship"); }
+  get GuardianEmail() { return this.traineeProfileForm.get("GuardianEmail"); }
+  get EmergencyContact() { return this.traineeProfileForm.get("EmergencyContact"); }
+  get WhatsAppContact() { return this.traineeProfileForm.get("WhatsAppContact"); }
+  get LinkedInURL() { return this.traineeProfileForm.get("LinkedInURL"); }
+  get SocialMediaURL() { return this.traineeProfileForm.get("SocialMediaURL"); }
 
   
   //get CNICImg() { return this.traineeProfileForm.get("CNICImg"); }

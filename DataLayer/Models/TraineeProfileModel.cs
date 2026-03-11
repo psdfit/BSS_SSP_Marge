@@ -126,7 +126,13 @@ namespace DataLayer.Models
         public string BankName { get; set; }
         public string IBANNumber { get; set; }
         public int MaritalStatusID { get; set; }
-        
+        public string GuardianRelationship { get; set; }
+        public string GuardianEmail { get; set; }
+        public string EmergencyContact { get; set; }
+        public string WhatsAppContact { get; set; }
+        public string LinkedInURL { get; set; }
+        public string SocialMediaURL { get; set; }
+
 
     }
 }

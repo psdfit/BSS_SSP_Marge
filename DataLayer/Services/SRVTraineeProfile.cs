@@ -200,6 +200,12 @@ namespace DataLayer.Services
                 param.Add(new SqlParameter("@BankName", traineeProfile.BankName));
                 param.Add(new SqlParameter("@Accounttitle", traineeProfile.Accounttitle));
                 param.Add(new SqlParameter("@MaritalStatusID", traineeProfile.MaritalStatusID));
+                param.Add(new SqlParameter("@GuardianRelationship", traineeProfile.GuardianRelationship));
+                param.Add(new SqlParameter("@GuardianEmail", traineeProfile.GuardianEmail));
+                param.Add(new SqlParameter("@EmergencyContact", traineeProfile.EmergencyContact));
+                param.Add(new SqlParameter("@WhatsAppContact", traineeProfile.WhatsAppContact));
+                param.Add(new SqlParameter("@LinkedInURL", traineeProfile.LinkedInURL));
+                param.Add(new SqlParameter("@SocialMediaURL", traineeProfile.SocialMediaURL));
                 SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "[AU_TraineeProfile]", param.ToArray());
 
 
@@ -1488,6 +1494,17 @@ namespace DataLayer.Services
                 TraineeProfile.IBANNumber = row.Field<string>("IBANNumber");
             }
             TraineeProfile.MaritalStatusID = row.Field<int?>("MaritalStatusID") ?? 0;
+
+            if (row.Table.Columns.Contains("GuardianRelationship"))
+            {
+                TraineeProfile.GuardianRelationship = row.Field<string>("GuardianRelationship");
+                TraineeProfile.GuardianEmail = row.Field<string>("GuardianEmail");
+                TraineeProfile.EmergencyContact = row.Field<string>("EmergencyContact");
+                TraineeProfile.WhatsAppContact = row.Field<string>("WhatsAppContact");
+                TraineeProfile.LinkedInURL = row.Field<string>("LinkedInURL");
+                TraineeProfile.SocialMediaURL = row.Field<string>("SocialMediaURL");
+            }
+
             return TraineeProfile;
         }
 
