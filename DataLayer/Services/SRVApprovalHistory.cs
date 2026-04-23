@@ -2263,7 +2263,7 @@ namespace DataLayer.Services
                                     ///add first Approval History Record with pending status
                                     switch (model.ProcessKey)
                                     {
-                                        //case EnumApprovalProcess.AP_PD:
+                                        case EnumApprovalProcess.AP_PD:
                                         case EnumApprovalProcess.AP_BD:
                                             ///Rejected scheme is now Editable for created user
                                             SchemeModel scheme = srvScheme.GetBySchemeID_Notification(model.FormID, _transaction);
@@ -2277,6 +2277,7 @@ namespace DataLayer.Services
                                             _transaction.Commit();
                                             result = true;
                                             break;
+
 
                                         case EnumApprovalProcess.PROG_APP:
                                             //SchemeModel ProgramDesign = srvScheme.GetBySchemeID_Notification(model.FormID, _transaction);

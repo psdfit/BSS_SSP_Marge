@@ -100,8 +100,7 @@
                 {{t.TSPName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.TSPID.invalid && notForm.controls.TSPID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.TSPID.invalid && notForm.controls.TSPID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -111,8 +110,7 @@
                 {{s.SectorName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.SectorID.invalid && notForm.controls.SectorID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.SectorID.invalid && notForm.controls.SectorID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -120,26 +118,24 @@
             <mat-select formControlName="TradeID" placeholder="Trade" (openedChange)="EmptyCtrl($event)" required>
               <mat-optgrp disabled class="ddlsrchheader">
                 <input type="text" placeholder="Search" (keydown)="$event.stopPropagation()" [formControl]="SearchTrade"
-                  autofocus />
+                       autofocus />
               </mat-optgrp>
               <mat-option *ngFor="let t of trades | like:['TradeName',SearchTrade.value]" [value]="t.TradeID">
                 {{t.TradeName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.TradeID.invalid && notForm.controls.TradeID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.TradeID.invalid && notForm.controls.TradeID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <mat-select formControlName="SourceOfCurriculum" placeholder="Source Of Curriculum" required>
               <mat-option *ngFor="let sc of TradeDetailMap | where: ['TradeID', notForm.get('TradeID').value]"
-                [value]="sc.SourceOfCurriculumID">
+                          [value]="sc.SourceOfCurriculumID">
                 {{sc.SourceOfCurriculumName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.SourceOfCurriculum.invalid && notForm.controls.SourceOfCurriculum.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.SourceOfCurriculum.invalid && notForm.controls.SourceOfCurriculum.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -149,8 +145,7 @@
                 {{e.Education}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.EntryQualification.invalid && notForm.controls.EntryQualification.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.EntryQualification.invalid && notForm.controls.EntryQualification.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -160,8 +155,7 @@
                 {{ca.CertAuthName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.CertAuthID.invalid && notForm.controls.CertAuthID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.CertAuthID.invalid && notForm.controls.CertAuthID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -171,8 +165,7 @@
                 {{ra.RegistrationAuthorityName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.RegistrationAuthorityID.invalid && notForm.controls.RegistrationAuthorityID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.RegistrationAuthorityID.invalid && notForm.controls.RegistrationAuthorityID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -182,8 +175,7 @@
                 {{pf.ProgramFocusName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.ProgramFocusID.invalid && notForm.controls.ProgramFocusID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.ProgramFocusID.invalid && notForm.controls.ProgramFocusID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <!--<div class="col-sm-6 col-md-3 col-lg-3">
@@ -196,18 +188,15 @@
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Training Location Address" formControlName="TrainingAddressLocation"
-              maxlength="500">
-            <mat-error
-              *ngIf="notForm.controls.TrainingAddressLocation.invalid && notForm.controls.TrainingAddressLocation.errors.required">required</mat-error>
+                   maxlength="500">
+            <mat-error *ngIf="notForm.controls.TrainingAddressLocation.invalid && notForm.controls.TrainingAddressLocation.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Geo Tagging (lat,long)" formControlName="GeoTagging" type="text">
-            <mat-error
-              *ngIf="notForm.controls.GeoTagging.invalid && notForm.controls.GeoTagging.errors.required">required</mat-error>
-            <mat-error
-              *ngIf="notForm.controls.GeoTagging.invalid && notForm.controls.GeoTagging.errors.pattern">latitude,longitude</mat-error>
+            <mat-error *ngIf="notForm.controls.GeoTagging.invalid && notForm.controls.GeoTagging.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.GeoTagging.invalid && notForm.controls.GeoTagging.errors.pattern">latitude,longitude</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -217,8 +206,7 @@
                 {{p.ProvinceName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.ProvinceID.invalid && notForm.controls.ProvinceID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.ProvinceID.invalid && notForm.controls.ProvinceID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -226,12 +214,11 @@
             <!--<mat-select formControlName="ClusterID" placeholder="Cluster" required (selectionChange)="FilterDistricts($event)">-->
             <mat-select formControlName="ClusterID" placeholder="Cluster" required>
               <mat-option *ngFor="let c of clusters | where:['ProvinceID',notForm.get('ProvinceID').value]"
-                [value]="c.ClusterID">
+                          [value]="c.ClusterID">
                 {{c.ClusterName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.ClusterID.invalid && notForm.controls.ClusterID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.ClusterID.invalid && notForm.controls.ClusterID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -239,90 +226,81 @@
             <!--<mat-select formControlName="DistrictID" placeholder="District" (selectionChange)="FilterTehsilList($event)" required>-->
             <mat-select formControlName="DistrictID" placeholder="District" required>
               <mat-option *ngFor="let d of districts | where:['ClusterID',notForm.get('ClusterID').value]"
-                [value]="d.DistrictID">
+                          [value]="d.DistrictID">
                 {{d.DistrictName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.DistrictID.invalid && notForm.controls.DistrictID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.DistrictID.invalid && notForm.controls.DistrictID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <mat-select formControlName="TehsilID" placeholder="Tehsil" required>
               <mat-option *ngFor="let t of tehsils | where:['DistrictID',notForm.get('DistrictID').value]"
-                [value]="t.TehsilID">
+                          [value]="t.TehsilID">
                 {{t.TehsilName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.TehsilID.invalid && notForm.controls.TehsilID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.TehsilID.invalid && notForm.controls.TehsilID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Total Trainees" formControlName="TotalTrainees" required type="text" NumberOnly
-              maxlength="5">
-            <mat-error
-              *ngIf="notForm.controls.TotalTrainees.invalid && notForm.controls.TotalTrainees.errors.required">required</mat-error>
+                   maxlength="5">
+            <mat-error *ngIf="notForm.controls.TotalTrainees.invalid && notForm.controls.TotalTrainees.errors.required">required</mat-error>
             <mat-error *ngIf="notForm.controls.TotalTrainees.getError('zero')">Value can't be zero</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="No. of Classes" formControlName="TotalClasses" required type="text" NumberOnly
-              maxlength="5">
-            <mat-error
-              *ngIf="notForm.controls.TotalClasses.invalid && notForm.controls.TotalClasses.errors.required">required</mat-error>
+                   maxlength="5">
+            <mat-error *ngIf="notForm.controls.TotalClasses.invalid && notForm.controls.TotalClasses.errors.required">required</mat-error>
             <mat-error *ngIf="notForm.controls.TotalClasses.getError('zero')">Value can't be zero</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Contractual Trainees" formControlName="TraineesPerClass" required type="text"
-              NumberOnly maxlength="5">
-            <mat-error
-              *ngIf="notForm.controls.TraineesPerClass.invalid && notForm.controls.TraineesPerClass.errors.required">required</mat-error>
+                   NumberOnly maxlength="5">
+            <mat-error *ngIf="notForm.controls.TraineesPerClass.invalid && notForm.controls.TraineesPerClass.errors.required">required</mat-error>
             <mat-error *ngIf="notForm.controls.TraineesPerClass.getError('zero')">Value can't be zero</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="No. of Batches" formControlName="Batch" required type="text" NumberOnly
-              maxlength="5">
-            <mat-error
-              *ngIf="notForm.controls.Batch.invalid && notForm.controls.Batch.errors.required">required</mat-error>
+                   maxlength="5">
+            <mat-error *ngIf="notForm.controls.Batch.invalid && notForm.controls.Batch.errors.required">required</mat-error>
             <mat-error *ngIf="notForm.controls.Batch.getError('zero')">Value can't be zero</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Minimum Training Hours Per Month" formControlName="MinHoursPerMonth" required
-              type="text" DecimelOnly maxlength="5">
-            <mat-error
-              *ngIf="notForm.controls.MinHoursPerMonth.invalid && notForm.controls.MinHoursPerMonth.errors.required">required</mat-error>
+                   type="text" DecimelOnly maxlength="5">
+            <mat-error *ngIf="notForm.controls.MinHoursPerMonth.invalid && notForm.controls.MinHoursPerMonth.errors.required">required</mat-error>
             <mat-error *ngIf="notForm.controls.MinHoursPerMonth.getError('zero')">Value can't be zero</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Duration (Months)" formControlName="Duration" required min="0"
-              (ngModelChange)="checkDuration(notForm.controls.Duration)"
-              (change)="[salesTaxCalculation(), SetEndDate()]" maxlength="4" DecimelOnly>
+                   (ngModelChange)="checkDuration(notForm.controls.Duration)"
+                   (change)="[salesTaxCalculation(), SetEndDate()]" maxlength="4" DecimelOnly>
             <mat-error *ngIf="notForm.controls.Duration.getError('less')">Value can't be zero</mat-error>
-            <mat-error
-              *ngIf="notForm.controls.Duration.invalid && notForm.controls.Duration.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.Duration.invalid && notForm.controls.Duration.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <!-- <input matInput [matDatepicker]="picker1" [matDatepickerFilter]="dateFilter" formControlName="StartDate" readonly placeholder="Start Date" required (ngModelChange)="SetEndDate()">-->
             <input matInput [matDatepicker]="picker1" formControlName="StartDate" readonly placeholder="Start Date"
-              required (ngModelChange)="SetEndDate()">
+                   required (ngModelChange)="SetEndDate()">
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
-            <mat-error
-              *ngIf="notForm.controls.StartDate.invalid && notForm.controls.StartDate.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.StartDate.invalid && notForm.controls.StartDate.errors.required">required</mat-error>
             <!--<mat-error *ngIf="notForm.controls.StartDate.invalid && notForm.controls.StartDate.errors?.matDatepickerFilter">It must be greater than today.</mat-error>-->
           </mat-form-field>
         </div>
@@ -330,7 +308,7 @@
           <mat-form-field>
             <!--<input matInput [matDatepicker]="picker2" [matDatepickerFilter]="dateFilter" formControlName="EndDate" readonly placeholder="End Date" required>-->
             <input matInput [matDatepicker]="picker2" formControlName="EndDate" readonly placeholder="End Date"
-              required>
+                   required>
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker disabled="true" #picker2></mat-datepicker>
             <!--<mat-error *ngIf="notForm.controls.EndDate.invalid && notForm.controls.EndDate.errors.required">required</mat-error>
@@ -344,141 +322,129 @@
                 {{gen.GenderName}}
               </mat-option>
             </mat-select>
-            <mat-error
-              *ngIf="notForm.controls.GenderID.invalid && notForm.controls.GenderID.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.GenderID.invalid && notForm.controls.GenderID.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Total Trainee Bid Price" formControlName="BidPrice" type="text" DecimelOnly
-              maxlength="15">
+                   maxlength="15">
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Total Trainee BM Price" formControlName="BMPrice" type="text" DecimelOnly
-              maxlength="15">
+                   maxlength="15">
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Training Cost Per Trainee Per Month Including Taxes"
-              (change)="salesTaxCalculation()" formControlName="TrainingCostPerTraineePerMonthInTax" required
-              type="text" DecimelOnly maxlength="15">
-            <mat-error
-              *ngIf="notForm.controls.TrainingCostPerTraineePerMonthInTax.invalid && notForm.controls.TrainingCostPerTraineePerMonthInTax.errors.required">required</mat-error>
+                   (change)="salesTaxCalculation()" formControlName="TrainingCostPerTraineePerMonthInTax" required
+                   type="text" DecimelOnly maxlength="15">
+            <mat-error *ngIf="notForm.controls.TrainingCostPerTraineePerMonthInTax.invalid && notForm.controls.TrainingCostPerTraineePerMonthInTax.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Sales Tax Rate(decimal)" (change)="salesTaxCalculation()"
-              formControlName="SalesTaxRate" required type="text" inputmode="numeric" DecimelOnly maxlength="4">
+                   formControlName="SalesTaxRate" required type="text" inputmode="numeric" DecimelOnly maxlength="4">
             <mat-error *ngIf="notForm.controls.SalesTaxRate.getError('limit')">Value must be less than 1</mat-error>
-            <mat-error
-              *ngIf="notForm.controls.SalesTaxRate.invalid && notForm.controls.SalesTaxRate.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.SalesTaxRate.invalid && notForm.controls.SalesTaxRate.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Training Cost Per Trainee Per Month Excluding Taxes"
-              formControlName="TrainingCostPerTraineePerMonthExTax" required type="text" DecimelOnly maxlength="15">
-            <mat-error
-              *ngIf="notForm.controls.TrainingCostPerTraineePerMonthExTax.invalid && notForm.controls.TrainingCostPerTraineePerMonthExTax.errors.required">required</mat-error>
+                   formControlName="TrainingCostPerTraineePerMonthExTax" required type="text" DecimelOnly maxlength="15">
+            <mat-error *ngIf="notForm.controls.TrainingCostPerTraineePerMonthExTax.invalid && notForm.controls.TrainingCostPerTraineePerMonthExTax.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Total Per Trainee Cost Including Tax"
-              formControlName="TotalPerTraineeCostInTax" required type="text" DecimelOnly maxlength="15">
-            <mat-error
-              *ngIf="notForm.controls.TotalPerTraineeCostInTax.invalid && notForm.controls.TotalPerTraineeCostInTax.errors.required">required</mat-error>
+                   formControlName="TotalPerTraineeCostInTax" required type="text" DecimelOnly maxlength="15">
+            <mat-error *ngIf="notForm.controls.TotalPerTraineeCostInTax.invalid && notForm.controls.TotalPerTraineeCostInTax.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Sales Tax" formControlName="SalesTax" required type="text" DecimelOnly
-              maxlength="15">
-            <mat-error
-              *ngIf="notForm.controls.SalesTax.invalid && notForm.controls.SalesTax.errors.required">required</mat-error>
+                   maxlength="15">
+            <mat-error *ngIf="notForm.controls.SalesTax.invalid && notForm.controls.SalesTax.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
-            <input matInput placeholder="Uniform & Bag Cost per Trainee / Hostel" formControlName="UniformBagCost"
-              required type="text" DecimelOnly>
-            <mat-error
-              *ngIf="notForm.controls.UniformBagCost.invalid && notForm.controls.UniformBagCost.errors.required">required</mat-error>
+            <input matInput placeholder="Uniform & Bag Cost per Trainee" formControlName="UniformBagCost"
+                   required type="text" DecimelOnly>
+            <mat-error *ngIf="notForm.controls.UniformBagCost.invalid && notForm.controls.UniformBagCost.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Testing Certification Fee Per Trainee" formControlName="PerTraineeTestCertCost"
-              required type="text" DecimelOnly maxlength="15">
-            <mat-error
-              *ngIf="notForm.controls.PerTraineeTestCertCost.invalid && notForm.controls.PerTraineeTestCertCost.errors.required">required</mat-error>
+                   required type="text" DecimelOnly maxlength="15">
+            <mat-error *ngIf="notForm.controls.PerTraineeTestCertCost.invalid && notForm.controls.PerTraineeTestCertCost.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Boarding Other Allowances Per trainee"
-              formControlName="BoardingAllowancePerTrainee" required type="text" DecimelOnly maxlength="15">
+                   formControlName="BoardingAllowancePerTrainee" required type="text" DecimelOnly maxlength="15">
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Self Employment Commitment" formControlName="EmploymentCommitmentSelf"
-              (change)="[percentageCheck(notForm.controls.EmploymentCommitmentSelf), setOverallEmpComm()]" required
-              type="text" NumberOnly maxlength="3">
+                   (change)="[percentageCheck(notForm.controls.EmploymentCommitmentSelf), setOverallEmpComm()]" required
+                   type="text" NumberOnly maxlength="3">
             <mat-error *ngIf="notForm.controls.EmploymentCommitmentSelf.getError('limit')">
               Percentage must be between 0
               - 100
             </mat-error>
-            <mat-error
-              *ngIf="notForm.controls.EmploymentCommitmentSelf.invalid && notForm.controls.EmploymentCommitmentSelf.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.EmploymentCommitmentSelf.invalid && notForm.controls.EmploymentCommitmentSelf.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Formal Employment Commitment" formControlName="EmploymentCommitmentFormal"
-              (change)="[percentageCheck(notForm.controls.EmploymentCommitmentFormal), setOverallEmpComm()]" required
-              type="text" NumberOnly maxlength="3">
+                   (change)="[percentageCheck(notForm.controls.EmploymentCommitmentFormal), setOverallEmpComm()]" required
+                   type="text" NumberOnly maxlength="3">
             <mat-error *ngIf="notForm.controls.EmploymentCommitmentFormal.getError('limit')">
               Percentage must be between
               0 - 100
             </mat-error>
-            <mat-error
-              *ngIf="notForm.controls.EmploymentCommitmentFormal.invalid && notForm.controls.EmploymentCommitmentFormal.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.EmploymentCommitmentFormal.invalid && notForm.controls.EmploymentCommitmentFormal.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input disabled matInput placeholder="Overall Employment Commitment"
-              formControlName="OverallEmploymentCommitment" required readonly type="text" NumberOnly maxlength="3">
+                   formControlName="OverallEmploymentCommitment" required readonly type="text" NumberOnly maxlength="3">
             <mat-error *ngIf="notForm.controls.OverallEmploymentCommitment.invalid">
               Value cannot be greater than
               100
             </mat-error>
-            <mat-error
-              *ngIf="notForm.controls.OverallEmploymentCommitment.invalid && notForm.controls.OverallEmploymentCommitment.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.OverallEmploymentCommitment.invalid && notForm.controls.OverallEmploymentCommitment.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Stipend" formControlName="Stipend" required type="text" DecimelOnly>
-            <mat-error
-              *ngIf="notForm.controls.Stipend.invalid && notForm.controls.Stipend.errors.required">required</mat-error>
+            <mat-error *ngIf="notForm.controls.Stipend.invalid && notForm.controls.Stipend.errors.required">required</mat-error>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="On Job Training (OJT)" formControlName="balloonpayment" required type="text"
-              DecimelOnly>
+                   DecimelOnly>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Transportation" formControlName="Transportation" required type="text"
-              DecimelOnly>
+                   DecimelOnly>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -489,7 +455,7 @@
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Protectorate and Visa Stamping" formControlName="ProtectorateandVisa" required
-              type="text" DecimelOnly>
+                   type="text" DecimelOnly>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -500,7 +466,7 @@
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Prometric costs" formControlName="PrometricCost" required type="text"
-              DecimelOnly>
+                   DecimelOnly>
           </mat-form-field>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">
@@ -511,6 +477,18 @@
         <div class="col-sm-6 col-md-3 col-lg-3">
           <mat-form-field>
             <input matInput placeholder="Other Training and supporting cost" formControlName="OtherTrainingCost" required type="text"
+                   DecimelOnly>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Internet / Dongal Cost" formControlName="InterNetCost" required type="text"
+                   DecimelOnly>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <mat-form-field>
+            <input matInput placeholder="Hostel per trainee Cost" formControlName="Hostel" required type="text"
                    DecimelOnly>
           </mat-form-field>
         </div>
@@ -902,7 +880,7 @@
               <th>Training Cost per Trainee per Month (Exclusive of Taxes)</th>
               <th>Sales Tax</th>
               <th>Training Cost per Trainee per Month (Inclusive of Taxes)</th>
-              <th>Uniform & Bag Cost per Trainee / Hostel</th>
+              <th>Uniform & Bag Cost per Trainee</th>
               <th>Testing & Certification Fee per Trainee</th>
               <th>Boarding & Other Allowances per trainee</th>
               <th>Self Employment Commitment</th>
@@ -917,6 +895,8 @@
               <th>Prometric costs</th>
               <th>Takamol cost</th>
               <th>Other Training and supporting cost</th>
+              <th>Internet / Dongal Cost</th>
+              <th>Hostel per trainee Cost</th>
               <th>Total Cost</th>
               <th *ngIf="!scheme[0]?.FinalSubmitted">Action</th>
             </tr>
@@ -924,10 +904,10 @@
           <tbody>
             <ng-container *ngFor="let row of populatedTableList; let i = index;">
               <tr #form="ngForm" [formGroup]="inlineForm"
-                [style.background]="!row.TradeDetailMapID? '#F4F7EA':row.NotValid? '#F4F7EA' : ''">
+                  [style.background]="!row.TradeDetailMapID? '#F4F7EA':row.NotValid? '#F4F7EA' : ''">
                 <td>
                   <a color="primary" *ngIf="!scheme[0]?.FinalSubmitted" mat-button
-                    (click)="removeClass(i, row)">Remove</a>
+                     (click)="removeClass(i, row)">Remove</a>
                   <ng-container *ngIf="!row.IsEditable">
                     <a color="primary" mat-button (click)="edit(i,row);">Edit</a>
                   </ng-container>
@@ -944,7 +924,7 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="TSPID" placeholder="TSP Name" [(ngModel)]="row.TSPID"
-                        (selectionChange)="row.TSPName=$event.source.triggerValue">
+                                  (selectionChange)="row.TSPName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of tsps" [value]="item.TSPID">{{item.TSPName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -977,25 +957,25 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="SectorID" placeholder="Sector Name" [(ngModel)]="row.SectorID"
-                        (selectionChange)="row.SectorName=$event.source.triggerValue">
+                                  (selectionChange)="row.SectorName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of sectors"
-                          [value]="item.SectorID">{{item.SectorName}}</mat-option>
+                                    [value]="item.SectorID">{{item.SectorName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.SectorName}}</ng-container>
                   <br />
                   <span *ngIf="!row.SectorID && row.SectorName"
-                    [style.color]="!row.SectorID && row.SectorName? 'red': ''">invalid value entered from file </span>
+                        [style.color]="!row.SectorID && row.SectorName? 'red': ''">invalid value entered from file </span>
                   <span *ngIf="!row.SectorID && !row.SectorName"
-                    [style.color]="!row.SectorID && !row.SectorName? 'red': ''">required</span>
+                        [style.color]="!row.SectorID && !row.SectorName? 'red': ''">required</span>
 
                 </td>
                 <td>
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="TradeID" [(ngModel)]="row.TradeID"
-                        (selectionChange)="row.TradeName=$event.source.triggerValue">
+                                  (selectionChange)="row.TradeName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of trades" [value]="item.TradeID">{{item.TradeName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -1003,9 +983,9 @@
                   <ng-container *ngIf="!row.IsEditable">{{row.TradeName}}</ng-container>
                   <br />
                   <span *ngIf="!row.TradeID && row.TradeName"
-                    [style.color]="!row.TradeID && row.TradeName? 'red': ''">invalid </span>
+                        [style.color]="!row.TradeID && row.TradeName? 'red': ''">invalid </span>
                   <span *ngIf="!row.TradeID && !row.TradeName"
-                    [style.color]="!row.TradeID && !row.TradeName? 'red': ''">required</span>
+                        [style.color]="!row.TradeID && !row.TradeName? 'red': ''">required</span>
                   <span *ngIf="!row.TradeDetailMapID" [style.color]="!row.TradeDetailMapID? 'red': ''">
                     no trade detail
                     found
@@ -1029,9 +1009,9 @@
                   <ng-container *ngIf="!row.IsEditable">{{row.Duration}}</ng-container>
                   <br />
                   <span *ngIf="!row.DurationID && row.Duration"
-                    [style.color]="!row.DurationID && row.Duration? 'red': ''">invalid </span>
+                        [style.color]="!row.DurationID && row.Duration? 'red': ''">invalid </span>
                   <span *ngIf="!row.DurationID && !row.Duration"
-                    [style.color]="!row.DurationID && !row.Duration? 'red': ''">required</span>
+                        [style.color]="!row.DurationID && !row.Duration? 'red': ''">required</span>
                   <span *ngIf="!row.TradeDetailMapID" [style.color]="!row.TradeDetailMapID? 'red': ''">
                     no trade detail
                     found
@@ -1051,7 +1031,7 @@
                   <ng-container *ngIf="!row.IsEditable">{{row.SourceOfCurriculum}}</ng-container>
                   <br />
                   <span *ngIf="!row.SourceOfCurriculum"
-                    [style.color]="!row.SourceOfCurriculum? 'red': ''">required</span>
+                        [style.color]="!row.SourceOfCurriculum? 'red': ''">required</span>
                   <span *ngIf="!row.TradeDetailMapID" [style.color]="!row.TradeDetailMapID? 'red': ''">
                     no trade detail
                     found
@@ -1065,9 +1045,9 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="EntryQualification" [(ngModel)]="row.EntryQualification"
-                        (selectionChange)="row.Education=$event.source.triggerValue">
+                                  (selectionChange)="row.Education=$event.source.triggerValue">
                         <mat-option *ngFor="let item of education"
-                          [value]="item.EducationTypeID">{{item.Education}}</mat-option>
+                                    [value]="item.EducationTypeID">{{item.Education}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </ng-container>
@@ -1077,9 +1057,9 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="CertAuthID" [(ngModel)]="row.CertAuthID"
-                        (selectionChange)="row.CertAuthName=$event.source.triggerValue">
+                                  (selectionChange)="row.CertAuthName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of certificationAgency"
-                          [value]="item.CertAuthID">{{item.CertAuthName}}</mat-option>
+                                    [value]="item.CertAuthID">{{item.CertAuthName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </ng-container>
@@ -1094,7 +1074,7 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="RegistrationAuthorityID" [(ngModel)]="row.RegistrationAuthorityID"
-                        (selectionChange)="row.RegistrationAuthorityName=$event.source.triggerValue">
+                                  (selectionChange)="row.RegistrationAuthorityName=$event.source.triggerValue">
                         <mat-option *ngFor="let ra of registrationAuthority" [value]="ra.RegistrationAuthorityID">
                           {{ra.RegistrationAuthorityName}}
                         </mat-option>
@@ -1104,13 +1084,13 @@
                   <ng-container *ngIf="!row.IsEditable">{{row.RegistrationAuthorityName}}</ng-container>
                   <br />
                   <span *ngIf="!row.RegistrationAuthorityID"
-                    [style.color]="!row.RegistrationAuthorityID? 'red': ''">required</span>
+                        [style.color]="!row.RegistrationAuthorityID? 'red': ''">required</span>
                 </td>
                 <td>
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="ProgramFocusID" [(ngModel)]="row.ProgramFocusID"
-                        (selectionChange)="row.ProgramFocusName=$event.source.triggerValue">
+                                  (selectionChange)="row.ProgramFocusName=$event.source.triggerValue">
                         <mat-option *ngFor="let pf of programFocus" [value]="pf.ProgramFocusID">
                           {{pf.ProgramFocusName}}
                         </mat-option>
@@ -1159,7 +1139,7 @@
                     <mat-form-field>
                       <!--<input matInput [matDatepicker]="picker1" [matDatepickerFilter]="dateFilter" formControlName="StartDate" readonly placeholder="Start Date">-->
                       <input matInput [matDatepicker]="picker1" formControlName="StartDate" [ngModel]="row.StartDate"
-                        readonly placeholder="Start Date">
+                             readonly placeholder="Start Date">
                       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                       <mat-datepicker #picker1></mat-datepicker>
                       <!--<mat-error *ngIf="row.controls.StartDate.invalid && row.controls.StartDate.errors.required">required</mat-error>
@@ -1174,7 +1154,7 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput [matDatepicker]="picker2" formControlName="EndDate" [ngModel]="row.EndDate"
-                        readonly placeholder="End Date">
+                             readonly placeholder="End Date">
                       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                       <mat-datepicker #picker2></mat-datepicker>
                       <!--<input matInput formControlName="EndDate" [ngModel]="row.EndDate" />-->
@@ -1196,9 +1176,9 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="GenderID" [(ngModel)]="row.GenderID"
-                        (selectionChange)="row.GenderName=$event.source.triggerValue">
+                                  (selectionChange)="row.GenderName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of genderOfTrainee"
-                          [value]="item.GenderID">{{item.GenderName}}</mat-option>
+                                    [value]="item.GenderID">{{item.GenderName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </ng-container>
@@ -1208,13 +1188,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input type="text" matInput formControlName="TrainingAddressLocation"
-                        [ngModel]="row.TrainingAddressLocation" />
+                             [ngModel]="row.TrainingAddressLocation" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.TrainingAddressLocation}}</ng-container>
                   <br />
                   <span *ngIf="!row.TrainingAddressLocation && row.RequiredLocationGeoTag"
-                    [style.color]="!row.TrainingAddressLocation? 'red': ''">required</span>
+                        [style.color]="!row.TrainingAddressLocation? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Training Location Address" formControlName="TrainingAddressLocation">
       <mat-error *ngIf="row.controls.TrainingAddressLocation.invalid && row.controls.TrainingAddressLocation.errors.required">required</mat-error>
@@ -1224,15 +1204,15 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput formControlName="GeoTagging" [ngModel]="row.GeoTagging"
-                        (ngModelChange)="row.GeoTagging = $event.source.triggerValue" />
+                             (ngModelChange)="row.GeoTagging = $event.source.triggerValue" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.GeoTagging}}</ng-container>
                   <br />
                   <span *ngIf="!row.GeoTagging && row.RequiredLocationGeoTag"
-                    [style.color]="!row.GeoTagging? 'red': ''">required</span>
+                        [style.color]="!row.GeoTagging? 'red': ''">required</span>
                   <span *ngIf="row.GeoTagging && row.InvalidGeoTagging"
-                    [style.color]="row.GeoTagging && row.InvalidGeoTagging? 'red': ''">invalid</span>
+                        [style.color]="row.GeoTagging && row.InvalidGeoTagging? 'red': ''">invalid</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Geo Tagging (lat,long)" formControlName="GeoTagging" type="text">
       <mat-error *ngIf="row.controls.GeoTagging.invalid && row.controls.GeoTagging.errors.required">required</mat-error>
@@ -1243,9 +1223,9 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="ProvinceID" [(ngModel)]="row.ProvinceID"
-                        (selectionChange)="row.ProvinceName=$event.source.triggerValue">
+                                  (selectionChange)="row.ProvinceName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of province"
-                          [value]="item.ProvinceID">{{item.ProvinceName}}</mat-option>
+                                    [value]="item.ProvinceID">{{item.ProvinceName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </ng-container>
@@ -1255,9 +1235,9 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="ClusterID" [(ngModel)]="row.ClusterID"
-                        (selectionChange)="row.ClusterName=$event.source.triggerValue">
+                                  (selectionChange)="row.ClusterName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of clusters"
-                          [value]="item.ClusterID">{{item.ClusterName}}</mat-option>
+                                    [value]="item.ClusterID">{{item.ClusterName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </ng-container>
@@ -1276,9 +1256,9 @@
                     <mat-form-field>
 
                       <mat-select formControlName="DistrictID" [(ngModel)]="row.DistrictID"
-                        (selectionChange)="row.DistrictName=$event.source.triggerValue">
+                                  (selectionChange)="row.DistrictName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of districts"
-                          [value]="item.DistrictID">{{item.DistrictName}}</mat-option>
+                                    [value]="item.DistrictID">{{item.DistrictName}}</mat-option>
                       </mat-select>
 
 
@@ -1296,9 +1276,9 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <mat-select formControlName="TehsilID" [(ngModel)]="row.TehsilID"
-                        (selectionChange)="row.TehsilName=$event.source.triggerValue">
+                                  (selectionChange)="row.TehsilName=$event.source.triggerValue">
                         <mat-option *ngFor="let item of tehsils"
-                          [value]="item.TehsilID">{{item.TehsilName}}</mat-option>
+                                    [value]="item.TehsilID">{{item.TehsilName}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                     <mat-error *ngIf="!row.TehsilName" style="color:red;">Tehsil Required</mat-error>
@@ -1342,13 +1322,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="TotalPerTraineeCostInTax"
-                        [ngModel]="row.TotalPerTraineeCostInTax" />
+                             [ngModel]="row.TotalPerTraineeCostInTax" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.TotalPerTraineeCostInTax}}</ng-container>
                   <br />
                   <span *ngIf="!row.TotalPerTraineeCostInTax"
-                    [style.color]="!row.TotalPerTraineeCostInTax? 'red': ''">required</span>
+                        [style.color]="!row.TotalPerTraineeCostInTax? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Total Trainee Cost" formControlName="TotalPerTraineeCostInTax" required type="text" DecimelOnly maxlength="15">
       <mat-error *ngIf="row.controls.TotalPerTraineeCostInTax.invalid && row.controls.TotalPerTraineeCostInTax.errors.required">required</mat-error>
@@ -1363,7 +1343,7 @@
                   <ng-container *ngIf="!row.IsEditable">{{row.SalesTaxRate}}</ng-container>
                   <br />
                   <span *ngIf="!row.SalesTaxRate && row.SalesTaxRate!='0'"
-                    [style.color]="!row.SalesTaxRate && row.SalesTaxRate!='0'? 'red': ''">required</span>
+                        [style.color]="!row.SalesTaxRate && row.SalesTaxRate!='0'? 'red': ''">required</span>
                   <span *ngIf="row.SalesTaxRate >=1" [style.color]="row.SalesTaxRate >=1">
                     value should be less than
                     1
@@ -1377,13 +1357,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="TrainingCostPerTraineePerMonthExTax"
-                        [ngModel]="row.TrainingCostPerTraineePerMonthExTax" />
+                             [ngModel]="row.TrainingCostPerTraineePerMonthExTax" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.TrainingCostPerTraineePerMonthExTax}}</ng-container>
                   <br />
                   <span *ngIf="!row.TrainingCostPerTraineePerMonthExTax"
-                    [style.color]="!row.TrainingCostPerTraineePerMonthExTax? 'red': ''">required</span>
+                        [style.color]="!row.TrainingCostPerTraineePerMonthExTax? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Training Cost Per Trainee Per Month Excluding Taxes" formControlName="TrainingCostPerTraineePerMonthExTax" required type="text" DecimelOnly maxlength="15">
       <mat-error *ngIf="row.controls.TrainingCostPerTraineePerMonthExTax.invalid && row.controls.TrainingCostPerTraineePerMonthExTax.errors.required">required</mat-error>
@@ -1398,7 +1378,7 @@
                   <ng-container *ngIf="!row.IsEditable">{{row.SalesTax}}</ng-container>
                   <br />
                   <span *ngIf="!row.SalesTax && row.SalesTax!='0'"
-                    [style.color]="!row.SalesTax && row.SalesTax!='0'? 'red': ''">required</span>
+                        [style.color]="!row.SalesTax && row.SalesTax!='0'? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Sales Tax" formControlName="SalesTax" required type="text" DecimelOnly maxlength="15">
       <mat-error *ngIf="row.controls.SalesTax.invalid && row.controls.SalesTax.errors.required">required</mat-error>
@@ -1408,13 +1388,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="TrainingCostPerTraineePerMonthInTax"
-                        [ngModel]="row.TrainingCostPerTraineePerMonthInTax" />
+                             [ngModel]="row.TrainingCostPerTraineePerMonthInTax" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.TrainingCostPerTraineePerMonthInTax}}</ng-container>
                   <br />
                   <span *ngIf="!row.TrainingCostPerTraineePerMonthInTax"
-                    [style.color]="!row.TrainingCostPerTraineePerMonthInTax? 'red': ''">required</span>
+                        [style.color]="!row.TrainingCostPerTraineePerMonthInTax? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Training Cost Per Trainee Per Month Including Taxes" formControlName="TrainingCostPerTraineePerMonthInTax" required type="text" DecimelOnly maxlength="15">
       <mat-error *ngIf="row.controls.TrainingCostPerTraineePerMonthInTax.invalid && row.controls.TrainingCostPerTraineePerMonthInTax.errors.required">required</mat-error>
@@ -1438,13 +1418,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="PerTraineeTestCertCost"
-                        [ngModel]="row.PerTraineeTestCertCost" />
+                             [ngModel]="row.PerTraineeTestCertCost" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.PerTraineeTestCertCost}}</ng-container>
                   <br />
                   <span *ngIf="!row.PerTraineeTestCertCost && row.PerTraineeTestCertCost!='0'"
-                    [style.color]="!row.PerTraineeTestCertCost && row.PerTraineeTestCertCost!='0'? 'red': ''">required</span>
+                        [style.color]="!row.PerTraineeTestCertCost && row.PerTraineeTestCertCost!='0'? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Testing Certification Fee Per Trainee" formControlName="PerTraineeTestCertCost" required type="text" DecimelOnly maxlength="15">
       <mat-error *ngIf="row.controls.PerTraineeTestCertCost.invalid && row.controls.PerTraineeTestCertCost.errors.required">required</mat-error>
@@ -1454,7 +1434,7 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="BoardingAllowancePerTrainee"
-                        [ngModel]="row.BoardingAllowancePerTrainee" />
+                             [ngModel]="row.BoardingAllowancePerTrainee" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.BoardingAllowancePerTrainee}}</ng-container>
@@ -1466,13 +1446,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="EmploymentCommitmentSelf"
-                        [ngModel]="row.EmploymentCommitmentSelf" />
+                             [ngModel]="row.EmploymentCommitmentSelf" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.EmploymentCommitmentSelf}}</ng-container>
                   <br />
                   <span *ngIf="!row.EmploymentCommitmentSelf && row.EmploymentCommitmentSelf!='0'"
-                    [style.color]="!row.EmploymentCommitmentSelf && row.EmploymentCommitmentSelf!='0'? 'red': ''">required</span>
+                        [style.color]="!row.EmploymentCommitmentSelf && row.EmploymentCommitmentSelf!='0'? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Self Employment Commitment" formControlName="EmploymentCommitmentSelf" required (ngModelChange)="percentageCheck(row.controls.EmploymentCommitmentSelf)" maxlength="3" NumberOnly>
       <mat-error *ngIf="row.controls.EmploymentCommitmentSelf.getError('greater')">Percentage must be between 0 - 100</mat-error>
@@ -1483,13 +1463,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="EmploymentCommitmentFormal"
-                        [ngModel]="row.EmploymentCommitmentFormal" />
+                             [ngModel]="row.EmploymentCommitmentFormal" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.EmploymentCommitmentFormal}}</ng-container>
                   <br />
                   <span *ngIf="!row.EmploymentCommitmentFormal && row.EmploymentCommitmentFormal!='0'"
-                    [style.color]="!row.EmploymentCommitmentFormal && row.EmploymentCommitmentFormal!='0'? 'red': ''">required</span>
+                        [style.color]="!row.EmploymentCommitmentFormal && row.EmploymentCommitmentFormal!='0'? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Formal Employment Commitment" formControlName="EmploymentCommitmentFormal" required (ngModelChange)="percentageCheck(row.controls.EmploymentCommitmentFormal)" maxlength="3" NumberOnly>
       <mat-error *ngIf="row.controls.EmploymentCommitmentFormal.getError('greater')">Percentage must be between 0 - 100</mat-error>
@@ -1500,14 +1480,13 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="OverallEmploymentCommitment"
-                        [ngModel]="row.OverallEmploymentCommitment" />
+                             [ngModel]="row.OverallEmploymentCommitment" />
                     </mat-form-field>
                   </ng-container>
-                  <ng-container
-                    *ngIf="!row.IsEditable">{{row.EmploymentCommitmentFormal+row.EmploymentCommitmentSelf}}</ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.EmploymentCommitmentFormal+row.EmploymentCommitmentSelf}}</ng-container>
                   <br />
                   <span *ngIf="!row.OverallEmploymentCommitment && row.OverallEmploymentCommitment!='0'"
-                    [style.color]="!row.OverallEmploymentCommitment && row.OverallEmploymentCommitment!='0'? 'red': ''">required</span>
+                        [style.color]="!row.OverallEmploymentCommitment && row.OverallEmploymentCommitment!='0'? 'red': ''">required</span>
                   <!--<mat-form-field>
       <mat-form-field><input matInput placeholder="Overall Employment Commitment" formControlName="OverallEmploymentCommitment" required NumberOnly min="0">
       <mat-error *ngIf="row.controls.OverallEmploymentCommitment.invalid && row.controls.OverallEmploymentCommitment.errors.required">required</mat-error>
@@ -1529,9 +1508,13 @@
                 </td>
 
                 <td>
-                  <ng-container *ngIf="row.IsEditable"> <mat-form-field><input matInput type="text"
-                        formControlName="balloonpayment"
-                        [ngModel]="row.balloonpayment" /></mat-form-field></ng-container>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput type="text"
+                             formControlName="balloonpayment"
+                             [ngModel]="row.balloonpayment" />
+                    </mat-form-field>
+                  </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.balloonpayment}}</ng-container>
                   <br />
 
@@ -1572,7 +1555,7 @@
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="ProtectorateandVisa"
-                        [ngModel]="row.ProtectorateandVisa" />
+                             [ngModel]="row.ProtectorateandVisa" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.ProtectorateandVisa}}</ng-container>
@@ -1606,21 +1589,45 @@
                   <br />
                 </td>
                 <td>
-                    <ng-container *ngIf="row.IsEditable">
-                      <mat-form-field>
-                        <input matInput type="text"
-                               formControlName="OtherTrainingCost"
-                               [ngModel]="row.OtherTrainingCost" />
-                      </mat-form-field>
-                    </ng-container>
-                    <ng-container *ngIf="!row.IsEditable">{{row.OtherTrainingCost}}</ng-container>
-                    <br />
-                  </td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput type="text"
+                             formControlName="OtherTrainingCost"
+                             [ngModel]="row.OtherTrainingCost" />
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.OtherTrainingCost}}</ng-container>
+                  <br />
+                </td>
+
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput type="text"
+                             formControlName="InterNetCost"
+                             [ngModel]="row.InterNetCost" />
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.InterNetCost}}</ng-container>
+                  <br />
+                </td>
+
+                <td>
+                  <ng-container *ngIf="row.IsEditable">
+                    <mat-form-field>
+                      <input matInput type="text"
+                             formControlName="Hostel"
+                             [ngModel]="row.Hostel" />
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="!row.IsEditable">{{row.Hostel}}</ng-container>
+                  <br />
+                </td>
                 <td>
                   <ng-container *ngIf="row.IsEditable">
                     <mat-form-field>
                       <input matInput type="text" formControlName="TotalCostPerClass"
-                        [ngModel]="row.TotalCostPerClass" />
+                             [ngModel]="row.TotalCostPerClass" />
                     </mat-form-field>
                   </ng-container>
                   <ng-container *ngIf="!row.IsEditable">{{row.TotalCostPerClass}}</ng-container>
