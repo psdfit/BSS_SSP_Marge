@@ -541,7 +541,7 @@ namespace DataLayer.Services
 
                                 User Name: {u.UserName}
                                 Password: {u.Password}
-                                URL: http://bss.psdf.org.pk/
+                                URL: https://bss.psdf.org.pk/
 
                                 Regards,
                                 Punjab Skills Development Fund
