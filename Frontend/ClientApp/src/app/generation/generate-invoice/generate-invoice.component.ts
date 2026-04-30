@@ -20,6 +20,7 @@ import { MatDialog } from "@angular/material/dialog";
 const moment = _moment;
 import { environment } from '../../../environments/environment';
 import { TspInvoiceSubmissionComponent } from 'src/app/custom-components/tsp-invoice-submission/tsp-invoice-submission.component';
+import { AnyNaptrRecord } from 'dns';
 
 export const MY_FORMATS = {
   parse: {
@@ -34,9 +35,9 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'app-invoice-approvals',
-  templateUrl: './invoice-approvals.component.html',
-  styleUrls: ['./invoice-approvals.component.scss'],
+  selector: 'app-generate-invoice',
+  templateUrl: './generate-invoice.component.html',
+  styleUrls: ['./generate-invoice.component.scss'],
   providers: [
     // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
     // application's root module. We provide it at the component level here, due to limitations of
@@ -52,10 +53,7 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-
-
-
-export class InvoiceApprovalsComponent implements OnInit {
+export class GenerateInvoiceComponent implements OnInit {
   environment = environment;
   InvoiceHeaders: any;
   ApprovalData: any;
@@ -80,13 +78,29 @@ export class InvoiceApprovalsComponent implements OnInit {
   InvoiceHeadersIDs: string;
 
 
-  constructor(private Dialog: MatDialog,private http: CommonSrvService, private dialogue: DialogueService, private _date: DatePipe) {
+  constructor(private http: CommonSrvService,private Dialog: MatDialog, private dialogue: DialogueService, private _date: DatePipe) {
     this.http.setTitle('Invoice');
   }
 
+  ngOnInit(): void {
+    this.http.OID.subscribe(OID => {
+      this.GetInvoicesForApproval();
 
-  isInvoiceGenerated(row: any): boolean {
-  
+    })
+    this.currentUser = this.http.getUserDetails();
+    
+    this.GetFiltersData();
+    this.filteredInvoice = []
+
+  }
+
+  EmptyCtrl() {
+    this.SearchKAM.setValue('');
+    this.SearchTSP.setValue('');
+    this.SearchSch.setValue('');
+  }
+isInvoiceGenerated(row: any): boolean {
+  // Check if IsAttachedLetterheadInvoice exists and is not "0" or empty
   if (row && row.IsAttachedLetterheadInvoice) {
     const attachment = row.IsAttachedLetterheadInvoice;
     // If attachment is not "0" and not empty/null/undefined, invoice is generated
@@ -104,49 +118,26 @@ export class InvoiceApprovalsComponent implements OnInit {
       data: invoiceData
     });
     dialogRef.afterClosed().subscribe(result => {
-    
+    this.GetInvoicesForApproval();
     });
   }
 
- 
-
-  
-  ngOnInit(): void {
-    this.http.OID.subscribe(OID => {
-      this.GetInvoicesForApproval();
-
-    })
-    this.currentUser = this.http.getUserDetails();
-    this.GetFiltersData();
-    this.filteredInvoice = []
-
-  }
-
-  EmptyCtrl() {
-    this.SearchKAM.setValue('');
-    this.SearchTSP.setValue('');
-    this.SearchSch.setValue('');
-  }
+  tspMasterID: number=0;
 
   GetFiltersData() {
-    this.http.getJSON(`api/PRNMaster/GetFiltersData`).subscribe(
-      (response: any) => {
-        this.kamusers = response[0];
-        this.schemes = response[1];
-        //this.tsps = response[2];
-        this.tspMasters = response[2];
-        // r.PRN = data;
-        // r.HasPRN = true;
+  this.http.getJSON('api/Invoice/GetTSPMasterID/', this.currentUser.UserID).subscribe((d: any) => {
+      if (d && d.length > 0) {
+       this.tspMasterID = d[0].TSPMasterID;
       }
-      , (error) => {
-        console.error(JSON.stringify(error));
-      }
-    );
+    });
   }
 
   GetInvoicesForApproval() {
     //this.http.postJSON('api/Invoice/GetInvoicesForApproval', { ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID }).subscribe((d: any) => {
-    this.http.postJSON('api/Invoice/GetInvoicesForApproval', { ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPMasterID: this.filters.TSPMasterID }).subscribe((d: any) => {
+    
+    // const tspData : any =this.tspMasters.find((t: { UserID: any; }) => t.UserID === this.currentUser.UserID);
+    const TSPMasterID = this.tspMasterID;
+    this.http.postJSON('api/Invoice/GetInvoicesForApproval', { ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPMasterID: TSPMasterID }).subscribe((d: any) => {
       this.InvoiceHeaders = d;
       this.InvoiceHeadersIDsArray = this.InvoiceHeaders.map((o: { InvoiceHeaderID: any; }) => o.InvoiceHeaderID);
       this.InvoiceHeadersIDs = this.InvoiceHeadersIDsArray.join(',');
@@ -164,7 +155,7 @@ export class InvoiceApprovalsComponent implements OnInit {
     this.http.getJSON('api/Invoice/GetInvoiceLines/', r.InvoiceHeaderID).subscribe((d: any) => {
       r.InvoiceLines = d;
       this.filteredInvoice.push(d);
-      console.log(this.filteredInvoice);
+      // console.log(this.filteredInvoice);
       this.filteredInvoice = this.filteredInvoice.reduce((accumulator, value) => accumulator.concat(value), []);
     });
   }

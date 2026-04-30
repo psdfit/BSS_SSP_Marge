@@ -1,0 +1,279 @@
+
+<mat-dialog-content class="invoice-dialog-content" #dialogContent>
+  <div class="invoice-dialog-container">
+
+    <!-- ── Toolbar ──────────────────────────────────────────────────────── -->
+    <div fxLayoutAlign="space-around space-around" fxLayout="column">
+      <mat-toolbar color="accent" class="mat-elevation-z8 slim mx-2 mt-2">
+        <mat-icon>view_comfy</mat-icon>
+        <span class="spacer">Generate Invoice</span>
+        <div class="spacer"></div>
+        <button mat-icon-button mat-dialog-close aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-toolbar>
+    </div>
+
+    <!-- ── Scrollable Content ────────────────────────────────────────────── -->
+    <div class="dialog-scrollable-content">
+      <mat-card class="invoice-main-card m-2">
+        <mat-card-content>
+
+          <!-- Invoice Information -->
+          <div class="section-header">
+            <mat-icon class="section-icon">receipt</mat-icon>
+            <h3>Invoice Information</h3>
+          </div>
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Invoice No.</mat-label>
+              <input matInput [(ngModel)]="invoiceNo" readonly>
+              <mat-icon matSuffix>receipt</mat-icon>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Invoice Month</mat-label>
+              <input matInput [value]="invoiceDate | date:'MMMM yyyy'" readonly>
+              <mat-icon matSuffix>calendar_today</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <!-- Party Details -->
+          <div class="section-header mt-4">
+            <mat-icon class="section-icon">business</mat-icon>
+            <h3>Party Details</h3>
+          </div>
+          <div class="party-details-grid">
+            <!-- Supplier -->
+            <div class="party-card">
+              <div class="party-card-header">
+                <span>Supplier Information</span>
+              </div>
+              <mat-form-field>
+                <mat-label>Supplier / TSP Name</mat-label>
+                <input matInput [(ngModel)]="supplierName" readonly>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Supplier NTN</mat-label>
+                <input matInput [(ngModel)]="supplierNTN" readonly>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Supplier Address</mat-label>
+                <textarea matInput [(ngModel)]="supplierAddress" readonly rows="2"></textarea>
+              </mat-form-field>
+            </div>
+            <!-- Buyer -->
+            <div class="party-card">
+              <div class="party-card-header">
+                <span>Buyer Information</span>
+              </div>
+              <mat-form-field>
+                <mat-label>Buyer Name</mat-label>
+                <input matInput [(ngModel)]="buyerName" readonly>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Buyer NTN</mat-label>
+                <input matInput [(ngModel)]="buyerNTN" readonly>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Buyer Address</mat-label>
+                <textarea matInput [(ngModel)]="buyerAddress" readonly rows="2"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Tax Registration -->
+          <div class="section-header mt-4">
+            <mat-icon class="section-icon">assignment_turned_in</mat-icon>
+            <h3>Tax Registration</h3>
+          </div>
+          <div class="tax-registration-card">
+            <div class="radio-group-container">
+              <label class="section-label">Is PRA Registered?</label>
+              <mat-radio-group
+                [formControl]="invoiceForm.get('IsPRARegistered')"
+                (change)="onPRARegisteredChange($event.value)"
+                class="radio-group">
+                <mat-radio-button value="yes" class="radio-option">Yes, Registered with PRA</mat-radio-button>
+                <mat-radio-button value="no" class="radio-option">No, Not Registered</mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <div class="flexible-tax-rate-container"
+              *ngIf="invoiceForm.get('IsPRARegistered').value === 'yes'">
+              <mat-form-field>
+                <mat-label>Enter Sales Tax Rate (%)</mat-label>
+                <input matInput
+                  [formControl]="invoiceForm.get('SalesTaxRate')"
+                  type="number"
+                  (change)="onSalesTaxRateChange()"
+                  min="0" max="100" step="1"
+                  placeholder="Enter sales tax rate (0-100)">
+                <mat-icon matSuffix>percent</mat-icon>
+                <mat-error *ngIf="invoiceForm.get('SalesTaxRate').hasError('required')">
+                  Sales tax rate is required
+                </mat-error>
+                <mat-error *ngIf="invoiceForm.get('SalesTaxRate').hasError('min')">
+                  Rate must be 0 or greater
+                </mat-error>
+                <mat-error *ngIf="invoiceForm.get('SalesTaxRate').hasError('max')">
+                  Rate must not exceed 100
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="info-message"
+              [class.info-yes]="invoiceForm.get('IsPRARegistered').value === 'yes'"
+              [class.info-no]="invoiceForm.get('IsPRARegistered').value === 'no'">
+              <mat-icon *ngIf="invoiceForm.get('IsPRARegistered').value">info</mat-icon>
+              <span *ngIf="invoiceForm.get('IsPRARegistered').value === 'yes'">
+                Sales Tax ({{ salesTaxRate }}%) will be applied to the total amount
+              </span>
+              <span *ngIf="invoiceForm.get('IsPRARegistered').value === 'no'">
+                Sales Tax is excluded from the total amount
+              </span>
+            </div>
+          </div>
+
+          <!-- Invoice Lines -->
+          <div class="section-header mt-4">
+            <mat-icon class="section-icon">list_alt</mat-icon>
+            <h3>Invoice Lines</h3>
+            <span class="badge">{{ invoiceLines.length }} items</span>
+          </div>
+          <div class="table-responsive">
+            <table mat-table [dataSource]="invoiceLines" class="invoice-table">
+              <ng-container matColumnDef="classCode">
+                <th mat-header-cell *matHeaderCellDef>Class Code</th>
+                <td mat-cell *matCellDef="let line">{{ line.ClassCode }}</td>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let line">{{ line.Description }}</td>
+              </ng-container>
+              <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef>Start Date</th>
+                <td mat-cell *matCellDef="let line">{{ line.StartDate | date:'dd/MM/yyyy' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="endDate">
+                <th mat-header-cell *matHeaderCellDef>End Date</th>
+                <td mat-cell *matCellDef="let line">{{ line.EndDate | date:'dd/MM/yyyy' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="trainees">
+                <th mat-header-cell *matHeaderCellDef>Trainees</th>
+                <td mat-cell *matCellDef="let line" class="text-center">{{ line.Trainees }}</td>
+              </ng-container>
+              <ng-container matColumnDef="netPayable">
+                <th mat-header-cell *matHeaderCellDef class="text-right">Net Payable (PKR)</th>
+                <td mat-cell *matCellDef="let line" class="text-right">
+                  {{ line.NetPayableAmount | number:'1.0-0' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+
+          <!-- Totals -->
+          <div class="totals-section">
+            <div class="totals-card">
+              <div class="totals-row">
+                <span class="totals-label">Amount Excluding Sales Tax:</span>
+                <span class="totals-value">{{ totalAmount - salesTaxAmount | number:'1.0-0' }} PKR</span>
+              </div>
+              <div class="totals-row" *ngIf="isPRARegistered">
+                <span class="totals-label">PST @ {{ salesTaxRate }}%:</span>
+                <span class="totals-value">{{ salesTaxAmount | number:'1.0-0' }} PKR</span>
+              </div>
+              <div class="totals-row total">
+                <span class="totals-label">Total Amount:</span>
+                <span class="totals-value">{{ calculatedAmount + salesTaxAmount | number:'1.0-0' }} PKR</span>
+              </div>
+              <div class="amount-in-words">
+                <mat-icon>description</mat-icon>
+                <span>{{ amountInWords }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- File Upload -->
+          <div class="section-header mt-4">
+            <mat-icon class="section-icon">attach_file</mat-icon>
+            <h3>Invoice Attachment</h3>
+            <span class="required-badge">Required</span>
+          </div>
+
+          <button *ngIf="currentUser.RoleTitle === 'TSP'"
+            mat-raised-button color="accent"
+            (click)="printInvoice()"
+            matTooltip="Print invoice on letterhead"
+            class="mb-2">
+            <mat-icon>print</mat-icon>
+            Print Invoice
+          </button>
+
+          <div class="file-upload-section">
+            <div class="upload-area" [class.has-file]="selectedFile" (click)="fileInput.click()">
+              <input #fileInput
+                type="file"
+                (change)="onFileSelected($event)"
+                accept=".pdf,.jpg,.jpeg,.png"
+                hidden
+                id="fileInput">
+              <mat-icon class="upload-icon">cloud_upload</mat-icon>
+              <div class="upload-text">
+                <span *ngIf="!selectedFile">Upload the signed letterhead invoice file.</span>
+                <span *ngIf="selectedFile">
+                  <mat-icon>insert_drive_file</mat-icon>
+                  {{ selectedFile.name }}
+                </span>
+              </div>
+              <div class="upload-hint" *ngIf="!selectedFile">
+                Supported formats: PDF, JPG, PNG (Max 2MB)
+              </div>
+            </div>
+
+            <div class="file-actions" *ngIf="selectedFile">
+              <button mat-raised-button color="primary"
+                (click)="openAttachmentPreview()"
+                matTooltip="Preview file">
+                <mat-icon>visibility</mat-icon>
+                Preview
+              </button>
+              <button *ngIf="currentUser.RoleTitle === 'TSP'"
+                mat-raised-button color="warn"
+                (click)="clearSelectedFile()"
+                matTooltip="Remove file">
+                <mat-icon>delete</mat-icon>
+                Remove
+              </button>
+            </div>
+          </div>
+
+        </mat-card-content>
+
+        <!-- Action Buttons -->
+        <mat-card-actions align="end" class="action-buttons-container">
+          <button mat-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+            Cancel
+          </button>
+
+          <ng-container *ngIf="currentUser.RoleTitle === 'TSP'">
+            <button *ngIf="data.IsAttachedLetterheadInvoice === '0'"
+              mat-raised-button color="primary"
+              (click)="submitInvoice()"
+              [disabled]="!invoiceForm.get('IsPRARegistered')?.value || !selectedFile"
+              matTooltip="Submit invoice">
+              <mat-icon>send</mat-icon>
+              Submit Invoice
+            </button>
+          </ng-container>
+        </mat-card-actions>
+
+      </mat-card>
+    </div>
+
+    <!-- Hidden Print Area -->
+    <div id="invoicePrintArea" style="display: none;"></div>
+  </div>
+</mat-dialog-content>
