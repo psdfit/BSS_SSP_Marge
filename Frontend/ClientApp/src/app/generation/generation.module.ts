@@ -13,6 +13,7 @@ import { GeneratePcrnComponent } from './generate-pcrn/generate-pcrn.component';
 import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
 import { GenerateTakamolRecommnedationNoteComponent } from './generate-takamol-recommnedation-note/generate-takamol-recommnedation-note.component';
 import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
+import { GenerateInvoiceComponent } from './generate-invoice/generate-invoice.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
     GenerateOtrnComponent,
     GenerateTakamolRecommnedationNoteComponent,
     GenerateOtrnComponent,
-    GenerateOjtComponent
+    GenerateOjtComponent,
+    GenerateInvoiceComponent
   ],
   imports: [
     CommonModule,

@@ -4,15 +4,15 @@
       <div fxLayoutAlign="space-around space-around" fxLayout="column">
         <mat-toolbar color="accent" class="mat-elevation-z8 slim slim">
           <mat-icon class="material-icons">view_comfy</mat-icon>
-          <span class="spacer">Invoice(s) Approval</span>
+          <span class="spacer">Generate Invoice</span>
           <div class="spacer"></div>
           <div class="col-sm-2">
-            <button mat-raised-button color="success" style="float:right" *ngIf="InvoiceHeaders?.length > 0"
-              (click)="exportToExcel()">Export Excel</button>
+            <!-- <button mat-raised-button color="success" style="float:right" *ngIf="InvoiceHeaders?.length > 0"
+              (click)="exportToExcel()">Export Excel</button> -->
           </div>
           <div class="col-sm-2">
-            <button mat-raised-button color="success" style="float:right;margin-left: 10px;"
-              *ngIf="InvoiceHeaders?.length > 0" (click)="ExportInvoiceDetailsToExcel()">Export Invoice Details</button>
+            <!-- <button mat-raised-button color="success" style="float:right;margin-left: 10px;"
+              *ngIf="InvoiceHeaders?.length > 0" (click)="ExportInvoiceDetailsToExcel()">Export Invoice Details</button> -->
           </div>
           <!--<input type="text" placeholder="Search" (keyup)="applyFilter($event.target.value)" class="search" />-->
         </mat-toolbar>
@@ -25,20 +25,6 @@
                 <mat-option [value]="enumApprovalProcess.INV_1ST">First</mat-option>
                 <mat-option [value]="enumApprovalProcess.INV_2ND">Second</mat-option>
                 <mat-option [value]="enumApprovalProcess.INV_R">Regular</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_SRN">SRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_TPRN">TPRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_PVRN">PVRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_PCRN">PCRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_OTRN">OTRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_MRN">MRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_VRN">VRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_TRN">TRN</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_C">2nd Last</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_F">Last</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_GURN">Guru Payment Note</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_TakamolRecommendationNote">Takamol Recommendation
-                  Note</mat-option>
-                <mat-option [value]="enumApprovalProcess.INV_OJT_SRN">OJT SRN</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -52,19 +38,7 @@
                 (monthSelected)="chosenMonthHandler($event, customDatePicker)"></mat-datepicker>
             </mat-form-field>
           </div>
-          <div class="col-sm-2">
-            <mat-form-field fxFlex>
-              <mat-select placeholder="KAM" [(ngModel)]="filters.KAMID" (openedChange)="EmptyCtrl()"
-                (selectionChange)="GetInvoicesForApproval()" id="kamuserid" matInput required>
-                <mat-optgrp disabled class="ddlsrchheader"> <input type="text" (keydown)="$event.stopPropagation()"
-                    [formControl]="SearchKAM" /></mat-optgrp>
-                <mat-option value="0">--Select--</mat-option>
-                <mat-option *ngFor="let item of kamusers | like:['UserName',SearchKAM.value]"
-                  [value]="item.UserID">{{item.UserName}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-sm-3">
+          <!-- <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-select #scheme placeholder="Scheme" [(ngModel)]="filters.SchemeID" (openedChange)="EmptyCtrl()"
                 (selectionChange)="GetInvoicesForApproval()" id="SchemeId" matInput required>
@@ -75,7 +49,7 @@
                   [value]="s.SchemeID">{{s.SchemeName}}</mat-option>
               </mat-select>
             </mat-form-field>
-          </div>
+          </div> -->
           <!--<div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPID" (openedChange)="EmptyCtrl()" (selectionChange)="GetInvoicesForApproval()" id="TspId" matInput required>
@@ -86,7 +60,7 @@
           <!--</mat-select>
             </mat-form-field>
           </div>-->
-          <div class="col-sm-3">
+          <!-- <div class="col-sm-3">
             <mat-form-field fxFlex>
               <mat-select #tsp placeholder="TSP" [(ngModel)]="filters.TSPMasterID" (openedChange)="EmptyCtrl()"
                 (selectionChange)="GetInvoicesForApproval()" id="TspMasterId" matInput required>
@@ -95,10 +69,9 @@
                 <mat-option value="0">--Select--</mat-option>
                 <mat-option *ngFor="let s of tspMasters | like:['TSPName',SearchTSP.value]"
                   [value]="s.TSPMasterID">{{s.TSPName}}</mat-option>
-                <!--| like:['TSPName',SearchTSP.value] | where :['SchemeID',filters.SchemeID]-->
               </mat-select>
             </mat-form-field>
-          </div>
+          </div> -->
         </div>
         <div class="text-center" *ngIf="!InvoiceHeaders">
           <p>No Records</p>
@@ -136,7 +109,9 @@
               <ng-container *ngFor="let r of InvoiceHeaders">
                 <tr>
                   <td>
-                    <a color="primary" disabled *ngIf="!isInvoiceGenerated(r)" mat-button>
+                    <!-- Check if invoice has been generated (IsAttachedLetterheadInvoice is not "0" and not empty) -->
+                    <a color="primary" *ngIf="!isInvoiceGenerated(r)" mat-button
+                      (click)="OpenInvoiceSubmissionDialogue(r)">
                       <mat-icon>receipt</mat-icon>
                       Invoice Not Submitted
                     </a>
@@ -145,12 +120,8 @@
                       <mat-icon>check_circle</mat-icon>
                       View Submitted Invoice
                     </a>
-                    
-                    <a color="primary"  *ngIf="isInvoiceGenerated(r)" mat-button (click)="checkTSPColor(r)">
-                      Decision
-                    </a>
                     <a color="primary" mat-button (click)="GetInvoiceLines(r)">
-                      Invoices<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                      Invoices Detail<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
                     </a>
                     <a color="primary" mat-icon-button matTooltip="Export to Excel"
                       (click)="ExportToExcel(r.InvoiceHeaderID)">

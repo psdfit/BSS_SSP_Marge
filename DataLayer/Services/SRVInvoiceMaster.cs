@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 namespace DataLayer.Services
 {
@@ -255,6 +256,7 @@ namespace DataLayer.Services
                 Invoice.Comments = row.Field<string>("Comments");
                 Invoice.TSPColorCode = row.Field<string>("TSPColorCode");
                 Invoice.TSPColorName = row.Field<string>("TSPColorName");
+                Invoice.IsAttachedLetterheadInvoice = row.Field<string>("IsAttachedLetterheadInvoice");
                 Invoice.U_Month = row.Field<DateTime>("U_Month");
             }
 
@@ -355,6 +357,111 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        private static string SaveAttachment(string fileType, string attachment, string instituteName, string instituteNTN)
+        {
+            if (!string.IsNullOrEmpty(attachment))
+            {
+                string path = FilePaths.TSP_FILE_DIR + fileType + "\\" + instituteName + "_" + instituteNTN;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                string paths = path + "\\";
+                return Common.AddFile(attachment, paths);
+                //return path+Common.AddFile(attachment, Path.Combine(path, "\\"));
+            }
+            return "";
+        }
+
+        public List<InvoiceLetterheadAttachmentModel> SaveInvoiceLetterhead(InvoiceLetterheadAttachmentModel model, SqlTransaction _transaction = null)
+        {
+            try
+            {
+              string  AttachmentPath = SaveAttachment("TSP_INVOICE_LETTERHEAD",model.InvoiceAttachment ?? string.Empty,model.InvoiceHeaderID.ToString(),model.TSPID.ToString());
+
+                List<SqlParameter> param = new List<SqlParameter>();
+
+                param.Add(new SqlParameter("@Id", (object?)model.Id ?? DBNull.Value));
+                param.Add(new SqlParameter("@TSPID", model.TSPID));
+                param.Add(new SqlParameter("@InvoiceHeaderID", model.InvoiceHeaderID));
+                param.Add(new SqlParameter("@IsPRARegistered", model.IsPRARegistered));
+                param.Add(new SqlParameter("@SalesTaxRate", model.SalesTaxRate));
+                param.Add(new SqlParameter("@AttachmentPath", AttachmentPath ?? ""));
+
+                param.Add(new SqlParameter("@UserID", (object?)model.UserID ?? DBNull.Value));
+
+                DataTable dt = new DataTable();
+
+                if (_transaction != null)
+                {
+                    dt = SqlHelper.ExecuteDataset(_transaction, CommandType.StoredProcedure, "AU_InvoiceLetterheadAttachments", param.ToArray()).Tables[0];
+                }
+                else
+                {
+                    dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_InvoiceLetterheadAttachments", param.ToArray()).Tables[0];
+                }
+
+                return LoopInvoiceLetterhead(dt);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        private void UpdateAttachment(DataRow row, string columnName)
+        {
+            string attachment = row[columnName].ToString();
+            if (string.IsNullOrEmpty(attachment))
+            {
+                row[columnName] = "";
+            }
+            else
+            {
+                row[columnName] = Common.GetFileBase64(attachment);
+            }
+        }
+        private List<InvoiceLetterheadAttachmentModel> LoopInvoiceLetterhead(DataTable dt)
+        {
+            List<InvoiceLetterheadAttachmentModel> list = new List<InvoiceLetterheadAttachmentModel>();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                // 🔹 Convert AttachmentPath → Base64
+                UpdateAttachment(row, "AttachmentPath");
+
+                list.Add(new InvoiceLetterheadAttachmentModel
+                {
+                    Id = Convert.ToInt32(row["Id"]),
+                    TSPID = Convert.ToInt32(row["TSPID"]),
+                    InvoiceHeaderID = Convert.ToInt32(row["InvoiceHeaderID"]),
+                    SalesTaxRate = Convert.ToInt32(row["SalesTaxRate"]),
+                    IsPRARegistered = Convert.ToBoolean(row["IsPRARegistered"]),
+
+                    // 🔹 Now this contains BASE64
+                    InvoiceAttachment = row["AttachmentPath"]?.ToString(),
+
+                    UserID = row["CreatedUserID"] as int?
+                });
+            }
+
+            return list;
+        }
+
+        public List<InvoiceLetterheadAttachmentModel> GetInvoiceLetterheadInfo(int InvoiceHeaderID)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@InvoiceHeaderID", InvoiceHeaderID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GetInvoiceLetterheadInfo", param.ToArray()).Tables[0];
+            return LoopInvoiceLetterhead(dt);
+        }
+        public DataTable GetTSPMasterID(int UserID)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@UserID", UserID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_TSPMasterID", param.ToArray()).Tables[0];
+            return dt;
+        }
+
         public InvoiceHeaderModel GetInvoiceHeader(int TSPID, DateTime? Month, SqlTransaction transaction = null)
         {
             try
@@ -383,4 +490,6 @@ namespace DataLayer.Services
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
     }
+
+
 }
