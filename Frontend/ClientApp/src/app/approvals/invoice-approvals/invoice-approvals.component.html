@@ -136,19 +136,26 @@
               <ng-container *ngFor="let r of InvoiceHeaders">
                 <tr>
                   <td>
-                    <a color="primary" disabled *ngIf="!isInvoiceGenerated(r)" mat-button>
-                      <mat-icon>receipt</mat-icon>
-                      Invoice Not Submitted
-                    </a>
-                    <a color="primary" *ngIf="isInvoiceGenerated(r)" mat-button
-                      (click)="OpenInvoiceSubmissionDialogue(r)">
-                      <mat-icon>check_circle</mat-icon>
-                      View Submitted Invoice
-                    </a>
-                    
-                    <a color="primary"  *ngIf="isInvoiceGenerated(r)" mat-button (click)="checkTSPColor(r)">
-                      Decision
-                    </a>
+                    <ng-container
+                      *ngIf="['INV_1ST', 'INV_2ND', 'INV_R', 'INV_C', 'INV_F'].includes(r.ProcessKey) && r.SAPCODE ==0; else otherBlock">
+                      <a color="primary" disabled *ngIf="!isInvoiceGenerated(r)" mat-button>
+                        <mat-icon>receipt</mat-icon>
+                        Invoice Not Submitted
+                      </a>
+                      <a color="primary" *ngIf="isInvoiceGenerated(r)" mat-button
+                        (click)="OpenInvoiceSubmissionDialogue(r)">
+                        <mat-icon>check_circle</mat-icon>
+                        View Submitted Invoice
+                      </a>
+                      <a color="primary" *ngIf="isInvoiceGenerated(r)" mat-button (click)="checkTSPColor(r)">
+                        Decision
+                      </a>
+                    </ng-container>
+                    <ng-template #otherBlock>
+                      <a color="primary" mat-button (click)="checkTSPColor(r)">
+                        Decision
+                      </a>
+                    </ng-template>
                     <a color="primary" mat-button (click)="GetInvoiceLines(r)">
                       Invoices<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
                     </a>

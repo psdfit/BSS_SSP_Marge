@@ -108,9 +108,10 @@
             <tbody>
               <ng-container *ngFor="let r of InvoiceHeaders">
                 <tr>
-                  <td>
-                    <!-- Check if invoice has been generated (IsAttachedLetterheadInvoice is not "0" and not empty) -->
-                    <a color="primary" *ngIf="!isInvoiceGenerated(r)" mat-button
+              <td>
+                    <ng-container
+                      *ngIf="['INV_1ST', 'INV_2ND', 'INV_R', 'INV_C', 'INV_F'].includes(r.ProcessKey) && r.SAPCODE ==0;">
+                      <a color="primary" *ngIf="!isInvoiceGenerated(r)" mat-button
                       (click)="OpenInvoiceSubmissionDialogue(r)">
                       <mat-icon>receipt</mat-icon>
                       Invoice Not Submitted
@@ -120,8 +121,13 @@
                       <mat-icon>check_circle</mat-icon>
                       View Submitted Invoice
                     </a>
+                      <a color="primary" *ngIf="isInvoiceGenerated(r)" mat-button (click)="checkTSPColor(r)">
+                        Decision
+                      </a>
+                    </ng-container>
+                 
                     <a color="primary" mat-button (click)="GetInvoiceLines(r)">
-                      Invoices Detail<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
+                      Invoices<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
                     </a>
                     <a color="primary" mat-icon-button matTooltip="Export to Excel"
                       (click)="ExportToExcel(r.InvoiceHeaderID)">
