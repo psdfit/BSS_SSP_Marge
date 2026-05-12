@@ -111,6 +111,7 @@
               <td>
                     <ng-container
                       *ngIf="['INV_1ST', 'INV_2ND', 'INV_R', 'INV_C', 'INV_F'].includes(r.ProcessKey) && r.SAPCODE ==0;">
+                      
                       <a color="primary" *ngIf="!isInvoiceGenerated(r)" mat-button
                       (click)="OpenInvoiceSubmissionDialogue(r)">
                       <mat-icon>receipt</mat-icon>

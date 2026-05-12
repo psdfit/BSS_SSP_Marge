@@ -137,7 +137,7 @@
                 <tr>
                   <td>
                     <ng-container
-                      *ngIf="['INV_1ST', 'INV_2ND', 'INV_R', 'INV_C', 'INV_F'].includes(r.ProcessKey) && r.SAPCODE ==0; else otherBlock">
+                      *ngIf="['INV_1ST', 'INV_2ND', 'INV_R', 'INV_C', 'INV_F'].includes(r.ProcessKey); else otherBlock">
                       <a color="primary" disabled *ngIf="!isInvoiceGenerated(r)" mat-button>
                         <mat-icon>receipt</mat-icon>
                         Invoice Not Submitted
