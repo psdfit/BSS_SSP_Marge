@@ -83,15 +83,14 @@ export class GenerateInvoiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.http.OID.subscribe(OID => {
-      this.GetInvoicesForApproval();
-
-    })
     this.currentUser = this.http.getUserDetails();
-    
-    this.GetFiltersData();
-    this.filteredInvoice = []
+    this.filteredInvoice = [];
 
+    this.GetFiltersData(() => {
+      this.http.OID.subscribe(() => {
+        this.GetInvoicesForApproval();
+      });
+    });
   }
 
   EmptyCtrl() {
@@ -124,17 +123,18 @@ isInvoiceGenerated(row: any): boolean {
 
   tspMasterID: number=0;
 
-  GetFiltersData() {
-  this.http.getJSON('api/Invoice/GetTSPMasterID/', this.currentUser.UserID).subscribe((d: any) => {
+  GetFiltersData(callback?: () => void) {
+    this.http.getJSON('api/Invoice/GetTSPMasterID/', this.currentUser.UserID).subscribe((d: any) => {
       if (d && d.length > 0) {
-       this.tspMasterID = d[0].TSPMasterID;
+        this.tspMasterID = d[0].TSPMasterID;
       }
+      if (callback) callback();
     });
   }
 
   GetInvoicesForApproval() {
     //this.http.postJSON('api/Invoice/GetInvoicesForApproval', { ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPID: this.filters.TSPID }).subscribe((d: any) => {
-    
+    debugger;
     // const tspData : any =this.tspMasters.find((t: { UserID: any; }) => t.UserID === this.currentUser.UserID);
     const TSPMasterID = this.tspMasterID;
     this.http.postJSON('api/Invoice/GetInvoicesForApproval', { ProcessKey: this.processKey, U_Month: this.month.value, OID: this.http.OID.value, KAMID: this.filters.KAMID, SchemeID: this.filters.SchemeID, TSPMasterID: TSPMasterID }).subscribe((d: any) => {
