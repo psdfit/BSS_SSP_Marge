@@ -14,6 +14,7 @@ import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
 import { GenerateTakamolRecommnedationNoteComponent } from './generate-takamol-recommnedation-note/generate-takamol-recommnedation-note.component';
 import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 import { GenerateInvoiceComponent } from './generate-invoice/generate-invoice.component';
+import { GenerateInternetNoteComponent } from './generate-internet-note/generate-internet-note.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { GenerateInvoiceComponent } from './generate-invoice/generate-invoice.co
     GenerateTakamolRecommnedationNoteComponent,
     GenerateOtrnComponent,
     GenerateOjtComponent,
-    GenerateInvoiceComponent
+    GenerateInvoiceComponent,
+    GenerateInternetNoteComponent
   ],
   imports: [
     CommonModule,

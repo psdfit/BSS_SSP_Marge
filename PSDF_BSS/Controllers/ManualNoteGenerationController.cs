@@ -161,5 +161,34 @@ namespace PSDF_BSS.Controllers
             catch (Exception e)
             { return BadRequest(e.InnerException.ToString()); }
         }
+
+        [HttpPost]
+        [Route("GetInternetCostReport")]
+        public IActionResult GetInternetCostReport([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                return Ok(_srvManualGen.FetchEligibleClassDataForInterNet(mod));
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
+
+        [HttpPost]
+        [Route("GenerateInternetNote")]
+        public IActionResult GenerateInternetNote([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+                ls.Add(_srvManualGen.GenerateInternetNote(mod, out string IsGenerated));
+                ls.Add(Convert.ToBoolean(IsGenerated));
+                return Ok(ls);
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
     }
 }

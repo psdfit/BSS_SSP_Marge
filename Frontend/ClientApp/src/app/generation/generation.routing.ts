@@ -11,7 +11,7 @@ import { GenerateMrnComponent } from './generate-mrn/generate-mrn.component';
 import { GeneratePcrnComponent } from './generate-pcrn/generate-pcrn.component';
 import { GenerateOtrnComponent } from './generate-otrn/generate-otrn.component';
 import { GenerateTakamolRecommnedationNoteComponent } from './generate-takamol-recommnedation-note/generate-takamol-recommnedation-note.component';
-
+import { GenerateInternetNoteComponent } from './generate-internet-note/generate-internet-note.component';
 import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 import { GenerateInvoiceComponent } from './generate-invoice/generate-invoice.component';
 const routes: Routes = [
@@ -133,6 +133,16 @@ const routes: Routes = [
       icon: 'verified_user',
       inMenu: true,
       title: 'Generate Invoice',
+    },
+  },
+  {
+    path: 'generate-internet-note',
+    component: GenerateInternetNoteComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate Internet Note',
     },
   },
 ];
