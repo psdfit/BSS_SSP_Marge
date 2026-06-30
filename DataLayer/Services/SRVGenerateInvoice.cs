@@ -210,67 +210,127 @@ namespace DataLayer.Services
             BalanceDays = 0;
         }
 
+        //private void CreateRegularInvoicesFor1MonthOrLess(ClassModel c)
+        //{
+        //    NoOfInvoices = 1;
+
+        //    if (startday >= 15 && c.Duration == 1) // eg If class starts from 15-16 and its 1 month class
+        //    {
+        //        NoOfInvoices += 1;
+        //    }
+
+        //    for (int i = 0; i < NoOfInvoices; i++)
+        //    {
+        //        ClassInvoiceMapModel m = new ClassInvoiceMapModel();
+
+        //        m.ClassID = c.ClassID;
+        //        m.InvoiceNo = InvoiceNo;
+        //        m.InvoiceType = "Regular";
+        //        m.Month = StartDate.AddMonths(i);
+
+        //        decimal PerMonthInvoiceCost = MonthlyCostRegular;
+
+        //        if (NoOfInvoices > 1)
+        //        {
+        //            if (i == 0)
+        //            {
+        //                int LessDays = (DaysInAMonth - startday) + 1; // Start 15, End 14 of next month. 1st invoice of 16 days, 2nd 14 days
+        //                BalanceDays = DurationInDays - LessDays; // 14 = 30 - 16;
+
+        //                m.InvoiceStartDate = m.Month;                           // Start date of invoice
+        //                m.InvoiceEndDate = GetMonthEndDate(m.Month);    // End of month
+        //                m.InvoiceDays = LessDays;
+
+        //            }
+        //            else if (i == 1)
+        //            {
+        //                m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);  // 1st day of month
+        //                m.InvoiceEndDate = new DateTime(m.Month.Year, m.Month.Month, startday - 1);
+        //                m.InvoiceDays = (int)BalanceDays;
+        //            }
+        //        }
+        //        else // If single invoice
+        //        {
+        //            m.InvoiceStartDate = m.Month;          // Start date of invoice
+        //            if (c.Duration == 1 || startday >= 15) // Full Month or Class start from 15-16
+        //            {
+        //                m.InvoiceEndDate = GetMonthEndDate(m.Month);    // End of month
+        //            }
+        //            else // Less than month eg 0.5
+        //            {
+        //                m.InvoiceEndDate = new DateTime(m.Month.Year, m.Month.Month, 15);
+        //            }
+
+        //            m.InvoiceDays = 30; //(int)DurationInDays;
+        //        }
+
+        //        Cost2ndLast += PerMonthInvoiceCost;
+        //        CostFinal += PerMonthInvoiceCost;
+
+        //        m.Amount = PerMonthInvoiceCost;
+
+        //        ls.Add(m);
+
+        //        InvoiceNo += 1;
+        //    }
+
+        //    if (ls.Count > 0)
+        //    {
+        //        POStartDate = ls[0].InvoiceStartDate;
+        //        POEndDate = ls[ls.Count - 1].InvoiceEndDate;
+
+        //        ls.ForEach(x => x.POStartDate = POStartDate);
+        //        ls.ForEach(x => x.POEndDate = POEndDate);
+        //    }
+        //}
+
         private void CreateRegularInvoicesFor1MonthOrLess(ClassModel c)
         {
-            NoOfInvoices = 1;
+            // Real end date of this invoicing stretch, based on actual duration in days
+            DateTime classStart = StartDate;
+            DateTime classEnd = StartDate.AddDays((double)DurationInDays - 1);
 
-            if (startday >= 15 && c.Duration == 1) // eg If class starts from 15-16 and its 1 month class
+
+            // Determine how many calendar months this range touches
+            DateTime cursor = classStart;
+            List<(DateTime start, DateTime end)> segments = new List<(DateTime, DateTime)>();
+
+            while (cursor <= classEnd)
             {
-                NoOfInvoices += 1;
+                DateTime monthEnd = GetMonthEndDate(cursor); // last day of cursor's month
+                DateTime segmentEnd = monthEnd < classEnd ? monthEnd : classEnd;
+
+                segments.Add((cursor, segmentEnd));
+
+                cursor = segmentEnd.AddDays(1); // move to first day of next segment
             }
 
-            for (int i = 0; i < NoOfInvoices; i++)
-            {
-                ClassInvoiceMapModel m = new ClassInvoiceMapModel();
+            NoOfInvoices = segments.Count;
 
+            for (int i = 0; i < segments.Count; i++)
+            {
+                var (segStart, segEnd) = segments[i];
+
+                ClassInvoiceMapModel m = new ClassInvoiceMapModel();
                 m.ClassID = c.ClassID;
                 m.InvoiceNo = InvoiceNo;
                 m.InvoiceType = "Regular";
-                m.Month = StartDate.AddMonths(i);
+                m.Month = new DateTime(segStart.Year, segStart.Month, 1);
+                m.InvoiceStartDate = segStart;
+                m.InvoiceEndDate = segEnd;
+                m.InvoiceDays = (segEnd - segStart).Days + 1;
 
-                decimal PerMonthInvoiceCost = MonthlyCostRegular;
+                int daysInThisMonth = DateTime.DaysInMonth(segStart.Year, segStart.Month);
 
-                if (NoOfInvoices > 1)
-                {
-                    if (i == 0)
-                    {
-                        int LessDays = (DaysInAMonth - startday) + 1; // Start 15, End 14 of next month. 1st invoice of 16 days, 2nd 14 days
-                        BalanceDays = DurationInDays - LessDays; // 14 = 30 - 16;
-
-                        m.InvoiceStartDate = m.Month;                           // Start date of invoice
-                        m.InvoiceEndDate = GetMonthEndDate(m.Month);    // End of month
-                        m.InvoiceDays = LessDays;
-
-                    }
-                    else if (i == 1)
-                    {
-                        m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);  // 1st day of month
-                        m.InvoiceEndDate = new DateTime(m.Month.Year, m.Month.Month, startday - 1);
-                        m.InvoiceDays = (int)BalanceDays;
-                    }
-                }
-                else // If single invoice
-                {
-                    m.InvoiceStartDate = m.Month;          // Start date of invoice
-                    if (c.Duration == 1 || startday >= 15) // Full Month or Class start from 15-16
-                    {
-                        m.InvoiceEndDate = GetMonthEndDate(m.Month);    // End of month
-                    }
-                    else // Less than month eg 0.5
-                    {
-                        m.InvoiceEndDate = new DateTime(m.Month.Year, m.Month.Month, 15);
-                    }
-
-                    m.InvoiceDays = 30; //(int)DurationInDays;
-                }
+                // Pure per-day proration — no fixed 15/30 day assumptions
+                decimal PerMonthInvoiceCost = Math.Round(
+                    (MonthlyCostRegular / daysInThisMonth) * m.InvoiceDays, 2);
 
                 Cost2ndLast += PerMonthInvoiceCost;
                 CostFinal += PerMonthInvoiceCost;
-
                 m.Amount = PerMonthInvoiceCost;
 
                 ls.Add(m);
-
                 InvoiceNo += 1;
             }
 
@@ -278,7 +338,6 @@ namespace DataLayer.Services
             {
                 POStartDate = ls[0].InvoiceStartDate;
                 POEndDate = ls[ls.Count - 1].InvoiceEndDate;
-
                 ls.ForEach(x => x.POStartDate = POStartDate);
                 ls.ForEach(x => x.POEndDate = POEndDate);
             }
@@ -298,63 +357,120 @@ namespace DataLayer.Services
             }
         }
 
+        //private void GetRegularInvoicesDecimalDuration(ClassModel c)
+        //{
+        //    NoOfInvoices = Math.Ceiling(c.Duration); // (1.5) = 2
+
+        //    for (int i = 0; i < NoOfInvoices; i++)
+        //    {
+        //        ClassInvoiceMapModel m = new ClassInvoiceMapModel();
+
+        //        m.ClassID = c.ClassID;
+        //        m.InvoiceNo = InvoiceNo;
+        //        m.InvoiceType = "Regular";
+        //        m.Month = StartDate.AddMonths(i);
+        //        m.Amount = MonthlyCostRegular;
+
+        //        if (i == 0)
+        //        {
+        //            m.InvoiceStartDate = m.Month;
+        //            m.InvoiceEndDate = GetMonthEndDate(m.Month); // End of month
+
+        //            if (startday >= 15) // Class Start Date
+        //            {
+        //                m.InvoiceDays = 15;
+        //            }
+        //            else
+        //            {
+        //                m.InvoiceDays = 30;
+        //            }
+        //        }
+        //        else if (i == (NoOfInvoices - 1))
+        //        {
+        //            if (startday >= 15) //  Class Start Date. Last invoice will be of 30 days
+        //            {
+        //                m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);
+        //                m.InvoiceEndDate = GetMonthEndDate(m.Month); // End of month
+        //                m.InvoiceDays = 30;
+        //            }
+        //            else // Last 15 days
+        //            {
+        //                m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);
+        //                m.InvoiceEndDate = new DateTime(m.Month.Year, m.Month.Month, 15); // End 15th of month
+        //                m.InvoiceDays = 15;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);
+        //            m.InvoiceEndDate = GetMonthEndDate(m.Month); // End of month
+        //            m.InvoiceDays = 30;
+        //        }
+
+        //        Cost2ndLast += MonthlyCostRegular;
+        //        CostFinal += MonthlyCostRegular;
+
+
+
+        //        ls.Add(m);
+
+        //        InvoiceNo += 1;
+        //    }
+
+        //    if (ls.Count > 0)
+        //    {
+        //        POStartDate = ls[0].InvoiceStartDate;
+        //        POEndDate = ls[ls.Count - 1].InvoiceEndDate;
+
+        //        ls.ForEach(x => x.POStartDate = POStartDate);
+        //        ls.ForEach(x => x.POEndDate = POEndDate);
+        //    }
+        //}
+
         private void GetRegularInvoicesDecimalDuration(ClassModel c)
         {
-            NoOfInvoices = Math.Ceiling(c.Duration); // (1.5) = 2
+            DateTime classStart = StartDate;
+            DateTime classEnd = StartDate.AddDays((double)DurationInDays - 1);
 
-            for (int i = 0; i < NoOfInvoices; i++)
+            DateTime cursor = classStart;
+            List<(DateTime start, DateTime end)> segments = new List<(DateTime, DateTime)>();
+
+            while (cursor <= classEnd)
             {
-                ClassInvoiceMapModel m = new ClassInvoiceMapModel();
+                DateTime monthEnd = GetMonthEndDate(cursor);
+                DateTime segmentEnd = monthEnd < classEnd ? monthEnd : classEnd;
 
+                segments.Add((cursor, segmentEnd));
+
+                cursor = segmentEnd.AddDays(1);
+            }
+
+            NoOfInvoices = segments.Count;
+
+            for (int i = 0; i < segments.Count; i++)
+            {
+                var (segStart, segEnd) = segments[i];
+
+                ClassInvoiceMapModel m = new ClassInvoiceMapModel();
                 m.ClassID = c.ClassID;
                 m.InvoiceNo = InvoiceNo;
                 m.InvoiceType = "Regular";
-                m.Month = StartDate.AddMonths(i);
-                m.Amount = MonthlyCostRegular;
+                m.Month = new DateTime(segStart.Year, segStart.Month, 1);
+                m.InvoiceStartDate = segStart;
+                m.InvoiceEndDate = segEnd;
+                m.InvoiceDays = (segEnd - segStart).Days + 1;
 
-                if (i == 0)
-                {
-                    m.InvoiceStartDate = m.Month;
-                    m.InvoiceEndDate = GetMonthEndDate(m.Month); // End of month
+                int daysInThisMonth = DateTime.DaysInMonth(segStart.Year, segStart.Month);
 
-                    if (startday >= 15) // Class Start Date
-                    {
-                        m.InvoiceDays = 15;
-                    }
-                    else
-                    {
-                        m.InvoiceDays = 30;
-                    }
-                }
-                else if (i == (NoOfInvoices - 1))
-                {
-                    if (startday >= 15) //  Class Start Date. Last invoice will be of 30 days
-                    {
-                        m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);
-                        m.InvoiceEndDate = GetMonthEndDate(m.Month); // End of month
-                        m.InvoiceDays = 30;
-                    }
-                    else // Last 15 days
-                    {
-                        m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);
-                        m.InvoiceEndDate = new DateTime(m.Month.Year, m.Month.Month, 15); // End 15th of month
-                        m.InvoiceDays = 15;
-                    }
-                }
-                else
-                {
-                    m.InvoiceStartDate = new DateTime(m.Month.Year, m.Month.Month, 1);
-                    m.InvoiceEndDate = GetMonthEndDate(m.Month); // End of month
-                    m.InvoiceDays = 30;
-                }
+                decimal PerMonthInvoiceCost = Math.Round(
+                    (MonthlyCostRegular / daysInThisMonth) * m.InvoiceDays, 2);
 
-                Cost2ndLast += MonthlyCostRegular;
-                CostFinal += MonthlyCostRegular;
+                m.Amount = PerMonthInvoiceCost;
 
-
+                Cost2ndLast += PerMonthInvoiceCost;
+                CostFinal += PerMonthInvoiceCost;
 
                 ls.Add(m);
-
                 InvoiceNo += 1;
             }
 
@@ -362,7 +478,6 @@ namespace DataLayer.Services
             {
                 POStartDate = ls[0].InvoiceStartDate;
                 POEndDate = ls[ls.Count - 1].InvoiceEndDate;
-
                 ls.ForEach(x => x.POStartDate = POStartDate);
                 ls.ForEach(x => x.POEndDate = POEndDate);
             }
