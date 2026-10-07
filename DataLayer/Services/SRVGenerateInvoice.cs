@@ -323,9 +323,10 @@ namespace DataLayer.Services
                 int daysInThisMonth = DateTime.DaysInMonth(segStart.Year, segStart.Month);
 
                 // Pure per-day proration — no fixed 15/30 day assumptions
-                decimal PerMonthInvoiceCost = Math.Round(
-                    (MonthlyCostRegular / daysInThisMonth) * m.InvoiceDays, 2);
-
+                //need to fix because i am calculating this at the time of invoice generation. Total training cost / no of days on invoice map. 
+                //decimal PerMonthInvoiceCost = Math.Round(
+                //    (MonthlyCostRegular / daysInThisMonth) * m.InvoiceDays, 2);
+                decimal PerMonthInvoiceCost = Math.Round(MonthlyCostRegular, 2); // Need to test this because we are not calculating the per day cost. We are taking the monthly cost as it is.
                 Cost2ndLast += PerMonthInvoiceCost;
                 CostFinal += PerMonthInvoiceCost;
                 m.Amount = PerMonthInvoiceCost;
