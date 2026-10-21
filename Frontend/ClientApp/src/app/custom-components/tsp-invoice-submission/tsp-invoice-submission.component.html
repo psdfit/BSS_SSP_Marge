@@ -234,15 +234,21 @@
 
             <div class="file-actions" *ngIf="selectedFile">
               <button mat-raised-button color="primary"
-                (click)="openAttachmentPreview()"
-                matTooltip="Preview file">
+                      (click)="openAttachmentPreview()"
+                      matTooltip="Preview file">
                 <mat-icon>visibility</mat-icon>
                 Preview
               </button>
+              <button mat-raised-button color="accent"
+                      (click)="downloadAttachment()"
+                      matTooltip="Download file">
+                <mat-icon>download</mat-icon>
+                Download
+              </button>
               <button *ngIf="currentUser.RoleTitle === 'TSP'"
-                mat-raised-button color="warn"
-                (click)="clearSelectedFile()"
-                matTooltip="Remove file">
+                      mat-raised-button color="warn"
+                      (click)="clearSelectedFile()"
+                      matTooltip="Remove file">
                 <mat-icon>delete</mat-icon>
                 Remove
               </button>

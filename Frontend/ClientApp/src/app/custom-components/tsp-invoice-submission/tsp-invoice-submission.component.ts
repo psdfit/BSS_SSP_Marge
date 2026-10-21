@@ -489,6 +489,45 @@ export class TspInvoiceSubmissionComponent implements OnInit, OnDestroy {
     previewWindow.document.close();
   }
 
+  private dataUrlToBlob(dataUrl: string): Blob {
+    const [header, base64] = dataUrl.split(',');
+    const mimeType = header.match(/data:(.*?);base64/)?.[1] || 'application/octet-stream';
+    const byteChars = atob(base64);
+    const bytes = new Uint8Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) {
+      bytes[i] = byteChars.charCodeAt(i);
+    }
+    return new Blob([bytes], { type: mimeType });
+  }
+
+  downloadAttachment(): void {
+    const dataUrl: string = this.invoiceForm.get("InvoiceAttachment")?.value;
+    if (!dataUrl) {
+      this.http.ShowError("No file selected to download");
+      return;
+    }
+
+    const blob = this.dataUrlToBlob(dataUrl);
+
+    // File name: use original name if available, otherwise build from type
+    const extMap: { [key: string]: string } = {
+      'application/pdf': 'pdf',
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+    };
+    const ext = extMap[blob.type] || blob.type.split('/')[1] || 'bin';
+    const fileName = (this.selectedFile as any)?.name || `Invoice_Attachment.${ext}`;
+
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+  }
+
   clearSelectedFile(): void {
     this.selectedFile = null;
     this.file = null;
