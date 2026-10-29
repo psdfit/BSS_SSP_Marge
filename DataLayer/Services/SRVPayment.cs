@@ -169,39 +169,39 @@ namespace DataLayer.Services
                 ]";
 
 
-            string baseUrl = "https://api.paypro.com.pk/";
-            string reqUri = baseUrl + "cpay/co?oJson=" + jsonOrder;
-            WebClient client = new WebClient();
-            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-            var response = client.UploadString(reqUri, jsonOrder);
-            var model = JsonConvert.DeserializeObject<IList<PayProResponseModel>>(response);
+            //string baseUrl = "https://api.paypro.com.pk/";
+            //string reqUri = baseUrl + "cpay/co?oJson=" + jsonOrder;
+            //WebClient client = new WebClient();
+            //System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+            //var response = client.UploadString(reqUri, jsonOrder);
+            //var model = JsonConvert.DeserializeObject<IList<PayProResponseModel>>(response);
 
 
-            if (model[0].Status == "00")
-            {
+            //if (model[0].Status == "00")
+            //{
                 List<SqlParameter> param = new List<SqlParameter>();
-                param.Add(new SqlParameter("@OrderNumber", model[1].OrderNumber));
-                param.Add(new SqlParameter("@OrderAmount", model[1].OrderAmount));
+                param.Add(new SqlParameter("@OrderNumber", orderNumber));
+                param.Add(new SqlParameter("@OrderAmount", 0));
                 param.Add(new SqlParameter("@OrderDueDate", dueDate));
                 param.Add(new SqlParameter("@OrderType", "Service"));
                 param.Add(new SqlParameter("@IssueDate", issueDate));
-                param.Add(new SqlParameter("@OrderAmountWithinDueDate", model[1].OrderAmount));
-                param.Add(new SqlParameter("@OrderAmountAfterDueDate", model[1].OrderAmount));
-                param.Add(new SqlParameter("@Status", model[0].Status));
-                param.Add(new SqlParameter("@IsFeeApplied", model[1].IsFeeApplied));
-                param.Add(new SqlParameter("@ConnectPayId", model[1].ConnectPayId.ToString()));
-                param.Add(new SqlParameter("@Description", model[1].Description.ToString()));
+                param.Add(new SqlParameter("@OrderAmountWithinDueDate", 0));
+                param.Add(new SqlParameter("@OrderAmountAfterDueDate", 0));
+                param.Add(new SqlParameter("@Status", "00"));
+                param.Add(new SqlParameter("@IsFeeApplied",0));
+                param.Add(new SqlParameter("@ConnectPayId", orderNumber));
+                param.Add(new SqlParameter("@Description", "No payment required for this association"));
                 //param.Add(new SqlParameter("@OrderStatus", "PAID"));
-                param.Add(new SqlParameter("@OrderStatus", "UNPAID"));
+                param.Add(new SqlParameter("@OrderStatus", "PAID"));
                 param.Add(new SqlParameter("@Click2Pay", "http://"));
 
                 DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "AU_SSPPayPro_PaymentDetail", param.ToArray()).Tables[0];
                 return dt;
-            }
-            else
-            {
-                throw new Exception(response);
-            }
+            //}
+            //else
+            //{
+            //    throw new Exception(response);
+            //}
 
 
 

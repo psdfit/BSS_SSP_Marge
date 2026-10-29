@@ -223,11 +223,11 @@ namespace PSDF_BSSMasterDataModule.Controllers
             try
             {
                 ClassModel[] model = JsonConvert.DeserializeObject<ClassModel[]>(str);
-                var InvalidClassStartDate = model.FirstOrDefault(x => (x.StartDate.Value.Day > 5 && x.StartDate.Value.Day < 15) || (x.StartDate.Value.Day > 16));
-                if (InvalidClassStartDate != null)
-                {
-                    return BadRequest($"Invalid StartDate {InvalidClassStartDate.StartDate.Value} , it must be (in-between 1 to 5 ) or (15 or 16) date of month.");
-                }
+                //var InvalidClassStartDate = model.FirstOrDefault(x => (x.StartDate.Value.Day > 5 && x.StartDate.Value.Day < 15) || (x.StartDate.Value.Day > 16));
+                //if (InvalidClassStartDate != null)
+                //{
+                //    return BadRequest($"Invalid StartDate {InvalidClassStartDate.StartDate.Value} , it must be (in-between 1 to 5 ) or (15 or 16) date of month.");
+                //}
 
                 List<ClassModel> ls = new List<ClassModel>();
                 foreach (var item in model)

@@ -8,5 +8,8 @@ namespace DataLayer.Interfaces
     public interface ISRVIncomeRange
     {
         List<IncomeRangeModel> FetchIncomeRanges(IncomeRangeModel mod);
+        List<MartitalStatusModel> FetchMartitalStatus();
+
+        
     }
 }

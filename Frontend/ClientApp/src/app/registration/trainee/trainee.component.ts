@@ -77,6 +77,7 @@ export class TraineeComponent implements OnInit {
   TempTehsil: any;
   TraineeDisability: any[];
   IncomeRange: any[];
+  MaritalStatus: any[];
   ReferralSource: any[];
   Sections: any;
   //Scheme: any;
@@ -104,11 +105,13 @@ export class TraineeComponent implements OnInit {
   saveBtnTitle: string = "Save";
   EnText: string = "";
   error: string;
+  filteredProvinces = [];
   EDFScheme: boolean = false;
   SearchPro = new FormControl('');
   IsSkillsScholrship: boolean = false;
   IsSkillsScholrshipProgram: boolean = false;
   IsInternationalPlacement: boolean = false;
+  IsWDD: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("ngForm") ngFrom: NgForm;
@@ -192,17 +195,33 @@ export class TraineeComponent implements OnInit {
 
   ControlProvince() {
     if (this.EDFScheme) {
-      this.ProvinceID.setValue('');
+
+      // Filter ONLY allowed provinces
+      this.filteredProvinces = this.province.filter(
+        p => p.ProvinceID === 5 || p.ProvinceID === 6
+      );
+
       this.ProvinceID.enable();
       this.IsFieldDisabled = false;
-    }
-    else {
+
+      // Reset invalid value
+      if (![5, 6].includes(this.ProvinceID.value)) {
+        this.ProvinceID.setValue(null);
+      }
+
+    } else {
+
+      // Show all provinces
+      this.filteredProvinces = [...this.province];
+
+      // Lock province to 6
       this.ProvinceID.setValue(6);
       this.ProvinceID.disable();
       this.IsFieldDisabled = true;
 
     }
   }
+
 
   onEmploymentStatusBeforeTrainingChange(event) {
     if (event.value == 2 || event.value == 3) {
@@ -248,6 +267,7 @@ export class TraineeComponent implements OnInit {
       ReferralSourceID: ['', [Validators.required]],
       TraineeIndividualIncomeID: ['', [Validators.required]],
       HouseHoldIncomeID: ['', [Validators.required]],
+      MaritalStatusID: ['', [Validators.required]],
       EmploymentStatusBeforeTrainingID: ['', [Validators.required]],
       GuardianNextToKinName: ['', [Validators.required, Validators.pattern('^[a-zA-Z \-\']+')]],
       GuardianNextToKinContactNo: ['', [Validators.required]],
@@ -281,7 +301,14 @@ export class TraineeComponent implements OnInit {
       /// Added By Rao ALi haider for International Placement
       Accounttitle: ['', [Validators.required]],
       BankName: ['', [Validators.required]],
-      IBANNumber: ['', [Validators.required]]
+      IBANNumber: ['', [Validators.required]],
+
+      GuardianRelationship: ['', [Validators.required]],
+      GuardianEmail: ['', [Validators.required]],
+      EmergencyContact: ['', [Validators.required]],
+      WhatsAppContact: ['', [Validators.required]],
+      LinkedInURL: ['', [Validators.required]],
+      SocialMediaURL: ['']
     }, { updateOn: "change" });
     this.VoucherHolder.valueChanges.subscribe(checked => {
       if (checked) {
@@ -644,14 +671,26 @@ export class TraineeComponent implements OnInit {
       this.BankName.clearValidators();
       this.BankName.disable();
 
-      this.IBANNumber.setValue('');
-      this.IBANNumber.clearValidators();
-      this.IBANNumber.disable();
+      //this.IBANNumber.setValue('');
+      //this.IBANNumber.clearValidators();
+      //this.IBANNumber.disable();
 
 
       this.Accounttitle.setValue('');
       this.Accounttitle.clearValidators();
       this.Accounttitle.disable();
+    }
+  }
+  RemoveWDDFields() { ///Hide the remove the validation of bank fields
+    if (!this.IsWDD) {
+      this.MaritalStatusID.setValue('');
+      this.MaritalStatusID.clearValidators();
+      this.MaritalStatusID.disable();
+    }
+    if (!this.IsWDD || !this.IsInternationalPlacement) {
+      this.IBANNumber.setValue('');
+      this.IBANNumber.clearValidators();
+      this.IBANNumber.disable();
     }
   }
 
@@ -675,6 +714,7 @@ export class TraineeComponent implements OnInit {
         this.EmploymentStatus = d.EmploymentStatus;
         this.province = d.Province;
         this.TemporaryProvince = d.TemporaryProvince;
+        this.MaritalStatus = d.MaritalStatus;
         if (this.paramClassId) {
           this.classId = parseInt(this.paramClassId);
           this.onEditTraineeClass();
@@ -741,7 +781,7 @@ debugger;
         if (scheme.FundingCategoryID == 16) {
           this.EDFScheme = true;
         }
-        else if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV') {
+        else if (scheme.SchemeCode == 'STV' || scheme.SchemeCode == 'ST25' || scheme.SchemeCode == 'UNDP' || scheme.SchemeCode == 'SVN' || scheme.SchemeCode == 'SNV' || scheme.SchemeCode == 'GZII') {
           this.EDFScheme = true;
         }
         else if (scheme.FundingSourceID !== 12) //EDF Scheme
@@ -762,6 +802,12 @@ debugger;
         if (scheme.ProgramTypeID !== 7) {  //Skills Scolarship
           this.IsSkillsScholrship = false;
         }
+        if (scheme.FundingCategoryID == 22){ //WDD scheme
+           this.IsWDD = true; }
+            else {
+            this.RemoveWDDFields(); //remove validator of Marital status
+          }
+
         
         if (scheme.FundingCategoryID == 18) //CM-SDP-Transgender
         {
@@ -1242,6 +1288,7 @@ debugger;
   get ReferralSourceID() { return this.traineeProfileForm.get("ReferralSourceID"); }
   get TraineeIndividualIncomeID() { return this.traineeProfileForm.get("TraineeIndividualIncomeID"); }
   get HouseHoldIncomeID() { return this.traineeProfileForm.get("HouseHoldIncomeID"); }
+  get MaritalStatusID() { return this.traineeProfileForm.get("MaritalStatusID"); }
   get EmploymentStatusBeforeTrainingID() { return this.traineeProfileForm.get("EmploymentStatusBeforeTrainingID"); }
   get Undertaking() { return this.traineeProfileForm.get("Undertaking"); }
   get GuardianNextToKinName() { return this.traineeProfileForm.get("GuardianNextToKinName"); }
@@ -1262,6 +1309,12 @@ debugger;
   get Accounttitle() { return this.traineeProfileForm.get("Accounttitle"); }
   get BankName() { return this.traineeProfileForm.get("BankName"); }
   get IBANNumber() { return this.traineeProfileForm.get("IBANNumber"); }
+  get GuardianRelationship() { return this.traineeProfileForm.get("GuardianRelationship"); }
+  get GuardianEmail() { return this.traineeProfileForm.get("GuardianEmail"); }
+  get EmergencyContact() { return this.traineeProfileForm.get("EmergencyContact"); }
+  get WhatsAppContact() { return this.traineeProfileForm.get("WhatsAppContact"); }
+  get LinkedInURL() { return this.traineeProfileForm.get("LinkedInURL"); }
+  get SocialMediaURL() { return this.traineeProfileForm.get("SocialMediaURL"); }
 
   
   //get CNICImg() { return this.traineeProfileForm.get("CNICImg"); }

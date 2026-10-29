@@ -29,6 +29,7 @@ export class TspSignUpComponent implements OnInit {
   signUp: FormGroup;
   hide = true;
   NTNFormat: any = "1"
+  
   CreateForm() {
     this.signUp = this.fb.group({
       TSPID: [''],
@@ -58,12 +59,21 @@ export class TspSignUpComponent implements OnInit {
   }
 
   onFormateChange(){
-    debugger;
-    if(this.NTNFormat==2){
-      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
-    }else{
+    // debugger;
+
+    if(this.NTNFormat==1){
       this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(9)])
     }
+
+    if(this.NTNFormat==2){
+      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(7)])
+    } 
+    
+     if(this.NTNFormat==3){
+      this.signUp.get('BusinessNTN').setValidators([Validators.required, Validators.minLength(15)])
+    } 
+    
+
     this.signUp.get('BusinessNTN').updateValueAndValidity();
   }
   // onFormateChange() {
@@ -132,11 +142,12 @@ export class TspSignUpComponent implements OnInit {
   }
   IsDisabled = false
   Save() {
+    debugger;
     if (!this.isValidText(this.signUp.get('BusinessName').value)) {
       this.ComSrv.ShowError('Business name should only contain text.')
       return
     }
-    if (this.signUp.valid && [7, 9].includes(this.signUp.get('BusinessNTN').value.length)) {
+    if (this.signUp.valid && [7, 9,15].includes(this.signUp.get('BusinessNTN').value.length)) {
       this.IsDisabled = true
       this.ComSrv.postNoAuth('api/Users/SignUp', this.signUp.value)
         .subscribe((response: any) => {
@@ -153,8 +164,18 @@ export class TspSignUpComponent implements OnInit {
     }
   }
   getErrorMessage(errorKey: string, errorValue: any): string {
-    debugger
-    const error = errorValue.requiredLength != 8 && errorValue.requiredLength != 7 ? errorValue.requiredLength - 1 : errorValue.requiredLength
+    // debugger
+
+ const length = errorValue.requiredLength;
+
+let error = length;
+
+if (length === 15) {
+  error -= 2;
+} else if (![7, 8].includes(length)) {
+  error -= 1;
+}
+
     const errorMessages = {
       required: 'This field is required.',
       minlength: `This field must be at least ${error} long.`,
@@ -163,6 +184,7 @@ export class TspSignUpComponent implements OnInit {
       pattern: 'Password contain 1 uppercase, 1 lowercase, 1 number, 1 special character (@$!%*?&)',
       customError: errorValue
     };
+
     return errorMessages[errorKey];
   }
   setFocusOnControl(controlName: string) {

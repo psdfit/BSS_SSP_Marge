@@ -291,7 +291,8 @@ namespace PSDF_BSSRegistration.Controllers
                           () => ls.Add("Class", srvClass.FetchClass(new ClassModel() { OrganizationID = OID, InActive = false, ClassStatusID = (int)EnumClassStatus.Active })),    //this methos
                                                                                                                                                                                    //() => ls.Add("Class", srvClass.FetchApprovadClassesByModel(new ClassModel() { OrganizationID = OID, InActive = false, ClassStatusID = (int)EnumClassStatus.Active })),
                           () => ls.Add("Religion", srvReligion.FetchReligion(false)),
-                          () => ls.Add("EmploymentStatus", srvEmploymentStatus.FetchEmploymentStatus(false))
+                          () => ls.Add("EmploymentStatus", srvEmploymentStatus.FetchEmploymentStatus(false)),
+                          () => ls.Add("MaritalStatus", srvIncomeRange.FetchMartitalStatus())
                                 );
 
                 return Ok(ls);

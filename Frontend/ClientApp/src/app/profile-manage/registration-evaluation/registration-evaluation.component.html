@@ -56,6 +56,8 @@
                     <mat-icon>keyboard_arrow_down</mat-icon>
                   </a>
                   <a color="primary" mat-button (click)="ShowDetail(row, row['TspName'],1)"> Decision</a>
+                  <a color="primary" mat-button (click)="openTSPProfileComponentDialogue(row)">Review Profile</a>
+                  <a color="primary" mat-button (click)="openTSPBaseDataComponentDialogue(row)">Review Base Data</a>
                 </ng-container>
                 <ng-container *ngIf="column == 'TspName'">
                   <!-- <button *ngIf="column === 'TspName' && row['PendingTrade'] > 0; else elseBlock1" mat-button color="primary" matTooltip="View Detail" (click)="ShowDetail(row, row[column],1)"> -->

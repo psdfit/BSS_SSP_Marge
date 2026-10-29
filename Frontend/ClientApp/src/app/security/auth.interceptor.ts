@@ -106,7 +106,7 @@
 
      // Increment loading count to indicate loading state
      this.lcount++;
-     debugger;
+    //  debugger;
 
 
      if (this.lcount > 0) {

@@ -10,7 +10,6 @@
             <button mat-raised-button color="success" style="float:right" *ngIf="InvoiceHeaders?.length > 0"
               (click)="exportToExcel()">Export Excel</button>
           </div>
-
           <div class="col-sm-2">
             <button mat-raised-button color="success" style="float:right;margin-left: 10px;"
               *ngIf="InvoiceHeaders?.length > 0" (click)="ExportInvoiceDetailsToExcel()">Export Invoice Details</button>
@@ -39,7 +38,6 @@
                 <mat-option [value]="enumApprovalProcess.INV_GURN">Guru Payment Note</mat-option>
                 <mat-option [value]="enumApprovalProcess.INV_TakamolRecommendationNote">Takamol Recommendation
                   Note</mat-option>
-
                 <mat-option [value]="enumApprovalProcess.INV_OJT_SRN">OJT SRN</mat-option>
               </mat-select>
             </mat-form-field>
@@ -101,7 +99,6 @@
               </mat-select>
             </mat-form-field>
           </div>
-
         </div>
         <div class="text-center" *ngIf="!InvoiceHeaders">
           <p>No Records</p>
@@ -139,9 +136,26 @@
               <ng-container *ngFor="let r of InvoiceHeaders">
                 <tr>
                   <td>
-                    <a color="primary" mat-button (click)="checkTSPColor(r)">
-                      Decision
-                    </a>
+                    <ng-container
+                      *ngIf="['INV_1ST', 'INV_2ND', 'INV_R', 'INV_C', 'INV_F'].includes(r.ProcessKey); else otherBlock">
+                      <a color="primary" disabled *ngIf="!isInvoiceGenerated(r)" mat-button>
+                        <mat-icon>receipt</mat-icon>
+                        Invoice Not Submitted
+                      </a>
+                      <a color="primary" *ngIf="isInvoiceGenerated(r)" mat-button
+                        (click)="OpenInvoiceSubmissionDialogue(r)">
+                        <mat-icon>check_circle</mat-icon>
+                        View Submitted Invoice
+                      </a>
+                      <a color="primary" *ngIf="isInvoiceGenerated(r)" mat-button (click)="checkTSPColor(r)">
+                        Decision
+                      </a>
+                    </ng-container>
+                    <ng-template #otherBlock>
+                      <a color="primary" mat-button (click)="checkTSPColor(r)">
+                        Decision
+                      </a>
+                    </ng-template>
                     <a color="primary" mat-button (click)="GetInvoiceLines(r)">
                       Invoices<mat-icon>{{r.InvoiceLines ?'keyboard_arrow_up':'keyboard_arrow_down' }}</mat-icon>
                     </a>
@@ -192,7 +206,6 @@
                         <thead>
                           <tr>
                             <th>
-
                             </th>
                             <th>Invoice Type</th>
                             <th>Class Code</th>
@@ -244,7 +257,6 @@
                             <th>Testing Fee</th>
                             <th>Functional Date</th>
                             <th>Deduction Trainee UnV Cnic</th>-->
-
                           </tr>
                         </thead>
                         <tbody>
@@ -308,16 +320,12 @@
                             <td>{{l.TestingFee}}</td>
                             <td>{{l.FunctionalDate}}</td>
                             <td>{{l.DeductionTraineeUnVCnic}}</td>-->
-
                           </tr>
                         </tbody>
                       </table>
                     </div>
                   </td>
-
-
                 </tr>
-
                 <!--Nested Grid ends here-->
               </ng-container>
             </tbody>

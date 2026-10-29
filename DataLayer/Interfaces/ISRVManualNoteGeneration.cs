@@ -18,7 +18,8 @@ namespace DataLayer.Interfaces
         DataTable GenerateOTRN(QueryFilters model, out string IsGenerated);
         DataTable GenerateTakamolRecommnedationNote(QueryFilters model, out string IsGenerated);
         DataTable FetchEligibleClassDataForTakamolRecommnedationNote(QueryFilters data);
-
+        DataTable FetchEligibleClassDataForInterNet(QueryFilters data);
+        DataTable GenerateInternetNote(QueryFilters model, out string IsGenerated);
 
     }
 }

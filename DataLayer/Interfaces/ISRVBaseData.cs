@@ -8,6 +8,7 @@ namespace DataLayer.Interfaces
 {
     public interface ISRVBaseData
     {
+        public DataTable GetInvoiceBuyerSupplierInfo(int TSPID);
         public DataTable FetchBankDetailList(int UserID);
         public DataTable FetchTrainingLocationList(int UserID);
         public DataTable FetchCertificationList(int UserID);

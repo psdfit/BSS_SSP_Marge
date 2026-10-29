@@ -842,9 +842,9 @@ export class ClassComponent implements OnInit {
       let rows = [];
       let classStartDate = new Date(Math.round((f['Start Date'] - 25569) * 86400 * 1000));
 
-      if (this.validateClassStartDate(classStartDate)) {
-        alert(`Please Reload file. /n Error : InValid ClassStartDate ${classStartDate} , it must be (in-between 1 to 5 ) or (15 or 16) date of month.`)
-      }
+      //if (this.validateClassStartDate(classStartDate)) {
+      //  alert(`Please Reload file. /n Error : InValid ClassStartDate ${classStartDate} , it must be (in-between 1 to 5 ) or (15 or 16) date of month.`)
+      //}
       for (var classNumber = 1; classNumber <= ET_NumberofClassesExcel; classNumber++) {
         let start = moment(classStartDate);
         for (var batch = 1; batch <= ET_NumberofBatches; batch++) {

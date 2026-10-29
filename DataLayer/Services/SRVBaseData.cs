@@ -21,6 +21,15 @@ namespace DataLayer.Services
             DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_SSPBankDetail", param.ToArray()).Tables[0];
             return dt;
         }
+
+        public DataTable GetInvoiceBuyerSupplierInfo(int TSPID)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            param.Add(new SqlParameter("@TSPID", TSPID));
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_GetInvoiceBuyerSupplierInfo", param.ToArray()).Tables[0];
+            return dt;
+        }
+
         public DataTable FetchTrainingLocationList(int UserID)
         {
             List<SqlParameter> param = new List<SqlParameter>();

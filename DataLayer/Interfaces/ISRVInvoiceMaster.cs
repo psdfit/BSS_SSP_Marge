@@ -12,6 +12,9 @@ namespace DataLayer.Interfaces
     public interface ISRVInvoiceMaster
     {
         List<InvoiceMasterModel> GetInvoicesForApproval(InvoiceMasterModel model, SqlTransaction t = null);
+        List<InvoiceLetterheadAttachmentModel> SaveInvoiceLetterhead(InvoiceLetterheadAttachmentModel model, SqlTransaction t = null);
+        List<InvoiceLetterheadAttachmentModel>  GetInvoiceLetterheadInfo(int InvoiceHeaderID);
+        DataTable GetTSPMasterID(int UserID);
         List<InvoiceMasterModel> GetInvoiceDetails(InvoiceMasterModel model, SqlTransaction t = null);
 
         void GenerateInvoiceHeader(int PRNMasterID, SqlTransaction _transaction, string ProcessKey);

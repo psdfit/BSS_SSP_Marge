@@ -16,9 +16,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SearchFilter, ExportExcel } from '../../shared/Interfaces';
 import { EnumExcelReportType, EnumTSPColorType } from '../../shared/Enumerations';
 import { DatePipe } from '@angular/common';
-
+import { MatDialog } from "@angular/material/dialog";
 const moment = _moment;
 import { environment } from '../../../environments/environment';
+import { TspInvoiceSubmissionComponent } from 'src/app/custom-components/tsp-invoice-submission/tsp-invoice-submission.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -51,6 +52,9 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
+
+
+
 export class InvoiceApprovalsComponent implements OnInit {
   environment = environment;
   InvoiceHeaders: any;
@@ -76,10 +80,37 @@ export class InvoiceApprovalsComponent implements OnInit {
   InvoiceHeadersIDs: string;
 
 
-  constructor(private http: CommonSrvService, private dialogue: DialogueService, private _date: DatePipe) {
+  constructor(private Dialog: MatDialog,private http: CommonSrvService, private dialogue: DialogueService, private _date: DatePipe) {
     this.http.setTitle('Invoice');
   }
 
+
+  isInvoiceGenerated(row: any): boolean {
+  
+  if (row && row.IsAttachedLetterheadInvoice) {
+    const attachment = row.IsAttachedLetterheadInvoice;
+    // If attachment is not "0" and not empty/null/undefined, invoice is generated
+    return attachment !== '0' && attachment !== '' && attachment !== null && attachment !== undefined;
+  }
+  return false;
+}
+    OpenInvoiceSubmissionDialogue(invoiceData) {
+      // this.GetInvoiceLines(invoiceData)
+    // let dialogRef: MatDialogRef<GeoTaggingComponent>;
+    let dialogRef = this.Dialog.open(TspInvoiceSubmissionComponent, {
+      // height: '80%',
+      width: '70%',
+      disableClose: true,
+      data: invoiceData
+    });
+    dialogRef.afterClosed().subscribe(result => {
+    
+    });
+  }
+
+ 
+
+  
   ngOnInit(): void {
     this.http.OID.subscribe(OID => {
       this.GetInvoicesForApproval();

@@ -55,6 +55,7 @@ namespace DataLayer.Models
         public string InvoiceStatus { get; set; }
         public decimal NetPayableAmount { get; set; }
 
+        public string IsAttachedLetterheadInvoice { get; set; }
 
     }
 }

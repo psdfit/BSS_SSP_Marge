@@ -1,3 +1,5 @@
+import { ExistingSansProvider } from "@angular/core";
+
 export interface ITraineeProfile {
   TraineeID?: number;
   TraineeCode?: string;
@@ -68,4 +70,10 @@ export interface ITraineeProfile {
   TraineeRollNumber: string;
   TrainingAddressLocation: string;
   DistrictName: string;
+  GuardianRelationship: string;
+  GuardianEmail: string;
+  EmergencyContact: string;
+  WhatsAppContact: string;
+  LinkedInURL: string;
+  SocialMediaURL: string;
 }
