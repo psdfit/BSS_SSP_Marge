@@ -3,6 +3,7 @@ using DataLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using DataLayer.Interfaces;
+using System.Data.SqlClient;
 
 namespace PSDF_BSS.Controllers
 {
@@ -171,9 +172,28 @@ namespace PSDF_BSS.Controllers
                 return Ok(_srvManualGen.FetchEligibleClassDataForInterNet(mod));
 
             }
-            catch (Exception e)
-            { return BadRequest(e.InnerException.ToString()); }
+            catch (SqlException e)
+            {
+                // RAISERROR text from the procedure, e.g. "IRN for August 2026 has not been generated yet..."
+                return BadRequest(new { Message = e.Message });
+            }
+                catch (Exception e)
+            {
+                return BadRequest(new { Message = GetDbMessage(e) });
+            }
         }
+
+            // Finds the message raised by the database, whatever exception type or wrapper carries it
+            private static string GetDbMessage(Exception e)
+            {
+                for (var ex = e; ex != null; ex = ex.InnerException)
+                {
+                    // matches both System.Data.SqlClient and Microsoft.Data.SqlClient
+                    if (ex.GetType().Name == "SqlException")
+                        return ex.Message;
+                }
+                return e.GetBaseException().Message;
+            }
 
         [HttpPost]
         [Route("GenerateInternetNote")]

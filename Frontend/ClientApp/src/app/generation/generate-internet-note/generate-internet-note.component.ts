@@ -89,7 +89,7 @@ export class GenerateInternetNoteComponent implements OnInit {
     private groupByPipe: GroupByPipe,
     private _date: DatePipe
   ) {
-    this.http.setTitle("Generate InetrnetNote");
+    this.http.setTitle("Internet Device/Dongal Note");
     this.maxDate = moment(); // Set maxDate to today's date as a Moment object
     console.log(this.maxDate.format("YYYY-MM-DD")); // Debug maxDate value
   }
@@ -114,7 +114,7 @@ export class GenerateInternetNoteComponent implements OnInit {
       }
     );
   }
-  getTspClassesForVRNCompletion(value) {
+  getTspClassesForDongal(value) {
     this.filters.Month = moment(this.DateMonth.value).format("YYYY-MM-DD");
     this.filters.SchemeID = value;
     this.isValid = false;
@@ -141,8 +141,16 @@ export class GenerateInternetNoteComponent implements OnInit {
 
           }
         },
-        (error) => {
-          this.error = error;
+        (error: any) => {
+          this.PrnClasses = [];
+          this.isValid = false;
+          this.IsGenerated = false;
+          this.error =
+            error?.error?.Message ||
+            error?.error?.message ||
+            (typeof error?.error === "string" ? error.error : "") ||
+            error?.message ||
+            "Something went wrong.";
         }
       );
   }
@@ -232,7 +240,7 @@ export class GenerateInternetNoteComponent implements OnInit {
     this.DateMonth.setValue(ctrlValue);
     debugger;
     if (this.schemeFilter.value !== 0) {
-      this.getTspClassesForVRNCompletion(this.schemeFilter.value);
+      this.getTspClassesForDongal(this.schemeFilter.value);
     }
     datepicker.close();
   }

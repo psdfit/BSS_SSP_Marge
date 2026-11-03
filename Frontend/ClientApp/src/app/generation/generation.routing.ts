@@ -142,7 +142,7 @@ const routes: Routes = [
     data: {
       icon: 'verified_user',
       inMenu: true,
-      title: 'Generate Internet Note',
+      title: 'Generate Device or Dongal Note',
     },
   },
 ];

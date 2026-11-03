@@ -31,7 +31,7 @@
     <mat-card-content class="p-0 m-0 ">
       <mat-toolbar color="accent" class=" slim p-1 m-1">
         <mat-icon class="material-icons">view_comfy</mat-icon>
-        <span class="spacer">Generate InterNet/Dongal Cost</span>
+        <span class="spacer">Generate Internet Device/Dongal Note</span>
         <mat-icon style="cursor:pointer" matTooltip="Business Rules for Internet/Dongal Cost"
                   (click)="displayHideAlert()">info</mat-icon>
 
@@ -41,7 +41,7 @@
           <i class="fas fa-file-export"></i>Export Excel
         </button>
 
-        <button mat-raised-button color="accent" (click)="generate()"> Generate Internet Note</button>
+        <button mat-raised-button color="accent" (click)="generate()"> Generate Internet Device/Dongal Note</button>
 
 
 
@@ -57,7 +57,7 @@
       </ngb-alert>
     </div>
     <!--*ngIf="PrnClasses != null && PrnClasses.length != 0 "-->
-
+    <div class="alert alert-warning" *ngIf="error">{{ error }}</div>
     <div class="row" *ngIf="IsGenerated">
       <div class="col">
         <h1 class="text-center">{{message}}</h1>
