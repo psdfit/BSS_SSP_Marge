@@ -43,6 +43,8 @@ import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.componen
 import { TakamolRecommendationNoteApprovalsComponent } from './takamol-recommendation-note-approvals/takamol-recommendation-note-approvals.component';
 import { TakamolRecommendationNoteApprovalsDialogueComponent } from './takamol-recommendation-note-approvals-dialogue/takamol-recommendation-note-approvals-dialogue.component';
 import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.component';
+import { InternetNoteApprovalComponent } from './internet-note-approval/internet-note-approval.component';
+import { InternetDeviceNoteComponent } from './internet-device-note/internet-device-note.component';
 
 @NgModule({
   declarations: [ApprovalsComponent, SrnApprovalsComponent, GurnApprovalsComponent, DeletionApprovalsComponent, InvoiceApprovalsComponent,
@@ -62,7 +64,7 @@ import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.
     TprnApprovalsComponent, TprnApprovalsDialogueComponent, MrnApprovalsComponent, PvrnApprovalsComponent,
     PvrnApprovalsDialogueComponent, MrnApprovalsDialogueComponent, PcrnApprovalsDialogueComponent,
     PcrnApprovalsComponent, OtrnApprovalsDialogueComponent,
-    OtrnApprovalsComponent, OJTSrnApprovalsComponent],
+    OtrnApprovalsComponent, OJTSrnApprovalsComponent, InternetNoteApprovalComponent, InternetDeviceNoteComponent],
   imports: [
     CommonModule,
     SharedModule,

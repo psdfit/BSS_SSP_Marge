@@ -15,6 +15,7 @@ import { GenerateTakamolRecommnedationNoteComponent } from './generate-takamol-r
 import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 import { GenerateInvoiceComponent } from './generate-invoice/generate-invoice.component';
 import { GenerateInternetNoteComponent } from './generate-internet-note/generate-internet-note.component';
+import { GenerateInternetDeviceDongalNoteComponent } from './generate-internet-device-dongal-note/generate-internet-device-dongal-note.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { GenerateInternetNoteComponent } from './generate-internet-note/generate
     GenerateOtrnComponent,
     GenerateOjtComponent,
     GenerateInvoiceComponent,
-    GenerateInternetNoteComponent
+    GenerateInternetNoteComponent,
+    GenerateInternetDeviceDongalNoteComponent
   ],
   imports: [
     CommonModule,

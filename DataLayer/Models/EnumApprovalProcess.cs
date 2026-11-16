@@ -90,5 +90,13 @@ namespace DataLayer.Models
         public const string PO_OJT_SRN = "PO_OJT_SRN";
         public const string INV_OJT_SRN = "INV_OJT_SRN";
         public const string IPT = "IPT";
+
+        public const string PO_IRN = "PO_IRN"; //po for internet cost
+        public const string PO_IDP = "PO_IDP"; // po for internet device or dongal cost
+
+
+        public const string INV_IRN = "INV_IRN";
+        public const string INV_IDP = "INV_IDP";
+
     }
 }

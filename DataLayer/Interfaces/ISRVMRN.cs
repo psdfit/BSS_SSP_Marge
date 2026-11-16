@@ -18,5 +18,12 @@ namespace DataLayer.Interfaces
 
         bool PO_TRNApproveReject(POHeaderModel model, SqlTransaction transaction = null);
         void GenerateInvoiceHeader_MRN(int PoHeaderID, SqlTransaction _transaction, string ProcessKey);
+        List<MRNModel> FetchIRN(MRNModel mod);
+        bool IRNApproveReject(MRNModel model, SqlTransaction transaction = null);
+        void GenerateInvoiceHeader_IRN(int PoHeaderID, SqlTransaction _transaction, string ProcessKey);
+
+        List<MRNModel> FetchIDP(MRNModel mod);
+        bool IDPApproveReject(MRNModel model, SqlTransaction transaction = null);
+        void GenerateInvoiceHeader_IDP(int PoHeaderID, SqlTransaction _transaction, string ProcessKey);
     }
 }

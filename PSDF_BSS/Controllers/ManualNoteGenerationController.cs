@@ -183,18 +183,6 @@ namespace PSDF_BSS.Controllers
             }
         }
 
-            // Finds the message raised by the database, whatever exception type or wrapper carries it
-            private static string GetDbMessage(Exception e)
-            {
-                for (var ex = e; ex != null; ex = ex.InnerException)
-                {
-                    // matches both System.Data.SqlClient and Microsoft.Data.SqlClient
-                    if (ex.GetType().Name == "SqlException")
-                        return ex.Message;
-                }
-                return e.GetBaseException().Message;
-            }
-
         [HttpPost]
         [Route("GenerateInternetNote")]
         public IActionResult GenerateInternetNote([FromBody] QueryFilters mod)
@@ -209,6 +197,54 @@ namespace PSDF_BSS.Controllers
             }
             catch (Exception e)
             { return BadRequest(e.InnerException.ToString()); }
+        }
+
+        [HttpPost]
+        [Route("GetInternetDeviceCostReport")]
+        public IActionResult GetInternetDeviceCostReport([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                return Ok(_srvManualGen.FetchEligibleClassDataForInterNetDevice(mod));
+
+            }
+            catch (SqlException e)
+            {
+                // RAISERROR text from the procedure, e.g. "IRN for August 2026 has not been generated yet..."
+                return BadRequest(new { Message = e.Message });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = GetDbMessage(e) });
+            }
+        }
+
+        [HttpPost]
+        [Route("GenerateInternetDeviceNote")]
+        public IActionResult GenerateInternetDeviceNote([FromBody] QueryFilters mod)
+        {
+            try
+            {
+                List<object> ls = new List<object>();
+                ls.Add(_srvManualGen.GenerateInternetDeviceNote(mod, out string IsGenerated));
+                ls.Add(Convert.ToBoolean(IsGenerated));
+                return Ok(ls);
+
+            }
+            catch (Exception e)
+            { return BadRequest(e.InnerException.ToString()); }
+        }
+
+        // Finds the message raised by the database, whatever exception type or wrapper carries it
+        private static string GetDbMessage(Exception e)
+        {
+            for (var ex = e; ex != null; ex = ex.InnerException)
+            {
+                // matches both System.Data.SqlClient and Microsoft.Data.SqlClient
+                if (ex.GetType().Name == "SqlException")
+                    return ex.Message;
+            }
+            return e.GetBaseException().Message;
         }
     }
 }

@@ -20,5 +20,8 @@ namespace DataLayer.Interfaces
         bool CreatePOForTRN(int srnID, int curuserID, SqlTransaction transaction = null);
         bool POHeaderApproveReject(POHeaderModel model, SqlTransaction transaction = null);
         List<POHeaderModel> GetPOHeaderByID(int POHeaderID, SqlTransaction transaction = null);
+
+        bool CreatePOForIRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null);
+        bool CreatePOForIDP(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null);
     }
 }

@@ -89,7 +89,7 @@ export class GenerateInternetNoteComponent implements OnInit {
     private groupByPipe: GroupByPipe,
     private _date: DatePipe
   ) {
-    this.http.setTitle("Internet Device/Dongal Note");
+    this.http.setTitle("Internet Note");
     this.maxDate = moment(); // Set maxDate to today's date as a Moment object
     console.log(this.maxDate.format("YYYY-MM-DD")); // Debug maxDate value
   }
@@ -157,7 +157,7 @@ export class GenerateInternetNoteComponent implements OnInit {
   generate() {
     this.delay(1000);
     this.http
-      .confirm("Internet / Dongal Generation", "Are You Sure you want to generate Internet Note?")
+      .confirm("Internet Note Generation", "Are You Sure you want to generate Internet Note?")
       .subscribe((result) => {
         if (result) {
           this.http
@@ -198,7 +198,7 @@ export class GenerateInternetNoteComponent implements OnInit {
       "Class Status": "All",
     };
     const exportExcel: ExportExcel = {
-      Title: "Internet-Dongal Generation Report",
+      Title: "Internet-Note Generation Report",
       Author: this.currentUser.FullName,
       Type: EnumExcelReportType.MasterSheet,
       Data: data,

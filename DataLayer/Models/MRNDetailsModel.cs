@@ -11,6 +11,8 @@ namespace DataLayer.Models
         public MRNDetailsModel(bool InActive) : base(InActive) { }
 
         public int MRNID { get; set; }
+        public int IRNID { get; set; }
+        public int IDPID { get; set; }
         public string ReportId { get; set; }
         public int TraineeId { get; set; }
         public decimal Amount { get; set; }

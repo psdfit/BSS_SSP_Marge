@@ -2145,7 +2145,63 @@ namespace DataLayer.Services
                                                 _transaction.Commit();
                                                 result = true;
                                                 break;
+                                            case EnumApprovalProcess.PO_IRN:
+                                                srvPurchaseOrder.POHeaderApproveReject(new POHeaderModel()
+                                                {
+                                                    POHeaderID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    ModifiedUserID = model.CurUserID
+                                                }, _transaction);
 
+                                                //Enter Purchase Order in SAP
+                                                var mdIRN = new POHeaderModel { POHeaderID = model.FormID, ProcessKey = "", Month = null };
+                                                var poHeaderIRN = srvPOHeader.FetchPOHeader(mdIRN, _transaction).First();
+                                                var poLinesIRN = srvPOLines.GetPOLinesByPOHeaderID(model.FormID, _transaction);
+                                                if (string.IsNullOrEmpty(poHeaderIRN?.DocNum) || poHeaderIRN?.DocNum == "0")
+                                                {
+                                                    var sapMRNResponse = srvSAPApi.SaveSAPPurchaseOrder(poHeaderIRN, poLinesIRN, _transaction).Result;
+                                                    if (sapMRNResponse.Status == "1"
+                                                        //|| (sapSRNResponse.Status == "0" && sapSRNResponse.POModel.DocEntry > 0 && !string.IsNullOrEmpty(sapSRNResponse.POModel.DocNum))
+                                                        )
+                                                    {
+                                                        new SRVPOHeader().UpdateSAPInPOHeader(model.FormID, sapMRNResponse.POModel.DocEntry, sapMRNResponse.POModel.DocNum, _transaction);
+                                                        // new SRVPOLines().UpdateSAPInPOLines(model.FormID, sapSRNResponse.POModel.PODetail, poLinesSRN, _transaction);
+                                                    }
+                                                }
+                                                srvMRN.GenerateInvoiceHeader_IRN(model.FormID, _transaction, EnumApprovalProcess.INV_IRN);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
+
+                                            case EnumApprovalProcess.PO_IDP:
+                                                srvPurchaseOrder.POHeaderApproveReject(new POHeaderModel()
+                                                {
+                                                    POHeaderID = model.FormID,
+                                                    IsApproved = true,
+                                                    IsRejected = false,
+                                                    ModifiedUserID = model.CurUserID
+                                                }, _transaction);
+
+                                                //Enter Purchase Order in SAP
+                                                var mdIDP = new POHeaderModel { POHeaderID = model.FormID, ProcessKey = "", Month = null };
+                                                var poHeaderIDP = srvPOHeader.FetchPOHeader(mdIDP, _transaction).First();
+                                                var poLinesIDP = srvPOLines.GetPOLinesByPOHeaderID(model.FormID, _transaction);
+                                                if (string.IsNullOrEmpty(poHeaderIDP?.DocNum) || poHeaderIDP?.DocNum == "0")
+                                                {
+                                                    var sapMRNResponse = srvSAPApi.SaveSAPPurchaseOrder(poHeaderIDP, poLinesIDP, _transaction).Result;
+                                                    if (sapMRNResponse.Status == "1"
+                                                        //|| (sapSRNResponse.Status == "0" && sapSRNResponse.POModel.DocEntry > 0 && !string.IsNullOrEmpty(sapSRNResponse.POModel.DocNum))
+                                                        )
+                                                    {
+                                                        new SRVPOHeader().UpdateSAPInPOHeader(model.FormID, sapMRNResponse.POModel.DocEntry, sapMRNResponse.POModel.DocNum, _transaction);
+                                                        // new SRVPOLines().UpdateSAPInPOLines(model.FormID, sapSRNResponse.POModel.PODetail, poLinesSRN, _transaction);
+                                                    }
+                                                }
+                                                srvMRN.GenerateInvoiceHeader_IDP(model.FormID, _transaction, EnumApprovalProcess.INV_IDP);
+                                                _transaction.Commit();
+                                                result = true;
+                                                break;
                                             case EnumApprovalProcess.INV_C:
                                             case EnumApprovalProcess.INV_SRN:
                                             case EnumApprovalProcess.INV_OJT_SRN:
@@ -2155,6 +2211,8 @@ namespace DataLayer.Services
                                             case EnumApprovalProcess.INV_OTRN:
                                             case EnumApprovalProcess.INV_TakamolRecommendationNote:
                                             case EnumApprovalProcess.INV_MRN:
+                                            case EnumApprovalProcess.INV_IRN:
+                                            case EnumApprovalProcess.INV_IDP:
                                             case EnumApprovalProcess.INV_GURN:
                                             case EnumApprovalProcess.INV_VRN:
                                             case EnumApprovalProcess.INV_F:
@@ -3438,5 +3496,205 @@ namespace DataLayer.Services
             }
         }
 
+        public bool SaveIRNApprovalHistory(ref ApprovalWrapperModel wrapperModel)
+        {
+            var model = wrapperModel.approvalHistoryModel;
+            using (SqlConnection connection = new SqlConnection(SqlHelper.GetCon()))
+            {
+                connection.Open();
+                bool result = false;
+                var _transaction = connection.BeginTransaction();
+                try
+                {
+                    List<ApprovalModel> approvals = srvApproval.FetchApproval(new ApprovalModel() { ProcessKey = model.ProcessKey }, _transaction);
+                    ApprovalModel currentApproval = approvals.Where(x => x.Step == model.Step).FirstOrDefault();
+                    bool isFinalApprover = currentApproval.Step == approvals.Count;
+                    wrapperModel.approvals = approvals;
+                    wrapperModel.currentApproval = currentApproval;
+                    wrapperModel.isFinalApprover = isFinalApprover;
+                    if (currentApproval.UserIDs.Split(',').Contains(model.CurUserID.ToString()) && model.FormIDs.Count() > 0)
+                    {
+                        foreach (var id in model.FormIDs)
+                        {
+                            var current = FetchApprovalHistory(new ApprovalHistoryModel()
+                            {
+                                FormID = id,
+                                ProcessKey = model.ProcessKey,
+                                ApprovalStatusID = (int)EnumApprovalStatus.Pending
+                            }, _transaction).OrderByDescending(x => x.ApprovalHistoryID).FirstOrDefault();
+                            current.ApprovalStatusID = model.ApprovalStatusID;
+                            current.ApproverID = model.ApproverID;
+                            current.Comments = model.Comments;
+                            current.CurUserID = model.CurUserID;
+                            //model.FormID = id;
+                            if (AU_ApprovalHistory(current, _transaction))
+                            {
+                                ApprovalHistoryModel next = new ApprovalHistoryModel()
+                                {
+                                    ApprovalHistoryID = 0,
+                                    ProcessKey = current.ProcessKey,
+                                    FormID = current.FormID,
+                                    ApprovalStatusID = (int)EnumApprovalStatus.Pending,
+                                    Comments = "Pending",
+                                    ApproverID = null,
+                                    CurUserID = current.CurUserID,
+                                    InActive = false
+                                };
+                                switch (current.ApprovalStatusID)
+                                {
+                                    case (int)EnumApprovalStatus.Approved:
+                                        if (!isFinalApprover)
+                                        {
+                                            next.Step = currentApproval.Step + 1;
+                                            AU_ApprovalHistory(next, _transaction);
+                                        }
+                                        else
+                                        {
+                                            srvMRN.IRNApproveReject(new MRNModel()
+                                            {
+                                                IRNID = next.FormID,
+                                                IsApproved = true,
+                                                IsRejected = false,
+                                                CurUserID = next.CurUserID
+                                            }, _transaction);
+                                        }
+                                        break;
+                                    case (int)EnumApprovalStatus.SendBack:
+                                        next.Step = currentApproval.Step - 1;
+                                        AU_ApprovalHistory(next, _transaction);
+                                        break;
+                                    case (int)EnumApprovalStatus.Rejected:
+                                        srvMRN.IRNApproveReject(new MRNModel()
+                                        {
+                                            IRNID = next.FormID,
+                                            IsApproved = false,
+                                            IsRejected = true,
+                                            CurUserID = next.CurUserID
+                                        }, _transaction);
+                                        break;
+                                }
+                            }
+                        }
+                        if (isFinalApprover)
+                        {
+                            var ProcessKey = model.ProcessKey;
+                            if (ProcessKey == "IRN")
+                            {
+                                srvPurchaseOrder.CreatePOForIRN(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_IRN, model.CurUserID, _transaction);
+                            }
+                        }
+                        _transaction.Commit();
+                        result = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    _transaction.Rollback();
+                    throw;
+                }
+                return result;
+            }
+        }
+
+
+        public bool SaveIDPApprovalHistory(ref ApprovalWrapperModel wrapperModel)
+        {
+            var model = wrapperModel.approvalHistoryModel;
+            using (SqlConnection connection = new SqlConnection(SqlHelper.GetCon()))
+            {
+                connection.Open();
+                bool result = false;
+                var _transaction = connection.BeginTransaction();
+                try
+                {
+                    List<ApprovalModel> approvals = srvApproval.FetchApproval(new ApprovalModel() { ProcessKey = model.ProcessKey }, _transaction);
+                    ApprovalModel currentApproval = approvals.Where(x => x.Step == model.Step).FirstOrDefault();
+                    bool isFinalApprover = currentApproval.Step == approvals.Count;
+                    wrapperModel.approvals = approvals;
+                    wrapperModel.currentApproval = currentApproval;
+                    wrapperModel.isFinalApprover = isFinalApprover;
+                    if (currentApproval.UserIDs.Split(',').Contains(model.CurUserID.ToString()) && model.FormIDs.Count() > 0)
+                    {
+                        foreach (var id in model.FormIDs)
+                        {
+                            var current = FetchApprovalHistory(new ApprovalHistoryModel()
+                            {
+                                FormID = id,
+                                ProcessKey = model.ProcessKey,
+                                ApprovalStatusID = (int)EnumApprovalStatus.Pending
+                            }, _transaction).OrderByDescending(x => x.ApprovalHistoryID).FirstOrDefault();
+                            current.ApprovalStatusID = model.ApprovalStatusID;
+                            current.ApproverID = model.ApproverID;
+                            current.Comments = model.Comments;
+                            current.CurUserID = model.CurUserID;
+                            //model.FormID = id;
+                            if (AU_ApprovalHistory(current, _transaction))
+                            {
+                                ApprovalHistoryModel next = new ApprovalHistoryModel()
+                                {
+                                    ApprovalHistoryID = 0,
+                                    ProcessKey = current.ProcessKey,
+                                    FormID = current.FormID,
+                                    ApprovalStatusID = (int)EnumApprovalStatus.Pending,
+                                    Comments = "Pending",
+                                    ApproverID = null,
+                                    CurUserID = current.CurUserID,
+                                    InActive = false
+                                };
+                                switch (current.ApprovalStatusID)
+                                {
+                                    case (int)EnumApprovalStatus.Approved:
+                                        if (!isFinalApprover)
+                                        {
+                                            next.Step = currentApproval.Step + 1;
+                                            AU_ApprovalHistory(next, _transaction);
+                                        }
+                                        else
+                                        {
+                                            srvMRN.IDPApproveReject(new MRNModel()
+                                            {
+                                                IDPID = next.FormID,
+                                                IsApproved = true,
+                                                IsRejected = false,
+                                                CurUserID = next.CurUserID
+                                            }, _transaction);
+                                        }
+                                        break;
+                                    case (int)EnumApprovalStatus.SendBack:
+                                        next.Step = currentApproval.Step - 1;
+                                        AU_ApprovalHistory(next, _transaction);
+                                        break;
+                                    case (int)EnumApprovalStatus.Rejected:
+                                        srvMRN.IDPApproveReject(new MRNModel()
+                                        {
+                                            IDPID = next.FormID,
+                                            IsApproved = false,
+                                            IsRejected = true,
+                                            CurUserID = next.CurUserID
+                                        }, _transaction);
+                                        break;
+                                }
+                            }
+                        }
+                        if (isFinalApprover)
+                        {
+                            var ProcessKey = model.ProcessKey;
+                            if (ProcessKey == "IDP")
+                            {
+                                srvPurchaseOrder.CreatePOForIDP(string.Join(',', model.FormIDs), EnumApprovalProcess.PO_IDP, model.CurUserID, _transaction);
+                            }
+                        }
+                        _transaction.Commit();
+                        result = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    _transaction.Rollback();
+                    throw;
+                }
+                return result;
+            }
+        }
     }
 }

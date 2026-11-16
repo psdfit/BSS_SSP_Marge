@@ -297,5 +297,51 @@ namespace DataLayer.Services
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        public bool CreatePOForIRN(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@IRNIDs", srnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForIRN", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POForIRN", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+
+        public bool CreatePOForIDP(string srnIDs, string processKey, int curuserID, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@IDPIDs", srnIDs));
+                param.Add(new SqlParameter("@CurUserID", curuserID));
+                param.Add(new SqlParameter("@ProcessKey", processKey));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, "POForIDP", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "POForIDP", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception e)
+            { throw new Exception(e.Message); }
+        }
+
     }
 }

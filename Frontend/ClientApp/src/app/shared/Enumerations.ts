@@ -70,7 +70,12 @@ export enum EnumApprovalProcess {
   , IPOT = 'IPOT'
   , IPT = 'IPT'
   , IPVS = 'IPVS'
-
+  , IRN = 'IRN' // Internet Recommendation Note
+  , IDP = 'IDP' //Internt Device Payment Note
+  , PO_IRN = 'PO_IRN'
+  , PO_IDP = 'PO_IDP'
+  , INV_IRN = 'INV_IRN'
+  , INV_IDP = 'INV_IDP'
 }
 export enum EnumCertificationAuthority {
   PBTE = 1

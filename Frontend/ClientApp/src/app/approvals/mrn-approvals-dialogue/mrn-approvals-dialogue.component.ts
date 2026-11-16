@@ -37,6 +37,35 @@ export class MrnApprovalsDialogueComponent implements OnInit {
     this.getApprovalHistory();
   }
 
+  //save(approvalStatusID: number) {
+  //  this.approvalForm.markAllAsTouched();
+  //  if (this.approvalForm.valid) {
+  //    let obj: IApprovalHistory = {
+  //      ApprovalHistoryID: this.latest.ApprovalHistoryID,
+  //      ProcessKey: this.data.ProcessKey,
+  //      FormID: this.data.FormID,
+  //      FormIDs: this.data.FormIDs,
+  //      Step: this.latest.Step,
+  //      ApproverID: this.currentUserDetails.UserID,
+  //      ApprovalStatusID: approvalStatusID,
+  //      Comments: this.approvalForm.getRawValue().Remarks,
+  //    };
+  //    this.http.postJSON("api/Approval/SaveMRNApprovalHistory", obj).subscribe(
+  //      (_response: any) => {
+  //        if (_response == true) {
+  //          this.http.openSnackBar("Saved Successfully");
+  //        } else {
+  //          //this.http.ShowError(this.error.toString(), "Error");
+  //        }
+  //        this.onNoClick();
+  //      },
+  //      (error) => {
+  //        this.http.ShowError(error.error + '\n' + error.message);
+  //      }
+  //    );
+  //  }
+  //}
+
   save(approvalStatusID: number) {
     this.approvalForm.markAllAsTouched();
     if (this.approvalForm.valid) {
@@ -50,7 +79,19 @@ export class MrnApprovalsDialogueComponent implements OnInit {
         ApprovalStatusID: approvalStatusID,
         Comments: this.approvalForm.getRawValue().Remarks,
       };
-      this.http.postJSON("api/Approval/SaveMRNApprovalHistory", obj).subscribe(
+      const processKey = (this.data.ProcessKey || "").trim().toUpperCase();
+      let saveUrl = "";
+      if (processKey == "MRN") {
+        saveUrl = "api/Approval/SaveMRNApprovalHistory";
+      } else if (processKey == "IRN") {
+        saveUrl = "api/Approval/SaveIRNApprovalHistory";
+      } else if (processKey == "IDP") {
+        saveUrl = "api/Approval/SaveIDPApprovalHistory";
+      } else {
+        this.http.ShowError("Approval not configured for process: " + this.data.ProcessKey);
+        return;
+      }
+      this.http.postJSON(saveUrl, obj).subscribe(
         (_response: any) => {
           if (_response == true) {
             this.http.openSnackBar("Saved Successfully");
@@ -65,6 +106,7 @@ export class MrnApprovalsDialogueComponent implements OnInit {
       );
     }
   }
+
   getApprovalHistory() {
     ///data object must have ProcessKey & FormID
     this.data.FormID = this.data.FormIDs[0]

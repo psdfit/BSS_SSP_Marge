@@ -143,8 +143,8 @@ namespace DataLayer.Services
             MRN.ModifiedDate = row.Field<DateTime?>("ModifiedDate"); ;
             MRN.InActive = row.Field<bool?>("InActive");
 
-            
-           if (row.Table.Columns.Contains("ProcessKey"))
+
+            if (row.Table.Columns.Contains("ProcessKey"))
             {
                 MRN.ProcessKey = row.Field<string>("ProcessKey");
             }
@@ -234,6 +234,181 @@ namespace DataLayer.Services
                     SqlHelper.ExecuteNonQuery(_transaction, CommandType.StoredProcedure, "GenerateInvoiceHeader_MRN", param);
                 else
                     SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "GenerateInvoiceHeader_MRN", param);
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<MRNModel> FetchIRN(MRNModel mod)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                //param.Add(new SqlParameter("@SchemeId", MRN.MRNId));
+                //param.Add(new SqlParameter("@TspId", MRN.ReportId));
+                //param.Add( new SqlParameter("@ClassId", MRN.TraineeId));
+                param.Add(new SqlParameter("@Month", mod.Month));
+                param.Add(new SqlParameter("@OID", mod.OID));
+                param.Add(new SqlParameter("@KAMID", mod.KAMID));
+                param.Add(new SqlParameter("@SchemeId", mod.SchemeID));
+                //param.Add(new SqlParameter("@TspId", mod.TSPID));
+                param.Add(new SqlParameter("@TSPMasterID", mod.TSPMasterID));
+                param.Add(new SqlParameter("@UserID", mod.UserID));
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_IRN", param.ToArray()).Tables[0];
+                return LoopinDataIRN(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+        private List<MRNModel> LoopinDataIRN(DataTable dt)
+        {
+            List<MRNModel> MRNL = new List<MRNModel>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                MRNL.Add(RowOfIRN(r));
+
+            }
+            return MRNL;
+        }
+
+        private MRNModel RowOfIRN(DataRow row)
+        {
+            MRNModel IRN = new MRNModel();
+            if (row.Table.Columns.Contains("IRNID"))
+            {
+                IRN.IRNID = row.Field<int>("IRNID");
+            }
+            if (row.Table.Columns.Contains("IDPID"))
+            {
+                IRN.IDPID = row.Field<int>("IDPID");
+            }
+            IRN.ClassID = row.Field<int>("ClassID");
+            IRN.ClassCode = row.Field<string>("ClassCode");
+            IRN.Month = row.Field<DateTime>("Month");
+            IRN.ReportDate = row.Field<DateTime>("ReportDate");
+            //MRN.NumberOfMonths = row.Field<int>("NumberOfMonths");
+            IRN.IsApproved = row.Field<bool>("IsApproved");
+            IRN.IsRejected = row.Field<bool>("IsRejected");
+            IRN.Batch = row.Field<int>("Batch");
+            IRN.TSPName = row.Field<string>("TSPName");
+            IRN.TrainingDistrict = row.Field<string>("TrainingDistrict");
+            IRN.TradeName = row.Field<string>("TradeName");
+            IRN.SchemeID = row.Field<int>("SchemeID");
+            IRN.SchemeName = row.Field<string>("SchemeName");
+            IRN.SchemeCode = row.Field<string>("SchemeCode");
+            IRN.ApprovalBatchNo = row.Field<int>("ApprovalBatchNo");
+
+            IRN.CreatedUserID = row.Field<int>("CreatedUserID");
+            IRN.CreatedDate = row.Field<DateTime?>("CreatedDate"); ;
+            IRN.ModifiedUserID = row.Field<int>("ModifiedUserID");
+            IRN.ModifiedDate = row.Field<DateTime?>("ModifiedDate"); ;
+            IRN.InActive = row.Field<bool?>("InActive");
+
+
+            if (row.Table.Columns.Contains("ProcessKey"))
+            {
+                IRN.ProcessKey = row.Field<string>("ProcessKey");
+            }
+
+            return IRN;
+        }
+
+        public bool IRNApproveReject(MRNModel model, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@IRNID", model.IRNID));
+                param.Add(new SqlParameter("@IsApproved", model.IsApproved));
+                param.Add(new SqlParameter("@IsRejected", model.IsRejected));
+                param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, "U_IRNApproveReject", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.StoredProcedure, "U_IRNApproveReject", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public void GenerateInvoiceHeader_IRN(int PoHeaderID, SqlTransaction _transaction, string ProcessKey)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[2];
+                param[0] = new SqlParameter("@POHeaderID", PoHeaderID);
+                param[1] = new SqlParameter("@ProcessKey", ProcessKey);
+
+                if (_transaction != null)
+                    SqlHelper.ExecuteNonQuery(_transaction, CommandType.StoredProcedure, "GenerateInvoiceHeader_IRN", param);
+                else
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "GenerateInvoiceHeader_IRN", param);
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<MRNModel> FetchIDP(MRNModel mod)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                //param.Add(new SqlParameter("@SchemeId", MRN.MRNId));
+                //param.Add(new SqlParameter("@TspId", MRN.ReportId));
+                //param.Add( new SqlParameter("@ClassId", MRN.TraineeId));
+                param.Add(new SqlParameter("@Month", mod.Month));
+                param.Add(new SqlParameter("@OID", mod.OID));
+                param.Add(new SqlParameter("@KAMID", mod.KAMID));
+                param.Add(new SqlParameter("@SchemeId", mod.SchemeID));
+                //param.Add(new SqlParameter("@TspId", mod.TSPID));
+                param.Add(new SqlParameter("@TSPMasterID", mod.TSPMasterID));
+                param.Add(new SqlParameter("@UserID", mod.UserID));
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_IDP", param.ToArray()).Tables[0];
+                return LoopinDataIRN(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public bool IDPApproveReject(MRNModel model, SqlTransaction transaction = null)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@IDPID", model.IDPID));
+                param.Add(new SqlParameter("@IsApproved", model.IsApproved));
+                param.Add(new SqlParameter("@IsRejected", model.IsRejected));
+                param.Add(new SqlParameter("@CurUserID", model.CurUserID));
+
+                if (transaction != null)
+                {
+                    SqlHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, "U_IDPApproveReject", param.ToArray());
+                }
+                else
+                {
+                    SqlHelper.ExecuteScalar(SqlHelper.GetCon(), CommandType.StoredProcedure, "U_IDPApproveReject", param.ToArray());
+                }
+                return true;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public void GenerateInvoiceHeader_IDP(int PoHeaderID, SqlTransaction _transaction, string ProcessKey)
+        {
+            try
+            {
+                SqlParameter[] param = new SqlParameter[2];
+                param[0] = new SqlParameter("@POHeaderID", PoHeaderID);
+                param[1] = new SqlParameter("@ProcessKey", ProcessKey);
+
+                if (_transaction != null)
+                    SqlHelper.ExecuteNonQuery(_transaction, CommandType.StoredProcedure, "GenerateInvoiceHeader_IDP", param);
+                else
+                    SqlHelper.ExecuteNonQuery(SqlHelper.GetCon(), CommandType.StoredProcedure, "GenerateInvoiceHeader_IDP", param);
 
             }
             catch (Exception ex) { throw new Exception(ex.Message); }

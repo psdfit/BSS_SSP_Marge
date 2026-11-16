@@ -11,6 +11,8 @@ namespace DataLayer.Models
         public MRNModel(bool InActive) : base(InActive) { }
 
         public int MRNID { get; set; }
+        public int IRNID { get; set; }
+        public int IDPID { get; set; }
         public int ClassID { get; set; }
         public string ClassCode { get; set; }
         public DateTime? Month { get; set; }

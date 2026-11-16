@@ -23,5 +23,8 @@ namespace DataLayer.Interfaces
         List<SchemeTradeMapping> FetchTradeTarget(ApprovalHistoryModel model, SqlTransaction transaction = null);
         bool SaveTradeTarget(List<SchemeTradeMapping> model);
         bool UpdateTradeTarget(List<SchemeTradeMapping> model);
+
+        bool SaveIRNApprovalHistory(ref ApprovalWrapperModel model);
+        bool SaveIDPApprovalHistory(ref ApprovalWrapperModel model);
     }
 }

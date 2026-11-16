@@ -14,6 +14,7 @@ import { GenerateTakamolRecommnedationNoteComponent } from './generate-takamol-r
 import { GenerateInternetNoteComponent } from './generate-internet-note/generate-internet-note.component';
 import { GenerateOjtComponent } from './generate-ojt/generate-ojt.component';
 import { GenerateInvoiceComponent } from './generate-invoice/generate-invoice.component';
+import { GenerateInternetDeviceDongalNoteComponent } from './generate-internet-device-dongal-note/generate-internet-device-dongal-note.component'
 const routes: Routes = [
   {
     path: 'generate-prn-completion',
@@ -138,6 +139,16 @@ const routes: Routes = [
   {
     path: 'generate-internet-note',
     component: GenerateInternetNoteComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: 'verified_user',
+      inMenu: true,
+      title: 'Generate Device or Dongal Note',
+    },
+  },
+  {
+    path: 'generate-internet-device-dongal-note',
+    component: GenerateInternetDeviceDongalNoteComponent,
     canActivate: [AuthGuardService],
     data: {
       icon: 'verified_user',

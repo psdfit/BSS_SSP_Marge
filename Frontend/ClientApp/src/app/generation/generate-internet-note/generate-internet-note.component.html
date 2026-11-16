@@ -31,8 +31,8 @@
     <mat-card-content class="p-0 m-0 ">
       <mat-toolbar color="accent" class=" slim p-1 m-1">
         <mat-icon class="material-icons">view_comfy</mat-icon>
-        <span class="spacer">Generate Internet Device/Dongal Note</span>
-        <mat-icon style="cursor:pointer" matTooltip="Business Rules for Internet/Dongal Cost"
+        <span class="spacer">Generate Internet Note</span>
+        <mat-icon style="cursor:pointer" matTooltip="Business Rules for Internet Cost"
                   (click)="displayHideAlert()">info</mat-icon>
 
 
@@ -41,7 +41,7 @@
           <i class="fas fa-file-export"></i>Export Excel
         </button>
 
-        <button mat-raised-button color="accent" (click)="generate()"> Generate Internet Device/Dongal Note</button>
+        <button mat-raised-button color="accent" (click)="generate()"> Generate Internet Note</button>
 
 
 
@@ -50,7 +50,7 @@
     <div *ngIf="infoAlert">
       <ngb-alert type="primary" (click)="displayHideAlert()">
         <ul class="pl-3">
-          <li>Trainee status should be On-Roll.</li>
+          <li>Trainee status should be On-Roll.</li>  
           <li>Trainee Should not be extra.</li>
           <li>Trainee status should be verified.</li>
         </ul>

@@ -452,6 +452,46 @@ namespace MasterDataModule.Controllers
                 return BadRequest(e.Message);
             }
         }
+        //Save internet note approval
+        [HttpPost]
+        [Route("SaveIRNApprovalHistory")] 
+        public IActionResult SaveIRNApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveIRNApprovalHistory(ref wrapperModel);
+
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        //Save internet note approval
+        [HttpPost]
+        [Route("SaveIDPApprovalHistory")]
+        public IActionResult SaveIDPApprovalHistory(ApprovalHistoryModel model)
+        {
+            try
+            {
+                ApprovalWrapperModel wrapperModel = new ApprovalWrapperModel();
+                wrapperModel.approvalHistoryModel = model;
+                model.CurUserID = Convert.ToInt32(User.Identity.Name);
+                var result = serviceApprovalHistory.SaveIDPApprovalHistory(ref wrapperModel);
+
+                AutoApproval(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         #endregion Approval Dialogue
     }

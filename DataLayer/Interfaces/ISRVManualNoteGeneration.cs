@@ -20,6 +20,8 @@ namespace DataLayer.Interfaces
         DataTable FetchEligibleClassDataForTakamolRecommnedationNote(QueryFilters data);
         DataTable FetchEligibleClassDataForInterNet(QueryFilters data);
         DataTable GenerateInternetNote(QueryFilters model, out string IsGenerated);
+        DataTable FetchEligibleClassDataForInterNetDevice(QueryFilters data);
+        DataTable GenerateInternetDeviceNote(QueryFilters model, out string IsGenerated);
 
     }
 }

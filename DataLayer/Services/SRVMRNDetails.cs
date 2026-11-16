@@ -79,7 +79,18 @@ namespace DataLayer.Services
         public MRNDetailsModel RowOfMRNDetails(DataRow row, bool ForExcel = false)
         {
             MRNDetailsModel model = new MRNDetailsModel();
-            model.MRNID = row.Field<int>("MRNID");
+            if (row.Table.Columns.Contains("MRNID"))
+            {
+                model.MRNID = row.Field<int>("MRNID");
+            }
+            if (row.Table.Columns.Contains("IRNID"))
+            {
+                model.IRNID = row.Field<int>("IRNID");
+            }
+            if (row.Table.Columns.Contains("IDPID"))
+            {
+                model.IDPID = row.Field<int>("IDPID");
+            }
             model.ReportId = row.Field<string>("ReportId");
             model.Amount = row.Field<decimal>("Amount");
             model.TokenNumber = row.Field<string>("TokenNumber");
@@ -157,6 +168,82 @@ namespace DataLayer.Services
             }
             catch (Exception ex)
             { throw new Exception(ex.Message); }
+        }
+
+        public List<MRNDetailsModel> FetchIRNDetails(MRNDetailsModel model)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@IRNID", model.IRNID));//temp
+                //param.AddRange(Common.GetPagingParams(model));
+
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_IRNDetails", param.ToArray()).Tables[0];
+                return LoopinMRNDetails(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<MRNDetailsModel> GetIRNExcelExport(MRNDetailsModel model)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+
+                param.Add(new SqlParameter("@IRNID", model.IRNID));
+                param.Add(new SqlParameter("@month", model.Month));
+
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "IRN_Excel_Export", param.ToArray()).Tables[0];
+                return LoopinMRNDetails(dt, true); // ForExcel = true
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public List<MRNDetailsModel> GetIRNExcelExportByIDs(string ids)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_IRNDetails_By_IDs", new SqlParameter("@IRNMasterIDs", ids)).Tables[0];
+            return LoopinMRNDetails(dt);
+        }
+
+        public List<MRNDetailsModel> FetchIDPDetails(MRNDetailsModel model)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+                param.Add(new SqlParameter("@IDPID", model.IDPID));//temp
+                //param.AddRange(Common.GetPagingParams(model));
+
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_IDPDetails", param.ToArray()).Tables[0];
+                return LoopinMRNDetails(dt);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public List<MRNDetailsModel> GetIDPExcelExport(MRNDetailsModel model)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>();
+
+                param.Add(new SqlParameter("@IDPID", model.IDPID));
+                param.Add(new SqlParameter("@month", model.Month));
+
+                DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "IDP_Excel_Export", param.ToArray()).Tables[0];
+                return LoopinMRNDetails(dt, true); // ForExcel = true
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public List<MRNDetailsModel> GetIDPExcelExportByIDs(string ids)
+        {
+            List<SqlParameter> param = new List<SqlParameter>();
+            DataTable dt = SqlHelper.ExecuteDataset(SqlHelper.GetCon(), CommandType.StoredProcedure, "RD_IDPDetails_By_IDs", new SqlParameter("@IDPMasterIDs", ids)).Tables[0];
+            return LoopinMRNDetails(dt);
         }
     }
 }

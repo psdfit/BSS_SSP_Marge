@@ -33,7 +33,8 @@ import { PcrnApprovalsComponent } from './pcrn-approvals/pcrn-approvals.componen
 import { OtrnApprovalsComponent } from './otrn-approvals/otrn-approvals.component';
 import { TakamolRecommendationNoteApprovalsComponent } from './takamol-recommendation-note-approvals/takamol-recommendation-note-approvals.component';
 import { OJTSrnApprovalsComponent } from './ojt-srn-approvals/ojt-srn-approvals.component';
-
+import { InternetNoteApprovalComponent } from './internet-note-approval/internet-note-approval.component';
+import { InternetDeviceNoteComponent } from './internet-device-note/internet-device-note.component';
 const routes: Routes = [
   {
     path: "appendix",
@@ -353,6 +354,26 @@ const routes: Routes = [
       icon: "verified_user",
       inMenu: true,
       title: "Criteria Template",
+    },
+  },
+  {
+    path: "internet-note-approval",
+    component: InternetNoteApprovalComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "Internet Note Approval",
+    },
+  },
+  {
+    path: "internet-device-note-approval",
+    component: InternetDeviceNoteComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      icon: "verified_user",
+      inMenu: true,
+      title: "Internet Device Note Approval",
     },
   },
 ];
